@@ -1,3 +1,10 @@
 package com.anvipo.angram.applicationLayer.navigation.coordinator.coordinatorFactory
 
-interface ApplicationCoordinatorFactory
+import com.anvipo.angram.applicationLayer.navigation.router.Routable
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.AuthorizationCoordinator
+
+interface ApplicationCoordinatorFactory {
+
+    fun createAuthCoordinator(router: Routable): AuthorizationCoordinator
+
+}

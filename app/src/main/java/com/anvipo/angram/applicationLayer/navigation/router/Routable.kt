@@ -1,10 +1,11 @@
 package com.anvipo.angram.applicationLayer.navigation.router
 
 import com.anvipo.angram.presentationLayer.common.interfaces.Presentable
+import java.lang.ref.WeakReference
 
-interface Routable : Presentable {
+interface Routable {
 
-    val presentedScreen: Presentable?
+    val presentedScreen: WeakReference<Presentable>?
 
     fun present(
         screen: Presentable,

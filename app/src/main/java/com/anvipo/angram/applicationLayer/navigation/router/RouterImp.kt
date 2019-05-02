@@ -8,9 +8,7 @@ class RouterImp(
     private val rootController: WeakReference<NavigationController>
 ) : Routable {
 
-    private val completions: MutableMap<WeakReference<Presentable>, () -> Unit> = mutableMapOf()
-
-    override var presentedScreen: Presentable? = null
+    override var presentedScreen: WeakReference<Presentable>? = null
 
     override fun present(
         screen: Presentable,
@@ -52,7 +50,14 @@ class RouterImp(
         animated: Boolean,
         hideBar: Boolean
     ) {
-        TODO("not implemented")
+        rootController.get()?.isNavigationBarHidden = hideBar
+
+        rootController.get()?.set(
+            rootScreen = rootScreen,
+            animated = animated
+        ) {
+            presentedScreen = WeakReference(rootScreen)
+        }
     }
 
     override fun popToRootScreen(animated: Boolean) {
@@ -66,5 +71,12 @@ class RouterImp(
     override fun popAsPresent() {
         TODO("not implemented")
     }
+
+
+    /// PRIVATE
+
+
+    private val completions: MutableMap<WeakReference<Presentable>, () -> Unit> = mutableMapOf()
+
 
 }

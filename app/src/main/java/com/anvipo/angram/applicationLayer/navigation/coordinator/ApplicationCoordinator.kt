@@ -9,6 +9,8 @@ class ApplicationCoordinator(
     private val coordinatorFactory: ApplicationCoordinatorFactory
 ) : BaseCoordinator() {
 
+    override var finishFlow: (() -> Unit)? = null
+
     override fun start() {
         childCoordinators.clear()
 
@@ -25,6 +27,21 @@ class ApplicationCoordinator(
     /**
     Starts needed flow
      */
-    private fun startApp() {}
+    private fun startApp() {
+        startAuthFlow()
+    }
+
+    private fun startAuthFlow() {
+        val authCoordinator = coordinatorFactory.createAuthCoordinator(router = router)
+
+        authCoordinator.finishFlow = {
+            removeChildCoordinator(coordinator = authCoordinator)
+            TODO("start needed flow")
+        }
+
+        addChildCoordinator(coordinator = authCoordinator)
+
+        authCoordinator.start()
+    }
 
 }
