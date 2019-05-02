@@ -1,0 +1,3 @@
+package com.anvipo.angram.applicationLayer.navigation.coordinator.coordinatorFactory
+
+interface ApplicationCoordinatorFactory

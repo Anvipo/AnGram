@@ -21,8 +21,6 @@ class App : Application() {
     /// PRIVATE
 
 
-    private fun initDependecies() {
-
-    }
+    private fun initDependecies() {}
 
 }
