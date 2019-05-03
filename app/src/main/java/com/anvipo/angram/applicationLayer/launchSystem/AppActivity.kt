@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.anvipo.angram.R
 import com.anvipo.angram.applicationLayer.navigation.coordinator.ApplicationCoordinator
-import com.anvipo.angram.applicationLayer.navigation.coordinator.coordinatorFactory.ApplicationCoordinatorFactoryImp
+import com.anvipo.angram.applicationLayer.navigation.coordinator.coordinatorFactory.ApplicationCoordinatorsFactoryImp
 import com.anvipo.angram.applicationLayer.navigation.router.RouterImp
 import com.anvipo.angram.global.ActivityFinishError
 import com.anvipo.angram.presentationLayer.common.baseClasses.BaseFragment
@@ -37,8 +37,11 @@ class AppActivity : AppCompatActivity(), NavigationController {
 
 
     override fun onBackPressed() {
-        currentFragment?.onBackPressed?.invoke() ?: finish()
+        currentFragment?.onBackPressed?.invoke() ?: super.onBackPressed()
     }
+
+
+    /// NAVIGATION CONTROLLER
 
 
     override fun push(
@@ -61,14 +64,16 @@ class AppActivity : AppCompatActivity(), NavigationController {
         completion: (() -> Unit)?
     ) {
         repeat(supportFragmentManager.fragments.size) {
-            supportFragmentManager.popBackStack()
+            supportFragmentManager.popBackStackImmediate()
         }
 
         val transaction = supportFragmentManager.beginTransaction()
 
         transaction
             .replace(R.id.container, viewController as Fragment)
-            .runOnCommit { completion?.invoke() }
+            .runOnCommit {
+                completion?.invoke()
+            }
             .commitNow()
     }
 
@@ -105,7 +110,7 @@ class AppActivity : AppCompatActivity(), NavigationController {
     // TODO: apply DI
     private val applicationCoordinator: Coordinatorable by lazy {
         ApplicationCoordinator(
-            coordinatorFactory = ApplicationCoordinatorFactoryImp(),
+            coordinatorsFactory = ApplicationCoordinatorsFactoryImp(),
             router = RouterImp(rootController = WeakReference(this))
         )
     }

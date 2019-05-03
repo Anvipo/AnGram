@@ -1,15 +1,13 @@
 package com.anvipo.angram.applicationLayer.navigation.coordinator
 
-import com.anvipo.angram.applicationLayer.navigation.coordinator.coordinatorFactory.ApplicationCoordinatorFactory
+import com.anvipo.angram.applicationLayer.navigation.coordinator.coordinatorFactory.ApplicationCoordinatorsFactory
 import com.anvipo.angram.applicationLayer.navigation.router.Routable
 import com.anvipo.angram.presentationLayer.common.baseClasses.BaseCoordinator
 
 class ApplicationCoordinator(
     private val router: Routable,
-    private val coordinatorFactory: ApplicationCoordinatorFactory
+    private val coordinatorsFactory: ApplicationCoordinatorsFactory
 ) : BaseCoordinator() {
-
-    override var finishFlow: (() -> Unit)? = null
 
     override fun start() {
         childCoordinators.clear()
@@ -32,7 +30,7 @@ class ApplicationCoordinator(
     }
 
     private fun startAuthFlow() {
-        val authCoordinator = coordinatorFactory.createAuthCoordinator(router = router)
+        val authCoordinator = coordinatorsFactory.createAuthCoordinator(router = router)
 
         authCoordinator.finishFlow = {
             removeChildCoordinator(coordinator = authCoordinator)
@@ -45,7 +43,11 @@ class ApplicationCoordinator(
     }
 
     private fun startMainFlow() {
-        TODO()
+        val mainCoordinator = coordinatorsFactory.createMainCoordinator(router = router)
+
+        addChildCoordinator(coordinator = mainCoordinator)
+
+        mainCoordinator.start()
     }
 
 }

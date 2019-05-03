@@ -4,12 +4,12 @@ import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.aut
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.signIn.view.SignInView
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.signUp.view.SignUpView
 
-interface AuthorizationScreensFactory {
+interface AuthorizationViewControllersFactory {
 
-    fun createAuthorizationOptionsScreen(): AuthorizationOptionsView
+    fun createAuthorizationOptionsViewController(): AuthorizationOptionsView
 
-    fun createSignInScreen(): SignInView
+    fun createSignInViewController(): SignInView
 
-    fun createSignUpScreen(): SignUpView
+    fun createSignUpViewController(): SignUpView
 
 }

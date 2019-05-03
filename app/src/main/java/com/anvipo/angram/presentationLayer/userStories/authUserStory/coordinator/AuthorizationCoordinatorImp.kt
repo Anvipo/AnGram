@@ -2,52 +2,52 @@ package com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinato
 
 import com.anvipo.angram.applicationLayer.navigation.router.Routable
 import com.anvipo.angram.presentationLayer.common.baseClasses.BaseCoordinator
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.AuthorizationScreensFactory
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.AuthorizationViewControllersFactory
 
 class AuthorizationCoordinatorImp(
     private val router: Routable,
-    private val screensFactory: AuthorizationScreensFactory
+    private val viewControllersFactory: AuthorizationViewControllersFactory
 ) : BaseCoordinator(), AuthorizationCoordinator {
 
     override var finishFlow: (() -> Unit)? = null
 
     override fun start() {
-        showAuthorizationOptionsModule()
+        showAuthorizationOptionsScreen()
     }
 
 
     /// PRIVATE
 
 
-    private fun showAuthorizationOptionsModule() {
-        val authorizationOptionsModule = screensFactory.createAuthorizationOptionsScreen()
+    private fun showAuthorizationOptionsScreen() {
+        val authorizationOptionsViewController = viewControllersFactory.createAuthorizationOptionsViewController()
 
-        authorizationOptionsModule.onSignIn = {
-            showSignInModule()
+        authorizationOptionsViewController.onSignIn = {
+            showSignInScreen()
         }
-        authorizationOptionsModule.onSignUp = {
-            showSignUpModule()
+        authorizationOptionsViewController.onSignUp = {
+            showSignUpScreen()
         }
 
-        router.setRootViewController(viewController = authorizationOptionsModule)
+        router.setRootViewController(viewController = authorizationOptionsViewController)
     }
 
-    private fun showSignUpModule() {
-        val signUpModule = screensFactory.createSignUpScreen()
+    private fun showSignUpScreen() {
+        val signUpViewController = viewControllersFactory.createSignUpViewController()
 
-        signUpModule.onBackPressed = onBackPressed
+        signUpViewController.onBackPressed = onBackPressed
 
-        router.push(signUpModule)
+        router.push(signUpViewController)
     }
 
-    private fun showSignInModule() {
-        val signInModule = screensFactory.createSignInScreen()
+    private fun showSignInScreen() {
+        val signInViewController = viewControllersFactory.createSignInViewController()
 
-        signInModule.onFinishFlow = onFinishFlow
+        signInViewController.onFinishFlow = onFinishFlow
 
-        signInModule.onBackPressed = onBackPressed
+        signInViewController.onBackPressed = onBackPressed
 
-        router.push(signInModule)
+        router.push(signInViewController)
     }
 
     private val onBackPressed: () -> Unit = {

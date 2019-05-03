@@ -2,4 +2,4 @@ package com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinato
 
 import com.anvipo.angram.presentationLayer.common.interfaces.Coordinatorable
 
-interface AuthorizationCoordinator : Coordinatorable
+interface AuthorizationCoordinator : Coordinatorable, AuthorizationCoordinatorOutput
