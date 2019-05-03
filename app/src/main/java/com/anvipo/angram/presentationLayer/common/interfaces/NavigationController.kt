@@ -1,6 +1,6 @@
 package com.anvipo.angram.presentationLayer.common.interfaces
 
-interface NavigationController {
+interface NavigationController : Presentable {
 
     fun push(
         viewController: Presentable,

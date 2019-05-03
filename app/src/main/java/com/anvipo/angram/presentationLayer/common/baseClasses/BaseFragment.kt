@@ -1,5 +1,6 @@
 package com.anvipo.angram.presentationLayer.common.baseClasses
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,6 +16,9 @@ import com.anvipo.angram.presentationLayer.common.interfaces.Presentable
 abstract class BaseFragment : Fragment(), Presentable {
 
     override var onBackPressed: (() -> Unit)? = null
+
+    override val thisContext: Context?
+        get() = this.activity
 
     override fun onCreateView(
         inflater: LayoutInflater,

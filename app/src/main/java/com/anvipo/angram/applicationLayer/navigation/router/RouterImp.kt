@@ -6,7 +6,7 @@ import com.anvipo.angram.presentationLayer.common.interfaces.Presentable
 import java.lang.ref.WeakReference
 
 class RouterImp(
-    private val rootController: WeakReference<NavigationController>
+    override val rootController: WeakReference<NavigationController>
 ) : Routable {
 
     override var presentedViewController: WeakReference<Presentable>? = null

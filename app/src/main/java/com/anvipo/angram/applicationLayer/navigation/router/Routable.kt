@@ -1,9 +1,12 @@
 package com.anvipo.angram.applicationLayer.navigation.router
 
+import com.anvipo.angram.presentationLayer.common.interfaces.NavigationController
 import com.anvipo.angram.presentationLayer.common.interfaces.Presentable
 import java.lang.ref.WeakReference
 
 interface Routable {
+
+    val rootController: WeakReference<NavigationController>
 
     val presentedViewController: WeakReference<Presentable>?
 

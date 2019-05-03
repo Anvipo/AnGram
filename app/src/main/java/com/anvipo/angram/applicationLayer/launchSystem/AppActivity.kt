@@ -1,15 +1,22 @@
 package com.anvipo.angram.applicationLayer.launchSystem
 
+import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.anvipo.angram.BuildConfig
+import androidx.fragment.app.transaction
 import com.anvipo.angram.R
 import com.anvipo.angram.applicationLayer.navigation.coordinator.ApplicationCoordinator
+import com.anvipo.angram.applicationLayer.navigation.coordinator.coordinatorFactory.ApplicationCoordinatorsFactory
 import com.anvipo.angram.applicationLayer.navigation.coordinator.coordinatorFactory.ApplicationCoordinatorsFactoryImp
+import com.anvipo.angram.applicationLayer.navigation.router.Routable
 import com.anvipo.angram.applicationLayer.navigation.router.RouterImp
+import com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway.TDLibGateway
+import com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway.TDLibGatewayImp
 import com.anvipo.angram.global.ActivityFinishError
+import com.anvipo.angram.global.assertionFailure
+import com.anvipo.angram.global.debugLog
+import com.anvipo.angram.global.showDebugToast
 import com.anvipo.angram.presentationLayer.common.baseClasses.BaseFragment
 import com.anvipo.angram.presentationLayer.common.interfaces.Coordinatorable
 import com.anvipo.angram.presentationLayer.common.interfaces.NavigationController
@@ -20,19 +27,14 @@ import java.lang.ref.WeakReference
 
 class AppActivity :
     AppCompatActivity(),
-    NavigationController,
-    Client.ResultHandler,
-    Client.ExceptionHandler {
+    NavigationController {
 
-    override fun onException(e: Throwable?) {
-        print("onResult")
+    override val thisContext: Context
+        get() = this
+
+    override var onBackPressed: (() -> Unit)? = {
+        this.onBackPressed()
     }
-
-    override fun onResult(`object`: TdApi.Object?) {
-        print("onResult")
-    }
-
-    private lateinit var tgClient: Client
 
     override val topViewController: Presentable?
         get() {
@@ -51,22 +53,6 @@ class AppActivity :
         setContentView(R.layout.layout_container)
 
         applicationCoordinator.start()
-
-        val getAuthStateRequest = TdApi.GetAuthorizationState()
-
-        tgClient = Client.create(this, this, this)
-
-        val getAuthStateResultHandler = Client.ResultHandler { result ->
-            if (BuildConfig.DEBUG) {
-                Log.d(App.TAG, result.toString())
-            }
-        }
-
-        val getAuthStateExceptionHandler = Client.ExceptionHandler { exception ->
-            Log.e(App.TAG, exception.localizedMessage)
-        }
-
-        tgClient.send(getAuthStateRequest, getAuthStateResultHandler, getAuthStateExceptionHandler)
     }
 
 
@@ -83,12 +69,10 @@ class AppActivity :
         hideTabBar: Boolean,
         completion: (() -> Unit)?
     ) {
-        val transaction = supportFragmentManager.beginTransaction()
-
-        transaction
-            .replace(R.id.container, viewController as Fragment)
-            .addToBackStack(null)
-            .commit()
+        supportFragmentManager.transaction {
+            replace(R.id.container, viewController as Fragment)
+            addToBackStack(null)
+        }
 
         completion?.invoke()
     }
@@ -101,14 +85,10 @@ class AppActivity :
             supportFragmentManager.popBackStackImmediate()
         }
 
-        val transaction = supportFragmentManager.beginTransaction()
-
-        transaction
-            .replace(R.id.container, viewController as Fragment)
-            .runOnCommit {
-                completion?.invoke()
-            }
-            .commitNow()
+        supportFragmentManager.transaction(now = true) {
+            replace(R.id.container, viewController as Fragment)
+            runOnCommit { completion?.invoke() }
+        }
     }
 
     @Throws(ActivityFinishError::class)
@@ -138,20 +118,113 @@ class AppActivity :
 
     /// PRIVATE
 
+    private fun changeThemeFromSplashToApp() {
+        setTheme(R.style.AppTheme)
+    }
+
+
     private val currentFragment: BaseFragment?
         get() = supportFragmentManager.findFragmentById(R.id.container) as BaseFragment
 
     // TODO: apply DI
     private val applicationCoordinator: Coordinatorable by lazy {
+        val coordinatorsFactory: ApplicationCoordinatorsFactory = ApplicationCoordinatorsFactoryImp()
+        val rootController: WeakReference<NavigationController> = WeakReference(this)
+        val router: Routable = RouterImp(rootController = rootController)
+        val tgClient: Client = Client.create(updatesHandler, updatesExceptionHandler, defaultExceptionHandler)
+        val tdLibGateway: TDLibGateway =
+            TDLibGatewayImp(tgClient = tgClient)
+
         ApplicationCoordinator(
-            coordinatorsFactory = ApplicationCoordinatorsFactoryImp(),
-            router = RouterImp(rootController = WeakReference(this))
+            coordinatorsFactory = coordinatorsFactory,
+            router = router,
+            tdLibGateway = tdLibGateway
         )
     }
 
+    private val updatesHandler = Client.ResultHandler { tdApiObject ->
+        val tag = "${this::class.java.simpleName} updatesHandler"
 
-    private fun changeThemeFromSplashToApp() {
-        setTheme(R.style.AppTheme)
+        when (tdApiObject) {
+            is TdApi.UpdateOption -> onUpdateOption(tag, tdApiObject)
+            is TdApi.UpdateAuthorizationState -> onUpdateAuthorizationState(tag, tdApiObject)
+            else -> {
+                val message = tdApiObject.toString()
+
+                debugLog(message)
+                showDebugToast(message)
+            }
+        }
+    }
+
+    private val updatesExceptionHandler = Client.ExceptionHandler { error ->
+        val message = error.localizedMessage
+
+        debugLog(message)
+        showDebugToast(message)
+    }
+
+    private val defaultExceptionHandler = Client.ExceptionHandler { error ->
+        val message = error.localizedMessage
+
+        debugLog(message)
+        showDebugToast(message)
+    }
+
+
+    ///
+
+
+    private fun onUpdateAuthorizationState(
+        tag: String,
+        updateAuthorizationState: TdApi.UpdateAuthorizationState
+    ) {
+        when (val authorizationState = updateAuthorizationState.authorizationState) {
+            is TdApi.AuthorizationStateWaitTdlibParameters -> {
+                val message = "$tag: TDLib waits parameters"
+
+                debugLog(message)
+                showDebugToast(message)
+            }
+            is TdApi.AuthorizationStateWaitEncryptionKey -> {
+                val message = "$tag: TDLib waits encryption key (isEncrypted: ${authorizationState.isEncrypted})"
+
+                debugLog(message)
+                showDebugToast(message)
+            }
+            else -> {
+                val message = "$tag: $authorizationState"
+
+                debugLog(message)
+                showDebugToast(message)
+            }
+        }
+    }
+
+    private fun onUpdateOption(
+        tag: String,
+        updateOption: TdApi.UpdateOption
+    ) {
+        val updateOptionName = updateOption.name
+
+        val updateOptionValue: Any =
+            when (val unrecognizedUpdateOptionValue = updateOption.value) {
+                is TdApi.OptionValueString -> {
+                    unrecognizedUpdateOptionValue.value
+                }
+                else -> {
+                    val message = "$tag: Unspecified TdApi.UpdateOption"
+
+                    debugLog(message)
+                    showDebugToast(message)
+                    assertionFailure()
+                    ""
+                }
+            }
+
+        val message = "$tag: $updateOptionName: $updateOptionValue"
+        debugLog(message)
+        showDebugToast(message)
     }
 
 }
