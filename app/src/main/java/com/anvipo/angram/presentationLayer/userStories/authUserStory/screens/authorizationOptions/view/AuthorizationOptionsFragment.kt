@@ -1,40 +1,34 @@
 package com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.authorizationOptions.view
 
 
-import android.os.Bundle
+import androidx.appcompat.widget.Toolbar
 import com.anvipo.angram.R
 import com.anvipo.angram.presentationLayer.common.baseClasses.BaseFragment
+import kotlinx.android.synthetic.main.appbar.*
 import kotlinx.android.synthetic.main.fragment_authorization_options.*
 
 class AuthorizationOptionsFragment : BaseFragment(), AuthorizationOptionsView {
 
-    override var onBackPressed: (() -> Unit)? = null
+    companion object {
+        fun createNewInstance(): AuthorizationOptionsView {
+            return AuthorizationOptionsFragment()
+        }
+    }
 
     override var onSignIn: (() -> Unit)? = null
     override var onSignUp: (() -> Unit)? = null
 
-
     override val layoutRes: Int = R.layout.fragment_authorization_options
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override val actionBarTitle: String = "Authorization options"
+    override val actionBarSubitle: String = ""
+    override val actionBar: Toolbar
+        get() = toolbar
 
-        setupClickListeners()
 
-    }
-
-    private fun setupClickListeners() {
+    override fun setupClickListeners() {
         sign_in_button.setOnClickListener {
             onSignIn?.invoke()
-        }
-
-
-    }
-
-
-    companion object {
-        fun createNewInstance(): AuthorizationOptionsView {
-            return AuthorizationOptionsFragment()
         }
     }
 

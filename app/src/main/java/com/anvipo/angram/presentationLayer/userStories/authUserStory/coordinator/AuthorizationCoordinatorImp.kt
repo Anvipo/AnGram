@@ -22,9 +22,6 @@ class AuthorizationCoordinatorImp(
     private fun showAuthorizationOptionsModule() {
         val authorizationOptionsModule = screensFactory.createAuthorizationOptionsScreen()
 
-        authorizationOptionsModule.onBackPressed = {
-            TODO()
-        }
         authorizationOptionsModule.onSignIn = {
             showSignInModule()
         }
@@ -32,15 +29,13 @@ class AuthorizationCoordinatorImp(
             showSignUpModule()
         }
 
-        router.set(rootScreen = authorizationOptionsModule)
+        router.setRootViewController(viewController = authorizationOptionsModule)
     }
 
     private fun showSignUpModule() {
         val signUpModule = screensFactory.createSignUpScreen()
 
-        signUpModule.onBackPressed = {
-            TODO()
-        }
+        signUpModule.onBackPressed = onBackPressed
 
         router.push(signUpModule)
     }
@@ -48,11 +43,19 @@ class AuthorizationCoordinatorImp(
     private fun showSignInModule() {
         val signInModule = screensFactory.createSignInScreen()
 
-        signInModule.onBackPressed = {
-            TODO()
-        }
+        signInModule.onFinishFlow = onFinishFlow
+
+        signInModule.onBackPressed = onBackPressed
 
         router.push(signInModule)
+    }
+
+    private val onBackPressed: () -> Unit = {
+        router.popViewController()
+    }
+
+    private val onFinishFlow: () -> Unit = {
+        finishFlow?.invoke()
     }
 
 }

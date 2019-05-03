@@ -36,12 +36,16 @@ class ApplicationCoordinator(
 
         authCoordinator.finishFlow = {
             removeChildCoordinator(coordinator = authCoordinator)
-            TODO("start needed flow")
+            startMainFlow()
         }
 
         addChildCoordinator(coordinator = authCoordinator)
 
         authCoordinator.start()
+    }
+
+    private fun startMainFlow() {
+        TODO()
     }
 
 }

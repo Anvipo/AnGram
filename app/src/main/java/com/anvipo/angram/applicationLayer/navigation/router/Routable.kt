@@ -5,42 +5,34 @@ import java.lang.ref.WeakReference
 
 interface Routable {
 
-    val presentedScreen: WeakReference<Presentable>?
+    val presentedViewController: WeakReference<Presentable>?
 
     fun present(
-        screen: Presentable,
-        animated: Boolean = true,
-        withNavBar: Boolean = false
+        viewController: Presentable,
+        withNavBar: Boolean = false,
+        completion: (() -> Unit)? = null
     )
 
     fun push(
-        screen: Presentable,
-        animated: Boolean = true,
+        viewController: Presentable,
         hideTabBar: Boolean = false,
         completion: (() -> Unit)? = null
     )
 
-    fun popScreen(animated: Boolean = true)
+    fun popViewController()
 
-    fun popToScreen(
-        screen: Presentable,
-        animated: Boolean = true
-    )
+    fun popToViewController(viewController: Presentable)
 
-    fun dismissScreen(
-        animated: Boolean = true,
-        completion: (() -> Unit)? = null
-    )
+    fun dismiss(completion: (() -> Unit)? = null)
 
-    fun set(
-        rootScreen: Presentable,
-        animated: Boolean = true,
+    fun setRootViewController(
+        viewController: Presentable,
         hideBar: Boolean = false
     )
 
-    fun popToRootScreen(animated: Boolean = true)
+    fun popToRootViewController()
 
-    fun pushAsPresent(module: Presentable)
+    fun pushAsPresent(viewController: Presentable)
 
     fun popAsPresent()
 

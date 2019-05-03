@@ -8,6 +8,8 @@ class App : Application() {
     companion object {
         lateinit var appCode: String
             private set
+
+        val TAG = "AnGram"
     }
 
     override fun onCreate() {

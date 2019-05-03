@@ -3,17 +3,19 @@ package com.anvipo.angram.presentationLayer.common.interfaces
 interface NavigationController {
 
     fun push(
-        screen: Presentable,
-        animated: Boolean = true,
+        viewController: Presentable,
+        hideTabBar: Boolean = false,
         completion: (() -> Unit)? = null
     )
 
-    fun set(
-        rootScreen: Presentable,
-        animated: Boolean,
+    fun setRootViewController(
+        viewController: Presentable,
         completion: (() -> Unit)? = null
     )
 
+    fun popViewController(): Presentable?
+
+    val topViewController: Presentable?
     var isNavigationBarHidden: Boolean
 
 }
