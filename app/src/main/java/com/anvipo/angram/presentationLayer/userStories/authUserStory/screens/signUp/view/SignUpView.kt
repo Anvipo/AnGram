@@ -2,4 +2,8 @@ package com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.si
 
 import com.anvipo.angram.presentationLayer.common.interfaces.Presentable
 
-interface SignUpView : Presentable
+interface SignUpView : Presentable {
+
+    var onFinishFlow: () -> Unit
+
+}

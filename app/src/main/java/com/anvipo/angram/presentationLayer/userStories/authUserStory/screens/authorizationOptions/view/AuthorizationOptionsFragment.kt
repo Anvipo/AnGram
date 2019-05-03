@@ -15,8 +15,8 @@ class AuthorizationOptionsFragment : BaseFragment(), AuthorizationOptionsView {
         }
     }
 
-    override var onSignIn: (() -> Unit)? = null
-    override var onSignUp: (() -> Unit)? = null
+    override lateinit var onSignIn: () -> Unit
+    override lateinit var onSignUp: () -> Unit
 
     override val layoutRes: Int = R.layout.fragment_authorization_options
 
@@ -28,7 +28,11 @@ class AuthorizationOptionsFragment : BaseFragment(), AuthorizationOptionsView {
 
     override fun setupClickListeners() {
         sign_in_button.setOnClickListener {
-            onSignIn?.invoke()
+            onSignIn()
+        }
+
+        sign_up_button.setOnClickListener {
+            onSignUp()
         }
     }
 

@@ -35,6 +35,7 @@ class AuthorizationCoordinatorImp(
     private fun showSignUpScreen() {
         val signUpViewController = viewControllersFactory.createSignUpViewController()
 
+        signUpViewController.onFinishFlow = onFinishFlow
         signUpViewController.onBackPressed = onBackPressed
 
         router.push(signUpViewController)
@@ -44,7 +45,6 @@ class AuthorizationCoordinatorImp(
         val signInViewController = viewControllersFactory.createSignInViewController()
 
         signInViewController.onFinishFlow = onFinishFlow
-
         signInViewController.onBackPressed = onBackPressed
 
         router.push(signInViewController)

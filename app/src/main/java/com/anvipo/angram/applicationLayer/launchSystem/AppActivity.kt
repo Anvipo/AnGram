@@ -52,8 +52,8 @@ class AppActivity : AppCompatActivity(), NavigationController {
         val transaction = supportFragmentManager.beginTransaction()
 
         transaction
-            .add(R.id.container, viewController as Fragment)
-            .addToBackStack(viewController.tag)
+            .replace(R.id.container, viewController as Fragment)
+            .addToBackStack(null)
             .commit()
 
         completion?.invoke()
@@ -83,9 +83,9 @@ class AppActivity : AppCompatActivity(), NavigationController {
             return null
         }
 
-        if (supportFragmentManager.fragments.size == 1) {
-            finish()
-            throw ActivityFinishError()
+        if (supportFragmentManager.backStackEntryCount < 1) {
+            super.onBackPressed()
+            throw ActivityFinishError(message = "supportFragmentManager.backStackEntryCount < 1.")
         }
 
         val poppedViewController = supportFragmentManager.fragments.last()

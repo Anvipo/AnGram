@@ -4,6 +4,7 @@ import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.aut
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.authorizationOptions.view.AuthorizationOptionsView
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.signIn.view.SignInFragment
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.signIn.view.SignInView
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.signUp.view.SignUpFragment
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.signUp.view.SignUpView
 
 class AuthorizationViewControllersFactoryImp : AuthorizationViewControllersFactory {
@@ -13,7 +14,7 @@ class AuthorizationViewControllersFactoryImp : AuthorizationViewControllersFacto
     }
 
     override fun createSignUpViewController(): SignUpView {
-        TODO("not implemented")
+        return SignUpFragment.createNewInstance()
     }
 
     override fun createAuthorizationOptionsViewController(): AuthorizationOptionsView {

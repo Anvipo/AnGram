@@ -4,7 +4,7 @@ import com.anvipo.angram.presentationLayer.common.interfaces.Presentable
 
 interface AuthorizationOptionsView : Presentable {
 
-    var onSignIn: (() -> Unit)?
-    var onSignUp: (() -> Unit)?
+    var onSignIn: () -> Unit
+    var onSignUp: () -> Unit
 
 }
