@@ -1,8 +1,10 @@
 package com.anvipo.angram.applicationLayer.launchSystem
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.R
 import com.anvipo.angram.applicationLayer.navigation.coordinator.ApplicationCoordinator
 import com.anvipo.angram.applicationLayer.navigation.coordinator.coordinatorFactory.ApplicationCoordinatorsFactoryImp
@@ -12,9 +14,25 @@ import com.anvipo.angram.presentationLayer.common.baseClasses.BaseFragment
 import com.anvipo.angram.presentationLayer.common.interfaces.Coordinatorable
 import com.anvipo.angram.presentationLayer.common.interfaces.NavigationController
 import com.anvipo.angram.presentationLayer.common.interfaces.Presentable
+import org.drinkless.td.libcore.telegram.Client
+import org.drinkless.td.libcore.telegram.TdApi
 import java.lang.ref.WeakReference
 
-class AppActivity : AppCompatActivity(), NavigationController {
+class AppActivity :
+    AppCompatActivity(),
+    NavigationController,
+    Client.ResultHandler,
+    Client.ExceptionHandler {
+
+    override fun onException(e: Throwable?) {
+        print("onResult")
+    }
+
+    override fun onResult(`object`: TdApi.Object?) {
+        print("onResult")
+    }
+
+    private lateinit var tgClient: Client
 
     override val topViewController: Presentable?
         get() {
@@ -33,6 +51,22 @@ class AppActivity : AppCompatActivity(), NavigationController {
         setContentView(R.layout.layout_container)
 
         applicationCoordinator.start()
+
+        val getAuthStateRequest = TdApi.GetAuthorizationState()
+
+        tgClient = Client.create(this, this, this)
+
+        val getAuthStateResultHandler = Client.ResultHandler { result ->
+            if (BuildConfig.DEBUG) {
+                Log.d(App.TAG, result.toString())
+            }
+        }
+
+        val getAuthStateExceptionHandler = Client.ExceptionHandler { exception ->
+            Log.e(App.TAG, exception.localizedMessage)
+        }
+
+        tgClient.send(getAuthStateRequest, getAuthStateResultHandler, getAuthStateExceptionHandler)
     }
 
 

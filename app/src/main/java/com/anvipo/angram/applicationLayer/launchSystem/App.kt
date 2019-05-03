@@ -9,7 +9,7 @@ class App : Application() {
         lateinit var appCode: String
             private set
 
-        val TAG = "AnGram"
+        const val TAG: String = "AnGram"
     }
 
     override fun onCreate() {
