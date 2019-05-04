@@ -1,11 +1,13 @@
 package com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator
 
+import com.anvipo.angram.applicationLayer.launchSystem.AppActivity
 import com.anvipo.angram.applicationLayer.navigation.router.Routable
 import com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway.TDLibGateway
 import com.anvipo.angram.global.assertionFailure
 import com.anvipo.angram.global.debugLog
 import com.anvipo.angram.presentationLayer.common.baseClasses.BaseCoordinator
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.AuthorizationViewControllersFactory
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.drinkless.td.libcore.telegram.TdApi
@@ -29,25 +31,69 @@ class AuthorizationCoordinatorImp(
                 return@launch
             }
 
-            val setTdLibParametersResult = tdLibGateway.setTdLibParametersCatching(
-                context = context
-            )
+            val setTdLibParametersResult = tdLibGateway.setTdLibParametersCatching(context)
 
-            setTdLibParametersResult.onSuccess { setTdLibParametersTdApiObject ->
-                when (setTdLibParametersTdApiObject) {
-                    is TdApi.Ok -> {
-                        val message = "$tag: TdApi.Ok"
+            setTdLibParametersResult
+                .onSuccess(onSuccessSetTDLibParametersResult(tag))
+                .onFailure(onFailureSetTDLibParametersResult(tag))
+        }
+    }
 
-                        debugLog(message)
-                    }
-                    else -> {
-                        assertionFailure()
-                    }
+
+    private fun onFailureSetTDLibParametersResult(tag: String): (Throwable) -> Unit = { error ->
+        // TODO: handle this case
+
+        val message = "$tag: setTDLibParameters.onFailure: ${error.localizedMessage}"
+        debugLog(message)
+
+        assertionFailure()
+    }
+
+    private fun onSuccessSetTDLibParametersResult(tag: String): (TdApi.Ok) -> Unit = { _ ->
+        val message = "$tag: TDLib successfully set parameters"
+        debugLog(message)
+
+        GlobalScope.launch {
+            val checkDatabaseEncryptionKeyResult = tdLibGateway.checkDatabaseEncryptionKeyCatching()
+
+            checkDatabaseEncryptionKeyResult
+                .onSuccess(onSuccessCheckDatabaseEncryptionKeyResult(tag))
+                .onFailure(onFailureCheckDatabaseEncryptionKeyResult(tag))
+        }
+    }
+
+
+    private fun onFailureCheckDatabaseEncryptionKeyResult(tag: String): (Throwable) -> Unit = { error ->
+        // TODO: handle this case
+
+        val message = "$tag: setTDLibParameters.onFailure: ${error.localizedMessage}"
+        debugLog(message)
+
+        assertionFailure()
+    }
+
+    private fun onSuccessCheckDatabaseEncryptionKeyResult(tag: String): (TdApi.Ok) -> Unit = { _ ->
+        val message = "$tag: TDLib successfully checked database encryption key"
+        debugLog(message)
+
+        showNeededScreen()
+    }
+
+    private fun showNeededScreen() {
+        GlobalScope.launch(context = Dispatchers.Main) {
+            when (AppActivity.lastAuthorizationState.authorizationState) {
+                is TdApi.AuthorizationStateWaitPhoneNumber -> {
+                    showEnterPhoneNumberScreen()
                 }
-            }
+                is TdApi.AuthorizationStateWaitCode -> {
+                    // TODO: show enter code screen
 
-            setTdLibParametersResult.onFailure {
-                assertionFailure()
+                    assertionFailure()
+                }
+                else -> {
+                    // TODO: handle this case
+                    assertionFailure()
+                }
             }
         }
     }
@@ -56,35 +102,20 @@ class AuthorizationCoordinatorImp(
     /// PRIVATE
 
 
-    private fun showAuthorizationOptionsScreen() {
-        val authorizationOptionsViewController = viewControllersFactory.createAuthorizationOptionsViewController()
+    private fun showEnterPhoneNumberScreen() {
+        val tag = "${this::class.java.simpleName} showEnterPhoneNumberScreen"
 
-        authorizationOptionsViewController.onSignIn = {
-            showSignInScreen()
+        val enterPhoneNumberScreen = viewControllersFactory.createEnterPhoneNumberViewController(tdLibGateway)
+
+        enterPhoneNumberScreen.onEnteredCorrectPhoneNumber = { correctPhoneNumber ->
+            val message = "$tag: onEnteredCorrectPhoneNumber: $correctPhoneNumber"
+
+            debugLog(message)
+
+            showNeededScreen()
         }
-        authorizationOptionsViewController.onSignUp = {
-            showSignUpScreen()
-        }
 
-        router.setRootViewController(viewController = authorizationOptionsViewController)
-    }
-
-    private fun showSignUpScreen() {
-        val signUpViewController = viewControllersFactory.createSignUpViewController()
-
-        signUpViewController.onFinishFlow = onFinishFlow
-        signUpViewController.onBackPressed = onBackPressed
-
-        router.push(signUpViewController)
-    }
-
-    private fun showSignInScreen() {
-        val signInViewController = viewControllersFactory.createSignInViewController()
-
-        signInViewController.onFinishFlow = onFinishFlow
-        signInViewController.onBackPressed = onBackPressed
-
-        router.push(signInViewController)
+        router.setRootViewController(enterPhoneNumberScreen)
     }
 
     private val onBackPressed: () -> Unit = {

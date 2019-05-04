@@ -36,34 +36,11 @@ class ApplicationCoordinator(
         val tag = "${this::class.java.simpleName} startApp"
 
         GlobalScope.launch {
-            val authStateResult = tdLibGateway.getAuthStateRequestCatching()
+            val authorizationStateResult = tdLibGateway.getAuthorizationStateRequestCatching()
 
-            authStateResult.onSuccess { authorizationTdApiObject ->
-                when (authorizationTdApiObject) {
-                    is TdApi.AuthorizationStateWaitTdlibParameters -> {
-                        val message = "$tag: TdApi.AuthorizationStateWaitTdlibParameters"
-
-                        debugLog(message)
-
-                        startAuthFlow()
-                    }
-                    else -> {
-                        val message = "$tag: TdApi.AuthorizationTdApiObject"
-
-                        debugLog(message)
-
-                        assertionFailure()
-                    }
-                }
-            }
-
-            authStateResult.onFailure {
-                val message = "$tag: authStateResult.onFailure"
-
-                debugLog(message)
-
-                assertionFailure()
-            }
+            authorizationStateResult
+                .onSuccess(onSuccessGetAuthStateResult(tag))
+                .onFailure(onFailureGetAuthStateResult(tag))
         }
     }
 
@@ -92,6 +69,38 @@ class ApplicationCoordinator(
         addChildCoordinator(coordinator = mainCoordinator)
 
         mainCoordinator.start()
+    }
+
+
+    private fun onFailureGetAuthStateResult(tag: String): (Throwable) -> Unit = { error ->
+        // TODO: handle this case
+
+        val message = "$tag: authStateResult.onFailure: ${error.localizedMessage}"
+
+        debugLog(message)
+
+        assertionFailure()
+    }
+
+    private fun onSuccessGetAuthStateResult(tag: String): (TdApi.AuthorizationState) -> Unit = { authState ->
+        when (authState) {
+            is TdApi.AuthorizationStateWaitTdlibParameters -> {
+                val message = "$tag: onSuccessGetAuthStateResult: TDLib waits parameters"
+
+                debugLog(message)
+
+                startAuthFlow()
+            }
+            else -> {
+                // TODO: handle this case
+
+                val message = "$tag: onSuccessGetAuthStateResult; TdApi.AuthorizationState: $authState"
+
+                debugLog(message)
+
+                assertionFailure()
+            }
+        }
     }
 
 }

@@ -1,24 +1,26 @@
 package com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory
 
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.authorizationOptions.view.AuthorizationOptionsFragment
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.authorizationOptions.view.AuthorizationOptionsView
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.signIn.view.SignInFragment
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.signIn.view.SignInView
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.signUp.view.SignUpFragment
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.signUp.view.SignUpView
+import com.anvipo.angram.businessLogicLayer.assemblies.UseCasesAssembly
+import com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway.TDLibGateway
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.presenter.EnterPhoneNumberPresenterImp
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.view.EnterPhoneNumberFragment
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.view.EnterPhoneNumberView
+import java.lang.ref.WeakReference
 
-class AuthorizationViewControllersFactoryImp : AuthorizationViewControllersFactory {
+object AuthorizationViewControllersFactoryImp : AuthorizationViewControllersFactory {
 
-    override fun createSignInViewController(): SignInView {
-        return SignInFragment.createNewInstance()
-    }
+    override fun createEnterPhoneNumberViewController(tdLibGateway: TDLibGateway): EnterPhoneNumberView {
+        val enterPhoneNumberView = EnterPhoneNumberFragment.createNewInstance()
 
-    override fun createSignUpViewController(): SignUpView {
-        return SignUpFragment.createNewInstance()
-    }
+        val useCase = UseCasesAssembly.enterPhoneNumberUseCase
 
-    override fun createAuthorizationOptionsViewController(): AuthorizationOptionsView {
-        return AuthorizationOptionsFragment.createNewInstance()
+        enterPhoneNumberView.presenter =
+            EnterPhoneNumberPresenterImp(
+                WeakReference(enterPhoneNumberView),
+                useCase
+            )
+
+        return enterPhoneNumberView
     }
 
 }

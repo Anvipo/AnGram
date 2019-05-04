@@ -1,11 +1,18 @@
 package com.anvipo.angram.global
 
 import android.app.Activity
-import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.applicationLayer.launchSystem.App
+
+fun Activity.debugLogAndToast(
+    message: String,
+    duration: Int = Toast.LENGTH_LONG
+) {
+    debugLog(message)
+    showDebugToast(message, duration)
+}
 
 fun debugLog(message: String) {
     if (BuildConfig.DEBUG) {
@@ -17,18 +24,10 @@ fun Activity.showDebugToast(
     message: String,
     duration: Int = Toast.LENGTH_LONG
 ) {
-    runOnUiThread {
-        this.applicationContext.showDebugToast(message, duration)
-    }
-}
-
-fun Context.showDebugToast(
-    message: String,
-    duration: Int = Toast.LENGTH_LONG
-) {
     if (BuildConfig.DEBUG) {
-        this.mainLooper
-        Toast.makeText(this, message, duration).show()
+        runOnUiThread {
+            Toast.makeText(this, message, duration).show()
+        }
     }
 }
 

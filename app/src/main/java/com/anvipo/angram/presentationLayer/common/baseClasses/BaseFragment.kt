@@ -18,7 +18,7 @@ abstract class BaseFragment : Fragment(), Presentable {
     override var onBackPressed: (() -> Unit)? = null
 
     override val thisContext: Context?
-        get() = this.activity
+        get() = this.context
 
     override fun onCreateView(
         inflater: LayoutInflater,

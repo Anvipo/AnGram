@@ -3,12 +3,12 @@ package com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway
 import android.content.Context
 import android.os.Build
 import com.anvipo.angram.BuildConfig
+import com.anvipo.angram.global.tdApi.TdApiError
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.drinkless.td.libcore.telegram.Client
 import org.drinkless.td.libcore.telegram.TdApi
 import java.util.*
 import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 
 
 @Suppress("DirectUseOfResultType")
@@ -16,39 +16,135 @@ class TDLibGatewayImp(
     private val tgClient: Client
 ) : TDLibGateway {
 
-    override suspend fun getAuthStateRequestCatching(): Result<TdApi.Object> =
+    override suspend fun getAuthorizationStateRequestCatching(): Result<TdApi.AuthorizationState> =
         suspendCancellableCoroutine { continuation ->
             val getAuthStateQuery = TdApi.GetAuthorizationState()
 
             val getAuthStateResultHandler = Client.ResultHandler { result ->
-                continuation.resume(Result.success(result))
+                when (result) {
+                    is TdApi.AuthorizationState -> continuation.resume(Result.success(result))
+                    is TdApi.Error -> {
+                        val tdApiError = parseTDApiError(result)
+
+                        continuation.resume(Result.failure(tdApiError))
+                    }
+                    else -> continuation.resume(Result.failure(TdApiError.Unspecified))
+                }
             }
 
             val getAuthStateExceptionHandler = Client.ExceptionHandler { exception ->
-                continuation.resumeWithException(exception)
+                continuation.resume(Result.failure(exception))
             }
 
             tgClient.send(getAuthStateQuery, getAuthStateResultHandler, getAuthStateExceptionHandler)
         }
 
-    override suspend fun setTdLibParametersCatching(context: Context): Result<TdApi.Object> =
+    override suspend fun setTdLibParametersCatching(context: Context): Result<TdApi.Ok> =
         suspendCancellableCoroutine { continuation ->
             val parameters = createTDLibParameters(context)
 
             val setTdLibParametersResultHandler = Client.ResultHandler { result ->
-                continuation.resume(Result.success(result))
+                when (result) {
+                    is TdApi.Ok -> continuation.resume(Result.success(result))
+                    is TdApi.Error -> {
+                        val tdApiError = parseTDApiError(result)
+
+                        continuation.resume(Result.failure(tdApiError))
+                    }
+                    else -> continuation.resume(Result.failure(TdApiError.Unspecified))
+                }
             }
 
             val setTdLibParametersExceptionHandler = Client.ExceptionHandler { exception ->
-                continuation.resumeWithException(exception)
+                continuation.resume(Result.failure(exception))
             }
 
+            val setTdlibParametersQuery = TdApi.SetTdlibParameters(parameters)
+
             tgClient.send(
-                TdApi.SetTdlibParameters(parameters),
+                setTdlibParametersQuery,
                 setTdLibParametersResultHandler,
                 setTdLibParametersExceptionHandler
             )
         }
+
+    override suspend fun checkDatabaseEncryptionKeyCatching(): Result<TdApi.Ok> =
+        suspendCancellableCoroutine { continuation ->
+            val setTdLibParametersResultHandler = Client.ResultHandler { result ->
+                when (result) {
+                    is TdApi.Ok -> continuation.resume(Result.success(result))
+                    is TdApi.Error -> {
+                        val tdApiError = parseTDApiError(result)
+
+                        continuation.resume(Result.failure(tdApiError))
+                    }
+                    else -> continuation.resume(Result.failure(TdApiError.Unspecified))
+                }
+            }
+
+            val setTdLibParametersExceptionHandler = Client.ExceptionHandler { exception ->
+                continuation.resume(Result.failure(exception))
+            }
+
+            val checkDatabaseEncryptionKeyQuery = TdApi.CheckDatabaseEncryptionKey()
+
+            tgClient.send(
+                checkDatabaseEncryptionKeyQuery,
+                setTdLibParametersResultHandler,
+                setTdLibParametersExceptionHandler
+            )
+        }
+
+    override suspend fun setAuthenticationPhoneNumberCatching(enteredPhoneNumber: String): Result<TdApi.Ok> =
+        suspendCancellableCoroutine { continuation ->
+            val setTdLibParametersResultHandler = Client.ResultHandler { result ->
+                when (result) {
+                    is TdApi.Ok -> continuation.resume(Result.success(result))
+                    is TdApi.Error -> {
+                        val tdApiError = parseTDApiError(result)
+
+                        continuation.resume(Result.failure(tdApiError))
+                    }
+                    else -> continuation.resume(Result.failure(TdApiError.Unspecified))
+                }
+            }
+
+            val setTdLibParametersExceptionHandler = Client.ExceptionHandler { exception ->
+                continuation.resume(Result.failure(exception))
+            }
+
+            val setAuthenticationPhoneNumberQuery = TdApi.SetAuthenticationPhoneNumber(
+                enteredPhoneNumber,
+                false,
+                false
+            )
+
+            tgClient.send(
+                setAuthenticationPhoneNumberQuery,
+                setTdLibParametersResultHandler,
+                setTdLibParametersExceptionHandler
+            )
+        }
+
+
+    /// PRIVATE
+
+
+    private fun parseTDApiError(result: TdApi.Error): TdApiError =
+        when (val errorCode = result.code) {
+            TdApiError.Codes.EMPTY_PHONE_NUMBER.value ->
+                TdApiError.Custom.EmptyPhoneNumber(
+                    errorCode,
+                    result.message
+                )
+            TdApiError.Codes.PHONE_NUMBER_INVALID.value ->
+                TdApiError.Custom.PhoneNumberInvalid(
+                    errorCode,
+                    result.message
+                )
+            else -> TdApiError.Unspecified
+        }
+
 
     private fun createTDLibParameters(context: Context): TdApi.TdlibParameters {
         val parameters = TdApi.TdlibParameters()

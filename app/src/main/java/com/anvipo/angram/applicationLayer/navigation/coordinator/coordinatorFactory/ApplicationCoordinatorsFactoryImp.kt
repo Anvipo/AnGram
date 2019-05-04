@@ -9,27 +9,23 @@ import com.anvipo.angram.presentationLayer.userStories.mainUserStory.coordinator
 import com.anvipo.angram.presentationLayer.userStories.mainUserStory.coordinator.MainCoordinatorImp
 import com.anvipo.angram.presentationLayer.userStories.mainUserStory.coordinator.screensFactory.MainScreensFactoryImp
 
-class ApplicationCoordinatorsFactoryImp : ApplicationCoordinatorsFactory {
+object ApplicationCoordinatorsFactoryImp : ApplicationCoordinatorsFactory {
 
     override fun createMainCoordinator(
         router: Routable,
         tdLibGateway: TDLibGateway
-    ): MainCoordinator {
-        return MainCoordinatorImp(
-            router = router,
-            screensFactory = MainScreensFactoryImp()
-        )
-    }
+    ): MainCoordinator = MainCoordinatorImp(
+        router = router,
+        screensFactory = MainScreensFactoryImp
+    )
 
     override fun createAuthCoordinator(
         router: Routable,
         tdLibGateway: TDLibGateway
-    ): AuthorizationCoordinator {
-        return AuthorizationCoordinatorImp(
-            router = router,
-            viewControllersFactory = AuthorizationViewControllersFactoryImp(),
-            tdLibGateway = tdLibGateway
-        )
-    }
+    ): AuthorizationCoordinator = AuthorizationCoordinatorImp(
+        router = router,
+        viewControllersFactory = AuthorizationViewControllersFactoryImp,
+        tdLibGateway = tdLibGateway
+    )
 
 }

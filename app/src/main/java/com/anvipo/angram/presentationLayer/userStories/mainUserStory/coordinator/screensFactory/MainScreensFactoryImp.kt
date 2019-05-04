@@ -3,7 +3,7 @@ package com.anvipo.angram.presentationLayer.userStories.mainUserStory.coordinato
 import com.anvipo.angram.presentationLayer.userStories.mainUserStory.screens.main.view.MainFragment
 import com.anvipo.angram.presentationLayer.userStories.mainUserStory.screens.main.view.MainView
 
-class MainScreensFactoryImp : MainScreensFactory {
+object MainScreensFactoryImp : MainScreensFactory {
 
     override fun createMainScreen(): MainView {
         return MainFragment.createNewInstance()
