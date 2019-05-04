@@ -1,0 +1,3 @@
+package com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthCode.presenter
+
+interface EnterAuthCodePresenter

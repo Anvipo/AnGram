@@ -91,6 +91,13 @@ class ApplicationCoordinator(
 
                 startAuthFlow()
             }
+            is TdApi.AuthorizationStateWaitPhoneNumber -> {
+                val message = "$tag: onSuccessGetAuthStateResult: TDLib waits phone number"
+
+                debugLog(message)
+
+                startAuthFlow()
+            }
             else -> {
                 // TODO: handle this case
 

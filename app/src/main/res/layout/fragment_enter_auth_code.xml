@@ -11,7 +11,7 @@
         android:layout_height="match_parent">
 
         <Button
-            android:id="@+id/enter_phone_number_next_button"
+            android:id="@+id/enter_auth_code_next_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Next"
@@ -22,13 +22,13 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
-            android:id="@+id/enter_phone_number_edit_text"
+            android:id="@+id/enter_auth_code_edit_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:ems="10"
             android:inputType="phone"
-            app:layout_constraintBottom_toTopOf="@+id/enter_phone_number_next_button"
+            app:layout_constraintBottom_toTopOf="@+id/enter_auth_code_next_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>

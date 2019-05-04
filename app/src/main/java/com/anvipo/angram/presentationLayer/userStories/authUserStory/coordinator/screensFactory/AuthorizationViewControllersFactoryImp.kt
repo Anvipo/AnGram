@@ -2,6 +2,9 @@ package com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinato
 
 import com.anvipo.angram.businessLogicLayer.assemblies.UseCasesAssembly
 import com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway.TDLibGateway
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthCode.presenter.EnterAuthCodePresenterImp
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthCode.view.EnterAuthCodeFragment
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthCode.view.EnterAuthCodeView
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.presenter.EnterPhoneNumberPresenterImp
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.view.EnterPhoneNumberFragment
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.view.EnterPhoneNumberView
@@ -21,6 +24,21 @@ object AuthorizationViewControllersFactoryImp : AuthorizationViewControllersFact
             )
 
         return enterPhoneNumberView
+    }
+
+    override fun createEnterAuthCodeViewController(tdLibGateway: TDLibGateway): EnterAuthCodeView {
+        val enterAuthCodeView = EnterAuthCodeFragment.createNewInstance()
+
+        val useCase = UseCasesAssembly.enterAuthCodeUseCase
+
+        enterAuthCodeView.presenter =
+            EnterAuthCodePresenterImp(
+                WeakReference(enterAuthCodeView),
+                useCase
+            )
+
+        return enterAuthCodeView
+
     }
 
 }

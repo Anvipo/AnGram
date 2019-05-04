@@ -21,85 +21,58 @@ class AuthorizationCoordinatorImp(
     override var finishFlow: (() -> Unit)? = null
 
     override fun start() {
-        val tag = "${this::class.java.simpleName} start"
-
-        GlobalScope.launch {
-            val context = router.rootController.get()?.thisContext
-
-            @Suppress("FoldInitializerAndIfToElvis")
-            if (context == null) {
-                return@launch
-            }
-
-            val setTdLibParametersResult = tdLibGateway.setTdLibParametersCatching(context)
-
-            setTdLibParametersResult
-                .onSuccess(onSuccessSetTDLibParametersResult(tag))
-                .onFailure(onFailureSetTDLibParametersResult(tag))
-        }
-    }
-
-
-    private fun onFailureSetTDLibParametersResult(tag: String): (Throwable) -> Unit = { error ->
-        // TODO: handle this case
-
-        val message = "$tag: setTDLibParameters.onFailure: ${error.localizedMessage}"
-        debugLog(message)
-
-        assertionFailure()
-    }
-
-    private fun onSuccessSetTDLibParametersResult(tag: String): (TdApi.Ok) -> Unit = { _ ->
-        val message = "$tag: TDLib successfully set parameters"
-        debugLog(message)
-
-        GlobalScope.launch {
-            val checkDatabaseEncryptionKeyResult = tdLibGateway.checkDatabaseEncryptionKeyCatching()
-
-            checkDatabaseEncryptionKeyResult
-                .onSuccess(onSuccessCheckDatabaseEncryptionKeyResult(tag))
-                .onFailure(onFailureCheckDatabaseEncryptionKeyResult(tag))
-        }
-    }
-
-
-    private fun onFailureCheckDatabaseEncryptionKeyResult(tag: String): (Throwable) -> Unit = { error ->
-        // TODO: handle this case
-
-        val message = "$tag: setTDLibParameters.onFailure: ${error.localizedMessage}"
-        debugLog(message)
-
-        assertionFailure()
-    }
-
-    private fun onSuccessCheckDatabaseEncryptionKeyResult(tag: String): (TdApi.Ok) -> Unit = { _ ->
-        val message = "$tag: TDLib successfully checked database encryption key"
-        debugLog(message)
-
         showNeededScreen()
-    }
-
-    private fun showNeededScreen() {
-        GlobalScope.launch(context = Dispatchers.Main) {
-            when (AppActivity.lastAuthorizationState.authorizationState) {
-                is TdApi.AuthorizationStateWaitPhoneNumber -> {
-                    showEnterPhoneNumberScreen()
-                }
-                is TdApi.AuthorizationStateWaitCode -> {
-                    // TODO: show enter code screen
-
-                    assertionFailure()
-                }
-                else -> {
-                    // TODO: handle this case
-                    assertionFailure()
-                }
-            }
-        }
     }
 
 
     /// PRIVATE
+
+
+    private fun showNeededScreen() {
+        val tag = "${this::class.java.simpleName} showNeededScreen"
+
+        when (val currentAuthorizationState = AppActivity.lastAuthorizationState.authorizationState) {
+            is TdApi.AuthorizationStateWaitPhoneNumber -> {
+                GlobalScope.launch(context = Dispatchers.Main) {
+                    showEnterPhoneNumberScreen()
+                }
+            }
+            is TdApi.AuthorizationStateWaitCode -> {
+                GlobalScope.launch(context = Dispatchers.Main) {
+                    showEnterAuthCodeScreen(currentAuthorizationState)
+                }
+            }
+            is TdApi.AuthorizationStateWaitTdlibParameters -> {
+                val context = router.rootController.get()?.thisContext
+
+                @Suppress("FoldInitializerAndIfToElvis")
+                if (context == null) {
+                    return
+                }
+
+                GlobalScope.launch {
+                    val setTdLibParametersResult = tdLibGateway.setTdLibParametersCatching(context)
+
+                    setTdLibParametersResult
+                        .onSuccess(onSuccessSetTDLibParametersResult(tag))
+                        .onFailure(onFailureSetTDLibParametersResult(tag))
+                }
+            }
+            is TdApi.AuthorizationStateWaitEncryptionKey -> {
+                GlobalScope.launch {
+                    val checkDatabaseEncryptionKeyResult = tdLibGateway.checkDatabaseEncryptionKeyCatching()
+
+                    checkDatabaseEncryptionKeyResult
+                        .onSuccess(onSuccessCheckDatabaseEncryptionKeyResult(tag))
+                        .onFailure(onFailureCheckDatabaseEncryptionKeyResult(tag))
+                }
+            }
+            else -> {
+                // TODO: handle this case
+                assertionFailure()
+            }
+        }
+    }
 
 
     private fun showEnterPhoneNumberScreen() {
@@ -118,12 +91,50 @@ class AuthorizationCoordinatorImp(
         router.setRootViewController(enterPhoneNumberScreen)
     }
 
+    private fun showEnterAuthCodeScreen(currentAuthorizationState: TdApi.AuthorizationStateWaitCode) {
+        val enterPhoneNumberScreen = viewControllersFactory.createEnterAuthCodeViewController(tdLibGateway)
+
+        enterPhoneNumberScreen.onBackPressed = onBackPressed
+
+        router.push(enterPhoneNumberScreen)
+    }
+
     private val onBackPressed: () -> Unit = {
         router.popViewController()
     }
 
     private val onFinishFlow: () -> Unit = {
         finishFlow?.invoke()
+    }
+
+
+    private fun onSuccessSetTDLibParametersResult(tag: String): (TdApi.Ok) -> Unit = { _ ->
+        val message = "$tag: TDLib successfully set parameters"
+        debugLog(message)
+
+        showNeededScreen()
+    }
+
+    private fun onFailureSetTDLibParametersResult(tag: String): (Throwable) -> Unit = { error ->
+        val message = "$tag: setTDLibParameters.onFailure: ${error.localizedMessage}"
+        debugLog(message)
+
+        showNeededScreen()
+    }
+
+
+    private fun onSuccessCheckDatabaseEncryptionKeyResult(tag: String): (TdApi.Ok) -> Unit = { _ ->
+        val message = "$tag: TDLib successfully checked database encryption key"
+        debugLog(message)
+
+        showNeededScreen()
+    }
+
+    private fun onFailureCheckDatabaseEncryptionKeyResult(tag: String): (Throwable) -> Unit = { error ->
+        val message = "$tag: setTDLibParameters.onFailure: ${error.localizedMessage}"
+        debugLog(message)
+
+        showNeededScreen()
     }
 
 }
