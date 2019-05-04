@@ -1,7 +1,7 @@
 package com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.presenter
 
+import com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway.errors.TdApiError
 import com.anvipo.angram.businessLogicLayer.useCases.enterPhoneNumberUseCase.EnterPhoneNumberUseCase
-import com.anvipo.angram.global.tdApi.TdApiError
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.view.EnterPhoneNumberView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope

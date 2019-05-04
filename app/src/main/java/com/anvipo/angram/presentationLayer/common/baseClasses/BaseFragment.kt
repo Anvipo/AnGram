@@ -1,11 +1,11 @@
 package com.anvipo.angram.presentationLayer.common.baseClasses
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.LayoutRes
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -17,9 +17,6 @@ abstract class BaseFragment : Fragment(), Presentable {
 
     override var onBackPressed: (() -> Unit)? = null
 
-    override val thisContext: Context?
-        get() = this.context
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -28,6 +25,10 @@ abstract class BaseFragment : Fragment(), Presentable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        if (savedInstanceState != null) {
+            print("")
+        }
 
         setupClickListeners()
         setupToolbar()
@@ -70,6 +71,8 @@ abstract class BaseFragment : Fragment(), Presentable {
     protected abstract val actionBar: Toolbar
 
     protected abstract val layoutRes: Int
+        @LayoutRes
+        get
 
     @Suppress("MemberVisibilityCanBePrivate")
     protected val appCompatActivity: AppCompatActivity?

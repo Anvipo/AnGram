@@ -1,17 +1,18 @@
 package com.anvipo.angram.presentationLayer.userStories.mainUserStory.coordinator
 
-import com.anvipo.angram.applicationLayer.navigation.router.Routable
 import com.anvipo.angram.presentationLayer.common.baseClasses.BaseCoordinator
 import com.anvipo.angram.presentationLayer.userStories.mainUserStory.coordinator.screensFactory.MainScreensFactory
+import ru.terrakok.cicerone.Router
+import ru.terrakok.cicerone.Screen
 
 class MainCoordinatorImp(
-    private val router: Routable,
-    private val screensFactory: MainScreensFactory
+    private val router: Router,
+    private val viewControllersFactory: MainScreensFactory
 ) : BaseCoordinator(), MainCoordinator {
 
     override var finishFlow: (() -> Unit)? = null
 
-    override fun start() {
+    override fun coldStart() {
         showMainScreen()
     }
 
@@ -20,9 +21,9 @@ class MainCoordinatorImp(
 
 
     private fun showMainScreen() {
-        val mainScreen = screensFactory.createMainScreen()
+        val mainScreen = viewControllersFactory.createMainScreen()
 
-        router.setRootViewController(viewController = mainScreen)
+        router.newRootScreen(mainScreen as Screen)
     }
 
 }

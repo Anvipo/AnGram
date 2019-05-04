@@ -3,7 +3,7 @@ package com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway
 import android.content.Context
 import android.os.Build
 import com.anvipo.angram.BuildConfig
-import com.anvipo.angram.global.tdApi.TdApiError
+import com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway.errors.TdApiError
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.drinkless.td.libcore.telegram.Client
 import org.drinkless.td.libcore.telegram.TdApi
@@ -139,6 +139,11 @@ class TDLibGatewayImp(
                 )
             TdApiError.Codes.PHONE_NUMBER_INVALID.value ->
                 TdApiError.Custom.PhoneNumberInvalid(
+                    errorCode,
+                    result.message
+                )
+            TdApiError.Codes.DATABASE_ENCRYPTION_KEY_IS_NEEDED.value ->
+                TdApiError.Custom.DatabaseEncryptionKeyIsNeeded(
                     errorCode,
                     result.message
                 )
