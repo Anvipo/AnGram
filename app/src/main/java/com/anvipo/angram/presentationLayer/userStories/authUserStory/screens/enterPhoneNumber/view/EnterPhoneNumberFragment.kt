@@ -1,30 +1,20 @@
 package com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.view
 
 
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import com.anvipo.angram.R
+import com.anvipo.angram.coreLayer.MessageDialogFragment
 import com.anvipo.angram.presentationLayer.common.baseClasses.BaseFragment
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.AuthUserStoryModule
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.presenter.EnterPhoneNumberPresenter
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.presenter.EnterPhoneNumberPresenterImp
+import com.arellomobile.mvp.presenter.InjectPresenter
+import com.arellomobile.mvp.presenter.ProvidePresenter
 import kotlinx.android.synthetic.main.appbar.*
 import kotlinx.android.synthetic.main.fragment_enter_phone_number.*
+import org.koin.android.ext.android.get
 
 class EnterPhoneNumberFragment : BaseFragment(), EnterPhoneNumberView {
-
-    override fun showErrorAlert(message: String) {
-        val context = context ?: return
-
-        // TODO: translate strings
-        AlertDialog.Builder(context)
-            .setTitle("Error")
-            .setMessage(message)
-            .setNeutralButton(android.R.string.ok) { dialog, _ -> dialog.dismiss() }
-            .setCancelable(false)
-            .show()
-    }
-
-
-    override var onEnteredCorrectPhoneNumber: ((String) -> Unit)? = null
 
     companion object {
         @JvmStatic
@@ -33,14 +23,30 @@ class EnterPhoneNumberFragment : BaseFragment(), EnterPhoneNumberView {
         }
     }
 
-    override val layoutRes: Int = R.layout.fragment_enter_phone_number
+    override fun showErrorAlert(message: String) {
+        // TODO: translate strings
 
-    override lateinit var presenter: EnterPhoneNumberPresenter
+        MessageDialogFragment
+            .create(
+                message = message,
+                title = "Error",
+                positive = getString(android.R.string.ok)
+            )
+            .show(childFragmentManager, null)
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        presenter.onBackPressed()
+    }
+
+    override val presenter: EnterPhoneNumberPresenter by lazy { mPresenter }
+
+    override val layoutRes: Int = R.layout.fragment_enter_phone_number
 
     override val actionBarTitle: String = "Enter your phone number"
     override val actionBarSubitle: String = ""
-    override val actionBar: Toolbar
-        get() = toolbar
+    override val actionBar: Toolbar by lazy { toolbar }
 
     override fun setupClickListeners() {
         enter_phone_number_next_button.setOnClickListener {
@@ -49,5 +55,12 @@ class EnterPhoneNumberFragment : BaseFragment(), EnterPhoneNumberView {
             presenter.didTapNextButton(enteredPhoneNumber)
         }
     }
+
+    @Suppress("ProtectedInFinal")
+    @ProvidePresenter
+    protected fun providePresenter(): EnterPhoneNumberPresenterImp = get(AuthUserStoryModule.updatesExceptionHandler)
+
+    @InjectPresenter
+    internal lateinit var mPresenter: EnterPhoneNumberPresenterImp
 
 }

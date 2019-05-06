@@ -1,3 +1,5 @@
 package com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthCode.presenter
 
-interface EnterAuthCodePresenter
+import com.anvipo.angram.presentationLayer.common.interfaces.IBasePresenter
+
+interface EnterAuthCodePresenter : IBasePresenter

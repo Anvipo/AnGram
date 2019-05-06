@@ -12,10 +12,11 @@ import com.anvipo.angram.coreLayer.assertionFailure
 import com.anvipo.angram.coreLayer.collections.IMutableStack
 import com.anvipo.angram.coreLayer.collections.MutableStack
 import com.anvipo.angram.coreLayer.debugLog
+import com.anvipo.angram.coreLayer.message.ISentDataNotifier
 import com.anvipo.angram.coreLayer.message.SystemMessage
-import com.anvipo.angram.coreLayer.message.SystemMessageNotifier
 import com.anvipo.angram.coreLayer.message.SystemMessageType
 import com.anvipo.angram.global.createTGSystemMessageFromApp
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.AuthUserStoryModule
 import org.drinkless.td.libcore.telegram.TdApi
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
@@ -60,7 +61,8 @@ class App : Application() {
                     SystemInfrastructureModule.module,
                     UseCasesModule.module,
                     GatewaysModule.module,
-                    ApplicationRootCoordinatorModule.module
+                    ApplicationRootCoordinatorModule.module,
+                    AuthUserStoryModule.module
                 )
             }
         } else {
@@ -69,7 +71,7 @@ class App : Application() {
         }
     }
 
-    private val systemMessageNotifier: SystemMessageNotifier by inject()
+    private val systemMessageNotifier: ISentDataNotifier<SystemMessage> by inject()
 
 
     // ------- TG Client properties and methods

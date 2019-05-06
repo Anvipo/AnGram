@@ -1,3 +1,7 @@
 package com.anvipo.angram.presentationLayer.common.interfaces
 
-interface Presentable
+interface IBasePresenter {
+
+    fun onBackPressed() {}
+
+}

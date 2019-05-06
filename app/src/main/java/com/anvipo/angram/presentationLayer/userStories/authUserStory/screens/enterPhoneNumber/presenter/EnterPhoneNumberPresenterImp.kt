@@ -2,23 +2,27 @@ package com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.en
 
 import com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway.errors.TdApiError
 import com.anvipo.angram.businessLogicLayer.useCases.enterPhoneNumberUseCase.EnterPhoneNumberUseCase
+import com.anvipo.angram.coreLayer.message.ISentDataNotifier
+import com.anvipo.angram.presentationLayer.common.baseClasses.BasePresenter
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.view.EnterPhoneNumberView
+import com.arellomobile.mvp.InjectViewState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.lang.ref.WeakReference
 
+@InjectViewState
 class EnterPhoneNumberPresenterImp(
-    private val view: WeakReference<EnterPhoneNumberView>,
-    private val useCase: EnterPhoneNumberUseCase
-) : EnterPhoneNumberPresenter {
+    private val useCase: EnterPhoneNumberUseCase,
+    private val onEnteredCorrectPhoneNumberNotifier: ISentDataNotifier<String>,
+    private val onBackButtonPressedNotifier: ISentDataNotifier<Unit>
+) : BasePresenter<EnterPhoneNumberView>(), EnterPhoneNumberPresenter {
 
     override fun didTapNextButton(enteredPhoneNumber: String) {
         GlobalScope.launch {
             useCase.setAuthenticationPhoneNumberCatching(enteredPhoneNumber)
                 .onSuccess {
-                    view.get()?.onEnteredCorrectPhoneNumber?.invoke(enteredPhoneNumber)
+                    onEnteredCorrectPhoneNumberNotifier.send(enteredPhoneNumber)
                 }
                 .onFailure { error ->
                     // TODO: translate strings
@@ -29,10 +33,14 @@ class EnterPhoneNumberPresenterImp(
                     }
 
                     withContext(Dispatchers.Main) {
-                        view.get()?.showErrorAlert(errorMessage)
+                        viewState.showErrorAlert(errorMessage)
                     }
                 }
         }
+    }
+
+    override fun onBackPressed() {
+        onBackButtonPressedNotifier.send(Unit)
     }
 
 }

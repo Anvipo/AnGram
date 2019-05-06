@@ -49,7 +49,8 @@ dependencies {
 
     // Android libs
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation "com.google.android.material:material:1.0.0"
+    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation "com.google.android.material:material:$material_version"
 
     // Tests
     testImplementation 'junit:junit:4.12'
@@ -64,4 +65,9 @@ dependencies {
     //Cicerone Navigation
     implementation "ru.terrakok.cicerone:cicerone:$cicerone_version"
 
+    // MVP Moxy
+    kapt "com.arello-mobile:moxy-compiler:$moxy_version"
+    implementation "com.arello-mobile:moxy:$moxy_version"
+//    implementation "com.arello-mobile:moxy-android:$moxy_version"
+//    implementation "com.arello-mobile:moxy-app-compat:$moxy_version"
 }

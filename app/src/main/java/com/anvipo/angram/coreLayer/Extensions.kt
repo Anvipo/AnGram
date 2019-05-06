@@ -1,6 +1,5 @@
 package com.anvipo.angram.coreLayer
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
@@ -17,6 +16,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.annotation.LayoutRes
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
@@ -138,7 +138,7 @@ fun Fragment.showSnackMessage(message: String) {
     }
 }
 
-fun Activity.hideKeyboard() {
+fun AppCompatActivity.hideKeyboard() {
     currentFocus?.apply {
         val inputManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputManager.hideSoftInputFromWindow(windowToken, InputMethodManager.HIDE_NOT_ALWAYS)

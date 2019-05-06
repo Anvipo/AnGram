@@ -1,7 +1,7 @@
 package com.anvipo.angram.coreLayer
 
-import android.app.Activity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
@@ -9,7 +9,7 @@ import kotlin.reflect.KProperty
 inline fun <reified T> extra(
     key: String,
     defaultValue: T? = null
-): ReadWriteProperty<Activity, T> =
+): ReadWriteProperty<AppCompatActivity, T> =
     BundleExtractorDelegate { thisRef ->
         extractFromBundle(
             bundle = thisRef.intent?.extras,

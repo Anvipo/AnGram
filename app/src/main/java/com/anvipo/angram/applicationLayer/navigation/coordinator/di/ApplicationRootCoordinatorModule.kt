@@ -1,5 +1,6 @@
 package com.anvipo.angram.applicationLayer.navigation.coordinator.di
 
+import com.anvipo.angram.applicationLayer.di.LaunchSystemModule
 import com.anvipo.angram.applicationLayer.navigation.coordinator.coordinatorFactory.ApplicationCoordinatorsFactory
 import com.anvipo.angram.applicationLayer.navigation.coordinator.coordinatorFactory.ApplicationCoordinatorsFactoryImp
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.AuthorizationViewControllersFactory
@@ -22,8 +23,10 @@ object ApplicationRootCoordinatorModule {
 
         single<AuthorizationViewControllersFactory> {
             AuthorizationViewControllersFactoryImp(
-                enterPhoneNumberUseCase = get(),
-                enterAuthCodeUseCase = get()
+                enteredCorrectPhoneNumberNotifier = get(LaunchSystemModule.enterCorrectPhoneNumberNotifier),
+                enteredCorrectAuthCodeNotifier = get(LaunchSystemModule.enterCorrectAuthCodeNotifier),
+                backPressedInPhoneNumberScreenNotifier = get(LaunchSystemModule.backButtonPressedInPhoneNumberScreen),
+                backPressedInAuthCodeScreenNotifier = get(LaunchSystemModule.backButtonPressedInAuthCodeScreen)
             )
         }
 

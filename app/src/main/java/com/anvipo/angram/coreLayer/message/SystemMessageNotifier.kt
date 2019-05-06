@@ -3,33 +3,17 @@ package com.anvipo.angram.coreLayer.message
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.ReceiveChannel
 
-class SystemMessageNotifier {
+class DataNotifier<DataType> : ISentDataNotifier<DataType>, IReceiveDataNotifier<DataType> {
 
-    private val broadcastChannel = BroadcastChannel<SystemMessage>(1)
+    private val broadcastChannel = BroadcastChannel<DataType>(1)
 
-    val receiveChannel: ReceiveChannel<SystemMessage>
+    override val receiveChannel: ReceiveChannel<DataType>
         get() {
             return broadcastChannel.openSubscription()
         }
 
-    fun send(systemMessage: SystemMessage) {
+    override fun send(systemMessage: DataType) {
         broadcastChannel.offer(systemMessage)
-    }
-
-    fun send(
-        text: String,
-        type: SystemMessageType = SystemMessageType.ALERT,
-        showToUser: Boolean = false,
-        log: Boolean = false
-    ) {
-        val result = SystemMessage(
-            text = text,
-            type = type,
-            shouldBeShownToUser = showToUser,
-            shouldBeShownInLogs = log
-        )
-
-        broadcastChannel.offer(result)
     }
 
 }

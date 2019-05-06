@@ -1,15 +1,9 @@
 package com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.view
 
-import com.anvipo.angram.presentationLayer.common.interfaces.Presentable
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.presenter.EnterPhoneNumberPresenter
+import com.anvipo.angram.presentationLayer.common.interfaces.BaseView
 
-interface EnterPhoneNumberView : Presentable {
+interface EnterPhoneNumberView : BaseView {
 
     fun showErrorAlert(message: String)
-
-    var onEnteredCorrectPhoneNumber: ((String) -> Unit)?
-
-    // TODO: apply DI
-    var presenter: EnterPhoneNumberPresenter
 
 }

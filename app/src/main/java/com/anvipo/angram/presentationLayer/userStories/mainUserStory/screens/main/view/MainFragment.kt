@@ -4,9 +4,13 @@ package com.anvipo.angram.presentationLayer.userStories.mainUserStory.screens.ma
 import androidx.appcompat.widget.Toolbar
 import com.anvipo.angram.R
 import com.anvipo.angram.presentationLayer.common.baseClasses.BaseFragment
+import com.anvipo.angram.presentationLayer.common.interfaces.IBasePresenter
 import kotlinx.android.synthetic.main.appbar.*
 
 class MainFragment : BaseFragment(), MainView {
+
+    override val presenter: IBasePresenter
+        get() = TODO("not implemented")
 
     companion object {
         @JvmStatic

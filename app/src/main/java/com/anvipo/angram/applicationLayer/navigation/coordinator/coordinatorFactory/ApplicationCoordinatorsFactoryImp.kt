@@ -3,7 +3,8 @@ package com.anvipo.angram.applicationLayer.navigation.coordinator.coordinatorFac
 import android.content.Context
 import com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway.TDLibGateway
 import com.anvipo.angram.coreLayer.collections.IReadOnlyStack
-import com.anvipo.angram.coreLayer.message.SystemMessageNotifier
+import com.anvipo.angram.coreLayer.message.ISentDataNotifier
+import com.anvipo.angram.coreLayer.message.SystemMessage
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.AuthorizationCoordinator
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.AuthorizationCoordinatorImp
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.AuthorizationViewControllersFactory
@@ -15,7 +16,7 @@ import ru.terrakok.cicerone.Router
 
 class ApplicationCoordinatorsFactoryImp(
     private val context: Context,
-    private val systemMessageNotifier: SystemMessageNotifier,
+    private val systemMessageNotifier: ISentDataNotifier<SystemMessage>,
     private val authorizationViewControllersFactory: AuthorizationViewControllersFactory,
     private val tdUpdateAuthorizationStateStack: IReadOnlyStack<TdApi.UpdateAuthorizationState>
 ) : ApplicationCoordinatorsFactory {

@@ -3,19 +3,18 @@ package com.anvipo.angram.applicationLayer.launchSystem
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.anvipo.angram.R
 import com.anvipo.angram.applicationLayer.navigation.coordinator.ApplicationCoordinator
 import com.anvipo.angram.coreLayer.MessageDialogFragment
 import com.anvipo.angram.coreLayer.debugLog
+import com.anvipo.angram.coreLayer.message.IReceiveDataNotifier
 import com.anvipo.angram.coreLayer.message.SystemMessage
-import com.anvipo.angram.coreLayer.message.SystemMessageNotifier
 import com.anvipo.angram.coreLayer.message.SystemMessageType
+import com.anvipo.angram.coreLayer.mvp.MvpAppCompatActivity
 import com.anvipo.angram.presentationLayer.common.baseClasses.BaseFragment
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.consumeEach
 import org.koin.android.ext.android.inject
 import ru.terrakok.cicerone.Navigator
 import ru.terrakok.cicerone.NavigatorHolder
@@ -23,7 +22,7 @@ import ru.terrakok.cicerone.android.support.SupportAppNavigator
 import ru.terrakok.cicerone.commands.Command
 import kotlin.coroutines.CoroutineContext
 
-class AppActivity : AppCompatActivity(), CoroutineScope {
+class AppActivity : MvpAppCompatActivity(), CoroutineScope {
 
     // TODO: add error handler
     override val coroutineContext: CoroutineContext
@@ -62,7 +61,7 @@ class AppActivity : AppCompatActivity(), CoroutineScope {
     }
 
     override fun onBackPressed() {
-        currentFragment?.onBackPressed?.invoke() ?: super.onBackPressed()
+        currentFragment?.onBackPressed() ?: super.onBackPressed()
     }
 
 
@@ -96,9 +95,8 @@ class AppActivity : AppCompatActivity(), CoroutineScope {
 
     private lateinit var job: Job
 
-    private val systemMessageNotifier: SystemMessageNotifier by inject()
+    private val systemMessageNotifier: IReceiveDataNotifier<SystemMessage> by inject()
 
-    @ObsoleteCoroutinesApi
     private fun subscribeOnSystemMessages() {
         val onReceivedMessage: (SystemMessage) -> Unit = { (text, type, shouldBeShownToUser, shouldBeShownInLogs) ->
             if (shouldBeShownToUser) {
@@ -114,7 +112,9 @@ class AppActivity : AppCompatActivity(), CoroutineScope {
         }
 
         launch {
-            systemMessageNotifier.receiveChannel.consumeEach(onReceivedMessage)
+            val receivedMessage = systemMessageNotifier.receiveChannel.receive()
+
+            onReceivedMessage(receivedMessage)
         }
     }
 

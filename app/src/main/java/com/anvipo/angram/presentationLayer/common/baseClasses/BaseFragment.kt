@@ -1,5 +1,7 @@
 package com.anvipo.angram.presentationLayer.common.baseClasses
 
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,13 +11,19 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.Fragment
 import com.anvipo.angram.applicationLayer.launchSystem.App
-import com.anvipo.angram.presentationLayer.common.interfaces.Presentable
+import com.anvipo.angram.coreLayer.mvp.MvpAppCompatFragment
+import com.anvipo.angram.presentationLayer.common.interfaces.BaseView
+import com.anvipo.angram.presentationLayer.common.interfaces.IBasePresenter
 
-abstract class BaseFragment : Fragment(), Presentable {
+abstract class BaseFragment : MvpAppCompatFragment(), BaseView {
 
-    override var onBackPressed: (() -> Unit)? = null
+    protected val fragmentContext: Context?
+        get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            context
+        } else {
+            activity
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,13 +55,8 @@ abstract class BaseFragment : Fragment(), Presentable {
         val supportActionBar = this.supportActionBar
 
         if (supportActionBar == null) {
-            Log.w(App.TAG, "supportActionBar == null")
+            Log.d(App.TAG, "supportActionBar == null")
             return
-        }
-
-        if (onBackPressed != null) {
-            supportActionBar.setDisplayShowHomeEnabled(true)
-            supportActionBar.setDisplayHomeAsUpEnabled(true)
         }
 
         supportActionBar.title = actionBarTitle
@@ -64,7 +67,24 @@ abstract class BaseFragment : Fragment(), Presentable {
         }
     }
 
+    protected fun showBackButton() {
+        val supportActionBar = this.supportActionBar
+
+        if (supportActionBar == null) {
+            Log.d(App.TAG, "supportActionBar == null")
+            return
+        }
+
+        supportActionBar.setDisplayShowHomeEnabled(true)
+        supportActionBar.setDisplayHomeAsUpEnabled(true)
+    }
+
+
+    internal open fun onBackPressed() {}
+
     protected abstract fun setupClickListeners()
+
+    protected abstract val presenter: IBasePresenter
 
     protected abstract val actionBarTitle: String
     protected abstract val actionBarSubitle: String

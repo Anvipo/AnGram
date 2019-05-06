@@ -4,7 +4,9 @@ import android.content.Context
 import com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway.TDLibGateway
 import com.anvipo.angram.coreLayer.assertionFailure
 import com.anvipo.angram.coreLayer.collections.IReadOnlyStack
-import com.anvipo.angram.coreLayer.message.SystemMessageNotifier
+import com.anvipo.angram.coreLayer.message.IReceiveDataNotifier
+import com.anvipo.angram.coreLayer.message.ISentDataNotifier
+import com.anvipo.angram.coreLayer.message.SystemMessage
 import com.anvipo.angram.global.createTGSystemMessage
 import com.anvipo.angram.presentationLayer.common.baseClasses.BaseCoordinator
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.AuthorizationViewControllersFactory
@@ -21,7 +23,7 @@ class AuthorizationCoordinatorImp(
     private val viewControllersFactory: AuthorizationViewControllersFactory,
     private val tdLibGateway: TDLibGateway,
     private val tdUpdateAuthorizationStateStack: IReadOnlyStack<TdApi.UpdateAuthorizationState>,
-    private val systemMessageNotifier: SystemMessageNotifier
+    private val systemMessageNotifier: ISentDataNotifier<SystemMessage>
 ) : BaseCoordinator(), AuthorizationCoordinator {
 
     override var finishFlow: (() -> Unit)? = null
@@ -54,7 +56,7 @@ class AuthorizationCoordinatorImp(
             }
             is TdApi.AuthorizationStateWaitCode -> {
                 GlobalScope.launch(context = Dispatchers.Main) {
-                    showEnterAuthCodeScreen(currentAuthorizationState)
+                    showEnterAuthCodeScreen()
                 }
             }
             is TdApi.AuthorizationStateWaitTdlibParameters -> {
@@ -89,35 +91,19 @@ class AuthorizationCoordinatorImp(
         router.newRootScreen(enterPhoneNumberScreen)
     }
 
-    private fun createAndSetupEnterPhoneNumberScreen(): SupportAppScreen {
-        val tag = "${this::class.java.simpleName} showEnterPhoneNumberScreen"
-
-        val (enterPhoneNumberView, enterPhoneNumberScreen) =
-            viewControllersFactory
-                .createEnterPhoneNumberViewController(tdLibGateway)
-
-        enterPhoneNumberView.onEnteredCorrectPhoneNumber = { correctPhoneNumber ->
-            val message = "$tag: onEnteredCorrectPhoneNumber: $correctPhoneNumber"
-
-            systemMessageNotifier.send(text = message)
-
-            showNeededScreen()
-        }
-
-        return enterPhoneNumberScreen
-    }
-
-    private fun showEnterAuthCodeScreen(currentAuthorizationState: TdApi.AuthorizationStateWaitCode) {
-        val (enterAuthCodeView, enterAuthCodeScreen) = viewControllersFactory
+    private fun showEnterAuthCodeScreen() {
+        val (enterAuthCodeScreen, enteredCorrectAuthCodeNotifier) = viewControllersFactory
             .createEnterAuthCodeViewController(tdLibGateway)
 
-        enterAuthCodeView.onBackPressed = onBackPressed
+        handleEnteredCorrectAuthCode(enteredCorrectAuthCodeNotifier)
 
         router.navigateTo(enterAuthCodeScreen)
     }
 
-    private val onBackPressed: () -> Unit = {
-        router.backTo(null)
+    private fun exit() {
+        GlobalScope.launch(context = Dispatchers.Main) {
+            router.exit()
+        }
     }
 
     private val onFinishFlow: () -> Unit = {
@@ -152,6 +138,71 @@ class AuthorizationCoordinatorImp(
         systemMessageNotifier.send(createTGSystemMessage(text))
 
         showNeededScreen()
+    }
+
+    private fun handleEnteredCorrectPhoneNumber(enteredCorrectPhoneNumberNotifier: IReceiveDataNotifier<String>) {
+        val tag = "${this::class.java.simpleName} handleEnteredCorrectPhoneNumber"
+
+        val onEnteredCorrectPhoneNumber: (String) -> Unit = { correctPhoneNumber ->
+            val text = "$tag: onEnteredCorrectPhoneNumber: $correctPhoneNumber"
+
+            systemMessageNotifier.send(createTGSystemMessage(text))
+
+            showNeededScreen()
+        }
+
+        GlobalScope.launch {
+            val receivedEnteredCorrectPhoneNumber = enteredCorrectPhoneNumberNotifier.receiveChannel.receive()
+
+            onEnteredCorrectPhoneNumber(receivedEnteredCorrectPhoneNumber)
+        }
+    }
+
+    private fun handleEnteredCorrectAuthCode(enteredCorrectAuthCodeNotifier: IReceiveDataNotifier<String>) {
+        val tag = "${this::class.java.simpleName} handleEnteredCorrectAuthCode"
+
+        val onEnteredCorrectAuthCode: (String) -> Unit = { correctAuthCode ->
+            val text = "$tag: onEnteredCorrectAuthCode: $correctAuthCode"
+
+            systemMessageNotifier.send(createTGSystemMessage(text))
+
+            showNeededScreen()
+        }
+
+        GlobalScope.launch {
+            val receivedEnteredCorrectAuthCode = enteredCorrectAuthCodeNotifier.receiveChannel.receive()
+
+            onEnteredCorrectAuthCode(receivedEnteredCorrectAuthCode)
+        }
+    }
+
+    private fun handleBackButtonPressedInPhoneNumberScreen(pressedNotifier: IReceiveDataNotifier<Unit>) {
+        val tag = "${this::class.java.simpleName} handleBackButtonPressedInPhoneNumberScreen"
+
+        val onBackButtonPressed: (Unit) -> Unit = { pressed ->
+            val text = "$tag: back button pressed in enter phone number screen"
+
+            systemMessageNotifier.send(createTGSystemMessage(text))
+
+            exit()
+        }
+
+        GlobalScope.launch {
+            val receivedBackButtonPress = pressedNotifier.receiveChannel.receive()
+
+            onBackButtonPressed(receivedBackButtonPress)
+        }
+    }
+
+    private fun createAndSetupEnterPhoneNumberScreen(): SupportAppScreen {
+        val (enterPhoneNumberScreen, enteredCorrectPhoneNumberNotifier, backPressedInPhoneNumberScreenNotifier) =
+            viewControllersFactory.createEnterPhoneNumberViewController(tdLibGateway)
+
+        handleBackButtonPressedInPhoneNumberScreen(backPressedInPhoneNumberScreenNotifier)
+
+        handleEnteredCorrectPhoneNumber(enteredCorrectPhoneNumberNotifier)
+
+        return enterPhoneNumberScreen
     }
 
 }
