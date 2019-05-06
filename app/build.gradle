@@ -7,7 +7,7 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion compile_sdk_version
 
     sourceSets.main {
         jniLibs.srcDir 'src/main/libs'
@@ -15,12 +15,13 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.anvipo.angram"
-        minSdkVersion 21
-        targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        applicationId application_id
+        minSdkVersion min_sdk_version
+        targetSdkVersion target_sdk_version
+        versionCode version_code
+        versionName version_name
+        testInstrumentationRunner test_instrumentation_runner_class_name
+        multiDexEnabled = multi_dex_enabled
     }
 
     buildTypes {
@@ -33,6 +34,11 @@ android {
     lintOptions {
         // use this line to check all rules except those listed
         disable 'InvalidPackage'
+    }
+    buildToolsVersion = build_tools_version
+    compileOptions {
+        sourceCompatibility = source_compatibility
+        targetCompatibility = target_compatibility
     }
 
     kotlinOptions {
