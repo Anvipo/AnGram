@@ -1,6 +1,7 @@
 package com.anvipo.angram.applicationLayer.navigation.coordinator
 
 import com.anvipo.angram.applicationLayer.navigation.coordinator.coordinatorFactory.ApplicationCoordinatorsFactory
+import com.anvipo.angram.applicationLayer.types.SystemMessageSendChannel
 import com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway.TDLibGateway
 import com.anvipo.angram.coreLayer.assertionFailure
 import com.anvipo.angram.coreLayer.message.SystemMessage

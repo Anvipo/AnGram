@@ -1,10 +1,11 @@
 package com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway
 
 import android.content.Context
+import com.anvipo.angram.businessLogicLayer.gateways.base.BaseGateway
 import org.drinkless.td.libcore.telegram.TdApi
 
 @Suppress("DirectUseOfResultType")
-interface TDLibGateway {
+interface TDLibGateway : BaseGateway {
 
     suspend fun getAuthorizationStateRequestCatching(): Result<TdApi.AuthorizationState>
 

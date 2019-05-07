@@ -4,6 +4,8 @@ import com.anvipo.angram.presentationLayer.common.interfaces.Coordinatorable
 
 abstract class BaseCoordinator : Coordinatorable {
 
+    // TODO: coroutines
+
     protected val childCoordinators: MutableList<Coordinatorable> = mutableListOf()
 
     protected fun addChildCoordinator(coordinator: Coordinatorable) {

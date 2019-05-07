@@ -2,21 +2,34 @@ package com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.en
 
 import com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway.errors.TdApiError
 import com.anvipo.angram.businessLogicLayer.useCases.enterPhoneNumberUseCase.EnterPhoneNumberUseCase
-import com.anvipo.angram.presentationLayer.common.baseClasses.BasePresenter
+import com.anvipo.angram.presentationLayer.common.baseClasses.BasePresenterImp
+import com.anvipo.angram.presentationLayer.common.interfaces.Coordinatorable
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.view.EnterPhoneNumberView
 import com.arellomobile.mvp.InjectViewState
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.SendChannel
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlin.coroutines.CoroutineContext
 
 @InjectViewState
 class EnterPhoneNumberPresenterImp(
-    private val useCase: EnterPhoneNumberUseCase,
+    override val useCase: EnterPhoneNumberUseCase,
     private val enteredCorrectPhoneNumberSendChannel: SendChannel<String>,
     private val backButtonPressedInPhoneNumberScreenSendChannel: SendChannel<Unit>
-) : BasePresenter<EnterPhoneNumberView>(), EnterPhoneNumberPresenter {
+) : BasePresenterImp<EnterPhoneNumberView>(), EnterPhoneNumberPresenter {
+
+    override val coordinator: Coordinatorable
+        get() = TODO("not implemented")
+    override val job: Job
+        get() = TODO("not implemented")
+    override val coroutineExceptionHandler: CoroutineExceptionHandler
+        get() = TODO("not implemented")
+
+    override fun coldStart() {
+        TODO("not implemented")
+    }
+
+    override val coroutineContext: CoroutineContext
+        get() = TODO("not implemented")
 
     override fun onNextButtonPressed(enteredPhoneNumber: String) {
         GlobalScope.launch {

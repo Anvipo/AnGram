@@ -35,11 +35,6 @@ class EnterPhoneNumberFragment : BaseFragment(), EnterPhoneNumberView {
             .show(childFragmentManager, null)
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        presenter.onBackPressed()
-    }
-
     override val presenter: EnterPhoneNumberPresenter by lazy { mPresenter }
 
     override val layoutRes: Int = R.layout.fragment_enter_phone_number

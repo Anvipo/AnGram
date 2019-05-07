@@ -3,6 +3,7 @@ package com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinato
 import androidx.fragment.app.Fragment
 import com.anvipo.angram.applicationLayer.types.BackButtonPressedReceiveChannel
 import com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway.TDLibGateway
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthCode.types.CorrectAuthCodeReceiveChannel
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthCode.view.EnterAuthCodeFragment
 import ru.terrakok.cicerone.android.support.SupportAppScreen
 

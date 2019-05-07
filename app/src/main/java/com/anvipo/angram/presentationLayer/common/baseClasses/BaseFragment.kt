@@ -11,8 +11,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.anvipo.angram.applicationLayer.launchSystem.App
 import com.anvipo.angram.coreLayer.mvp.MvpAppCompatFragment
+import com.anvipo.angram.presentationLayer.common.interfaces.BasePresenter
 import com.anvipo.angram.presentationLayer.common.interfaces.BaseView
-import com.anvipo.angram.presentationLayer.common.interfaces.IBasePresenter
 
 abstract class BaseFragment : MvpAppCompatFragment(), BaseView {
 
@@ -27,6 +27,10 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseView {
 
         setupClickListeners()
         setupToolbar()
+    }
+
+    internal fun onBackPressed() {
+        presenter.onBackPressed()
     }
 
     protected open fun setupToolbar() {
@@ -66,12 +70,17 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseView {
         supportActionBar.setDisplayHomeAsUpEnabled(true)
     }
 
+    override fun showToastMessage(text: String) {
+        TODO("not implemented")
+    }
 
-    internal open fun onBackPressed() {}
+    override fun showAlertMessage(text: String) {
+        TODO("not implemented")
+    }
 
     protected abstract fun setupClickListeners()
 
-    protected abstract val presenter: IBasePresenter
+    protected abstract val presenter: BasePresenter
 
     protected abstract val actionBarTitle: String
     protected abstract val actionBarSubitle: String
