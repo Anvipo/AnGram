@@ -9,9 +9,9 @@ import com.anvipo.angram.R
 import com.anvipo.angram.applicationLayer.di.LaunchSystemModule
 import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule
 import com.anvipo.angram.applicationLayer.navigation.coordinator.ApplicationCoordinator
+import com.anvipo.angram.applicationLayer.types.SystemMessageReceiveChannel
 import com.anvipo.angram.coreLayer.MessageDialogFragment
 import com.anvipo.angram.coreLayer.debugLog
-import com.anvipo.angram.coreLayer.message.IReceiveDataNotifier
 import com.anvipo.angram.coreLayer.message.SystemMessage
 import com.anvipo.angram.coreLayer.message.SystemMessageType
 import com.anvipo.angram.coreLayer.mvp.MvpAppCompatActivity
@@ -44,7 +44,6 @@ class AppActivity : MvpAppCompatActivity(), CoroutineScope {
         }
     }
 
-    @ObsoleteCoroutinesApi
     override fun onResumeFragments() {
         super.onResumeFragments()
         subscribeOnSystemMessages()
@@ -97,7 +96,8 @@ class AppActivity : MvpAppCompatActivity(), CoroutineScope {
 
     private lateinit var job: Job
 
-    private val systemMessageNotifier: IReceiveDataNotifier<SystemMessage> by inject()
+    private val systemMessageReceiveChannel: SystemMessageReceiveChannel
+            by inject(LaunchSystemModule.systemMessageReceiveChannel)
 
     private fun subscribeOnSystemMessages() {
         val onReceivedMessage: (SystemMessage) -> Unit = { (text, type, shouldBeShownToUser, shouldBeShownInLogs) ->
@@ -114,14 +114,14 @@ class AppActivity : MvpAppCompatActivity(), CoroutineScope {
         }
 
         launch {
-            val receivedMessage = systemMessageNotifier.receiveChannel.receive()
+            val receivedMessage = systemMessageReceiveChannel.receive()
 
             onReceivedMessage(receivedMessage)
         }
     }
 
     private fun unsubscribeOnSystemMessages() {
-        systemMessageNotifier.receiveChannel.cancel(CancellationException("AppActivity onPause"))
+        systemMessageReceiveChannel.cancel(CancellationException("AppActivity onPause"))
     }
 
     private fun showAlertMessage(message: String) {

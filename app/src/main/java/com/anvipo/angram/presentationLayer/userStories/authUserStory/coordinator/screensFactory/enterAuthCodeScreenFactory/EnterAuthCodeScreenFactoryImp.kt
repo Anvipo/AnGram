@@ -1,7 +1,6 @@
 package com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.enterAuthCodeScreenFactory
 
 import androidx.fragment.app.Fragment
-import com.anvipo.angram.applicationLayer.di.CorrectAuthCodeReceiveChannel
 import com.anvipo.angram.applicationLayer.types.BackButtonPressedReceiveChannel
 import com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway.TDLibGateway
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthCode.view.EnterAuthCodeFragment

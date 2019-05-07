@@ -3,7 +3,6 @@ package com.anvipo.angram.applicationLayer.navigation.coordinator
 import com.anvipo.angram.applicationLayer.navigation.coordinator.coordinatorFactory.ApplicationCoordinatorsFactory
 import com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway.TDLibGateway
 import com.anvipo.angram.coreLayer.assertionFailure
-import com.anvipo.angram.coreLayer.message.ISentDataNotifier
 import com.anvipo.angram.coreLayer.message.SystemMessage
 import com.anvipo.angram.presentationLayer.common.baseClasses.BaseCoordinator
 import kotlinx.coroutines.GlobalScope
@@ -15,7 +14,7 @@ class ApplicationCoordinatorImp(
     private val router: Router,
     private val coordinatorsFactory: ApplicationCoordinatorsFactory,
     private val tdLibGateway: TDLibGateway,
-    private val systemMessageNotifier: ISentDataNotifier<SystemMessage>
+    private val systemMessageSendChannel: SystemMessageSendChannel
 ) : BaseCoordinator(), ApplicationCoordinator {
 
     override fun coldStart() {
@@ -79,7 +78,7 @@ class ApplicationCoordinatorImp(
 
         val text = "$tag: authStateResult.onFailure: ${error.localizedMessage}"
 
-        systemMessageNotifier.send(SystemMessage(text = text))
+        systemMessageSendChannel.offer(SystemMessage(text = text))
 
         startAuthFlow()
     }
@@ -89,21 +88,21 @@ class ApplicationCoordinatorImp(
             is TdApi.AuthorizationStateWaitTdlibParameters -> {
                 val text = "$tag: onSuccessGetAuthStateResult: TDLib waits parameters"
 
-                systemMessageNotifier.send(SystemMessage(text = text))
+                systemMessageSendChannel.offer(SystemMessage(text = text))
 
                 startAuthFlow()
             }
             is TdApi.AuthorizationStateWaitPhoneNumber -> {
                 val text = "$tag: onSuccessGetAuthStateResult: TDLib waits phone number"
 
-                systemMessageNotifier.send(SystemMessage(text = text))
+                systemMessageSendChannel.offer(SystemMessage(text = text))
 
                 startAuthFlow()
             }
             is TdApi.AuthorizationStateWaitCode -> {
                 val text = "$tag: onSuccessGetAuthStateResult: TDLib waits code"
 
-                systemMessageNotifier.send(SystemMessage(text = text))
+                systemMessageSendChannel.offer(SystemMessage(text = text))
 
                 startAuthFlow()
             }
@@ -112,7 +111,7 @@ class ApplicationCoordinatorImp(
 
                 val text = "$tag: onSuccessGetAuthStateResult; TdApi.AuthorizationState: $authState"
 
-                systemMessageNotifier.send(SystemMessage(text = text))
+                systemMessageSendChannel.offer(SystemMessage(text = text))
 
                 assertionFailure()
             }

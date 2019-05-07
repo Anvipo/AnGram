@@ -1,11 +1,11 @@
 package com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator
 
 import android.content.Context
+import com.anvipo.angram.applicationLayer.types.SystemMessageSendChannel
+import com.anvipo.angram.applicationLayer.types.UpdateAuthorizationStateIReadOnlyStack
 import com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway.TDLibGateway
 import com.anvipo.angram.coreLayer.assertionFailure
-import com.anvipo.angram.coreLayer.collections.IReadOnlyStack
-import com.anvipo.angram.coreLayer.message.ISentDataNotifier
-import com.anvipo.angram.coreLayer.message.SystemMessage
+import com.anvipo.angram.coreLayer.debugLog
 import com.anvipo.angram.global.createTGSystemMessage
 import com.anvipo.angram.presentationLayer.common.baseClasses.BaseCoordinator
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.authorizationScreensFactory.AuthorizationScreensFactory
@@ -22,8 +22,8 @@ class AuthorizationCoordinatorImp(
     private val router: Router,
     private val screensFactory: AuthorizationScreensFactory,
     private val tdLibGateway: TDLibGateway,
-    private val tdUpdateAuthorizationStateStack: IReadOnlyStack<TdApi.UpdateAuthorizationState>,
-    private val systemMessageNotifier: ISentDataNotifier<SystemMessage>
+    private val tdUpdateAuthorizationStateStack: UpdateAuthorizationStateIReadOnlyStack,
+    private val systemMessageSendChannel: SystemMessageSendChannel
 ) : BaseCoordinator(), AuthorizationCoordinator {
 
     override var finishFlow: (() -> Unit)? = null
@@ -78,6 +78,8 @@ class AuthorizationCoordinatorImp(
                 }
             }
             else -> {
+                debugLog(currentAuthorizationState.toString())
+
                 // TODO: handle this case
                 assertionFailure()
             }
@@ -116,14 +118,14 @@ class AuthorizationCoordinatorImp(
 
     private fun onSuccessSetTDLibParametersResult(tag: String): (TdApi.Ok) -> Unit = { _ ->
         val text = "$tag: TDLib successfully set parameters"
-        systemMessageNotifier.send(createTGSystemMessage(text))
+        systemMessageSendChannel.offer(createTGSystemMessage(text))
 
         showNeededScreen()
     }
 
     private fun onFailureSetTDLibParametersResult(tag: String): (Throwable) -> Unit = { error ->
         val text = "$tag: setTDLibParameters.onFailure: ${error.localizedMessage}"
-        systemMessageNotifier.send(createTGSystemMessage(text))
+        systemMessageSendChannel.offer(createTGSystemMessage(text))
 
         showNeededScreen()
     }
@@ -131,14 +133,14 @@ class AuthorizationCoordinatorImp(
 
     private fun onSuccessCheckDatabaseEncryptionKeyResult(tag: String): (TdApi.Ok) -> Unit = { _ ->
         val text = "$tag: TDLib successfully checked database encryption key"
-        systemMessageNotifier.send(createTGSystemMessage(text))
+        systemMessageSendChannel.offer(createTGSystemMessage(text))
 
         showNeededScreen()
     }
 
     private fun onFailureCheckDatabaseEncryptionKeyResult(tag: String): (Throwable) -> Unit = { error ->
         val text = "$tag: setTDLibParameters.onFailure: ${error.localizedMessage}"
-        systemMessageNotifier.send(createTGSystemMessage(text))
+        systemMessageSendChannel.offer(createTGSystemMessage(text))
 
         showNeededScreen()
     }
@@ -149,7 +151,7 @@ class AuthorizationCoordinatorImp(
         val onEnteredCorrectPhoneNumber: (String) -> Unit = { correctPhoneNumber ->
             val text = "$tag: onEnteredCorrectPhoneNumber: $correctPhoneNumber"
 
-            systemMessageNotifier.send(createTGSystemMessage(text))
+            systemMessageSendChannel.offer(createTGSystemMessage(text))
 
             showNeededScreen()
         }
@@ -167,7 +169,7 @@ class AuthorizationCoordinatorImp(
         val onEnteredCorrectAuthCode: (String) -> Unit = { correctAuthCode ->
             val text = "$tag: onEnteredCorrectAuthCode: $correctAuthCode"
 
-            systemMessageNotifier.send(createTGSystemMessage(text))
+            systemMessageSendChannel.offer(createTGSystemMessage(text))
 
             showNeededScreen()
         }
@@ -184,10 +186,10 @@ class AuthorizationCoordinatorImp(
     ) {
         val tag = "${this::class.java.simpleName} handleBackButtonPressedInPhoneNumberScreen"
 
-        val onBackButtonPressed: (Unit) -> Unit = { pressed ->
+        val onBackButtonPressed: (Unit) -> Unit = { _ ->
             val text = "$tag: back button pressed in enter phone number screen"
 
-            systemMessageNotifier.send(createTGSystemMessage(text))
+            systemMessageSendChannel.offer(createTGSystemMessage(text))
 
             exit()
         }

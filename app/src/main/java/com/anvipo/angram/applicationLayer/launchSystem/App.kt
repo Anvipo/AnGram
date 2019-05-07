@@ -1,18 +1,19 @@
 package com.anvipo.angram.applicationLayer.launchSystem
 
-import android.annotation.SuppressLint
 import android.app.Application
 import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.applicationLayer.di.LaunchSystemModule
+import com.anvipo.angram.applicationLayer.di.LaunchSystemModule.updateAuthorizationStateIMutableStack
 import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule
 import com.anvipo.angram.applicationLayer.navigation.coordinator.di.ApplicationRootCoordinatorModule
+import com.anvipo.angram.applicationLayer.types.SystemMessageSendChannel
+import com.anvipo.angram.applicationLayer.types.UpdateAuthorizationStateIMutableStack
 import com.anvipo.angram.businessLogicLayer.di.GatewaysModule
 import com.anvipo.angram.businessLogicLayer.di.UseCasesModule
 import com.anvipo.angram.coreLayer.assertionFailure
 import com.anvipo.angram.coreLayer.collections.IMutableStack
 import com.anvipo.angram.coreLayer.collections.MutableStack
 import com.anvipo.angram.coreLayer.debugLog
-import com.anvipo.angram.coreLayer.message.ISentDataNotifier
 import com.anvipo.angram.coreLayer.message.SystemMessage
 import com.anvipo.angram.coreLayer.message.SystemMessageType
 import com.anvipo.angram.global.createTGSystemMessageFromApp
@@ -73,7 +74,8 @@ class App : Application() {
         }
     }
 
-    private val systemMessageNotifier: ISentDataNotifier<SystemMessage> by inject()
+    private val systemMessageSendChannel: SystemMessageSendChannel
+            by inject(LaunchSystemModule.systemMessageSendChannel)
 
 
     // ------- TG Client properties and methods
@@ -85,9 +87,8 @@ class App : Application() {
 
     private val tdUpdateOptionStack: IMutableStack<TdApi.UpdateOption> = MutableStack()
 
-    @Suppress("RemoveExplicitTypeArguments")
-    private val tdUpdateAuthorizationStateStack: IMutableStack<TdApi.UpdateAuthorizationState>
-            by inject()
+    private val tdUpdateAuthorizationStateStack: UpdateAuthorizationStateIMutableStack
+            by inject(updateAuthorizationStateIMutableStack)
 
     private val tdUpdateConnectionStateStack: IMutableStack<TdApi.UpdateConnectionState> = MutableStack()
 
@@ -101,7 +102,6 @@ class App : Application() {
         tdObjectsStack.push(tdApiObject)
         tdObjectsAndErrorsStack.push(tdApiObject)
 
-        @SuppressLint("SyntheticAccessor")
         when (tdApiObject) {
             is TdApi.Update -> onUpdate(tag, tdApiObject)
             else -> {
@@ -110,7 +110,7 @@ class App : Application() {
 
                 debugLog(text)
 
-                systemMessageNotifier.send(createTGSystemMessageFromApp(text))
+                systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
 
                 assertionFailure()
             }
@@ -144,9 +144,9 @@ class App : Application() {
                     shouldBeShownInLogs = false
                 )
 
-                systemMessageNotifier.send(koinExceptionMessage)
+                systemMessageSendChannel.offer(koinExceptionMessage)
             }
-            else -> systemMessageNotifier.send(createTGSystemMessageFromApp(text))
+            else -> systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
         }
     }
 
@@ -158,11 +158,10 @@ class App : Application() {
 
         debugLog(text)
 
-        systemMessageNotifier.send(createTGSystemMessageFromApp(text))
+        systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
     }
 
 
-    @SuppressLint("SyntheticAccessor")
     private fun onUpdate(
         tag: String,
         tdApiUpdate: TdApi.Update
@@ -180,14 +179,13 @@ class App : Application() {
 
                 debugLog(text)
 
-                systemMessageNotifier.send(createTGSystemMessageFromApp(text))
+                systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
 
                 assertionFailure()
             }
         }
     }
 
-    @SuppressLint("SyntheticAccessor")
     private fun onUpdateConnectionState(
         tag: String,
         tdApiUpdateConnectionState: TdApi.UpdateConnectionState
@@ -204,7 +202,7 @@ class App : Application() {
 
                 debugLog(text)
 
-                systemMessageNotifier.send(createTGSystemMessageFromApp(text))
+                systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
 
                 assertionFailure()
 
@@ -216,12 +214,11 @@ class App : Application() {
 
         debugLog(text)
 
-        systemMessageNotifier.send(createTGSystemMessageFromApp(text))
+        systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
 
         // TODO: show connection state
     }
 
-    @SuppressLint("SyntheticAccessor")
     private fun onUpdateAuthorizationState(
         tag: String,
         updateAuthorizationState: TdApi.UpdateAuthorizationState
@@ -234,21 +231,21 @@ class App : Application() {
 
                 debugLog(text)
 
-                systemMessageNotifier.send(createTGSystemMessageFromApp(text))
+                systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
             }
             is TdApi.AuthorizationStateWaitEncryptionKey -> {
                 val text = "$tag: TDLib waits encryption key (isEncrypted: ${authorizationState.isEncrypted})"
 
                 debugLog(text)
 
-                systemMessageNotifier.send(createTGSystemMessageFromApp(text))
+                systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
             }
             is TdApi.AuthorizationStateWaitPhoneNumber -> {
                 val text = "$tag: TDLib waits phone number"
 
                 debugLog(text)
 
-                systemMessageNotifier.send(createTGSystemMessageFromApp(text))
+                systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
             }
             is TdApi.AuthorizationStateWaitCode -> onAuthorizationStateWaitCode(authorizationState, tag)
             else -> {
@@ -258,7 +255,7 @@ class App : Application() {
 
                 debugLog(text)
 
-                systemMessageNotifier.send(createTGSystemMessageFromApp(text))
+                systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
 
                 assertionFailure()
             }
@@ -326,10 +323,9 @@ class App : Application() {
 
         debugLog(text)
 
-        systemMessageNotifier.send(createTGSystemMessageFromApp(text))
+        systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
     }
 
-    @SuppressLint("SyntheticAccessor")
     private fun onUpdateOption(
         tag: String,
         updateOption: TdApi.UpdateOption
@@ -348,7 +344,7 @@ class App : Application() {
 
                     debugLog(text)
 
-                    systemMessageNotifier.send(createTGSystemMessageFromApp(text))
+                    systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
                     assertionFailure()
                     ""
                 }
@@ -357,7 +353,7 @@ class App : Application() {
 
                     debugLog(text)
 
-                    systemMessageNotifier.send(createTGSystemMessageFromApp(text))
+                    systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
                     assertionFailure()
                     ""
                 }
@@ -367,7 +363,7 @@ class App : Application() {
 
         debugLog(text)
 
-        systemMessageNotifier.send(createTGSystemMessageFromApp(text))
+        systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
     }
 
     private fun addTextEntityTypeInfoToExtraSB(

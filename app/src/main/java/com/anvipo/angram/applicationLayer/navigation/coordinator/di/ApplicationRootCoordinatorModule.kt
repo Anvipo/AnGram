@@ -1,8 +1,12 @@
 package com.anvipo.angram.applicationLayer.navigation.coordinator.di
 
+import com.anvipo.angram.applicationLayer.di.LaunchSystemModule.systemMessageSendChannel
+import com.anvipo.angram.applicationLayer.di.LaunchSystemModule.updateAuthorizationStateIReadOnlyStack
 import com.anvipo.angram.applicationLayer.navigation.coordinator.coordinatorFactory.ApplicationCoordinatorsFactory
 import com.anvipo.angram.applicationLayer.navigation.coordinator.coordinatorFactory.ApplicationCoordinatorsFactoryImp
 import com.anvipo.angram.applicationLayer.types.BackButtonPressedReceiveChannel
+import com.anvipo.angram.applicationLayer.types.SystemMessageSendChannel
+import com.anvipo.angram.applicationLayer.types.UpdateAuthorizationStateIReadOnlyStack
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.authorizationScreensFactory.AuthorizationScreensFactory
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.authorizationScreensFactory.AuthorizationScreensFactoryImp
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.enterAuthCodeScreenFactory.EnterAuthCodeScreenFactory
@@ -33,9 +37,10 @@ object ApplicationRootCoordinatorModule {
         single<ApplicationCoordinatorsFactory>(applicationCoordinatorsFactory) {
             ApplicationCoordinatorsFactoryImp(
                 context = get(),
-                tdUpdateAuthorizationStateStack = get(),
+                tdUpdateAuthorizationStateStack =
+                get<UpdateAuthorizationStateIReadOnlyStack>(updateAuthorizationStateIReadOnlyStack),
                 authorizationScreensFactory = get<AuthorizationScreensFactory>(authorizationScreensFactory),
-                systemMessageNotifier = get()
+                systemMessageSendChannel = get<SystemMessageSendChannel>(systemMessageSendChannel)
             )
         }
 
