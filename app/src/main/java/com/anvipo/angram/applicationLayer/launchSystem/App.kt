@@ -17,6 +17,7 @@ import com.anvipo.angram.coreLayer.message.SystemMessage
 import com.anvipo.angram.coreLayer.message.SystemMessageType
 import com.anvipo.angram.global.createTGSystemMessageFromApp
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.AuthUserStoryModule
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthCode.di.EnterAuthCodeModule
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.di.EnterPhoneNumberModule
 import org.drinkless.td.libcore.telegram.TdApi
 import org.koin.android.ext.android.inject
@@ -64,7 +65,8 @@ class App : Application() {
                     GatewaysModule.module,
                     ApplicationRootCoordinatorModule.module,
                     AuthUserStoryModule.module,
-                    EnterPhoneNumberModule.module
+                    EnterPhoneNumberModule.module,
+                    EnterAuthCodeModule.module
                 )
             }
         } else {
