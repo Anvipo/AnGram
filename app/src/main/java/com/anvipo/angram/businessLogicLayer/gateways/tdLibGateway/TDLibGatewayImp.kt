@@ -13,7 +13,7 @@ import kotlin.coroutines.resume
 
 @Suppress("DirectUseOfResultType")
 class TDLibGatewayImp(
-    private val tgClient: Client
+    private val tdClient: Client
 ) : TDLibGateway {
 
     override suspend fun getAuthorizationStateRequestCatching(): Result<TdApi.AuthorizationState> =
@@ -36,7 +36,7 @@ class TDLibGatewayImp(
                 continuation.resume(Result.failure(exception))
             }
 
-            tgClient.send(getAuthStateQuery, getAuthStateResultHandler, getAuthStateExceptionHandler)
+            tdClient.send(getAuthStateQuery, getAuthStateResultHandler, getAuthStateExceptionHandler)
         }
 
     override suspend fun setTdLibParametersCatching(context: Context): Result<TdApi.Ok> =
@@ -61,7 +61,7 @@ class TDLibGatewayImp(
 
             val setTdlibParametersQuery = TdApi.SetTdlibParameters(parameters)
 
-            tgClient.send(
+            tdClient.send(
                 setTdlibParametersQuery,
                 setTdLibParametersResultHandler,
                 setTdLibParametersExceptionHandler
@@ -88,7 +88,7 @@ class TDLibGatewayImp(
 
             val checkDatabaseEncryptionKeyQuery = TdApi.CheckDatabaseEncryptionKey()
 
-            tgClient.send(
+            tdClient.send(
                 checkDatabaseEncryptionKeyQuery,
                 setTdLibParametersResultHandler,
                 setTdLibParametersExceptionHandler
@@ -119,7 +119,7 @@ class TDLibGatewayImp(
                 false
             )
 
-            tgClient.send(
+            tdClient.send(
                 setAuthenticationPhoneNumberQuery,
                 setTdLibParametersResultHandler,
                 setTdLibParametersExceptionHandler

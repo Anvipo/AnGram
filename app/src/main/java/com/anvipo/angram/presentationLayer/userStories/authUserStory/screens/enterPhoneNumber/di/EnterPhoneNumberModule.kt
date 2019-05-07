@@ -4,6 +4,10 @@ import com.anvipo.angram.applicationLayer.types.BackButtonPressedBroadcastChanne
 import com.anvipo.angram.applicationLayer.types.BackButtonPressedReceiveChannel
 import com.anvipo.angram.applicationLayer.types.BackButtonPressedSendChannel
 import com.anvipo.angram.applicationLayer.types.BackButtonPressedType
+import com.anvipo.angram.businessLogicLayer.di.UseCasesModule.enterPhoneNumberUseCase
+import com.anvipo.angram.businessLogicLayer.useCases.enterPhoneNumberUseCase.EnterPhoneNumberUseCase
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.presenter.EnterPhoneNumberPresenter
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.presenter.EnterPhoneNumberPresenterImp
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.types.CorrectPhoneNumberBroadcastChannel
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.types.CorrectPhoneNumberReceiveChannel
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.types.CorrectPhoneNumberSendChannel
@@ -58,6 +62,19 @@ object EnterPhoneNumberModule {
             get<BackButtonPressedBroadcastChannel>(backButtonPressedInPhoneNumberScreenBroadcastChannel)
         }
 
+
+        single<EnterPhoneNumberPresenterImp>(enterPhoneNumberPresenter) {
+            EnterPhoneNumberPresenterImp(
+                useCase = get<EnterPhoneNumberUseCase>(enterPhoneNumberUseCase),
+                enteredCorrectPhoneNumberSendChannel =
+                get<CorrectPhoneNumberSendChannel>(enteredCorrectPhoneNumberSendChannel),
+                backButtonPressedInPhoneNumberScreenSendChannel =
+                get<BackButtonPressedSendChannel>(backButtonPressedInPhoneNumberScreenSendChannel)
+            )
+        }
+
     }
+
+    internal val enterPhoneNumberPresenter: StringQualifier = named("enterPhoneNumberPresenter")
 
 }

@@ -5,7 +5,7 @@ import androidx.appcompat.widget.Toolbar
 import com.anvipo.angram.R
 import com.anvipo.angram.coreLayer.MessageDialogFragment
 import com.anvipo.angram.presentationLayer.common.baseClasses.BaseFragment
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.AuthUserStoryModule
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.di.EnterPhoneNumberModule
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.presenter.EnterPhoneNumberPresenter
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.presenter.EnterPhoneNumberPresenterImp
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -59,7 +59,7 @@ class EnterPhoneNumberFragment : BaseFragment(), EnterPhoneNumberView {
     @Suppress("ProtectedInFinal")
     @ProvidePresenter
     protected fun providePresenter(): EnterPhoneNumberPresenterImp =
-        get(AuthUserStoryModule.enterPhoneNumberPresenter)
+        get(EnterPhoneNumberModule.enterPhoneNumberPresenter)
 
     @InjectPresenter
     internal lateinit var mPresenter: EnterPhoneNumberPresenterImp

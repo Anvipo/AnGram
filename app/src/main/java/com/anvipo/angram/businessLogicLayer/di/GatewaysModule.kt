@@ -12,46 +12,47 @@ import org.koin.dsl.module
 
 object GatewaysModule {
 
+    internal val tdLibGateway: StringQualifier = named("tdLibGateway")
+
+    private val tdClient: StringQualifier = named("tdClient")
 
     private val updatesExceptionHandler: StringQualifier = named("updatesExceptionHandler")
-    private val updatesExceptionHandlerFunction: StringQualifier = named("updatesExceptionHandlerFunction")
+
+    private val updatesHandler: StringQualifier = named("updatesHandler")
 
     private val defaultExceptionHandler: StringQualifier = named("defaultExceptionHandler")
-    private val defaultExceptionHandlerFunction: StringQualifier = named("defaultExceptionHandlerFunction")
 
+    @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
 
         // ----------------------------- TG -------------------------
 
-        single {
+        single<Client.ResultHandler>(updatesHandler) {
             val app = androidApplication() as App
-            app.updatesHandlerFunction
-        }
-        single {
-            Client.ResultHandler(get())
+            val updatesHandlerFunction = app.updatesHandlerFunction
+
+            Client.ResultHandler(updatesHandlerFunction)
         }
 
-        single(updatesExceptionHandlerFunction) {
+        single<Client.ExceptionHandler>(updatesExceptionHandler) {
             val app = androidApplication() as App
-            app.updatesExceptionHandlerFunction
-        }
-        single(updatesExceptionHandler) {
-            Client.ExceptionHandler(get(updatesExceptionHandlerFunction))
+            val updatesExceptionHandlerFunction = app.updatesExceptionHandlerFunction
+
+            Client.ExceptionHandler(updatesExceptionHandlerFunction)
         }
 
-        single(defaultExceptionHandlerFunction) {
+        single<Client.ExceptionHandler>(defaultExceptionHandler) {
             val app = androidApplication() as App
-            app.defaultExceptionHandlerFunction
-        }
-        single(defaultExceptionHandler) {
-            Client.ExceptionHandler(get(defaultExceptionHandlerFunction))
+            val defaultExceptionHandlerFunction = app.defaultExceptionHandlerFunction
+
+            Client.ExceptionHandler(defaultExceptionHandlerFunction)
         }
 
-        single<Client> {
+        single<Client>(tdClient) {
             Client.create(
-                get(),
-                get(updatesExceptionHandler),
-                get(defaultExceptionHandler)
+                get<Client.ResultHandler>(updatesHandler),
+                get<Client.ExceptionHandler>(updatesExceptionHandler),
+                get<Client.ExceptionHandler>(defaultExceptionHandler)
             )
         }
 
@@ -60,8 +61,10 @@ object GatewaysModule {
 
         // ---------------------------- GATEWAYS ---------------------
 
-        single<TDLibGateway> {
-            TDLibGatewayImp(tgClient = get())
+        single<TDLibGateway>(tdLibGateway) {
+            TDLibGatewayImp(
+                tdClient = get<Client>(tdClient)
+            )
         }
 
     }

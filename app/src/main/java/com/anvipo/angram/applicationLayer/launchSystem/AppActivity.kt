@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.anvipo.angram.R
+import com.anvipo.angram.applicationLayer.di.LaunchSystemModule
 import com.anvipo.angram.applicationLayer.navigation.coordinator.ApplicationCoordinator
 import com.anvipo.angram.coreLayer.MessageDialogFragment
 import com.anvipo.angram.coreLayer.debugLog
@@ -75,7 +76,7 @@ class AppActivity : MvpAppCompatActivity(), CoroutineScope {
     private val currentFragment: BaseFragment?
         get() = supportFragmentManager.findFragmentById(R.id.container) as? BaseFragment
 
-    private val applicationCoordinator: ApplicationCoordinator by inject()
+    private val applicationCoordinator: ApplicationCoordinator by inject(LaunchSystemModule.applicationCoordinator)
     private val navigatorHolder: NavigatorHolder by inject()
 
     private val navigator: Navigator by lazy {

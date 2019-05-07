@@ -3,7 +3,9 @@ package com.anvipo.angram.applicationLayer.di
 import com.anvipo.angram.applicationLayer.navigation.coordinator.ApplicationCoordinator
 import com.anvipo.angram.applicationLayer.navigation.coordinator.ApplicationCoordinatorImp
 import com.anvipo.angram.applicationLayer.navigation.coordinator.coordinatorFactory.ApplicationCoordinatorsFactory
-import com.anvipo.angram.applicationLayer.navigation.coordinator.di.ApplicationRootCoordinatorModule
+import com.anvipo.angram.applicationLayer.navigation.coordinator.di.ApplicationRootCoordinatorModule.applicationCoordinatorsFactory
+import com.anvipo.angram.businessLogicLayer.di.GatewaysModule.tdLibGateway
+import com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway.TDLibGateway
 import com.anvipo.angram.coreLayer.collections.IMutableStack
 import com.anvipo.angram.coreLayer.collections.IReadOnlyStack
 import com.anvipo.angram.coreLayer.collections.MutableStack
@@ -21,18 +23,16 @@ import org.koin.dsl.module
 object LaunchSystemModule {
 
     private val systemMessageNotifier: StringQualifier = named("systemMessageNotifier")
+    internal val applicationCoordinator: StringQualifier = named("applicationCoordinator")
 
     @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
 
-        single<ApplicationCoordinator> {
+        single<ApplicationCoordinator>(applicationCoordinator) {
             ApplicationCoordinatorImp(
-                coordinatorsFactory =
-                get<ApplicationCoordinatorsFactory>(
-                    ApplicationRootCoordinatorModule.applicationCoordinatorsFactory
-                ),
+                coordinatorsFactory = get<ApplicationCoordinatorsFactory>(applicationCoordinatorsFactory),
                 router = get(),
-                tdLibGateway = get(),
+                tdLibGateway = get<TDLibGateway>(tdLibGateway),
                 systemMessageNotifier = get()
             )
         }
