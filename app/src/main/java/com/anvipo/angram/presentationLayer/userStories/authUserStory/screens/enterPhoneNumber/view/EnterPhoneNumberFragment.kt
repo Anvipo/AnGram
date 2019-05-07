@@ -52,13 +52,14 @@ class EnterPhoneNumberFragment : BaseFragment(), EnterPhoneNumberView {
         enter_phone_number_next_button.setOnClickListener {
             val enteredPhoneNumber = enter_phone_number_edit_text.text.toString()
 
-            presenter.didTapNextButton(enteredPhoneNumber)
+            presenter.onNextButtonPressed(enteredPhoneNumber)
         }
     }
 
     @Suppress("ProtectedInFinal")
     @ProvidePresenter
-    protected fun providePresenter(): EnterPhoneNumberPresenterImp = get(AuthUserStoryModule.enterPhoneNumberPresenter)
+    protected fun providePresenter(): EnterPhoneNumberPresenterImp =
+        get(AuthUserStoryModule.enterPhoneNumberPresenter)
 
     @InjectPresenter
     internal lateinit var mPresenter: EnterPhoneNumberPresenterImp

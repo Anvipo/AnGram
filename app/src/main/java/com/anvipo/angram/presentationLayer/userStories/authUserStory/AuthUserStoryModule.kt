@@ -18,8 +18,8 @@ object AuthUserStoryModule {
         single<EnterPhoneNumberPresenter>(enterPhoneNumberPresenter) {
             EnterPhoneNumberPresenterImp(
                 useCase = get(),
-                onEnteredCorrectPhoneNumberNotifier = get(LaunchSystemModule.enterCorrectPhoneNumberNotifier),
-                onBackButtonPressedNotifier = get(LaunchSystemModule.backButtonPressedInPhoneNumberScreen)
+                enteredCorrectPhoneNumberSendChannel = get(LaunchSystemModule.enteredCorrectPhoneNumberSendChannel),
+                backButtonPressedInPhoneNumberScreenSendChannel = get(LaunchSystemModule.backButtonPressedInPhoneNumberScreenSendChannel)
             )
         }
 

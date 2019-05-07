@@ -7,7 +7,7 @@ import com.anvipo.angram.coreLayer.message.ISentDataNotifier
 import com.anvipo.angram.coreLayer.message.SystemMessage
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.AuthorizationCoordinator
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.AuthorizationCoordinatorImp
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.AuthorizationViewControllersFactory
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.authorizationScreensFactory.AuthorizationScreensFactory
 import com.anvipo.angram.presentationLayer.userStories.mainUserStory.coordinator.MainCoordinator
 import com.anvipo.angram.presentationLayer.userStories.mainUserStory.coordinator.MainCoordinatorImp
 import com.anvipo.angram.presentationLayer.userStories.mainUserStory.coordinator.screensFactory.MainViewControllersFactoryImp
@@ -17,7 +17,7 @@ import ru.terrakok.cicerone.Router
 class ApplicationCoordinatorsFactoryImp(
     private val context: Context,
     private val systemMessageNotifier: ISentDataNotifier<SystemMessage>,
-    private val authorizationViewControllersFactory: AuthorizationViewControllersFactory,
+    private val authorizationScreensFactory: AuthorizationScreensFactory,
     private val tdUpdateAuthorizationStateStack: IReadOnlyStack<TdApi.UpdateAuthorizationState>
 ) : ApplicationCoordinatorsFactory {
 
@@ -35,7 +35,7 @@ class ApplicationCoordinatorsFactoryImp(
     ): AuthorizationCoordinator = AuthorizationCoordinatorImp(
         context = context,
         router = router,
-        viewControllersFactory = authorizationViewControllersFactory,
+        screensFactory = authorizationScreensFactory,
         tdLibGateway = tdLibGateway,
         tdUpdateAuthorizationStateStack = tdUpdateAuthorizationStateStack,
         systemMessageNotifier = systemMessageNotifier

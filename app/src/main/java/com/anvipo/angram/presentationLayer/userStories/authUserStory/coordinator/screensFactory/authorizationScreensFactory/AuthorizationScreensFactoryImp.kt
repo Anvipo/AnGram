@@ -1,0 +1,9 @@
+package com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.authorizationScreensFactory
+
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.enterAuthCodeScreenFactory.EnterAuthCodeScreenFactory
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.enterPhoneNumberScreenFactory.EnterPhoneNumberScreenFactory
+
+class AuthorizationScreensFactoryImp(
+    override val enterPhoneNumberScreenFactory: EnterPhoneNumberScreenFactory,
+    override val enterAuthCodeScreenFactory: EnterAuthCodeScreenFactory
+) : AuthorizationScreensFactory

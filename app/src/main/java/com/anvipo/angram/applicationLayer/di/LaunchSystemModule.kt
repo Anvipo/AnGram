@@ -9,26 +9,55 @@ import com.anvipo.angram.coreLayer.message.DataNotifier
 import com.anvipo.angram.coreLayer.message.IReceiveDataNotifier
 import com.anvipo.angram.coreLayer.message.ISentDataNotifier
 import com.anvipo.angram.coreLayer.message.SystemMessage
+import kotlinx.coroutines.channels.BroadcastChannel
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.SendChannel
 import org.drinkless.td.libcore.telegram.TdApi
 import org.koin.core.module.Module
 import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
+typealias CorrectPhoneNumberType = String
+typealias CorrectAuthCodeType = String
+typealias BackButtonPressedType = Unit
 
 object LaunchSystemModule {
 
-    internal val enterCorrectPhoneNumberNotifier: StringQualifier = named("enterCorrectPhoneNumberNotifier")
+    private val enteredCorrectPhoneNumberBroadcastChannel: StringQualifier =
+        named("enteredCorrectPhoneNumberBroadcastChannel")
+    internal val enteredCorrectPhoneNumberReceiveChannel: StringQualifier =
+        named("enteredCorrectPhoneNumberReceiveChannel")
+    internal val enteredCorrectPhoneNumberSendChannel: StringQualifier =
+        named("enteredCorrectPhoneNumberSendChannel")
 
-    internal val backButtonPressedInPhoneNumberScreen: StringQualifier = named("backButtonPressedInPhoneNumberScreen")
+    private val backButtonPressedInPhoneNumberScreenBroadcastChannel: StringQualifier =
+        named("backButtonPressedInPhoneNumberScreenBroadcastChannel")
+    internal val backButtonPressedInPhoneNumberScreenReceiveChannel: StringQualifier =
+        named("backButtonPressedInPhoneNumberScreenReceiveChannel")
+    internal val backButtonPressedInPhoneNumberScreenSendChannel: StringQualifier =
+        named("backButtonPressedInPhoneNumberScreenSendChannel")
 
-    internal val backButtonPressedInAuthCodeScreen: StringQualifier = named("backButtonPressedInAuthCodeScreen")
 
-    internal val enterCorrectAuthCodeNotifier: StringQualifier = named("enterCorrectAuthCodeNotifier")
+    private val enteredCorrectAuthCodeBroadcastChannel: StringQualifier =
+        named("enteredCorrectAuthCodeBroadcastChannel")
+    internal val enteredCorrectAuthCodeReceiveChannel: StringQualifier =
+        named("enteredCorrectAuthCodeReceiveChannel")
+    internal val enteredCorrectAuthCodeSendChannel: StringQualifier =
+        named("enteredCorrectAuthCodeSendChannel")
+
+    private val backButtonPressedInAuthCodeScreenBroadcastChannel: StringQualifier =
+        named("backButtonPressedInAuthCodeScreenBroadcastChannel")
+    internal val backButtonPressedInAuthCodeScreenReceiveChannel: StringQualifier =
+        named("backButtonPressedInAuthCodeScreenReceiveChannel")
+    internal val backButtonPressedInAuthCodeScreenSendChannel: StringQualifier =
+        named("backButtonPressedInAuthCodeScreenSendChannel")
+
 
     private val systemMessageNotifier: StringQualifier = named("systemMessageNotifier")
 
 
+    @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
 
         single<ApplicationCoordinator> {
@@ -58,20 +87,47 @@ object LaunchSystemModule {
             DataNotifier()
         }
 
-        single<IReceiveDataNotifier<String>>(enterCorrectPhoneNumberNotifier) {
-            DataNotifier()
+
+
+        single<BroadcastChannel<CorrectPhoneNumberType>>(enteredCorrectPhoneNumberBroadcastChannel) {
+            BroadcastChannel(1)
+        }
+        single<ReceiveChannel<CorrectPhoneNumberType>>(enteredCorrectPhoneNumberReceiveChannel) {
+            get<BroadcastChannel<CorrectPhoneNumberType>>(enteredCorrectPhoneNumberBroadcastChannel).openSubscription()
+        }
+        single<SendChannel<CorrectPhoneNumberType>>(enteredCorrectPhoneNumberSendChannel) {
+            get<BroadcastChannel<CorrectPhoneNumberType>>(enteredCorrectPhoneNumberBroadcastChannel)
         }
 
-        single<IReceiveDataNotifier<String>>(enterCorrectAuthCodeNotifier) {
-            DataNotifier()
+        single<BroadcastChannel<BackButtonPressedType>>(backButtonPressedInPhoneNumberScreenBroadcastChannel) {
+            BroadcastChannel(1)
+        }
+        single<ReceiveChannel<BackButtonPressedType>>(backButtonPressedInPhoneNumberScreenReceiveChannel) {
+            get<BroadcastChannel<BackButtonPressedType>>(backButtonPressedInPhoneNumberScreenBroadcastChannel).openSubscription()
+        }
+        single<SendChannel<BackButtonPressedType>>(backButtonPressedInPhoneNumberScreenSendChannel) {
+            get<BroadcastChannel<BackButtonPressedType>>(backButtonPressedInPhoneNumberScreenBroadcastChannel)
         }
 
-        single<IReceiveDataNotifier<Unit>>(backButtonPressedInPhoneNumberScreen) {
-            DataNotifier()
+
+        single<BroadcastChannel<CorrectAuthCodeType>>(enteredCorrectAuthCodeBroadcastChannel) {
+            BroadcastChannel(1)
+        }
+        single<ReceiveChannel<CorrectAuthCodeType>>(enteredCorrectAuthCodeReceiveChannel) {
+            get<BroadcastChannel<CorrectAuthCodeType>>(enteredCorrectAuthCodeBroadcastChannel).openSubscription()
+        }
+        single<SendChannel<CorrectAuthCodeType>>(enteredCorrectAuthCodeSendChannel) {
+            get<BroadcastChannel<CorrectAuthCodeType>>(enteredCorrectAuthCodeBroadcastChannel)
         }
 
-        single<IReceiveDataNotifier<Unit>>(backButtonPressedInAuthCodeScreen) {
-            DataNotifier()
+        single<BroadcastChannel<BackButtonPressedType>>(backButtonPressedInAuthCodeScreenBroadcastChannel) {
+            BroadcastChannel(1)
+        }
+        single<ReceiveChannel<BackButtonPressedType>>(backButtonPressedInAuthCodeScreenReceiveChannel) {
+            get<BroadcastChannel<BackButtonPressedType>>(backButtonPressedInAuthCodeScreenBroadcastChannel).openSubscription()
+        }
+        single<SendChannel<BackButtonPressedType>>(backButtonPressedInAuthCodeScreenSendChannel) {
+            get<BroadcastChannel<BackButtonPressedType>>(backButtonPressedInAuthCodeScreenBroadcastChannel)
         }
 
     }

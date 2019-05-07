@@ -1,7 +1,5 @@
 package com.anvipo.angram.presentationLayer.common.baseClasses
 
-import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -18,13 +16,6 @@ import com.anvipo.angram.presentationLayer.common.interfaces.IBasePresenter
 
 abstract class BaseFragment : MvpAppCompatFragment(), BaseView {
 
-    protected val fragmentContext: Context?
-        get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            context
-        } else {
-            activity
-        }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -33,10 +24,6 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseView {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
-        if (savedInstanceState != null) {
-            print("")
-        }
 
         setupClickListeners()
         setupToolbar()

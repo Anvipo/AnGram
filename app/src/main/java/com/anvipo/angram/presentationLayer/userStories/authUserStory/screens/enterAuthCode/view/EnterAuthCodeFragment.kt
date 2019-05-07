@@ -22,7 +22,7 @@ class EnterAuthCodeFragment : BaseFragment(), EnterAuthCodeView {
         enter_auth_code_next_button.setOnClickListener {
             val enteredAuthCode = enter_auth_code_edit_text.text.toString()
 
-//            presenter.didTapNextButton(enteredPhoneNumber)
+//            presenter.onNextButtonPressed(enteredPhoneNumber)
         }
 
     }
