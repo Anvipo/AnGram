@@ -63,10 +63,8 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
 
-    // DI
-    // AndroidX (based on koin-android)
-    // Koin AndroidX Scope feature
-    implementation "org.koin:koin-androidx-scope:$koin_version"
+    // Koin
+    implementation "org.koin:koin-android:$koin_version"
 
     //Cicerone Navigation
     implementation "ru.terrakok.cicerone:cicerone:$cicerone_version"
@@ -74,6 +72,4 @@ dependencies {
     // MVP Moxy
     kapt "com.arello-mobile:moxy-compiler:$moxy_version"
     implementation "com.arello-mobile:moxy:$moxy_version"
-//    implementation "com.arello-mobile:moxy-android:$moxy_version"
-//    implementation "com.arello-mobile:moxy-app-compat:$moxy_version"
 }

@@ -2,6 +2,9 @@ package com.anvipo.angram.applicationLayer.di
 
 import com.anvipo.angram.applicationLayer.navigation.coordinator.ApplicationCoordinator
 import com.anvipo.angram.applicationLayer.navigation.coordinator.ApplicationCoordinatorImp
+import com.anvipo.angram.applicationLayer.types.BackButtonPressedBroadcastChannel
+import com.anvipo.angram.applicationLayer.types.BackButtonPressedReceiveChannel
+import com.anvipo.angram.applicationLayer.types.BackButtonPressedSendChannel
 import com.anvipo.angram.coreLayer.collections.IMutableStack
 import com.anvipo.angram.coreLayer.collections.IReadOnlyStack
 import com.anvipo.angram.coreLayer.collections.MutableStack
@@ -18,26 +21,14 @@ import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-typealias CorrectPhoneNumberType = String
+
 typealias CorrectAuthCodeType = String
-typealias BackButtonPressedType = Unit
+
+typealias CorrectAuthCodeBroadcastChannel = BroadcastChannel<CorrectAuthCodeType>
+typealias CorrectAuthCodeReceiveChannel = ReceiveChannel<CorrectAuthCodeType>
+typealias CorrectAuthCodeSendChannel = SendChannel<CorrectAuthCodeType>
 
 object LaunchSystemModule {
-
-    private val enteredCorrectPhoneNumberBroadcastChannel: StringQualifier =
-        named("enteredCorrectPhoneNumberBroadcastChannel")
-    internal val enteredCorrectPhoneNumberReceiveChannel: StringQualifier =
-        named("enteredCorrectPhoneNumberReceiveChannel")
-    internal val enteredCorrectPhoneNumberSendChannel: StringQualifier =
-        named("enteredCorrectPhoneNumberSendChannel")
-
-    private val backButtonPressedInPhoneNumberScreenBroadcastChannel: StringQualifier =
-        named("backButtonPressedInPhoneNumberScreenBroadcastChannel")
-    internal val backButtonPressedInPhoneNumberScreenReceiveChannel: StringQualifier =
-        named("backButtonPressedInPhoneNumberScreenReceiveChannel")
-    internal val backButtonPressedInPhoneNumberScreenSendChannel: StringQualifier =
-        named("backButtonPressedInPhoneNumberScreenSendChannel")
-
 
     private val enteredCorrectAuthCodeBroadcastChannel: StringQualifier =
         named("enteredCorrectAuthCodeBroadcastChannel")
@@ -50,7 +41,7 @@ object LaunchSystemModule {
         named("backButtonPressedInAuthCodeScreenBroadcastChannel")
     internal val backButtonPressedInAuthCodeScreenReceiveChannel: StringQualifier =
         named("backButtonPressedInAuthCodeScreenReceiveChannel")
-    internal val backButtonPressedInAuthCodeScreenSendChannel: StringQualifier =
+    private val backButtonPressedInAuthCodeScreenSendChannel: StringQualifier =
         named("backButtonPressedInAuthCodeScreenSendChannel")
 
 
@@ -88,46 +79,26 @@ object LaunchSystemModule {
         }
 
 
-
-        single<BroadcastChannel<CorrectPhoneNumberType>>(enteredCorrectPhoneNumberBroadcastChannel) {
+        single<CorrectAuthCodeBroadcastChannel>(enteredCorrectAuthCodeBroadcastChannel) {
             BroadcastChannel(1)
         }
-        single<ReceiveChannel<CorrectPhoneNumberType>>(enteredCorrectPhoneNumberReceiveChannel) {
-            get<BroadcastChannel<CorrectPhoneNumberType>>(enteredCorrectPhoneNumberBroadcastChannel).openSubscription()
+        single<CorrectAuthCodeReceiveChannel>(enteredCorrectAuthCodeReceiveChannel) {
+            get<CorrectAuthCodeBroadcastChannel>(
+                enteredCorrectAuthCodeBroadcastChannel
+            ).openSubscription()
         }
-        single<SendChannel<CorrectPhoneNumberType>>(enteredCorrectPhoneNumberSendChannel) {
-            get<BroadcastChannel<CorrectPhoneNumberType>>(enteredCorrectPhoneNumberBroadcastChannel)
+        single<CorrectAuthCodeSendChannel>(enteredCorrectAuthCodeSendChannel) {
+            get<CorrectAuthCodeBroadcastChannel>(enteredCorrectAuthCodeBroadcastChannel)
         }
 
-        single<BroadcastChannel<BackButtonPressedType>>(backButtonPressedInPhoneNumberScreenBroadcastChannel) {
+        single<BackButtonPressedBroadcastChannel>(backButtonPressedInAuthCodeScreenBroadcastChannel) {
             BroadcastChannel(1)
         }
-        single<ReceiveChannel<BackButtonPressedType>>(backButtonPressedInPhoneNumberScreenReceiveChannel) {
-            get<BroadcastChannel<BackButtonPressedType>>(backButtonPressedInPhoneNumberScreenBroadcastChannel).openSubscription()
+        single<BackButtonPressedReceiveChannel>(backButtonPressedInAuthCodeScreenReceiveChannel) {
+            get<BackButtonPressedBroadcastChannel>(backButtonPressedInAuthCodeScreenBroadcastChannel).openSubscription()
         }
-        single<SendChannel<BackButtonPressedType>>(backButtonPressedInPhoneNumberScreenSendChannel) {
-            get<BroadcastChannel<BackButtonPressedType>>(backButtonPressedInPhoneNumberScreenBroadcastChannel)
-        }
-
-
-        single<BroadcastChannel<CorrectAuthCodeType>>(enteredCorrectAuthCodeBroadcastChannel) {
-            BroadcastChannel(1)
-        }
-        single<ReceiveChannel<CorrectAuthCodeType>>(enteredCorrectAuthCodeReceiveChannel) {
-            get<BroadcastChannel<CorrectAuthCodeType>>(enteredCorrectAuthCodeBroadcastChannel).openSubscription()
-        }
-        single<SendChannel<CorrectAuthCodeType>>(enteredCorrectAuthCodeSendChannel) {
-            get<BroadcastChannel<CorrectAuthCodeType>>(enteredCorrectAuthCodeBroadcastChannel)
-        }
-
-        single<BroadcastChannel<BackButtonPressedType>>(backButtonPressedInAuthCodeScreenBroadcastChannel) {
-            BroadcastChannel(1)
-        }
-        single<ReceiveChannel<BackButtonPressedType>>(backButtonPressedInAuthCodeScreenReceiveChannel) {
-            get<BroadcastChannel<BackButtonPressedType>>(backButtonPressedInAuthCodeScreenBroadcastChannel).openSubscription()
-        }
-        single<SendChannel<BackButtonPressedType>>(backButtonPressedInAuthCodeScreenSendChannel) {
-            get<BroadcastChannel<BackButtonPressedType>>(backButtonPressedInAuthCodeScreenBroadcastChannel)
+        single<BackButtonPressedSendChannel>(backButtonPressedInAuthCodeScreenSendChannel) {
+            get<BackButtonPressedBroadcastChannel>(backButtonPressedInAuthCodeScreenBroadcastChannel)
         }
 
     }

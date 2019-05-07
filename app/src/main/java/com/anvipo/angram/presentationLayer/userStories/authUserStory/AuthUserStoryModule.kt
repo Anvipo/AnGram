@@ -1,6 +1,6 @@
 package com.anvipo.angram.presentationLayer.userStories.authUserStory
 
-import com.anvipo.angram.applicationLayer.di.LaunchSystemModule
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.di.EnterPhoneNumberModule
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.presenter.EnterPhoneNumberPresenter
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.presenter.EnterPhoneNumberPresenterImp
 import org.koin.core.module.Module
@@ -18,8 +18,8 @@ object AuthUserStoryModule {
         single<EnterPhoneNumberPresenter>(enterPhoneNumberPresenter) {
             EnterPhoneNumberPresenterImp(
                 useCase = get(),
-                enteredCorrectPhoneNumberSendChannel = get(LaunchSystemModule.enteredCorrectPhoneNumberSendChannel),
-                backButtonPressedInPhoneNumberScreenSendChannel = get(LaunchSystemModule.backButtonPressedInPhoneNumberScreenSendChannel)
+                enteredCorrectPhoneNumberSendChannel = get(EnterPhoneNumberModule.enteredCorrectPhoneNumberSendChannel),
+                backButtonPressedInPhoneNumberScreenSendChannel = get(EnterPhoneNumberModule.backButtonPressedInPhoneNumberScreenSendChannel)
             )
         }
 
