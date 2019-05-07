@@ -11,13 +11,11 @@ import org.koin.dsl.module
 
 object AuthUserStoryModule {
 
-    private const val updatesExceptionHandlerFunctionName: String = "EnterPhoneNumberPresenter"
-    internal val updatesExceptionHandler: StringQualifier = named(updatesExceptionHandlerFunctionName)
-
+    internal val enterPhoneNumberPresenter: StringQualifier = named("enterPhoneNumberPresenter")
 
     val module: Module = module {
 
-        single<EnterPhoneNumberPresenter>(updatesExceptionHandler) {
+        single<EnterPhoneNumberPresenter>(enterPhoneNumberPresenter) {
             EnterPhoneNumberPresenterImp(
                 useCase = get(),
                 onEnteredCorrectPhoneNumberNotifier = get(LaunchSystemModule.enterCorrectPhoneNumberNotifier),

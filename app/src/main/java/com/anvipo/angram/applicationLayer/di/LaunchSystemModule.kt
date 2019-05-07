@@ -18,20 +18,15 @@ import org.koin.dsl.module
 
 object LaunchSystemModule {
 
-    private const val enterCorrectPhoneNumberNotifierName: String = "enterCorrectPhoneNumberNotifier"
-    internal val enterCorrectPhoneNumberNotifier: StringQualifier = named(enterCorrectPhoneNumberNotifierName)
+    internal val enterCorrectPhoneNumberNotifier: StringQualifier = named("enterCorrectPhoneNumberNotifier")
 
-    private const val backButtonPressedInPhoneNumberScreenName: String = "backButtonPressedInPhoneNumberScreen"
-    internal val backButtonPressedInPhoneNumberScreen: StringQualifier = named(backButtonPressedInPhoneNumberScreenName)
+    internal val backButtonPressedInPhoneNumberScreen: StringQualifier = named("backButtonPressedInPhoneNumberScreen")
 
-    private const val backButtonPressedInAuthCodeScreenName: String = "backButtonPressedInAuthCodeScreen"
-    internal val backButtonPressedInAuthCodeScreen: StringQualifier = named(backButtonPressedInAuthCodeScreenName)
+    internal val backButtonPressedInAuthCodeScreen: StringQualifier = named("backButtonPressedInAuthCodeScreen")
 
-    private const val enterCorrectAuthCodeNotifierName: String = "enterCorrectAuthCodeNotifier"
-    internal val enterCorrectAuthCodeNotifier: StringQualifier = named(enterCorrectAuthCodeNotifierName)
+    internal val enterCorrectAuthCodeNotifier: StringQualifier = named("enterCorrectAuthCodeNotifier")
 
-    private const val systemMessageNotifierName: String = "systemMessageNotifier"
-    private val systemMessageNotifier: StringQualifier = named(systemMessageNotifierName)
+    private val systemMessageNotifier: StringQualifier = named("systemMessageNotifier")
 
 
     val module: Module = module {

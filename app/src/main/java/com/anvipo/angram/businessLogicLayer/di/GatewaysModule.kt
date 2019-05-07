@@ -12,18 +12,12 @@ import org.koin.dsl.module
 
 object GatewaysModule {
 
-    private const val updatesExceptionHandlerName: String = "updatesExceptionHandler"
-    private const val updatesExceptionHandlerFunctionName: String = "updatesExceptionHandlerFunction"
 
-    private val updatesExceptionHandler: StringQualifier = named(updatesExceptionHandlerName)
-    private val updatesExceptionHandlerFunction: StringQualifier = named(updatesExceptionHandlerFunctionName)
+    private val updatesExceptionHandler: StringQualifier = named("updatesExceptionHandler")
+    private val updatesExceptionHandlerFunction: StringQualifier = named("updatesExceptionHandlerFunction")
 
-
-    private const val defaultExceptionHandlerName: String = "defaultExceptionHandler"
-    private const val defaultExceptionHandlerFunctionName: String = "defaultExceptionHandlerFunction"
-
-    private val defaultExceptionHandler: StringQualifier = named(defaultExceptionHandlerName)
-    private val defaultExceptionHandlerFunction: StringQualifier = named(defaultExceptionHandlerFunctionName)
+    private val defaultExceptionHandler: StringQualifier = named("defaultExceptionHandler")
+    private val defaultExceptionHandlerFunction: StringQualifier = named("defaultExceptionHandlerFunction")
 
     val module: Module = module {
 

@@ -58,7 +58,7 @@ class EnterPhoneNumberFragment : BaseFragment(), EnterPhoneNumberView {
 
     @Suppress("ProtectedInFinal")
     @ProvidePresenter
-    protected fun providePresenter(): EnterPhoneNumberPresenterImp = get(AuthUserStoryModule.updatesExceptionHandler)
+    protected fun providePresenter(): EnterPhoneNumberPresenterImp = get(AuthUserStoryModule.enterPhoneNumberPresenter)
 
     @InjectPresenter
     internal lateinit var mPresenter: EnterPhoneNumberPresenterImp
