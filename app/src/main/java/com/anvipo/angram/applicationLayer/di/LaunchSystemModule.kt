@@ -18,6 +18,7 @@ import org.koin.core.module.Module
 import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
+import ru.terrakok.cicerone.Router
 
 
 object LaunchSystemModule {
@@ -31,7 +32,7 @@ object LaunchSystemModule {
         single<ApplicationCoordinator>(applicationCoordinator) {
             ApplicationCoordinatorImp(
                 coordinatorsFactory = get<ApplicationCoordinatorsFactory>(applicationCoordinatorsFactory),
-                router = get(),
+                router = get<Router>(SystemInfrastructureModule.router),
                 tdLibGateway = get<TDLibGateway>(tdLibGateway),
                 systemMessageNotifier = get()
             )
