@@ -151,3 +151,10 @@ fun View.setBackgroundTintByColor(@ColorInt color: Int) {
     val wrappedDrawable = DrawableCompat.wrap(background)
     DrawableCompat.setTint(wrappedDrawable.mutate(), color)
 }
+
+fun View.showSnackBar(
+    message: String,
+    duration: Int
+) {
+    Snackbar.make(this, message, duration).show()
+}

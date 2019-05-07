@@ -3,39 +3,37 @@ package com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.en
 import com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway.errors.TdApiError
 import com.anvipo.angram.businessLogicLayer.useCases.enterPhoneNumberUseCase.EnterPhoneNumberUseCase
 import com.anvipo.angram.presentationLayer.common.baseClasses.BasePresenterImp
-import com.anvipo.angram.presentationLayer.common.interfaces.Coordinatorable
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.AuthorizationCoordinatorOutput
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.view.EnterPhoneNumberView
 import com.arellomobile.mvp.InjectViewState
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.SendChannel
 import kotlin.coroutines.CoroutineContext
 
 @InjectViewState
 class EnterPhoneNumberPresenterImp(
     override val useCase: EnterPhoneNumberUseCase,
-    private val enteredCorrectPhoneNumberSendChannel: SendChannel<String>,
-    private val backButtonPressedInPhoneNumberScreenSendChannel: SendChannel<Unit>
+    override val coordinator: AuthorizationCoordinatorOutput
 ) : BasePresenterImp<EnterPhoneNumberView>(), EnterPhoneNumberPresenter {
-
-    override val coordinator: Coordinatorable
-        get() = TODO("not implemented")
-    override val job: Job
-        get() = TODO("not implemented")
-    override val coroutineExceptionHandler: CoroutineExceptionHandler
-        get() = TODO("not implemented")
 
     override fun coldStart() {
         TODO("not implemented")
     }
 
-    override val coroutineContext: CoroutineContext
-        get() = TODO("not implemented")
-
     override fun onNextButtonPressed(enteredPhoneNumber: String) {
-        GlobalScope.launch {
+        val onNextButtonPressedCoroutineExceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
+            print("")
+        }
+
+        viewState.showLoading()
+
+        onNextButtonPressedJob = launch(context = coroutineContext + onNextButtonPressedCoroutineExceptionHandler) {
             useCase.setAuthenticationPhoneNumberCatching(enteredPhoneNumber)
                 .onSuccess {
-                    enteredCorrectPhoneNumberSendChannel.offer(enteredPhoneNumber)
+                    withContext(Dispatchers.Main) {
+                        viewState.hideLoading()
+                    }
+
+                    coordinator.onEnterCorrectPhoneNumber(enteredPhoneNumber)
                 }
                 .onFailure { error ->
                     // TODO: translate strings
@@ -46,6 +44,7 @@ class EnterPhoneNumberPresenterImp(
                     }
 
                     withContext(Dispatchers.Main) {
+                        viewState.hideLoading()
                         viewState.showErrorAlert(errorMessage)
                     }
                 }
@@ -53,7 +52,16 @@ class EnterPhoneNumberPresenterImp(
     }
 
     override fun onBackPressed() {
-        backButtonPressedInPhoneNumberScreenSendChannel.offer(Unit)
+        coordinator.onPressedBackButtonInEnterPhoneNumberScreen()
     }
+
+
+    override val coroutineContext: CoroutineContext = Dispatchers.IO
+
+    override fun cancelAllJobs() {
+        onNextButtonPressedJob?.cancel()
+    }
+
+    private var onNextButtonPressedJob: Job? = null
 
 }

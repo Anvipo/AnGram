@@ -1,7 +1,10 @@
 package com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator
 
-interface AuthorizationCoordinatorOutput {
+import com.anvipo.angram.presentationLayer.common.interfaces.CoordinatorOutput
 
-    var finishFlow: (() -> Unit)?
+interface AuthorizationCoordinatorOutput : CoordinatorOutput {
+
+    fun onPressedBackButtonInEnterPhoneNumberScreen()
+    fun onEnterCorrectPhoneNumber(phoneNumber: String)
 
 }

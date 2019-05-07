@@ -35,6 +35,15 @@ class EnterPhoneNumberFragment : BaseFragment(), EnterPhoneNumberView {
             .show(childFragmentManager, null)
     }
 
+    override fun showLoading() {
+        // TODO
+    }
+
+    override fun hideLoading() {
+        // TODO
+    }
+
+
     override val presenter: EnterPhoneNumberPresenter by lazy { mPresenter }
 
     override val layoutRes: Int = R.layout.fragment_enter_phone_number

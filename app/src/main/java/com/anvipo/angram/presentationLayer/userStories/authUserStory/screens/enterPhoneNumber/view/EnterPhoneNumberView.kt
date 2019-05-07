@@ -11,4 +11,10 @@ interface EnterPhoneNumberView : BaseView {
     @StateStrategyType(OneExecutionStateStrategy::class)
     fun showErrorAlert(message: String)
 
+    @StateStrategyType(OneExecutionStateStrategy::class)
+    fun showLoading()
+
+    @StateStrategyType(OneExecutionStateStrategy::class)
+    fun hideLoading()
+
 }

@@ -1,9 +1,10 @@
 package com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator
 
-import com.anvipo.angram.presentationLayer.common.interfaces.Coordinatorable
+interface AuthorizationCoordinator :
+    AuthorizationCoordinatorInput,
+    AuthorizationCoordinatorOutput {
 
-interface AuthorizationCoordinator : Coordinatorable, AuthorizationCoordinatorOutput {
-
-    // TODO: coroutine context and error handler
+    // TODO: think
+    interface OnFinishedListener
 
 }

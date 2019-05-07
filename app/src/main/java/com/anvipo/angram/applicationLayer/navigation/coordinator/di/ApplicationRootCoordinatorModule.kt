@@ -1,79 +1,65 @@
 package com.anvipo.angram.applicationLayer.navigation.coordinator.di
 
-import com.anvipo.angram.applicationLayer.di.LaunchSystemModule.systemMessageSendChannel
-import com.anvipo.angram.applicationLayer.di.LaunchSystemModule.updateAuthorizationStateIReadOnlyStack
-import com.anvipo.angram.applicationLayer.navigation.coordinator.coordinatorFactory.ApplicationCoordinatorsFactory
-import com.anvipo.angram.applicationLayer.navigation.coordinator.coordinatorFactory.ApplicationCoordinatorsFactoryImp
-import com.anvipo.angram.applicationLayer.types.BackButtonPressedReceiveChannel
+import com.anvipo.angram.applicationLayer.di.LaunchSystemModule
+import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule
+import com.anvipo.angram.applicationLayer.navigation.coordinator.ApplicationCoordinator
+import com.anvipo.angram.applicationLayer.navigation.coordinator.ApplicationCoordinatorImp
 import com.anvipo.angram.applicationLayer.types.SystemMessageSendChannel
 import com.anvipo.angram.applicationLayer.types.UpdateAuthorizationStateIReadOnlyStack
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.authorizationScreensFactory.AuthorizationScreensFactory
+import com.anvipo.angram.businessLogicLayer.di.GatewaysModule
+import com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway.TDLibGateway
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.AuthorizationCoordinator
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.AuthorizationCoordinatorImp
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.AuthorizationCoordinatorInput
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.authorizationScreensFactory.AuthorizationScreensFactoryImp
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.enterAuthCodeScreenFactory.EnterAuthCodeScreenFactory
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.enterAuthCodeScreenFactory.EnterAuthCodeScreenFactoryImp
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.enterPhoneNumberScreenFactory.EnterPhoneNumberScreenFactory
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.enterPhoneNumberScreenFactory.EnterPhoneNumberScreenFactoryImp
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthCode.di.EnterAuthCodeModule
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthCode.types.CorrectAuthCodeReceiveChannel
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.di.EnterPhoneNumberModule
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.types.CorrectPhoneNumberReceiveChannel
+import com.anvipo.angram.presentationLayer.userStories.mainUserStory.coordinator.MainCoordinator
+import com.anvipo.angram.presentationLayer.userStories.mainUserStory.coordinator.MainCoordinatorImp
+import com.anvipo.angram.presentationLayer.userStories.mainUserStory.coordinator.screensFactory.MainViewControllersFactoryImp
 import org.koin.core.module.Module
 import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
+import ru.terrakok.cicerone.Router
 
 object ApplicationRootCoordinatorModule {
 
-    internal val applicationCoordinatorsFactory: StringQualifier = named("applicationCoordinatorsFactory")
-
-    private val authorizationScreensFactory: StringQualifier = named("authorizationScreensFactory")
-
-    private val enterPhoneNumberScreenFactory: StringQualifier = named("enterPhoneNumberScreenFactory")
-    private val enterAuthCodeScreenFactory: StringQualifier = named("enterAuthCodeScreenFactory")
+    internal val applicationCoordinator: StringQualifier = named("applicationCoordinator")
+    internal val authorizationCoordinator: StringQualifier = named("authorizationCoordinator")
+    internal val mainCoordinator: StringQualifier = named("mainCoordinator")
 
     @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
 
-        single<ApplicationCoordinatorsFactory>(applicationCoordinatorsFactory) {
-            ApplicationCoordinatorsFactoryImp(
+        single<ApplicationCoordinator>(applicationCoordinator) {
+            ApplicationCoordinatorImp(
+                tdLibGateway = get<TDLibGateway>(GatewaysModule.tdLibGateway),
+                systemMessageSendChannel =
+                get<SystemMessageSendChannel>(LaunchSystemModule.systemMessageSendChannel),
+                authorizationCoordinator =
+                get<AuthorizationCoordinatorInput>(authorizationCoordinator),
+                mainCoordinator = get<MainCoordinator>(mainCoordinator)
+            )
+        }
+
+        single<AuthorizationCoordinator>(authorizationCoordinator) {
+            AuthorizationCoordinatorImp(
                 context = get(),
+                router = get<Router>(SystemInfrastructureModule.router),
+                screensFactory = AuthorizationScreensFactoryImp,
+                systemMessageSendChannel =
+                get<SystemMessageSendChannel>(LaunchSystemModule.systemMessageSendChannel),
+                tdLibGateway = get<TDLibGateway>(GatewaysModule.tdLibGateway),
                 tdUpdateAuthorizationStateStack =
-                get<UpdateAuthorizationStateIReadOnlyStack>(updateAuthorizationStateIReadOnlyStack),
-                authorizationScreensFactory = get<AuthorizationScreensFactory>(authorizationScreensFactory),
-                systemMessageSendChannel = get<SystemMessageSendChannel>(systemMessageSendChannel)
-            )
-        }
-
-        single<AuthorizationScreensFactory>(authorizationScreensFactory) {
-            AuthorizationScreensFactoryImp(
-                enterPhoneNumberScreenFactory = get<EnterPhoneNumberScreenFactory>(enterPhoneNumberScreenFactory),
-                enterAuthCodeScreenFactory = get<EnterAuthCodeScreenFactory>(enterAuthCodeScreenFactory)
-            )
-        }
-
-        single<EnterPhoneNumberScreenFactory>(enterPhoneNumberScreenFactory) {
-            EnterPhoneNumberScreenFactoryImp(
-                enteredCorrectPhoneNumberReceiveChannel =
-                get<CorrectPhoneNumberReceiveChannel>(
-                    EnterPhoneNumberModule.enteredCorrectPhoneNumberReceiveChannel
-                ),
-                backButtonPressedInPhoneNumberScreenReceiveChannel =
-                get<BackButtonPressedReceiveChannel>(
-                    EnterPhoneNumberModule.backButtonPressedInPhoneNumberScreenReceiveChannel
+                get<UpdateAuthorizationStateIReadOnlyStack>(
+                    LaunchSystemModule.updateAuthorizationStateIReadOnlyStack
                 )
             )
         }
 
-        single<EnterAuthCodeScreenFactory>(enterAuthCodeScreenFactory) {
-            EnterAuthCodeScreenFactoryImp(
-                enteredCorrectAuthCodeReceiveChannel =
-                get<CorrectAuthCodeReceiveChannel>(
-                    EnterAuthCodeModule.enteredCorrectAuthCodeReceiveChannel
-                ),
-                backButtonPressedInAuthCodeScreenReceiveChannel =
-                get<BackButtonPressedReceiveChannel>(
-                    EnterAuthCodeModule.backButtonPressedInAuthCodeScreenReceiveChannel
-                )
+        single<MainCoordinator>(mainCoordinator) {
+            MainCoordinatorImp(
+                router = get<Router>(SystemInfrastructureModule.router),
+                viewControllersFactory = MainViewControllersFactoryImp
             )
         }
 

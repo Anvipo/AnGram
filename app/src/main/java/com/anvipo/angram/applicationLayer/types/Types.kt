@@ -8,12 +8,6 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.SendChannel
 import org.drinkless.td.libcore.telegram.TdApi
 
-typealias BackButtonPressedType = Unit
-
-typealias BackButtonPressedBroadcastChannel = BroadcastChannel<BackButtonPressedType>
-typealias BackButtonPressedReceiveChannel = ReceiveChannel<BackButtonPressedType>
-typealias BackButtonPressedSendChannel = SendChannel<BackButtonPressedType>
-
 
 typealias SystemMessageSendChannel = SendChannel<SystemMessage>
 typealias SystemMessageReceiveChannel = ReceiveChannel<SystemMessage>

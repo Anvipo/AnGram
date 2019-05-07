@@ -6,16 +6,15 @@ import com.anvipo.angram.applicationLayer.types.UpdateAuthorizationStateIReadOnl
 import com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway.TDLibGateway
 import com.anvipo.angram.coreLayer.assertionFailure
 import com.anvipo.angram.coreLayer.debugLog
+import com.anvipo.angram.coreLayer.message.SystemMessage
 import com.anvipo.angram.global.createTGSystemMessage
 import com.anvipo.angram.presentationLayer.common.baseClasses.BaseCoordinator
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.authorizationScreensFactory.AuthorizationScreensFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.launch
 import org.drinkless.td.libcore.telegram.TdApi
 import ru.terrakok.cicerone.Router
-import ru.terrakok.cicerone.android.support.SupportAppScreen
 
 class AuthorizationCoordinatorImp(
     private val context: Context,
@@ -26,11 +25,31 @@ class AuthorizationCoordinatorImp(
     private val systemMessageSendChannel: SystemMessageSendChannel
 ) : BaseCoordinator(), AuthorizationCoordinator {
 
-    override var finishFlow: (() -> Unit)? = null
-
     override fun coldStart() {
         showNeededScreen()
     }
+
+    override fun onEnterCorrectPhoneNumber(phoneNumber: String) {
+        val tag = "${this::class.java.simpleName} onEnterCorrectPhoneNumber"
+
+        val text = "$tag: onEnteredCorrectPhoneNumber: $phoneNumber"
+
+        systemMessageSendChannel.offer(createLogMessage(text))
+
+        showNeededScreen()
+    }
+
+    override fun onPressedBackButtonInEnterPhoneNumberScreen() {
+        val tag = "${this::class.java.simpleName} onPressedBackButtonInEnterPhoneNumberScreen"
+
+        val text = "$tag: back button pressed in enter phone number screen"
+
+        systemMessageSendChannel.offer(createLogMessage(text))
+
+        router.exit()
+    }
+
+    override var finishFlow: (() -> Unit)? = null
 
 
     /// PRIVATE
@@ -88,27 +107,27 @@ class AuthorizationCoordinatorImp(
 
 
     private fun showEnterPhoneNumberScreen() {
-        val enterPhoneNumberScreen = createAndSetupEnterPhoneNumberScreen()
+        val enterPhoneNumberScreen =
+            screensFactory.enterPhoneNumberScreenFactory.createEnterPhoneNumberViewController(tdLibGateway)
 
         router.newRootScreen(enterPhoneNumberScreen)
     }
 
     private fun showEnterAuthCodeScreen() {
-        val (
-            enterAuthCodeScreen,
-            enteredCorrectAuthCodeReceiveChannel,
-            backButtonPressedInAuthCodeScreenReceiveChannel
-        ) = screensFactory.enterAuthCodeScreenFactory.createEnterAuthCodeViewController(tdLibGateway)
+        val enterAuthCodeScreen =
+            screensFactory.enterAuthCodeScreenFactory.createEnterAuthCodeViewController()
 
-        handleEnteredCorrectAuthCode(enteredCorrectAuthCodeReceiveChannel)
+        TODO()
+
+        val tag = "${this::class.java.simpleName} handleEnteredCorrectAuthCode"
+
+//        val text = "$tag: onEnteredCorrectAuthCode: $correctAuthCode"
+
+//        systemMessageSendChannel.offer(createTGSystemMessage(text))
+
+        showNeededScreen()
 
         router.navigateTo(enterAuthCodeScreen)
-    }
-
-    private fun exit() {
-        GlobalScope.launch(context = Dispatchers.Main) {
-            router.exit()
-        }
     }
 
     private val onFinishFlow: () -> Unit = {
@@ -145,74 +164,10 @@ class AuthorizationCoordinatorImp(
         showNeededScreen()
     }
 
-    private fun handleEnteredCorrectPhoneNumber(enteredCorrectPhoneNumberReceiveChannel: ReceiveChannel<String>) {
-        val tag = "${this::class.java.simpleName} handleEnteredCorrectPhoneNumber"
-
-        val onEnteredCorrectPhoneNumber: (String) -> Unit = { correctPhoneNumber ->
-            val text = "$tag: onEnteredCorrectPhoneNumber: $correctPhoneNumber"
-
-            systemMessageSendChannel.offer(createTGSystemMessage(text))
-
-            showNeededScreen()
-        }
-
-        GlobalScope.launch {
-            val receivedEnteredCorrectPhoneNumber = enteredCorrectPhoneNumberReceiveChannel.receive()
-
-            onEnteredCorrectPhoneNumber(receivedEnteredCorrectPhoneNumber)
-        }
-    }
-
-    private fun handleEnteredCorrectAuthCode(enteredCorrectAuthCodeReceiveChannel: ReceiveChannel<String>) {
-        val tag = "${this::class.java.simpleName} handleEnteredCorrectAuthCode"
-
-        val onEnteredCorrectAuthCode: (String) -> Unit = { correctAuthCode ->
-            val text = "$tag: onEnteredCorrectAuthCode: $correctAuthCode"
-
-            systemMessageSendChannel.offer(createTGSystemMessage(text))
-
-            showNeededScreen()
-        }
-
-        GlobalScope.launch {
-            val receivedEnteredCorrectAuthCode = enteredCorrectAuthCodeReceiveChannel.receive()
-
-            onEnteredCorrectAuthCode(receivedEnteredCorrectAuthCode)
-        }
-    }
-
-    private fun handleBackButtonPressedInPhoneNumberScreen(
-        backButtonPressedInPhoneNumberScreenReceiveChannel: ReceiveChannel<Unit>
-    ) {
-        val tag = "${this::class.java.simpleName} handleBackButtonPressedInPhoneNumberScreen"
-
-        val onBackButtonPressed: (Unit) -> Unit = { _ ->
-            val text = "$tag: back button pressed in enter phone number screen"
-
-            systemMessageSendChannel.offer(createTGSystemMessage(text))
-
-            exit()
-        }
-
-        GlobalScope.launch {
-            val receivedBackButtonPress = backButtonPressedInPhoneNumberScreenReceiveChannel.receive()
-
-            onBackButtonPressed(receivedBackButtonPress)
-        }
-    }
-
-    private fun createAndSetupEnterPhoneNumberScreen(): SupportAppScreen {
-        val (
-            enterPhoneNumberScreen,
-            enteredCorrectPhoneNumberReceiveChannel,
-            backButtonPressedInPhoneNumberScreenReceiveChannel
-        ) = screensFactory.enterPhoneNumberScreenFactory.createEnterPhoneNumberViewController(tdLibGateway)
-
-        handleBackButtonPressedInPhoneNumberScreen(backButtonPressedInPhoneNumberScreenReceiveChannel)
-
-        handleEnteredCorrectPhoneNumber(enteredCorrectPhoneNumberReceiveChannel)
-
-        return enterPhoneNumberScreen
-    }
+    private fun createLogMessage(text: String): SystemMessage = SystemMessage(
+        text,
+        shouldBeShownToUser = false,
+        shouldBeShownInLogs = true
+    )
 
 }

@@ -9,6 +9,7 @@ import com.anvipo.angram.R
 import com.anvipo.angram.applicationLayer.di.LaunchSystemModule
 import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule
 import com.anvipo.angram.applicationLayer.navigation.coordinator.ApplicationCoordinator
+import com.anvipo.angram.applicationLayer.navigation.coordinator.di.ApplicationRootCoordinatorModule
 import com.anvipo.angram.applicationLayer.types.SystemMessageReceiveChannel
 import com.anvipo.angram.coreLayer.MessageDialogFragment
 import com.anvipo.angram.coreLayer.debugLog
@@ -76,7 +77,8 @@ class AppActivity : MvpAppCompatActivity(), CoroutineScope {
     private val currentFragment: BaseFragment?
         get() = supportFragmentManager.findFragmentById(R.id.container) as? BaseFragment
 
-    private val applicationCoordinator: ApplicationCoordinator by inject(LaunchSystemModule.applicationCoordinator)
+    private val applicationCoordinator: ApplicationCoordinator
+            by inject(ApplicationRootCoordinatorModule.applicationCoordinator)
     private val navigatorHolder: NavigatorHolder by inject(SystemInfrastructureModule.navigatorHolder)
 
     private val navigator: Navigator by lazy {

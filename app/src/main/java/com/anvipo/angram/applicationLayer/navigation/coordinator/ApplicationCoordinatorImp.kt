@@ -1,21 +1,22 @@
 package com.anvipo.angram.applicationLayer.navigation.coordinator
 
-import com.anvipo.angram.applicationLayer.navigation.coordinator.coordinatorFactory.ApplicationCoordinatorsFactory
 import com.anvipo.angram.applicationLayer.types.SystemMessageSendChannel
 import com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway.TDLibGateway
 import com.anvipo.angram.coreLayer.assertionFailure
 import com.anvipo.angram.coreLayer.message.SystemMessage
 import com.anvipo.angram.presentationLayer.common.baseClasses.BaseCoordinator
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.AuthorizationCoordinatorInput
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.AuthorizationCoordinatorOutput
+import com.anvipo.angram.presentationLayer.userStories.mainUserStory.coordinator.MainCoordinator
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.drinkless.td.libcore.telegram.TdApi
-import ru.terrakok.cicerone.Router
 
 class ApplicationCoordinatorImp(
-    private val router: Router,
-    private val coordinatorsFactory: ApplicationCoordinatorsFactory,
     private val tdLibGateway: TDLibGateway,
-    private val systemMessageSendChannel: SystemMessageSendChannel
+    private val systemMessageSendChannel: SystemMessageSendChannel,
+    private val authorizationCoordinator: AuthorizationCoordinatorInput,
+    private val mainCoordinator: MainCoordinator
 ) : BaseCoordinator(), ApplicationCoordinator {
 
     override fun coldStart() {
@@ -47,27 +48,17 @@ class ApplicationCoordinatorImp(
     }
 
     private fun startAuthFlow() {
-        val authCoordinator = coordinatorsFactory.createAuthCoordinator(
-            router = router,
-            tdLibGateway = tdLibGateway
-        )
-
-        authCoordinator.finishFlow = {
-            removeChildCoordinator(coordinator = authCoordinator)
+        (authorizationCoordinator as AuthorizationCoordinatorOutput).finishFlow = {
+            removeChildCoordinator(coordinator = authorizationCoordinator)
             startMainFlow()
         }
 
-        addChildCoordinator(coordinator = authCoordinator)
+        addChildCoordinator(coordinator = authorizationCoordinator)
 
-        authCoordinator.coldStart()
+        authorizationCoordinator.coldStart()
     }
 
     private fun startMainFlow() {
-        val mainCoordinator = coordinatorsFactory.createMainCoordinator(
-            router = router,
-            tdLibGateway = tdLibGateway
-        )
-
         addChildCoordinator(coordinator = mainCoordinator)
 
         mainCoordinator.coldStart()
