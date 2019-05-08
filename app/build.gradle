@@ -72,4 +72,7 @@ dependencies {
     // MVP Moxy
     kapt "com.arello-mobile:moxy-compiler:$moxy_version"
     implementation "com.arello-mobile:moxy:$moxy_version"
+
+    // Lottie
+    implementation "com.airbnb.android:lottie:$lottie_version"
 }

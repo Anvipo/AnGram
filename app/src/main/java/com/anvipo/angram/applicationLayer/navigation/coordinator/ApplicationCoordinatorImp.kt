@@ -4,26 +4,38 @@ import com.anvipo.angram.applicationLayer.types.SystemMessageSendChannel
 import com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway.TDLibGateway
 import com.anvipo.angram.coreLayer.assertionFailure
 import com.anvipo.angram.coreLayer.message.SystemMessage
+import com.anvipo.angram.global.createTGSystemMessage
 import com.anvipo.angram.presentationLayer.common.baseClasses.BaseCoordinator
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.AuthorizationCoordinatorInput
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.AuthorizationCoordinatorOutput
 import com.anvipo.angram.presentationLayer.userStories.mainUserStory.coordinator.MainCoordinator
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.drinkless.td.libcore.telegram.TdApi
+import kotlin.coroutines.CoroutineContext
 
 class ApplicationCoordinatorImp(
     private val tdLibGateway: TDLibGateway,
     private val systemMessageSendChannel: SystemMessageSendChannel,
     private val authorizationCoordinator: AuthorizationCoordinatorInput,
     private val mainCoordinator: MainCoordinator
-) : BaseCoordinator(), ApplicationCoordinator {
+) : BaseCoordinator(), ApplicationCoordinatorInput, ApplicationCoordinatorOutput {
 
     override fun coldStart() {
         childCoordinators.clear()
 
         configureApp()
     }
+
+    override fun cancelAllJobs() {
+        getAuthorizationStateRequestCatchingJob?.cancel()
+    }
+
+    override var finishFlow: (() -> Unit)? = null
+
+    override val coroutineContext: CoroutineContext = Dispatchers.IO
 
     /**
     Configure and starts app
@@ -38,7 +50,15 @@ class ApplicationCoordinatorImp(
     private fun startApp() {
         val tag = "${this::class.java.simpleName} startApp"
 
-        GlobalScope.launch {
+        val getAuthorizationStateRequestCatchingCoroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
+            val text = throwable.localizedMessage
+
+            systemMessageSendChannel.offer(createTGSystemMessage(text))
+        }
+
+        getAuthorizationStateRequestCatchingJob = launch(
+            context = coroutineContext + getAuthorizationStateRequestCatchingCoroutineExceptionHandler
+        ) {
             val authorizationStateResult = tdLibGateway.getAuthorizationStateRequestCatching()
 
             authorizationStateResult
@@ -109,5 +129,7 @@ class ApplicationCoordinatorImp(
             }
         }
     }
+
+    private var getAuthorizationStateRequestCatchingJob: Job? = null
 
 }

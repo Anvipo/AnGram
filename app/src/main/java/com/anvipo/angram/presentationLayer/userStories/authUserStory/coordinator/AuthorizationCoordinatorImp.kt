@@ -10,11 +10,14 @@ import com.anvipo.angram.coreLayer.message.SystemMessage
 import com.anvipo.angram.global.createTGSystemMessage
 import com.anvipo.angram.presentationLayer.common.baseClasses.BaseCoordinator
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.authorizationScreensFactory.AuthorizationScreensFactory
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.types.CorrectPhoneNumberType
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.drinkless.td.libcore.telegram.TdApi
 import ru.terrakok.cicerone.Router
+import kotlin.coroutines.CoroutineContext
 
 class AuthorizationCoordinatorImp(
     private val context: Context,
@@ -23,16 +26,16 @@ class AuthorizationCoordinatorImp(
     private val tdLibGateway: TDLibGateway,
     private val tdUpdateAuthorizationStateStack: UpdateAuthorizationStateIReadOnlyStack,
     private val systemMessageSendChannel: SystemMessageSendChannel
-) : BaseCoordinator(), AuthorizationCoordinator {
+) : BaseCoordinator(), AuthorizationCoordinatorInput, AuthorizationCoordinatorOutput {
 
     override fun coldStart() {
         showNeededScreen()
     }
 
-    override fun onEnterCorrectPhoneNumber(phoneNumber: String) {
+    override fun onEnterCorrectPhoneNumber(phoneNumber: CorrectPhoneNumberType) {
         val tag = "${this::class.java.simpleName} onEnterCorrectPhoneNumber"
 
-        val text = "$tag: onEnteredCorrectPhoneNumber: $phoneNumber"
+        val text = "$tag: entered correct phone number: $phoneNumber"
 
         systemMessageSendChannel.offer(createLogMessage(text))
 
@@ -51,6 +54,13 @@ class AuthorizationCoordinatorImp(
 
     override var finishFlow: (() -> Unit)? = null
 
+    override fun cancelAllJobs() {
+        setTdLibParametersCatchingJob?.cancel()
+        checkDatabaseEncryptionKeyCatchingJob?.cancel()
+    }
+
+    override val coroutineContext: CoroutineContext = Dispatchers.IO
+
 
     /// PRIVATE
 
@@ -58,7 +68,6 @@ class AuthorizationCoordinatorImp(
     private fun showNeededScreen() {
         val tag = "${this::class.java.simpleName} showNeededScreen"
 
-        // TODO: get last element
         val lastAuthorizationState = tdUpdateAuthorizationStateStack.peek()
 
         if (lastAuthorizationState == null) {
@@ -69,17 +78,21 @@ class AuthorizationCoordinatorImp(
 
         when (val currentAuthorizationState = lastAuthorizationState.authorizationState) {
             is TdApi.AuthorizationStateWaitPhoneNumber -> {
-                GlobalScope.launch(context = Dispatchers.Main) {
-                    showEnterPhoneNumberScreen()
-                }
+                showEnterPhoneNumberScreen()
             }
             is TdApi.AuthorizationStateWaitCode -> {
-                GlobalScope.launch(context = Dispatchers.Main) {
-                    showEnterAuthCodeScreen()
-                }
+                showEnterAuthCodeScreen()
             }
             is TdApi.AuthorizationStateWaitTdlibParameters -> {
-                GlobalScope.launch {
+                val setTdLibParametersCatchingCoroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
+                    val text = throwable.localizedMessage
+
+                    systemMessageSendChannel.offer(createTGSystemMessage(text))
+                }
+
+                setTdLibParametersCatchingJob = launch(
+                    context = coroutineContext + setTdLibParametersCatchingCoroutineExceptionHandler
+                ) {
                     val setTdLibParametersResult = tdLibGateway.setTdLibParametersCatching(context)
 
                     setTdLibParametersResult
@@ -88,7 +101,16 @@ class AuthorizationCoordinatorImp(
                 }
             }
             is TdApi.AuthorizationStateWaitEncryptionKey -> {
-                GlobalScope.launch {
+                val checkDatabaseEncryptionKeyCatchingCoroutineExceptionHandler =
+                    CoroutineExceptionHandler { _, throwable ->
+                        val text = throwable.localizedMessage
+
+                        systemMessageSendChannel.offer(createTGSystemMessage(text))
+                    }
+
+                checkDatabaseEncryptionKeyCatchingJob = launch(
+                    context = coroutineContext + checkDatabaseEncryptionKeyCatchingCoroutineExceptionHandler
+                ) {
                     val checkDatabaseEncryptionKeyResult = tdLibGateway.checkDatabaseEncryptionKeyCatching()
 
                     checkDatabaseEncryptionKeyResult
@@ -125,13 +147,7 @@ class AuthorizationCoordinatorImp(
 
 //        systemMessageSendChannel.offer(createTGSystemMessage(text))
 
-        showNeededScreen()
-
         router.navigateTo(enterAuthCodeScreen)
-    }
-
-    private val onFinishFlow: () -> Unit = {
-        finishFlow?.invoke()
     }
 
 
@@ -169,5 +185,8 @@ class AuthorizationCoordinatorImp(
         shouldBeShownToUser = false,
         shouldBeShownInLogs = true
     )
+
+    private var setTdLibParametersCatchingJob: Job? = null
+    private var checkDatabaseEncryptionKeyCatchingJob: Job? = null
 
 }

@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="share_to">Поделиться с</string>
+    <string name="loading">Загрузка</string>
+    <string name="phone_number_invalid">Неверный номер телефона</string>
+    <string name="enter_your_phone_number_title">Введите Ваш номер телефона</string>
+    <string name="unknown_error">Неизвестная ошибка</string>
+    <string name="phone_number_text_input_hint">Номер телефона</string>
+    <string name="next_button_text">Далее</string>
+    <string name="error_title">Ошибка</string>
+    <string name="phone_number_cant_be_empty">Номер телефона не может быть пустым</string>
+    <string name="query_canceled">Запрос отменён</string>
+    <string name="invalid_phone_number_length">Некорректная длина номера телефона</string>
 </resources>

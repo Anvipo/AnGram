@@ -2,13 +2,12 @@ package com.anvipo.angram.applicationLayer.navigation.coordinator.di
 
 import com.anvipo.angram.applicationLayer.di.LaunchSystemModule
 import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule
-import com.anvipo.angram.applicationLayer.navigation.coordinator.ApplicationCoordinator
+import com.anvipo.angram.applicationLayer.navigation.coordinator.ApplicationCoordinatorInput
 import com.anvipo.angram.applicationLayer.navigation.coordinator.ApplicationCoordinatorImp
 import com.anvipo.angram.applicationLayer.types.SystemMessageSendChannel
 import com.anvipo.angram.applicationLayer.types.UpdateAuthorizationStateIReadOnlyStack
 import com.anvipo.angram.businessLogicLayer.di.GatewaysModule
 import com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway.TDLibGateway
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.AuthorizationCoordinator
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.AuthorizationCoordinatorImp
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.AuthorizationCoordinatorInput
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.authorizationScreensFactory.AuthorizationScreensFactoryImp
@@ -30,7 +29,7 @@ object ApplicationRootCoordinatorModule {
     @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
 
-        single<ApplicationCoordinator>(applicationCoordinator) {
+        single<ApplicationCoordinatorInput>(applicationCoordinator) {
             ApplicationCoordinatorImp(
                 tdLibGateway = get<TDLibGateway>(GatewaysModule.tdLibGateway),
                 systemMessageSendChannel =
@@ -41,7 +40,7 @@ object ApplicationRootCoordinatorModule {
             )
         }
 
-        single<AuthorizationCoordinator>(authorizationCoordinator) {
+        single<AuthorizationCoordinatorInput>(authorizationCoordinator) {
             AuthorizationCoordinatorImp(
                 context = get(),
                 router = get<Router>(SystemInfrastructureModule.router),

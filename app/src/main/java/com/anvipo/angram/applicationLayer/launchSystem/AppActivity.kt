@@ -8,15 +8,14 @@ import androidx.fragment.app.FragmentTransaction
 import com.anvipo.angram.R
 import com.anvipo.angram.applicationLayer.di.LaunchSystemModule
 import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule
-import com.anvipo.angram.applicationLayer.navigation.coordinator.ApplicationCoordinator
+import com.anvipo.angram.applicationLayer.navigation.coordinator.ApplicationCoordinatorInput
 import com.anvipo.angram.applicationLayer.navigation.coordinator.di.ApplicationRootCoordinatorModule
 import com.anvipo.angram.applicationLayer.types.SystemMessageReceiveChannel
 import com.anvipo.angram.coreLayer.MessageDialogFragment
-import com.anvipo.angram.coreLayer.debugLog
+import com.anvipo.angram.coreLayer.base.baseClasses.BaseFragment
 import com.anvipo.angram.coreLayer.message.SystemMessage
 import com.anvipo.angram.coreLayer.message.SystemMessageType
 import com.anvipo.angram.coreLayer.mvp.MvpAppCompatActivity
-import com.anvipo.angram.presentationLayer.common.baseClasses.BaseFragment
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
 import ru.terrakok.cicerone.Navigator
@@ -41,7 +40,7 @@ class AppActivity : MvpAppCompatActivity(), CoroutineScope {
         if (savedInstanceState == null) {
             applicationCoordinator.coldStart()
         } else {
-            debugLog("$simpleName onCreate savedInstanceState != null")
+            applicationCoordinator.hotStart()
         }
     }
 
@@ -77,7 +76,7 @@ class AppActivity : MvpAppCompatActivity(), CoroutineScope {
     private val currentFragment: BaseFragment?
         get() = supportFragmentManager.findFragmentById(R.id.container) as? BaseFragment
 
-    private val applicationCoordinator: ApplicationCoordinator
+    private val applicationCoordinator: ApplicationCoordinatorInput
             by inject(ApplicationRootCoordinatorModule.applicationCoordinator)
     private val navigatorHolder: NavigatorHolder by inject(SystemInfrastructureModule.navigatorHolder)
 
@@ -133,7 +132,7 @@ class AppActivity : MvpAppCompatActivity(), CoroutineScope {
     }
 
     private fun showToastMessage(message: String) {
-        Toast.makeText(this.applicationContext, message, Toast.LENGTH_LONG).show()
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
     private val simpleName: String

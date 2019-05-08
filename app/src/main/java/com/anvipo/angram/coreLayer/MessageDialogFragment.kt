@@ -13,7 +13,7 @@ class MessageDialogFragment : DialogFragment() {
     private val message: String? by argument(ARG_MESSAGE)
     private val positiveText: String? by argument(ARG_POSITIVE_TEXT)
     private val negativeText: String? by argument(ARG_NEGATIVE_TEXT)
-    private val neutralText: String? by argument(ARG_NEGATIVE_TEXT)
+    private val neutralText: String? by argument(ARG_NEUTRAL_TEXT)
 
     private val clickListener: OnClickListener
         get() = when {

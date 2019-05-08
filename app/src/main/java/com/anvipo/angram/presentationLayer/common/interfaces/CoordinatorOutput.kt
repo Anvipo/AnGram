@@ -1,6 +1,6 @@
 package com.anvipo.angram.presentationLayer.common.interfaces
 
-interface CoordinatorOutput {
+interface CoordinatorOutput : Coordinatorable {
 
     var finishFlow: (() -> Unit)?
 

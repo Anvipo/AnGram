@@ -94,7 +94,7 @@ fun Fragment.tryOpenLink(
                 Intent.ACTION_VIEW,
                 when {
                     URLUtil.isValidUrl(link) -> Uri.parse(link)
-                    else -> Uri.parse(basePath + link)
+                    else -> Uri.parse("$basePath$link")
                 }
             )
         )
@@ -129,13 +129,11 @@ fun Fragment.sendEmail(email: String) {
     )
 }
 
-fun Fragment.showSnackMessage(message: String) {
-    view?.let {
-        val snackbar = Snackbar.make(it, message, Snackbar.LENGTH_LONG)
-        val messageTextView = snackbar.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
-        messageTextView.setTextColor(Color.WHITE)
-        snackbar.show()
-    }
+fun View.showSnackbarMessage(message: String) {
+    val snackbar = Snackbar.make(this, message, Snackbar.LENGTH_LONG)
+    val messageTextView = snackbar.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
+    messageTextView.setTextColor(Color.WHITE)
+    snackbar.show()
 }
 
 fun AppCompatActivity.hideKeyboard() {
@@ -145,16 +143,14 @@ fun AppCompatActivity.hideKeyboard() {
     }
 }
 
+fun Context.hideKeyboard(view: View) {
+    val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+}
+
 fun Any.objectScopeName() = "${javaClass.simpleName}_${hashCode()}"
 
 fun View.setBackgroundTintByColor(@ColorInt color: Int) {
     val wrappedDrawable = DrawableCompat.wrap(background)
     DrawableCompat.setTint(wrappedDrawable.mutate(), color)
-}
-
-fun View.showSnackBar(
-    message: String,
-    duration: Int
-) {
-    Snackbar.make(this, message, duration).show()
 }

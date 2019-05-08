@@ -1,6 +1,6 @@
 package com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthCode.view
 
-import com.anvipo.angram.presentationLayer.common.interfaces.BaseView
+import com.anvipo.angram.coreLayer.base.baseInterfaces.BaseView
 
 interface EnterAuthCodeView : BaseView {
 
