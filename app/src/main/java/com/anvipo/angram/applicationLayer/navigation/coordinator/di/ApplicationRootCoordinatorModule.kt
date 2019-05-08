@@ -2,8 +2,8 @@ package com.anvipo.angram.applicationLayer.navigation.coordinator.di
 
 import com.anvipo.angram.applicationLayer.di.LaunchSystemModule
 import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule
-import com.anvipo.angram.applicationLayer.navigation.coordinator.ApplicationCoordinatorInput
 import com.anvipo.angram.applicationLayer.navigation.coordinator.ApplicationCoordinatorImp
+import com.anvipo.angram.applicationLayer.navigation.coordinator.ApplicationCoordinatorInput
 import com.anvipo.angram.applicationLayer.types.SystemMessageSendChannel
 import com.anvipo.angram.applicationLayer.types.UpdateAuthorizationStateIReadOnlyStack
 import com.anvipo.angram.businessLogicLayer.di.GatewaysModule
