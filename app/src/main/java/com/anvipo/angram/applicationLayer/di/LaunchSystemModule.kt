@@ -1,10 +1,9 @@
 package com.anvipo.angram.applicationLayer.di
 
+import com.anvipo.angram.applicationLayer.coordinator.ApplicationCoordinatorOutput
+import com.anvipo.angram.applicationLayer.coordinator.di.ApplicationRootCoordinatorModule
 import com.anvipo.angram.applicationLayer.launchSystem.appActivity.presenter.AppPresenterImp
-import com.anvipo.angram.applicationLayer.navigation.coordinator.ApplicationCoordinatorOutput
-import com.anvipo.angram.applicationLayer.navigation.coordinator.di.ApplicationRootCoordinatorModule
 import com.anvipo.angram.applicationLayer.types.*
-import com.anvipo.angram.coreLayer.collections.MutableStack
 import com.anvipo.angram.coreLayer.message.SystemMessage
 import kotlinx.coroutines.channels.BroadcastChannel
 import org.drinkless.td.libcore.telegram.TdApi
@@ -15,23 +14,23 @@ import org.koin.dsl.module
 
 object LaunchSystemModule {
 
-    internal val updateAuthorizationStateIMutableStack: StringQualifier = named("updateAuthorizationStateIMutableStack")
-    internal val updateAuthorizationStateIReadOnlyStack: StringQualifier =
-        named("updateAuthorizationStateIReadOnlyStack")
+    internal val updateAuthorizationStateMutableList: StringQualifier =
+        named("updateAuthorizationStateMutableList")
+    internal val updateAuthorizationStateList: StringQualifier = named("updateAuthorizationStateList")
 
-    internal val systemMessageReceiveChannel: StringQualifier = named("systemMessageReceiveChannel")
+    private val systemMessageReceiveChannel: StringQualifier = named("systemMessageReceiveChannel")
     internal val systemMessageSendChannel: StringQualifier = named("systemMessageSendChannel")
     private val systemMessageBroadcastChannel: StringQualifier = named("systemMessageBroadcastChannel")
 
     @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
 
-        single<UpdateAuthorizationStateIReadOnlyStack>(updateAuthorizationStateIReadOnlyStack) {
-            get<UpdateAuthorizationStateIMutableStack>(updateAuthorizationStateIMutableStack)
+        single<UpdateAuthorizationStateList>(updateAuthorizationStateList) {
+            get<UpdateAuthorizationStateList>(updateAuthorizationStateMutableList)
         }
 
-        single<UpdateAuthorizationStateIMutableStack>(updateAuthorizationStateIMutableStack) {
-            MutableStack<TdApi.UpdateAuthorizationState>()
+        single<UpdateAuthorizationStateMutableList>(updateAuthorizationStateMutableList) {
+            mutableListOf<TdApi.UpdateAuthorizationState>()
         }
 
         single<SystemMessageSendChannel>(systemMessageSendChannel) {

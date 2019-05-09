@@ -2,9 +2,9 @@ package com.anvipo.angram.applicationLayer.launchSystem.appActivity.presenter
 
 import android.util.Log
 import com.anvipo.angram.BuildConfig
+import com.anvipo.angram.applicationLayer.coordinator.ApplicationCoordinatorOutput
 import com.anvipo.angram.applicationLayer.launchSystem.App
 import com.anvipo.angram.applicationLayer.launchSystem.appActivity.view.AppView
-import com.anvipo.angram.applicationLayer.navigation.coordinator.ApplicationCoordinatorOutput
 import com.anvipo.angram.applicationLayer.types.SystemMessageReceiveChannel
 import com.anvipo.angram.businessLogicLayer.useCases.base.BaseUseCase
 import com.anvipo.angram.coreLayer.CoreHelpers

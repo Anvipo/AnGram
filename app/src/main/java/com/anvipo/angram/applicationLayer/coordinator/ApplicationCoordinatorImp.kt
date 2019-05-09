@@ -1,4 +1,4 @@
-package com.anvipo.angram.applicationLayer.navigation.coordinator
+package com.anvipo.angram.applicationLayer.coordinator
 
 import com.anvipo.angram.applicationLayer.types.SystemMessageSendChannel
 import com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway.TDLibGateway

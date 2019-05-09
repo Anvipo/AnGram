@@ -1,11 +1,11 @@
-package com.anvipo.angram.applicationLayer.navigation.coordinator.di
+package com.anvipo.angram.applicationLayer.coordinator.di
 
+import com.anvipo.angram.applicationLayer.coordinator.ApplicationCoordinatorImp
+import com.anvipo.angram.applicationLayer.coordinator.ApplicationCoordinatorInput
 import com.anvipo.angram.applicationLayer.di.LaunchSystemModule
 import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule
-import com.anvipo.angram.applicationLayer.navigation.coordinator.ApplicationCoordinatorImp
-import com.anvipo.angram.applicationLayer.navigation.coordinator.ApplicationCoordinatorInput
 import com.anvipo.angram.applicationLayer.types.SystemMessageSendChannel
-import com.anvipo.angram.applicationLayer.types.UpdateAuthorizationStateIReadOnlyStack
+import com.anvipo.angram.applicationLayer.types.UpdateAuthorizationStateList
 import com.anvipo.angram.businessLogicLayer.di.GatewaysModule
 import com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway.TDLibGateway
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.AuthorizationCoordinatorImp
@@ -48,9 +48,9 @@ object ApplicationRootCoordinatorModule {
                 systemMessageSendChannel =
                 get<SystemMessageSendChannel>(LaunchSystemModule.systemMessageSendChannel),
                 tdLibGateway = get<TDLibGateway>(GatewaysModule.tdLibGateway),
-                tdUpdateAuthorizationStateStack =
-                get<UpdateAuthorizationStateIReadOnlyStack>(
-                    LaunchSystemModule.updateAuthorizationStateIReadOnlyStack
+                updateAuthorizationStateList =
+                get<UpdateAuthorizationStateList>(
+                    LaunchSystemModule.updateAuthorizationStateList
                 )
             )
         }

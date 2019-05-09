@@ -2,12 +2,12 @@ package com.anvipo.angram.applicationLayer.launchSystem
 
 import android.app.Application
 import com.anvipo.angram.BuildConfig
+import com.anvipo.angram.applicationLayer.coordinator.di.ApplicationRootCoordinatorModule
 import com.anvipo.angram.applicationLayer.di.LaunchSystemModule
-import com.anvipo.angram.applicationLayer.di.LaunchSystemModule.updateAuthorizationStateIMutableStack
+import com.anvipo.angram.applicationLayer.di.LaunchSystemModule.updateAuthorizationStateMutableList
 import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule
-import com.anvipo.angram.applicationLayer.navigation.coordinator.di.ApplicationRootCoordinatorModule
 import com.anvipo.angram.applicationLayer.types.SystemMessageSendChannel
-import com.anvipo.angram.applicationLayer.types.UpdateAuthorizationStateIMutableStack
+import com.anvipo.angram.applicationLayer.types.UpdateAuthorizationStateMutableList
 import com.anvipo.angram.businessLogicLayer.di.GatewaysModule
 import com.anvipo.angram.businessLogicLayer.di.UseCasesModule
 import com.anvipo.angram.coreLayer.CoreHelpers.assertionFailure
@@ -87,8 +87,8 @@ class App : Application() {
 
     private val tdUpdateOptionStack: IMutableStack<TdApi.UpdateOption> = MutableStack()
 
-    private val tdUpdateAuthorizationStateStack: UpdateAuthorizationStateIMutableStack
-            by inject(updateAuthorizationStateIMutableStack)
+    private val tdUpdateAuthorizationStateMutableList: UpdateAuthorizationStateMutableList
+            by inject(updateAuthorizationStateMutableList)
 
     private val tdUpdateConnectionStateStack: IMutableStack<TdApi.UpdateConnectionState> = MutableStack()
 
@@ -223,7 +223,7 @@ class App : Application() {
         tag: String,
         updateAuthorizationState: TdApi.UpdateAuthorizationState
     ) {
-        tdUpdateAuthorizationStateStack.push(updateAuthorizationState)
+        tdUpdateAuthorizationStateMutableList += updateAuthorizationState
 
         when (val authorizationState = updateAuthorizationState.authorizationState) {
             is TdApi.AuthorizationStateWaitTdlibParameters -> {

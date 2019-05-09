@@ -2,7 +2,7 @@ package com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinato
 
 import android.content.Context
 import com.anvipo.angram.applicationLayer.types.SystemMessageSendChannel
-import com.anvipo.angram.applicationLayer.types.UpdateAuthorizationStateIReadOnlyStack
+import com.anvipo.angram.applicationLayer.types.UpdateAuthorizationStateList
 import com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway.TDLibGateway
 import com.anvipo.angram.coreLayer.CoreHelpers.assertionFailure
 import com.anvipo.angram.coreLayer.CoreHelpers.debugLog
@@ -24,7 +24,7 @@ class AuthorizationCoordinatorImp(
     private val router: Router,
     private val screensFactory: AuthorizationScreensFactory,
     private val tdLibGateway: TDLibGateway,
-    private val tdUpdateAuthorizationStateStack: UpdateAuthorizationStateIReadOnlyStack,
+    private val updateAuthorizationStateList: UpdateAuthorizationStateList,
     private val systemMessageSendChannel: SystemMessageSendChannel
 ) : BaseCoordinator(), AuthorizationCoordinatorInput, AuthorizationCoordinatorOutput {
 
@@ -69,10 +69,9 @@ class AuthorizationCoordinatorImp(
     private fun showNeededScreen() {
         val tag = "${this::class.java.simpleName} showNeededScreen"
 
-        val lastAuthorizationState = tdUpdateAuthorizationStateStack.peek()
+        val lastAuthorizationState = updateAuthorizationStateList.lastOrNull()
 
         if (lastAuthorizationState == null) {
-            // TODO: handle this case
             assertionFailure()
             return
         }
@@ -100,10 +99,30 @@ class AuthorizationCoordinatorImp(
                         systemMessageSendChannel.offer(createTGSystemMessage(errorText))
                     }
 
+                val penultimateIndex = updateAuthorizationStateList.size - 2
+
+                val penultimateUpdateAuthorizationState = updateAuthorizationStateList.getOrNull(penultimateIndex)
+
+                if (penultimateUpdateAuthorizationState == null) {
+                    assertionFailure("penultimateUpdateAuthorizationState == null")
+                    return
+                }
+
+                val withAuthCodeRoot =
+                    when (val penultimateAuthorizationState = penultimateUpdateAuthorizationState.authorizationState) {
+                        is TdApi.AuthorizationStateWaitPhoneNumber -> false
+                        is TdApi.AuthorizationStateWaitEncryptionKey -> true
+                        else -> {
+                            debugLog(penultimateAuthorizationState.toString())
+
+                            true
+                        }
+                    }
+
                 showEnterAuthCodeScreenJob = launch(
                     context = Dispatchers.Main + showEnterAuthCodeScreenCoroutineExceptionHandler
                 ) {
-                    showEnterAuthCodeScreen()
+                    showEnterAuthCodeScreen(withAuthCodeRoot)
                 }
             }
             is TdApi.AuthorizationStateWaitTdlibParameters -> {
@@ -161,21 +180,28 @@ class AuthorizationCoordinatorImp(
         router.newRootScreen(enterPhoneNumberScreen)
     }
 
-    private fun showEnterAuthCodeScreen() {
+    private fun showEnterAuthCodeScreen(withAuthCodeRoot: Boolean = false) {
         val enterAuthCodeScreen =
             screensFactory
                 .enterAuthCodeScreenFactory
                 .createEnterAuthCodeViewController()
 
-        TODO()
-
-        val tag = "${this::class.java.simpleName} handleEnteredCorrectAuthCode"
+//        val tag = "${this::class.java.simpleName} handleEnteredCorrectAuthCode"
 
 //        val text = "$tag: onEnteredCorrectAuthCode: $correctAuthCode"
 
 //        systemMessageSendChannel.offer(createTGSystemMessage(text))
 
-        router.navigateTo(enterAuthCodeScreen)
+        if (withAuthCodeRoot) {
+            val enterPhoneNumberScreen =
+                screensFactory
+                    .enterPhoneNumberScreenFactory
+                    .createEnterPhoneNumberViewController(tdLibGateway)
+
+            router.newRootChain(enterAuthCodeScreen, enterPhoneNumberScreen)
+        } else {
+            router.navigateTo(enterAuthCodeScreen)
+        }
     }
 
 

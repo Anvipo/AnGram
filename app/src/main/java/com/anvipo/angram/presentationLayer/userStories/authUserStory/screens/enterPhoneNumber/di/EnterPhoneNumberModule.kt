@@ -1,7 +1,7 @@
 package com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.di
 
+import com.anvipo.angram.applicationLayer.coordinator.di.ApplicationRootCoordinatorModule
 import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule
-import com.anvipo.angram.applicationLayer.navigation.coordinator.di.ApplicationRootCoordinatorModule
 import com.anvipo.angram.businessLogicLayer.di.UseCasesModule.enterPhoneNumberUseCase
 import com.anvipo.angram.businessLogicLayer.useCases.enterPhoneNumberUseCase.EnterPhoneNumberUseCase
 import com.anvipo.angram.coreLayer.ResourceManager
