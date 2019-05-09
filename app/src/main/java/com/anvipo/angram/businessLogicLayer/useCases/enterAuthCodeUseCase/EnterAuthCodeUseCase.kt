@@ -1,3 +1,5 @@
 package com.anvipo.angram.businessLogicLayer.useCases.enterAuthCodeUseCase
 
-interface EnterAuthCodeUseCase
+import com.anvipo.angram.businessLogicLayer.useCases.base.BaseUseCase
+
+interface EnterAuthCodeUseCase : BaseUseCase

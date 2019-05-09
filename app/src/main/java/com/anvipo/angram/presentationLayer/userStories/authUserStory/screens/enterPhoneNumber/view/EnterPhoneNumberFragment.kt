@@ -6,10 +6,9 @@ import android.text.TextWatcher
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import com.anvipo.angram.R
-import com.anvipo.angram.coreLayer.MessageDialogFragment
 import com.anvipo.angram.coreLayer.base.baseClasses.BaseFragment
 import com.anvipo.angram.coreLayer.hideKeyboard
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.di.EnterPhoneNumberModule
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.di.EnterPhoneNumberModule.enterPhoneNumberPresenter
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.presenter.EnterPhoneNumberPresenter
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.presenter.EnterPhoneNumberPresenterImp
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -23,16 +22,6 @@ class EnterPhoneNumberFragment : BaseFragment(), EnterPhoneNumberView {
     companion object {
         @JvmStatic
         fun createNewInstance(): EnterPhoneNumberView = EnterPhoneNumberFragment()
-    }
-
-    override fun showErrorAlert(text: String) {
-        MessageDialogFragment
-            .create(
-                message = text,
-                title = getString(R.string.error_title),
-                positive = getString(android.R.string.ok)
-            )
-            .show(childFragmentManager, null)
     }
 
     override fun hideNextButton() {
@@ -60,8 +49,7 @@ class EnterPhoneNumberFragment : BaseFragment(), EnterPhoneNumberView {
 
     @Suppress("ProtectedInFinal")
     @ProvidePresenter
-    protected fun providePresenter(): EnterPhoneNumberPresenterImp =
-        get(EnterPhoneNumberModule.enterPhoneNumberPresenter)
+    protected fun providePresenter(): EnterPhoneNumberPresenterImp = get(enterPhoneNumberPresenter)
 
     @InjectPresenter
     internal lateinit var mPresenter: EnterPhoneNumberPresenterImp
@@ -105,7 +93,6 @@ class EnterPhoneNumberFragment : BaseFragment(), EnterPhoneNumberView {
         val enteredPhoneNumber = enter_phone_number_edit_text.text.toString()
 
         presenter.onNextButtonPressed(enteredPhoneNumber)
-
     }
 
 }

@@ -1,7 +1,6 @@
 package com.anvipo.angram.coreLayer.base.baseClasses
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +9,8 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import com.anvipo.angram.applicationLayer.launchSystem.App
+import com.anvipo.angram.R
+import com.anvipo.angram.coreLayer.CoreHelpers.debugLog
 import com.anvipo.angram.coreLayer.MessageDialogFragment
 import com.anvipo.angram.coreLayer.MyProgressDialog
 import com.anvipo.angram.coreLayer.base.CoreConstants.PROGRESS_TAG
@@ -30,6 +30,7 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseView {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        extractDataFromBundle()
         setupClickListeners()
         setupToolbar()
 
@@ -50,6 +51,16 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseView {
         instanceStateSaved = true
     }
 
+
+    override fun showErrorAlert(text: String) {
+        MessageDialogFragment
+            .create(
+                message = text,
+                title = getString(R.string.error_title),
+                positive = getString(android.R.string.ok)
+            )
+            .show(childFragmentManager, null)
+    }
 
     override fun showToastMessage(text: String) {
         Toast.makeText(this.context, text, Toast.LENGTH_LONG).show()
@@ -93,7 +104,6 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseView {
 
         (myProgressDialog as MyProgressDialog).dismissAllowingStateLoss()
         childFragmentManager.executePendingTransactions()
-
     }
 
 
@@ -106,7 +116,7 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseView {
         val appCompatActivity = this.appCompatActivity
 
         if (appCompatActivity == null) {
-            Log.w(App.TAG, "appCompatActivity == null")
+            debugLog("appCompatActivity == null")
             return
         }
 
@@ -115,8 +125,12 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseView {
         val supportActionBar = this.supportActionBar
 
         if (supportActionBar == null) {
-            Log.d(App.TAG, "supportActionBar == null")
+            debugLog("supportActionBar == null")
             return
+        }
+
+        if (shouldShowBackButton) {
+            showBackButtonHelper()
         }
 
         supportActionBar.title = actionBarTitle
@@ -127,11 +141,12 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseView {
         }
     }
 
-    protected fun showBackButton() {
+    @Suppress("MemberVisibilityCanBePrivate")
+    protected fun showBackButtonHelper() {
         val supportActionBar = this.supportActionBar
 
         if (supportActionBar == null) {
-            Log.d(App.TAG, "supportActionBar == null")
+            debugLog("supportActionBar == null")
             return
         }
 
@@ -140,6 +155,8 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseView {
     }
 
     protected abstract fun setupClickListeners()
+
+    protected open fun extractDataFromBundle() {}
 
     protected abstract val presenter: BasePresenter
 
@@ -158,6 +175,8 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseView {
     @Suppress("MemberVisibilityCanBePrivate")
     protected val supportActionBar: ActionBar?
         get() = appCompatActivity?.supportActionBar
+
+    protected var shouldShowBackButton: Boolean = false
 
     private var instanceStateSaved: Boolean = false
 

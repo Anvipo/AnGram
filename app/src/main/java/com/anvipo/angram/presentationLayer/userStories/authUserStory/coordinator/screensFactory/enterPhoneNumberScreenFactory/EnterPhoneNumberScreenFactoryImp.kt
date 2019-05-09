@@ -7,10 +7,12 @@ import ru.terrakok.cicerone.android.support.SupportAppScreen
 
 object EnterPhoneNumberScreenFactoryImp : EnterPhoneNumberScreenFactory {
 
-    override fun createEnterPhoneNumberViewController(
-        tdLibGateway: TDLibGateway
-    ): SupportAppScreen = object : SupportAppScreen() {
+    object EnterPhoneNumberScreen : SupportAppScreen() {
         override fun getFragment(): Fragment = EnterPhoneNumberFragment.createNewInstance() as Fragment
     }
+
+    override fun createEnterPhoneNumberViewController(
+        tdLibGateway: TDLibGateway
+    ): SupportAppScreen = EnterPhoneNumberScreen
 
 }

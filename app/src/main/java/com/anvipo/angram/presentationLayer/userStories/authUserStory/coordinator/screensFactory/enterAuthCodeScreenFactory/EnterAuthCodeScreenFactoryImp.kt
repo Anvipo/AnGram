@@ -6,9 +6,12 @@ import ru.terrakok.cicerone.android.support.SupportAppScreen
 
 object EnterAuthCodeScreenFactoryImp : EnterAuthCodeScreenFactory {
 
-    override fun createEnterAuthCodeViewController(
-    ): SupportAppScreen = object : SupportAppScreen() {
-        override fun getFragment(): Fragment = EnterAuthCodeFragment.createNewInstance() as Fragment
+    data class EnterAuthCodeScreen(val shouldShowBackButton: Boolean) : SupportAppScreen() {
+        override fun getFragment(): Fragment =
+            EnterAuthCodeFragment.createNewInstance(shouldShowBackButton) as Fragment
     }
+
+    override fun createEnterAuthCodeViewController(showBackButton: Boolean): SupportAppScreen =
+        EnterAuthCodeScreen(shouldShowBackButton = showBackButton)
 
 }

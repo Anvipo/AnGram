@@ -9,9 +9,12 @@ import com.anvipo.angram.coreLayer.CoreHelpers.debugLog
 import com.anvipo.angram.coreLayer.message.SystemMessage
 import com.anvipo.angram.global.CoreHelpers.createTGSystemMessage
 import com.anvipo.angram.presentationLayer.common.baseClasses.BaseCoordinator
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinatorEnterAuthCodeOutput
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinatorEnterPhoneNumberOutput
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinatorInput
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.authorizationScreensFactory.AuthorizationScreensFactory
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.enterPhoneNumberScreenFactory.EnterPhoneNumberScreenFactoryImp
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthCode.types.CorrectAuthCodeType
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.types.CorrectPhoneNumberType
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -30,7 +33,8 @@ class AuthorizationCoordinatorImp(
     private val systemMessageSendChannel: SystemMessageSendChannel
 ) : BaseCoordinator(),
     AuthorizationCoordinatorInput,
-    AuthorizationCoordinatorEnterPhoneNumberOutput {
+    AuthorizationCoordinatorEnterPhoneNumberOutput,
+    AuthorizationCoordinatorEnterAuthCodeOutput {
 
     override fun coldStart() {
         showNeededScreen()
@@ -51,9 +55,23 @@ class AuthorizationCoordinatorImp(
 
         val text = "$tag: back button pressed in enter phone number screen"
 
+        debugLog(text)
+
+        router.finishChain()
+    }
+
+    override fun onPressedBackButtonInEnterAuthCodeScreen() {
+        val tag = "${this::class.java.simpleName} onPressedBackButtonInEnterAuthCodeScreen"
+
+        val text = "$tag: back button pressed in enter auth code screen"
+
         systemMessageSendChannel.offer(createLogMessage(text))
 
-        router.exit()
+        router.backTo(EnterPhoneNumberScreenFactoryImp.EnterPhoneNumberScreen)
+    }
+
+    override fun onEnterCorrectAuthCode(authCode: CorrectAuthCodeType) {
+        TODO("not implemented")
     }
 
     override var finishFlow: (() -> Unit)? = null
@@ -81,21 +99,23 @@ class AuthorizationCoordinatorImp(
         }
 
         when (val currentAuthorizationState = lastAuthorizationState.authorizationState) {
-            is TdApi.AuthorizationStateWaitPhoneNumber -> {
-                val showEnterPhoneNumberScreenCoroutineExceptionHandler =
-                    CoroutineExceptionHandler { _, error ->
-                        val errorText = error.localizedMessage
-
-                        systemMessageSendChannel.offer(createTGSystemMessage(errorText))
-                    }
-
-                showEnterPhoneNumberScreenJob = launch(
-                    context = Dispatchers.Main + showEnterPhoneNumberScreenCoroutineExceptionHandler
-                ) {
-                    showEnterPhoneNumberScreen()
-                }
-            }
-            is TdApi.AuthorizationStateWaitCode -> {
+//            is TdApi.AuthorizationStateWaitPhoneNumber -> {
+//                val showEnterPhoneNumberScreenCoroutineExceptionHandler =
+//                    CoroutineExceptionHandler { _, error ->
+//                        val errorText = error.localizedMessage
+//
+//                        systemMessageSendChannel.offer(createTGSystemMessage(errorText))
+//                    }
+//
+//                showEnterPhoneNumberScreenJob = launch(
+//                    context = Dispatchers.Main + showEnterPhoneNumberScreenCoroutineExceptionHandler
+//                ) {
+//
+//                    showEnterPhoneNumberScreen()
+//                }
+//            }
+            // TODO: temp
+            is TdApi.AuthorizationStateWaitPhoneNumber, is TdApi.AuthorizationStateWaitCode -> {
                 val showEnterAuthCodeScreenCoroutineExceptionHandler =
                     CoroutineExceptionHandler { _, error ->
                         val errorText = error.localizedMessage
@@ -185,11 +205,6 @@ class AuthorizationCoordinatorImp(
     }
 
     private fun showEnterAuthCodeScreen(withAuthCodeRoot: Boolean = false) {
-        val enterAuthCodeScreen =
-            screensFactory
-                .enterAuthCodeScreenFactory
-                .createEnterAuthCodeViewController()
-
 //        val tag = "${this::class.java.simpleName} handleEnteredCorrectAuthCode"
 
 //        val text = "$tag: onEnteredCorrectAuthCode: $correctAuthCode"
@@ -197,13 +212,23 @@ class AuthorizationCoordinatorImp(
 //        systemMessageSendChannel.offer(createTGSystemMessage(text))
 
         if (withAuthCodeRoot) {
+            val enterAuthCodeScreen =
+                screensFactory
+                    .enterAuthCodeScreenFactory
+                    .createEnterAuthCodeViewController(showBackButton = true)
+
             val enterPhoneNumberScreen =
                 screensFactory
                     .enterPhoneNumberScreenFactory
                     .createEnterPhoneNumberViewController(tdLibGateway)
 
-            router.newRootChain(enterAuthCodeScreen, enterPhoneNumberScreen)
+            router.newRootChain(enterPhoneNumberScreen, enterAuthCodeScreen)
         } else {
+            val enterAuthCodeScreen =
+                screensFactory
+                    .enterAuthCodeScreenFactory
+                    .createEnterAuthCodeViewController(showBackButton = false)
+
             router.navigateTo(enterAuthCodeScreen)
         }
     }

@@ -7,7 +7,6 @@ import ru.terrakok.cicerone.android.support.SupportAppScreen
 
 object ScreensFactory {
 
-
     data class ExternalBrowserFlow(
         val url: String
     ) : SupportAppScreen() {

@@ -4,6 +4,6 @@ import ru.terrakok.cicerone.android.support.SupportAppScreen
 
 interface EnterAuthCodeScreenFactory {
 
-    fun createEnterAuthCodeViewController(): SupportAppScreen
+    fun createEnterAuthCodeViewController(showBackButton: Boolean = false): SupportAppScreen
 
 }

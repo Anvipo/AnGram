@@ -13,4 +13,5 @@
     <string name="phone_number_cant_be_empty">Phone number can\'t be empty</string>
     <string name="query_canceled">Query canceled</string>
     <string name="invalid_phone_number_length">Некорректная длина номера телефона</string>
+    <string name="enter_auth_code_title">Enter auth code</string>
 </resources>
