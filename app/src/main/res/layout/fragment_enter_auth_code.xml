@@ -29,7 +29,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="347dp"
             android:layout_height="wrap_content"
-            android:hint="Auth code"
+            android:hint="@string/authentication_code"
             app:errorEnabled="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -41,8 +41,8 @@
                 android:id="@+id/enter_auth_code_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="phone"
-                android:maxLength="8" />
+                android:inputType="number"
+                android:maxLength="5" />
         </com.google.android.material.textfield.TextInputLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

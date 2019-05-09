@@ -49,8 +49,10 @@ class EnterPhoneNumberPresenterImp(
                 .onFailure { error ->
                     val errorMessage: String = resourceManager.run {
                         when (error) {
-                            is TdApiError.Custom.EmptyPhoneNumber -> getString(R.string.phone_number_cant_be_empty)
-                            is TdApiError.Custom.PhoneNumberInvalid -> getString(R.string.phone_number_invalid)
+                            is TdApiError.Custom.EmptyParameter ->
+                                getString(R.string.phone_number_cant_be_empty)
+                            is TdApiError.Custom.BadRequest ->
+                                getString(R.string.phone_number_invalid)
                             else -> getString(R.string.unknown_error)
                         }
                     }

@@ -14,4 +14,6 @@
     <string name="query_canceled">Query canceled</string>
     <string name="invalid_phone_number_length">Некорректная длина номера телефона</string>
     <string name="enter_auth_code_title">Enter auth code</string>
+    <string name="authentication_code_cant_be_empty">Authentication code can\'t be empty</string>
+    <string name="authentication_code">Authentication code</string>
 </resources>

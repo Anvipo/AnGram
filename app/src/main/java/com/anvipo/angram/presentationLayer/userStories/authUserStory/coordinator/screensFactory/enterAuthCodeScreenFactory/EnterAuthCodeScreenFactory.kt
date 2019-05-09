@@ -4,6 +4,10 @@ import ru.terrakok.cicerone.android.support.SupportAppScreen
 
 interface EnterAuthCodeScreenFactory {
 
-    fun createEnterAuthCodeViewController(showBackButton: Boolean = false): SupportAppScreen
+    fun createEnterAuthCodeViewController(
+        shouldShowBackButton: Boolean,
+        expectedCodeLength: Int,
+        enteredPhoneNumber: String
+    ): SupportAppScreen
 
 }

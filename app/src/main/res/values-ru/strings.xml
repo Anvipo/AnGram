@@ -12,4 +12,6 @@
     <string name="query_canceled">Запрос отменён</string>
     <string name="invalid_phone_number_length">Некорректная длина номера телефона</string>
     <string name="enter_auth_code_title">Введите код аутентификации</string>
+    <string name="authentication_code_cant_be_empty">Код аутентификации не может быть пустым</string>
+    <string name="authentication_code">Код аутентификации</string>
 </resources>

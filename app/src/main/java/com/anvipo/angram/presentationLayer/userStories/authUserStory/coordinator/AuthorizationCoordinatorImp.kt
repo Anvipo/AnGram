@@ -99,29 +99,59 @@ class AuthorizationCoordinatorImp(
         }
 
         when (val currentAuthorizationState = lastAuthorizationState.authorizationState) {
-//            is TdApi.AuthorizationStateWaitPhoneNumber -> {
-//                val showEnterPhoneNumberScreenCoroutineExceptionHandler =
-//                    CoroutineExceptionHandler { _, error ->
-//                        val errorText = error.localizedMessage
-//
-//                        systemMessageSendChannel.offer(createTGSystemMessage(errorText))
-//                    }
-//
-//                showEnterPhoneNumberScreenJob = launch(
-//                    context = Dispatchers.Main + showEnterPhoneNumberScreenCoroutineExceptionHandler
-//                ) {
-//
-//                    showEnterPhoneNumberScreen()
-//                }
-//            }
-            // TODO: temp
-            is TdApi.AuthorizationStateWaitPhoneNumber, is TdApi.AuthorizationStateWaitCode -> {
+            is TdApi.AuthorizationStateWaitPhoneNumber -> {
+                val showEnterPhoneNumberScreenCoroutineExceptionHandler =
+                    CoroutineExceptionHandler { _, error ->
+                        val errorText = error.localizedMessage
+
+                        systemMessageSendChannel.offer(createTGSystemMessage(errorText))
+                    }
+
+                showEnterPhoneNumberScreenJob = launch(
+                    context = Dispatchers.Main + showEnterPhoneNumberScreenCoroutineExceptionHandler
+                ) {
+
+                    showEnterPhoneNumberScreen()
+                }
+            }
+            is TdApi.AuthorizationStateWaitCode -> {
                 val showEnterAuthCodeScreenCoroutineExceptionHandler =
                     CoroutineExceptionHandler { _, error ->
                         val errorText = error.localizedMessage
 
                         systemMessageSendChannel.offer(createTGSystemMessage(errorText))
                     }
+
+                val codeInfo = currentAuthorizationState.codeInfo
+                val codeInfoType = codeInfo.type
+
+                val expectedCodeLength: Int = if (codeInfoType is TdApi.AuthenticationCodeTypeSms) {
+                    codeInfoType.length
+                } else {
+                    assertionFailure()
+                    0
+                }
+
+                val enteredPhoneNumber = codeInfo.phoneNumber
+
+//                if (!currentAuthorizationState.isRegistered) {
+//                    val termsOfService = currentAuthorizationState.termsOfService
+//
+//                    if (termsOfService != null) {
+//                        val entities = termsOfService.text.entities
+//                        if (entities.isNotEmpty()) {
+//                            assertionFailure()
+//                        }
+//
+//                        val termsOfServiceText = termsOfService.text.text
+//
+//                        assertionFailure()
+//                    }
+//
+//                    assertionFailure()
+//
+//                    return
+//                }
 
                 val penultimateIndex = updateAuthorizationStateList.size - 2
 
@@ -132,7 +162,7 @@ class AuthorizationCoordinatorImp(
                     return
                 }
 
-                val withAuthCodeRoot =
+                val withAuthCodeAsRootScreen =
                     when (val penultimateAuthorizationState = penultimateUpdateAuthorizationState.authorizationState) {
                         is TdApi.AuthorizationStateWaitPhoneNumber -> false
                         is TdApi.AuthorizationStateWaitEncryptionKey -> true
@@ -146,7 +176,11 @@ class AuthorizationCoordinatorImp(
                 showEnterAuthCodeScreenJob = launch(
                     context = Dispatchers.Main + showEnterAuthCodeScreenCoroutineExceptionHandler
                 ) {
-                    showEnterAuthCodeScreen(withAuthCodeRoot)
+                    showEnterAuthCodeScreen(
+                        withAuthCodeAsRootScreen = withAuthCodeAsRootScreen,
+                        expectedCodeLength = expectedCodeLength,
+                        enteredPhoneNumber = enteredPhoneNumber
+                    )
                 }
             }
             is TdApi.AuthorizationStateWaitTdlibParameters -> {
@@ -204,18 +238,26 @@ class AuthorizationCoordinatorImp(
         router.newRootScreen(enterPhoneNumberScreen)
     }
 
-    private fun showEnterAuthCodeScreen(withAuthCodeRoot: Boolean = false) {
+    private fun showEnterAuthCodeScreen(
+        withAuthCodeAsRootScreen: Boolean = false,
+        expectedCodeLength: Int = 5,
+        enteredPhoneNumber: String = ""
+    ) {
 //        val tag = "${this::class.java.simpleName} handleEnteredCorrectAuthCode"
 
 //        val text = "$tag: onEnteredCorrectAuthCode: $correctAuthCode"
 
 //        systemMessageSendChannel.offer(createTGSystemMessage(text))
 
-        if (withAuthCodeRoot) {
+        if (withAuthCodeAsRootScreen) {
             val enterAuthCodeScreen =
                 screensFactory
                     .enterAuthCodeScreenFactory
-                    .createEnterAuthCodeViewController(showBackButton = true)
+                    .createEnterAuthCodeViewController(
+                        shouldShowBackButton = true,
+                        expectedCodeLength = expectedCodeLength,
+                        enteredPhoneNumber = enteredPhoneNumber
+                    )
 
             val enterPhoneNumberScreen =
                 screensFactory
@@ -227,7 +269,11 @@ class AuthorizationCoordinatorImp(
             val enterAuthCodeScreen =
                 screensFactory
                     .enterAuthCodeScreenFactory
-                    .createEnterAuthCodeViewController(showBackButton = false)
+                    .createEnterAuthCodeViewController(
+                        shouldShowBackButton = false,
+                        expectedCodeLength = expectedCodeLength,
+                        enteredPhoneNumber = enteredPhoneNumber
+                    )
 
             router.navigateTo(enterAuthCodeScreen)
         }

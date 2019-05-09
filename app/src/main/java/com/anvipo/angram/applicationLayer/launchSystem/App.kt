@@ -169,9 +169,9 @@ class App : Application() {
         tdUpdateStack.push(tdApiUpdate)
 
         when (tdApiUpdate) {
-            is TdApi.UpdateOption -> onUpdateOption(tag, tdApiUpdate)
-            is TdApi.UpdateAuthorizationState -> onUpdateAuthorizationState(tag, tdApiUpdate)
             is TdApi.UpdateConnectionState -> onUpdateConnectionState(tag, tdApiUpdate)
+            is TdApi.UpdateAuthorizationState -> onUpdateAuthorizationState(tag, tdApiUpdate)
+            is TdApi.UpdateOption -> onUpdateOption(tag, tdApiUpdate)
             else -> {
                 // TODO: handle this case
 

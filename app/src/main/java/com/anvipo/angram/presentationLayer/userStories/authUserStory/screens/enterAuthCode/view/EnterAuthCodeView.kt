@@ -14,4 +14,6 @@ interface EnterAuthCodeView : BaseView {
     @StateStrategyType(OneExecutionStateStrategy::class)
     fun showNextButton()
 
+    fun setMaxLengthOfEditText(expectedCodeLength: UInt)
+
 }

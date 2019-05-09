@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Build
 import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway.errors.TdApiError
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthCode.types.CorrectAuthCodeType
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.drinkless.td.libcore.telegram.Client
 import org.drinkless.td.libcore.telegram.TdApi
@@ -126,19 +127,50 @@ class TDLibGatewayImp(
             )
         }
 
+    override suspend fun checkAuthenticationCodeCatching(enteredAuthCode: CorrectAuthCodeType): Result<TdApi.Ok> =
+        suspendCancellableCoroutine { continuation ->
+            val checkAuthenticationCodeResultHandler = Client.ResultHandler { result ->
+                when (result) {
+                    is TdApi.Ok -> continuation.resume(Result.success(result))
+                    is TdApi.Error -> {
+                        val tdApiError = parseTDApiError(result)
+
+                        continuation.resume(Result.failure(tdApiError))
+                    }
+                    else -> continuation.resume(Result.failure(TdApiError.Unspecified))
+                }
+            }
+
+            val checkAuthenticationCodeExceptionHandler = Client.ExceptionHandler { exception ->
+                continuation.resume(Result.failure(exception))
+            }
+
+            val checkAuthenticationCodeQuery = TdApi.CheckAuthenticationCode(
+                enteredAuthCode,
+                "",
+                ""
+            )
+
+            tdClient.send(
+                checkAuthenticationCodeQuery,
+                checkAuthenticationCodeResultHandler,
+                checkAuthenticationCodeExceptionHandler
+            )
+        }
+
 
     /// PRIVATE
 
 
     private fun parseTDApiError(result: TdApi.Error): TdApiError =
         when (val errorCode = result.code) {
-            TdApiError.Codes.EMPTY_PHONE_NUMBER.value ->
-                TdApiError.Custom.EmptyPhoneNumber(
+            TdApiError.Codes.EMPTY_PARAMETER.value ->
+                TdApiError.Custom.EmptyParameter(
                     errorCode,
                     result.message
                 )
-            TdApiError.Codes.PHONE_NUMBER_INVALID.value ->
-                TdApiError.Custom.PhoneNumberInvalid(
+            TdApiError.Codes.BAD_REQUEST.value ->
+                TdApiError.Custom.BadRequest(
                     errorCode,
                     result.message
                 )
@@ -186,6 +218,7 @@ class TDLibGatewayImp(
         parameters.useFileDatabase = true
         parameters.useMessageDatabase = true
         parameters.useSecretChats = false
+        // TODo: use production
         parameters.useTestDc = true
         return parameters
     }
