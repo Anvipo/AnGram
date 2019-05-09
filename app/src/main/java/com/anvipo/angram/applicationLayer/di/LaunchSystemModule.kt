@@ -1,5 +1,8 @@
 package com.anvipo.angram.applicationLayer.di
 
+import com.anvipo.angram.applicationLayer.launchSystem.appActivity.presenter.AppPresenterImp
+import com.anvipo.angram.applicationLayer.navigation.coordinator.ApplicationCoordinatorOutput
+import com.anvipo.angram.applicationLayer.navigation.coordinator.di.ApplicationRootCoordinatorModule
 import com.anvipo.angram.applicationLayer.types.*
 import com.anvipo.angram.coreLayer.collections.MutableStack
 import com.anvipo.angram.coreLayer.message.SystemMessage
@@ -41,6 +44,19 @@ object LaunchSystemModule {
             BroadcastChannel<SystemMessage>(1)
         }
 
+        single<AppPresenterImp>(appPresenter) {
+            AppPresenterImp(
+                coordinator = get<ApplicationCoordinatorOutput>(
+                    ApplicationRootCoordinatorModule.applicationCoordinator
+                ),
+                systemMessageReceiveChannel = get<SystemMessageReceiveChannel>(
+                    systemMessageReceiveChannel
+                )
+            )
+        }
+
     }
+
+    internal val appPresenter: StringQualifier = named("appPresenter")
 
 }

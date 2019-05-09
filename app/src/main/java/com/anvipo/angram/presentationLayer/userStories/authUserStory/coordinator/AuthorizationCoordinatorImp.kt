@@ -80,38 +80,39 @@ class AuthorizationCoordinatorImp(
         when (val currentAuthorizationState = lastAuthorizationState.authorizationState) {
             is TdApi.AuthorizationStateWaitPhoneNumber -> {
                 val showEnterPhoneNumberScreenCoroutineExceptionHandler =
-                    CoroutineExceptionHandler { _, throwable ->
-                        val text = throwable.localizedMessage
+                    CoroutineExceptionHandler { _, error ->
+                        val errorText = error.localizedMessage
 
-                        systemMessageSendChannel.offer(createTGSystemMessage(text))
+                        systemMessageSendChannel.offer(createTGSystemMessage(errorText))
                     }
 
                 showEnterPhoneNumberScreenJob = launch(
-                    context = coroutineContext + showEnterPhoneNumberScreenCoroutineExceptionHandler
+                    context = Dispatchers.Main + showEnterPhoneNumberScreenCoroutineExceptionHandler
                 ) {
                     showEnterPhoneNumberScreen()
                 }
             }
             is TdApi.AuthorizationStateWaitCode -> {
                 val showEnterAuthCodeScreenCoroutineExceptionHandler =
-                    CoroutineExceptionHandler { _, throwable ->
-                        val text = throwable.localizedMessage
+                    CoroutineExceptionHandler { _, error ->
+                        val errorText = error.localizedMessage
 
-                        systemMessageSendChannel.offer(createTGSystemMessage(text))
+                        systemMessageSendChannel.offer(createTGSystemMessage(errorText))
                     }
 
                 showEnterAuthCodeScreenJob = launch(
-                    context = coroutineContext + showEnterAuthCodeScreenCoroutineExceptionHandler
+                    context = Dispatchers.Main + showEnterAuthCodeScreenCoroutineExceptionHandler
                 ) {
                     showEnterAuthCodeScreen()
                 }
             }
             is TdApi.AuthorizationStateWaitTdlibParameters -> {
-                val setTdLibParametersCatchingCoroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
-                    val text = throwable.localizedMessage
+                val setTdLibParametersCatchingCoroutineExceptionHandler =
+                    CoroutineExceptionHandler { _, error ->
+                        val errorText = error.localizedMessage
 
-                    systemMessageSendChannel.offer(createTGSystemMessage(text))
-                }
+                        systemMessageSendChannel.offer(createTGSystemMessage(errorText))
+                    }
 
                 setTdLibParametersCatchingJob = launch(
                     context = coroutineContext + setTdLibParametersCatchingCoroutineExceptionHandler
@@ -125,10 +126,10 @@ class AuthorizationCoordinatorImp(
             }
             is TdApi.AuthorizationStateWaitEncryptionKey -> {
                 val checkDatabaseEncryptionKeyCatchingCoroutineExceptionHandler =
-                    CoroutineExceptionHandler { _, throwable ->
-                        val text = throwable.localizedMessage
+                    CoroutineExceptionHandler { _, error ->
+                        val errorText = error.localizedMessage
 
-                        systemMessageSendChannel.offer(createTGSystemMessage(text))
+                        systemMessageSendChannel.offer(createTGSystemMessage(errorText))
                     }
 
                 checkDatabaseEncryptionKeyCatchingJob = launch(

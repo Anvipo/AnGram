@@ -50,11 +50,12 @@ class ApplicationCoordinatorImp(
     private fun startApp() {
         val tag = "${this::class.java.simpleName} startApp"
 
-        val getAuthorizationStateRequestCatchingCoroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
-            val text = throwable.localizedMessage
+        val getAuthorizationStateRequestCatchingCoroutineExceptionHandler =
+            CoroutineExceptionHandler { _, error ->
+                val errorText = error.localizedMessage
 
-            systemMessageSendChannel.offer(createTGSystemMessage(text))
-        }
+                systemMessageSendChannel.offer(createTGSystemMessage(errorText))
+            }
 
         getAuthorizationStateRequestCatchingJob = launch(
             context = coroutineContext + getAuthorizationStateRequestCatchingCoroutineExceptionHandler
