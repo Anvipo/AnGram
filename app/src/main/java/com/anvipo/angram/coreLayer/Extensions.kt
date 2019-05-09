@@ -6,7 +6,6 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,22 +19,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
-import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.R
-import com.anvipo.angram.applicationLayer.launchSystem.App
 import com.google.android.material.snackbar.Snackbar
 
-fun debugLog(message: String) {
-    if (BuildConfig.DEBUG) {
-        Log.d(App.TAG, message)
-    }
-}
-
-fun assertionFailure(message: String = "Debug error") {
-    if (BuildConfig.DEBUG) {
-        throw DebugError(message)
-    }
-}
 
 fun Context.color(colorRes: Int): Int = ContextCompat.getColor(this, colorRes)
 

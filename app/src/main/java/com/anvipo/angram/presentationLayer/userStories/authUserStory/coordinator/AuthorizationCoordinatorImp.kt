@@ -4,10 +4,10 @@ import android.content.Context
 import com.anvipo.angram.applicationLayer.types.SystemMessageSendChannel
 import com.anvipo.angram.applicationLayer.types.UpdateAuthorizationStateIReadOnlyStack
 import com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway.TDLibGateway
-import com.anvipo.angram.coreLayer.assertionFailure
-import com.anvipo.angram.coreLayer.debugLog
+import com.anvipo.angram.coreLayer.CoreHelpers.assertionFailure
+import com.anvipo.angram.coreLayer.CoreHelpers.debugLog
 import com.anvipo.angram.coreLayer.message.SystemMessage
-import com.anvipo.angram.global.createTGSystemMessage
+import com.anvipo.angram.global.CoreHelpers.createTGSystemMessage
 import com.anvipo.angram.presentationLayer.common.baseClasses.BaseCoordinator
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.authorizationScreensFactory.AuthorizationScreensFactory
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.types.CorrectPhoneNumberType
@@ -56,6 +56,7 @@ class AuthorizationCoordinatorImp(
 
     override fun cancelAllJobs() {
         setTdLibParametersCatchingJob?.cancel()
+        showEnterPhoneNumberScreenJob?.cancel()
         checkDatabaseEncryptionKeyCatchingJob?.cancel()
     }
 
@@ -78,10 +79,32 @@ class AuthorizationCoordinatorImp(
 
         when (val currentAuthorizationState = lastAuthorizationState.authorizationState) {
             is TdApi.AuthorizationStateWaitPhoneNumber -> {
-                showEnterPhoneNumberScreen()
+                val showEnterPhoneNumberScreenCoroutineExceptionHandler =
+                    CoroutineExceptionHandler { _, throwable ->
+                        val text = throwable.localizedMessage
+
+                        systemMessageSendChannel.offer(createTGSystemMessage(text))
+                    }
+
+                showEnterPhoneNumberScreenJob = launch(
+                    context = coroutineContext + showEnterPhoneNumberScreenCoroutineExceptionHandler
+                ) {
+                    showEnterPhoneNumberScreen()
+                }
             }
             is TdApi.AuthorizationStateWaitCode -> {
-                showEnterAuthCodeScreen()
+                val showEnterAuthCodeScreenCoroutineExceptionHandler =
+                    CoroutineExceptionHandler { _, throwable ->
+                        val text = throwable.localizedMessage
+
+                        systemMessageSendChannel.offer(createTGSystemMessage(text))
+                    }
+
+                showEnterAuthCodeScreenJob = launch(
+                    context = coroutineContext + showEnterAuthCodeScreenCoroutineExceptionHandler
+                ) {
+                    showEnterAuthCodeScreen()
+                }
             }
             is TdApi.AuthorizationStateWaitTdlibParameters -> {
                 val setTdLibParametersCatchingCoroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
@@ -130,14 +153,18 @@ class AuthorizationCoordinatorImp(
 
     private fun showEnterPhoneNumberScreen() {
         val enterPhoneNumberScreen =
-            screensFactory.enterPhoneNumberScreenFactory.createEnterPhoneNumberViewController(tdLibGateway)
+            screensFactory
+                .enterPhoneNumberScreenFactory
+                .createEnterPhoneNumberViewController(tdLibGateway)
 
         router.newRootScreen(enterPhoneNumberScreen)
     }
 
     private fun showEnterAuthCodeScreen() {
         val enterAuthCodeScreen =
-            screensFactory.enterAuthCodeScreenFactory.createEnterAuthCodeViewController()
+            screensFactory
+                .enterAuthCodeScreenFactory
+                .createEnterAuthCodeViewController()
 
         TODO()
 
@@ -187,6 +214,8 @@ class AuthorizationCoordinatorImp(
     )
 
     private var setTdLibParametersCatchingJob: Job? = null
+    private var showEnterPhoneNumberScreenJob: Job? = null
+    private var showEnterAuthCodeScreenJob: Job? = null
     private var checkDatabaseEncryptionKeyCatchingJob: Job? = null
 
 }
