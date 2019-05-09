@@ -15,9 +15,9 @@ import com.anvipo.angram.coreLayer.MessageDialogFragment
 import com.anvipo.angram.coreLayer.MyProgressDialog
 import com.anvipo.angram.coreLayer.base.CoreConstants.PROGRESS_TAG
 import com.anvipo.angram.coreLayer.base.baseInterfaces.BaseView
-import com.anvipo.angram.coreLayer.mvp.MvpAppCompatFragment
 import com.anvipo.angram.coreLayer.showSnackbarMessage
 import com.anvipo.angram.presentationLayer.common.interfaces.BasePresenter
+import com.anvipo.angram.presentationLayer.common.mvp.MvpAppCompatFragment
 
 abstract class BaseFragment : MvpAppCompatFragment(), BaseView {
 

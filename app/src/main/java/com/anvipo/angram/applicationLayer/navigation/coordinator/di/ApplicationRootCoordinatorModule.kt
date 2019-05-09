@@ -11,8 +11,8 @@ import com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway.TDLibGateway
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.AuthorizationCoordinatorImp
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.AuthorizationCoordinatorInput
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.authorizationScreensFactory.AuthorizationScreensFactoryImp
-import com.anvipo.angram.presentationLayer.userStories.mainUserStory.coordinator.MainCoordinator
 import com.anvipo.angram.presentationLayer.userStories.mainUserStory.coordinator.MainCoordinatorImp
+import com.anvipo.angram.presentationLayer.userStories.mainUserStory.coordinator.MainCoordinatorInput
 import com.anvipo.angram.presentationLayer.userStories.mainUserStory.coordinator.screensFactory.MainViewControllersFactoryImp
 import org.koin.core.module.Module
 import org.koin.core.qualifier.StringQualifier
@@ -36,7 +36,7 @@ object ApplicationRootCoordinatorModule {
                 get<SystemMessageSendChannel>(LaunchSystemModule.systemMessageSendChannel),
                 authorizationCoordinator =
                 get<AuthorizationCoordinatorInput>(authorizationCoordinator),
-                mainCoordinator = get<MainCoordinator>(mainCoordinator)
+                mainCoordinator = get<MainCoordinatorInput>(mainCoordinator)
             )
         }
 
@@ -55,7 +55,7 @@ object ApplicationRootCoordinatorModule {
             )
         }
 
-        single<MainCoordinator>(mainCoordinator) {
+        single<MainCoordinatorInput>(mainCoordinator) {
             MainCoordinatorImp(
                 router = get<Router>(SystemInfrastructureModule.router),
                 viewControllersFactory = MainViewControllersFactoryImp

@@ -9,7 +9,7 @@ import kotlin.coroutines.CoroutineContext
 class MainCoordinatorImp(
     private val router: Router,
     private val viewControllersFactory: MainScreensFactory
-) : BaseCoordinator(), MainCoordinator {
+) : BaseCoordinator(), MainCoordinatorInput, MainCoordinatorOutput {
     override fun cancelAllJobs() {
         TODO("not implemented")
     }

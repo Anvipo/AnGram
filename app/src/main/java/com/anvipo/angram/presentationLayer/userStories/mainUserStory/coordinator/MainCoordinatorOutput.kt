@@ -1,7 +1,5 @@
 package com.anvipo.angram.presentationLayer.userStories.mainUserStory.coordinator
 
-interface MainCoordinatorOutput {
+import com.anvipo.angram.presentationLayer.common.interfaces.CoordinatorOutput
 
-    var finishFlow: (() -> Unit)?
-
-}
+interface MainCoordinatorOutput : CoordinatorOutput

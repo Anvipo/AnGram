@@ -7,8 +7,7 @@ import com.anvipo.angram.coreLayer.message.SystemMessage
 import com.anvipo.angram.global.CoreHelpers.createTGSystemMessage
 import com.anvipo.angram.presentationLayer.common.baseClasses.BaseCoordinator
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.AuthorizationCoordinatorInput
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.AuthorizationCoordinatorOutput
-import com.anvipo.angram.presentationLayer.userStories.mainUserStory.coordinator.MainCoordinator
+import com.anvipo.angram.presentationLayer.userStories.mainUserStory.coordinator.MainCoordinatorInput
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -20,10 +19,10 @@ class ApplicationCoordinatorImp(
     private val tdLibGateway: TDLibGateway,
     private val systemMessageSendChannel: SystemMessageSendChannel,
     private val authorizationCoordinator: AuthorizationCoordinatorInput,
-    private val mainCoordinator: MainCoordinator
+    private val mainCoordinator: MainCoordinatorInput
 ) : BaseCoordinator(), ApplicationCoordinatorInput, ApplicationCoordinatorOutput {
 
-    override fun coldStart() {
+    override fun coldStartApp() {
         childCoordinators.clear()
 
         configureApp()
@@ -69,7 +68,7 @@ class ApplicationCoordinatorImp(
     }
 
     private fun startAuthFlow() {
-        (authorizationCoordinator as AuthorizationCoordinatorOutput).finishFlow = {
+        authorizationCoordinator.finishFlow = {
             removeChildCoordinator(coordinator = authorizationCoordinator)
             startMainFlow()
         }

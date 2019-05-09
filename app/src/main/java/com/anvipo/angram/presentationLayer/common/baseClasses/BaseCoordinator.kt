@@ -1,10 +1,11 @@
 package com.anvipo.angram.presentationLayer.common.baseClasses
 
+import com.anvipo.angram.presentationLayer.common.interfaces.CoordinatorInput
 import com.anvipo.angram.presentationLayer.common.interfaces.CoordinatorOutput
 import com.anvipo.angram.presentationLayer.common.interfaces.Coordinatorable
 import kotlinx.coroutines.CoroutineScope
 
-abstract class BaseCoordinator : Coordinatorable, CoroutineScope, CoordinatorOutput {
+abstract class BaseCoordinator : Coordinatorable, CoordinatorInput, CoordinatorOutput, CoroutineScope {
 
     protected val childCoordinators: MutableList<Coordinatorable> = mutableListOf()
 

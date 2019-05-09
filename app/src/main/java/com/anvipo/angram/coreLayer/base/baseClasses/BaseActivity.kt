@@ -3,8 +3,8 @@ package com.anvipo.angram.coreLayer.base.baseClasses
 import android.os.Bundle
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.Toolbar
-import com.anvipo.angram.coreLayer.mvp.MvpAppCompatActivity
 import com.anvipo.angram.presentationLayer.common.interfaces.BasePresenter
+import com.anvipo.angram.presentationLayer.common.mvp.MvpAppCompatActivity
 
 @Suppress("unused")
 abstract class BaseActivity : MvpAppCompatActivity() {

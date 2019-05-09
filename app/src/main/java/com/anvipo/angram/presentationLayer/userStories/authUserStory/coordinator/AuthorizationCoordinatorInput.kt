@@ -1,5 +1,5 @@
 package com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator
 
-import com.anvipo.angram.presentationLayer.common.interfaces.Coordinatorable
+import com.anvipo.angram.presentationLayer.common.interfaces.CoordinatorInput
 
-interface AuthorizationCoordinatorInput : Coordinatorable
+interface AuthorizationCoordinatorInput : CoordinatorInput

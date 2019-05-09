@@ -1,4 +1,4 @@
-package com.anvipo.angram.coreLayer.mvp
+package com.anvipo.angram.presentationLayer.common.mvp
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

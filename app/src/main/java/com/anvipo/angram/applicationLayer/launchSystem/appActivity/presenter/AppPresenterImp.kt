@@ -31,11 +31,11 @@ class AppPresenterImp(
     }
 
     override fun coldStart() {
-        coordinator.coldStart()
+        coordinator.coldStartApp()
     }
 
     override fun hotStart() {
-        coordinator.hotStart()
+        coordinator.hotStartApp()
     }
 
     override val coroutineContext: CoroutineContext = Dispatchers.IO
