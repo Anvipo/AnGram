@@ -7,7 +7,7 @@ import com.anvipo.angram.businessLogicLayer.useCases.enterPhoneNumberUseCase.Ent
 import com.anvipo.angram.coreLayer.CoreHelpers.debugLog
 import com.anvipo.angram.coreLayer.ResourceManager
 import com.anvipo.angram.presentationLayer.common.baseClasses.BasePresenterImp
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.AuthorizationCoordinatorOutput
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinatorEnterPhoneNumberOutput
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.view.EnterPhoneNumberView
 import com.arellomobile.mvp.InjectViewState
 import kotlinx.coroutines.*
@@ -16,7 +16,7 @@ import kotlin.coroutines.CoroutineContext
 @InjectViewState
 class EnterPhoneNumberPresenterImp(
     override val useCase: EnterPhoneNumberUseCase,
-    override val coordinator: AuthorizationCoordinatorOutput,
+    override val coordinator: AuthorizationCoordinatorEnterPhoneNumberOutput,
     private val resourceManager: ResourceManager
 ) : BasePresenterImp<EnterPhoneNumberView>(), EnterPhoneNumberPresenter {
 
@@ -25,11 +25,11 @@ class EnterPhoneNumberPresenterImp(
     }
 
     override fun onNextButtonPressed(enteredPhoneNumber: String) {
-        val onNextButtonPressedCoroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        val onNextButtonPressedCoroutineExceptionHandler = CoroutineExceptionHandler { _, error ->
             if (BuildConfig.DEBUG) {
-                val text = throwable.localizedMessage
-                debugLog(text)
-                viewState.showErrorAlert(text)
+                val errorText = error.localizedMessage
+                debugLog(errorText)
+                viewState.showErrorAlert(errorText)
             }
         }
 

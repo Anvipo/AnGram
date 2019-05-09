@@ -9,6 +9,8 @@ import com.anvipo.angram.coreLayer.CoreHelpers.debugLog
 import com.anvipo.angram.coreLayer.message.SystemMessage
 import com.anvipo.angram.global.CoreHelpers.createTGSystemMessage
 import com.anvipo.angram.presentationLayer.common.baseClasses.BaseCoordinator
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinatorEnterPhoneNumberOutput
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinatorInput
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.authorizationScreensFactory.AuthorizationScreensFactory
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.types.CorrectPhoneNumberType
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -26,7 +28,9 @@ class AuthorizationCoordinatorImp(
     private val tdLibGateway: TDLibGateway,
     private val updateAuthorizationStateList: UpdateAuthorizationStateList,
     private val systemMessageSendChannel: SystemMessageSendChannel
-) : BaseCoordinator(), AuthorizationCoordinatorInput, AuthorizationCoordinatorOutput {
+) : BaseCoordinator(),
+    AuthorizationCoordinatorInput,
+    AuthorizationCoordinatorEnterPhoneNumberOutput {
 
     override fun coldStart() {
         showNeededScreen()
