@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="share_to">Поделиться с</string>
+
     <string name="loading">Загрузка</string>
+
+    <!--Auth flow-->
+
     <string name="phone_number_invalid">Неверный номер телефона</string>
     <string name="enter_your_phone_number_title">Введите Ваш номер телефона</string>
     <string name="unknown_error">Неизвестная ошибка</string>
@@ -14,13 +18,10 @@
     <string name="enter_auth_code_title">Введите код аутентификации</string>
     <string name="authentication_code_cant_be_empty">Код аутентификации не может быть пустым</string>
     <string name="authentication_code">Код аутентификации</string>
-
-    <string name="please_provide_read_phone_state">Для дальнейшего удобства пользования, пожалуйста, разрешите приложению совершать звонки и управлять ими.</string>
-    <string name="no">Нет</string>
-
-    <string name="go_to">Перейти</string>
-    <string name="go_to_applications_settings_and_provide_read_phone_state_permission">Для дальнейшего удобства пользования, необходимо перейти в настройки приложения и разрешить приложению совершать звонки и управлять ими.</string>
     <string name="first_name_hint">Имя</string>
     <string name="last_name_hint">Фамилия</string>
+    <string name="code_is_invalid">Код неверен</string>
+
+    <!--\\Auth flow-->
 
 </resources>

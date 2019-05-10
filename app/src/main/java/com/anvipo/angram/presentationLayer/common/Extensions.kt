@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.anvipo.angram.presentationLayer.common
 
 import ru.terrakok.cicerone.Navigator

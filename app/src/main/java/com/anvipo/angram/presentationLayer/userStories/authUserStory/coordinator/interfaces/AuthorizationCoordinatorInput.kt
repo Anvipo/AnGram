@@ -2,4 +2,6 @@ package com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinato
 
 import com.anvipo.angram.presentationLayer.common.interfaces.CoordinatorInput
 
-interface AuthorizationCoordinatorInput : CoordinatorInput
+interface AuthorizationCoordinatorInput : CoordinatorInput {
+    fun startAuthFlowWithEnterAuthCodeAsRootScreen()
+}

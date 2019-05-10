@@ -5,7 +5,6 @@ import com.anvipo.angram.applicationLayer.coordinator.ApplicationCoordinatorInpu
 import com.anvipo.angram.applicationLayer.di.LaunchSystemModule
 import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule
 import com.anvipo.angram.applicationLayer.types.SystemMessageSendChannel
-import com.anvipo.angram.applicationLayer.types.UpdateAuthorizationStateList
 import com.anvipo.angram.businessLogicLayer.di.GatewaysModule
 import com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway.TDLibGateway
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.AuthorizationCoordinatorImp
@@ -36,7 +35,8 @@ object ApplicationRootCoordinatorModule {
                 get<SystemMessageSendChannel>(LaunchSystemModule.systemMessageSendChannel),
                 authorizationCoordinator =
                 get<AuthorizationCoordinatorInput>(authorizationCoordinator),
-                mainCoordinator = get<MainCoordinatorInput>(mainCoordinator)
+                mainCoordinator = get<MainCoordinatorInput>(mainCoordinator),
+                context = get()
             )
         }
 
@@ -47,11 +47,7 @@ object ApplicationRootCoordinatorModule {
                 screensFactory = AuthorizationScreensFactoryImp,
                 systemMessageSendChannel =
                 get<SystemMessageSendChannel>(LaunchSystemModule.systemMessageSendChannel),
-                tdLibGateway = get<TDLibGateway>(GatewaysModule.tdLibGateway),
-                updateAuthorizationStateList =
-                get<UpdateAuthorizationStateList>(
-                    LaunchSystemModule.updateAuthorizationStateList
-                )
+                tdLibGateway = get<TDLibGateway>(GatewaysModule.tdLibGateway)
             )
         }
 

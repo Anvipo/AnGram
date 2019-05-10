@@ -24,13 +24,12 @@ object EnterAuthCodeScreenFactoryImp : EnterAuthCodeScreenFactory {
     }
 
     override fun createEnterAuthCodeViewController(
-        shouldShowBackButton: Boolean,
         expectedCodeLength: Int,
         enteredPhoneNumber: String,
         registrationRequired: Boolean,
         termsOfServiceText: String
     ): SupportAppScreen = EnterAuthCodeScreen(
-        shouldShowBackButton = shouldShowBackButton,
+        shouldShowBackButton = true,
         expectedCodeLength = expectedCodeLength,
         enteredPhoneNumber = enteredPhoneNumber,
         registrationRequired = registrationRequired,

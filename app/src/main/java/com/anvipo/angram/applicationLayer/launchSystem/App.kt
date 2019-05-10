@@ -4,12 +4,11 @@ import android.app.Application
 import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.applicationLayer.coordinator.di.ApplicationRootCoordinatorModule
 import com.anvipo.angram.applicationLayer.di.LaunchSystemModule
-import com.anvipo.angram.applicationLayer.di.LaunchSystemModule.updateAuthorizationStateMutableList
 import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule
 import com.anvipo.angram.applicationLayer.types.SystemMessageSendChannel
-import com.anvipo.angram.applicationLayer.types.UpdateAuthorizationStateMutableList
 import com.anvipo.angram.businessLogicLayer.di.GatewaysModule
 import com.anvipo.angram.businessLogicLayer.di.UseCasesModule
+import com.anvipo.angram.coreLayer.CoreErrors
 import com.anvipo.angram.coreLayer.CoreHelpers.assertionFailure
 import com.anvipo.angram.coreLayer.CoreHelpers.debugLog
 import com.anvipo.angram.coreLayer.collections.IMutableStack
@@ -69,7 +68,7 @@ class App : Application() {
                 )
             }
         } else {
-            // TODO
+            // TODO: release config
             debugLog("TODO")
         }
     }
@@ -88,12 +87,14 @@ class App : Application() {
     private val tdUpdateOptionStack: IMutableStack<TdApi.UpdateOption> = MutableStack()
 
     private val tdUpdateUserStack: IMutableStack<TdApi.UpdateUser> = MutableStack()
-
     private val tdUpdateHavePendingNotificationsStack: IMutableStack<TdApi.UpdateHavePendingNotifications> =
         MutableStack()
 
-    private val tdUpdateAuthorizationStateMutableList: UpdateAuthorizationStateMutableList
-            by inject(updateAuthorizationStateMutableList)
+    private val tdUpdateScopeNotificationSettingsStack: IMutableStack<TdApi.UpdateScopeNotificationSettings> =
+        MutableStack()
+    private val tdUpdateTermsOfServiceStack: IMutableStack<TdApi.UpdateTermsOfService> = MutableStack()
+
+    private val tdUpdateAuthorizationStateStack: IMutableStack<TdApi.UpdateAuthorizationState> = MutableStack()
 
     private val tdUpdateConnectionStateStack: IMutableStack<TdApi.UpdateConnectionState> = MutableStack()
 
@@ -117,7 +118,7 @@ class App : Application() {
 
                 systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
 
-                assertionFailure()
+                assertionFailure("Undefined tdApiObject")
             }
         }
     }
@@ -151,6 +152,7 @@ class App : Application() {
 
                 systemMessageSendChannel.offer(koinExceptionMessage)
             }
+            is CoreErrors.DebugError -> systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
             else -> systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
         }
     }
@@ -185,6 +187,14 @@ class App : Application() {
                 tdUpdateHavePendingNotificationsStack.push(tdApiUpdate)
                 debugLog(tdApiUpdate.toString())
             }
+            is TdApi.UpdateScopeNotificationSettings -> {
+                tdUpdateScopeNotificationSettingsStack.push(tdApiUpdate)
+                debugLog(tdApiUpdate.toString())
+            }
+            is TdApi.UpdateTermsOfService -> {
+                tdUpdateTermsOfServiceStack.push(tdApiUpdate)
+                debugLog(tdApiUpdate.toString())
+            }
             else -> {
                 val text = tdApiUpdate.toString()
 
@@ -206,16 +216,15 @@ class App : Application() {
         val state: String = when (val connectionState = tdApiUpdateConnectionState.state) {
             is TdApi.ConnectionStateConnecting -> "connecting"
             is TdApi.ConnectionStateReady -> "ready"
+            is TdApi.ConnectionStateUpdating -> "updating"
             else -> {
-                // TODO: handle this case
-
                 val text = connectionState.toString()
 
                 debugLog(text)
 
                 systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
 
-                assertionFailure()
+                assertionFailure("Undefined tdApiUpdateConnectionState")
 
                 ""
             }
@@ -234,7 +243,7 @@ class App : Application() {
         tag: String,
         updateAuthorizationState: TdApi.UpdateAuthorizationState
     ) {
-        tdUpdateAuthorizationStateMutableList += updateAuthorizationState
+        tdUpdateAuthorizationStateStack.push(updateAuthorizationState)
 
         when (val authorizationState = updateAuthorizationState.authorizationState) {
             is TdApi.AuthorizationStateWaitTdlibParameters -> {
@@ -259,16 +268,35 @@ class App : Application() {
                 systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
             }
             is TdApi.AuthorizationStateWaitCode -> onAuthorizationStateWaitCode(authorizationState, tag)
-            else -> {
-                // TODO: handle this case
+            is TdApi.AuthorizationStateReady -> {
+                val text = "$tag: authorization complete"
 
+                debugLog(text)
+
+                systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
+            }
+            is TdApi.AuthorizationStateLoggingOut -> {
+                val text = "$tag: logging out"
+
+                debugLog(text)
+
+                systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
+            }
+            is TdApi.AuthorizationStateClosed -> {
+                val text = "$tag: AuthorizationStateClosed"
+
+                debugLog(text)
+
+                systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
+            }
+            else -> {
                 val text = "$tag: $authorizationState"
 
                 debugLog(text)
 
                 systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
 
-                assertionFailure()
+                assertionFailure("Undefined authorizationState")
             }
         }
     }
@@ -356,7 +384,6 @@ class App : Application() {
                     debugLog(text)
 
                     systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
-                    assertionFailure()
                     ""
                 }
                 else -> {
@@ -365,7 +392,7 @@ class App : Application() {
                     debugLog(text)
 
                     systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
-                    assertionFailure()
+                    assertionFailure("Undefined updateOptionValue")
                     ""
                 }
             }

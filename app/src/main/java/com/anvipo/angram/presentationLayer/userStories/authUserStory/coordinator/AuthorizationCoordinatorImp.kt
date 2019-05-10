@@ -2,7 +2,6 @@ package com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinato
 
 import android.content.Context
 import com.anvipo.angram.applicationLayer.types.SystemMessageSendChannel
-import com.anvipo.angram.applicationLayer.types.UpdateAuthorizationStateList
 import com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway.TDLibGateway
 import com.anvipo.angram.coreLayer.CoreHelpers.assertionFailure
 import com.anvipo.angram.coreLayer.CoreHelpers.debugLog
@@ -13,7 +12,6 @@ import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinatorEnterPhoneNumberOutput
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinatorInput
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.authorizationScreensFactory.AuthorizationScreensFactory
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.enterPhoneNumberScreenFactory.EnterPhoneNumberScreenFactoryImp
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -27,7 +25,6 @@ class AuthorizationCoordinatorImp(
     private val router: Router,
     private val screensFactory: AuthorizationScreensFactory,
     private val tdLibGateway: TDLibGateway,
-    private val updateAuthorizationStateList: UpdateAuthorizationStateList,
     private val systemMessageSendChannel: SystemMessageSendChannel
 ) : BaseCoordinator(),
     AuthorizationCoordinatorInput,
@@ -35,7 +32,35 @@ class AuthorizationCoordinatorImp(
     AuthorizationCoordinatorEnterAuthCodeOutput {
 
     override fun coldStart() {
-        showNeededScreen()
+        checkAuthState()
+    }
+
+    override fun startAuthFlowWithEnterAuthCodeAsRootScreen() {
+        val getAuthorizationStateRequestCatchingCoroutineExceptionHandler =
+            CoroutineExceptionHandler { _, error ->
+                val errorText = error.localizedMessage
+
+                systemMessageSendChannel.offer(createTGSystemMessage(errorText))
+            }
+
+        getAuthorizationStateRequestCatchingJob = launch(
+            context = coroutineContext + getAuthorizationStateRequestCatchingCoroutineExceptionHandler
+        ) {
+            val authorizationStateResult = tdLibGateway.getAuthorizationStateRequestCatching()
+
+            authorizationStateResult
+                .onSuccess {
+                    if (it is TdApi.AuthorizationStateWaitCode) {
+                        onAuthStateWaitsCode(
+                            it,
+                            withAuthCodeAsRootScreen = true
+                        )
+                    } else {
+                        onSuccessGetAuthStateResult(it)
+                    }
+                }
+                .onFailure(::onFailureGetAuthStateResult)
+        }
     }
 
     override fun onEnterCorrectPhoneNumber() {
@@ -45,7 +70,7 @@ class AuthorizationCoordinatorImp(
 
         systemMessageSendChannel.offer(createLogMessage(text))
 
-        showNeededScreen()
+        checkAuthState()
     }
 
     override fun onPressedBackButtonInEnterPhoneNumberScreen() {
@@ -55,7 +80,7 @@ class AuthorizationCoordinatorImp(
 
         debugLog(text)
 
-        router.finishChain()
+        router.exit()
     }
 
     override fun onPressedBackButtonInEnterAuthCodeScreen() {
@@ -65,7 +90,7 @@ class AuthorizationCoordinatorImp(
 
         systemMessageSendChannel.offer(createLogMessage(text))
 
-        router.backTo(EnterPhoneNumberScreenFactoryImp.EnterPhoneNumberScreen)
+        router.exit()
     }
 
     override fun onEnterCorrectAuthCode() {
@@ -75,15 +100,17 @@ class AuthorizationCoordinatorImp(
 
         systemMessageSendChannel.offer(createLogMessage(text))
 
-        showNeededScreen()
+        checkAuthState()
     }
 
     override var finishFlow: (() -> Unit)? = null
 
     override fun cancelAllJobs() {
+        getAuthorizationStateRequestCatchingJob?.cancel()
         setTdLibParametersCatchingJob?.cancel()
-        showEnterPhoneNumberScreenJob?.cancel()
         checkDatabaseEncryptionKeyCatchingJob?.cancel()
+        showEnterPhoneNumberScreenJob?.cancel()
+        showEnterAuthCodeScreenJob?.cancel()
     }
 
     override val coroutineContext: CoroutineContext = Dispatchers.IO
@@ -91,36 +118,57 @@ class AuthorizationCoordinatorImp(
 
     /// PRIVATE
 
+    private fun checkAuthState() {
+        val getAuthorizationStateRequestCatchingCoroutineExceptionHandler =
+            CoroutineExceptionHandler { _, error ->
+                val errorText = error.localizedMessage
 
-    private fun showNeededScreen() {
-        val tag = "${this::class.java.simpleName} showNeededScreen"
-
-        val lastAuthorizationState = updateAuthorizationStateList.lastOrNull()
-
-        if (lastAuthorizationState == null) {
-            assertionFailure("lastAuthorizationState == null")
-            return
-        }
-
-        when (val currentAuthorizationState = lastAuthorizationState.authorizationState) {
-            is TdApi.AuthorizationStateWaitPhoneNumber -> onAuthStateWaitsPhoneNumber()
-            is TdApi.AuthorizationStateWaitCode -> onAuthStateWaitsCode(currentAuthorizationState)
-            is TdApi.AuthorizationStateWaitTdlibParameters -> onAuthStateWaitsTdlibParameters(tag)
-            is TdApi.AuthorizationStateWaitEncryptionKey -> onAuthStateWaitsEncryptionKey(tag)
-            is TdApi.AuthorizationStateReady -> {
-                debugLog("")
+                systemMessageSendChannel.offer(createTGSystemMessage(errorText))
             }
-            else -> {
-                debugLog(currentAuthorizationState.toString())
 
-                // TODO: handle this case
-                assertionFailure()
+        getAuthorizationStateRequestCatchingJob = launch(
+            context = coroutineContext + getAuthorizationStateRequestCatchingCoroutineExceptionHandler
+        ) {
+            val authorizationStateResult = tdLibGateway.getAuthorizationStateRequestCatching()
+
+            authorizationStateResult
+                .onSuccess(::onSuccessGetAuthStateResult)
+                .onFailure(::onFailureGetAuthStateResult)
+        }
+    }
+
+    private fun onSuccessGetAuthStateResult(authState: TdApi.AuthorizationState) {
+        showNeededScreen(authState)
+    }
+
+    private fun onFailureGetAuthStateResult(error: Throwable) {
+        val tag = "${this::class.java.simpleName} onFailureGetAuthStateResult"
+        val text = "$tag: ${error.localizedMessage}"
+
+        systemMessageSendChannel.offer(SystemMessage(text = text))
+
+        checkAuthState()
+    }
+
+
+    private fun showNeededScreen(authState: TdApi.AuthorizationState) {
+        when (authState) {
+            is TdApi.AuthorizationStateWaitPhoneNumber -> onAuthStateWaitsPhoneNumber()
+            is TdApi.AuthorizationStateWaitCode -> onAuthStateWaitsCode(authState)
+            is TdApi.AuthorizationStateReady -> onAuthorizationStateReady()
+            is TdApi.AuthorizationStateWaitTdlibParameters -> onAuthStateWaitsTdlibParameters()
+            is TdApi.AuthorizationStateWaitEncryptionKey -> onAuthStateWaitsEncryptionKey()
+            else -> {
+                val tag = "${this::class.java.simpleName} showNeededScreen"
+                assertionFailure("$tag: Undefined authState: currentAuthorizationState.toString()")
             }
         }
     }
 
 
-    private fun onAuthStateWaitsEncryptionKey(tag: String) {
+    private fun onAuthStateWaitsEncryptionKey() {
+        val tag = "${this::class.java.simpleName} onAuthStateWaitsEncryptionKey"
+
         val checkDatabaseEncryptionKeyCatchingCoroutineExceptionHandler =
             CoroutineExceptionHandler { _, error ->
                 val errorText = error.localizedMessage
@@ -139,7 +187,9 @@ class AuthorizationCoordinatorImp(
         }
     }
 
-    private fun onAuthStateWaitsTdlibParameters(tag: String) {
+    private fun onAuthStateWaitsTdlibParameters() {
+        val tag = "${this::class.java.simpleName} onAuthStateWaitsTdlibParameters"
+
         val setTdLibParametersCatchingCoroutineExceptionHandler =
             CoroutineExceptionHandler { _, error ->
                 val errorText = error.localizedMessage
@@ -174,7 +224,10 @@ class AuthorizationCoordinatorImp(
         }
     }
 
-    private fun onAuthStateWaitsCode(currentAuthorizationState: TdApi.AuthorizationStateWaitCode) {
+    private fun onAuthStateWaitsCode(
+        currentAuthorizationState: TdApi.AuthorizationStateWaitCode,
+        withAuthCodeAsRootScreen: Boolean = false
+    ) {
         val showEnterAuthCodeScreenCoroutineExceptionHandler =
             CoroutineExceptionHandler { _, error ->
                 val errorText = error.localizedMessage
@@ -210,7 +263,7 @@ class AuthorizationCoordinatorImp(
             termsOfServiceText = if (termsOfService != null) {
                 val entities = termsOfService.text.entities
                 if (entities.isNotEmpty()) {
-                    assertionFailure()
+                    debugLog("termsOfService.text.entities.isNotEmpty: $entities")
                 }
 
                 termsOfService.text.text
@@ -220,26 +273,6 @@ class AuthorizationCoordinatorImp(
         } else {
             termsOfServiceText = ""
         }
-
-        val penultimateIndex = updateAuthorizationStateList.size - 2
-
-        val penultimateUpdateAuthorizationState = updateAuthorizationStateList.getOrNull(penultimateIndex)
-
-        if (penultimateUpdateAuthorizationState == null) {
-            assertionFailure("penultimateUpdateAuthorizationState == null")
-            return
-        }
-
-        val withAuthCodeAsRootScreen =
-            when (val penultimateAuthorizationState = penultimateUpdateAuthorizationState.authorizationState) {
-                is TdApi.AuthorizationStateWaitPhoneNumber -> false
-                is TdApi.AuthorizationStateWaitEncryptionKey -> true
-                else -> {
-                    debugLog(penultimateAuthorizationState.toString())
-
-                    true
-                }
-            }
 
         showEnterAuthCodeScreenJob = launch(
             context = Dispatchers.Main + showEnterAuthCodeScreenCoroutineExceptionHandler
@@ -253,6 +286,15 @@ class AuthorizationCoordinatorImp(
             )
         }
     }
+
+    private fun onAuthorizationStateReady() {
+        val tag = "${this::class.java.simpleName} onAuthorizationStateReady"
+        val text = "$tag: successful authorization"
+        systemMessageSendChannel.offer(createTGSystemMessage(text))
+
+        onFinishFlowWrapper()
+    }
+
 
     private fun showEnterPhoneNumberScreen() {
         val enterPhoneNumberScreen =
@@ -270,18 +312,11 @@ class AuthorizationCoordinatorImp(
         registrationRequired: Boolean,
         termsOfServiceText: String
     ) {
-//        val tag = "${this::class.java.simpleName} handleEnteredCorrectAuthCode"
-
-//        val text = "$tag: onEnteredCorrectAuthCode: $correctAuthCode"
-
-//        systemMessageSendChannel.offer(createTGSystemMessage(text))
-
         if (withAuthCodeAsRootScreen) {
             val enterAuthCodeScreen =
                 screensFactory
                     .enterAuthCodeScreenFactory
                     .createEnterAuthCodeViewController(
-                        shouldShowBackButton = true,
                         expectedCodeLength = expectedCodeLength,
                         enteredPhoneNumber = enteredPhoneNumber,
                         registrationRequired = registrationRequired,
@@ -299,7 +334,6 @@ class AuthorizationCoordinatorImp(
                 screensFactory
                     .enterAuthCodeScreenFactory
                     .createEnterAuthCodeViewController(
-                        shouldShowBackButton = false,
                         expectedCodeLength = expectedCodeLength,
                         enteredPhoneNumber = enteredPhoneNumber,
                         registrationRequired = registrationRequired,
@@ -315,14 +349,14 @@ class AuthorizationCoordinatorImp(
         val text = "$tag: TDLib successfully set parameters"
         systemMessageSendChannel.offer(createTGSystemMessage(text))
 
-        showNeededScreen()
+        checkAuthState()
     }
 
     private fun onFailureSetTDLibParametersResult(tag: String): (Throwable) -> Unit = { error ->
         val text = "$tag: setTDLibParameters.onFailure: ${error.localizedMessage}"
         systemMessageSendChannel.offer(createTGSystemMessage(text))
 
-        showNeededScreen()
+        checkAuthState()
     }
 
 
@@ -330,14 +364,14 @@ class AuthorizationCoordinatorImp(
         val text = "$tag: TDLib successfully checked database encryption key"
         systemMessageSendChannel.offer(createTGSystemMessage(text))
 
-        showNeededScreen()
+        checkAuthState()
     }
 
     private fun onFailureCheckDatabaseEncryptionKeyResult(tag: String): (Throwable) -> Unit = { error ->
         val text = "$tag: setTDLibParameters.onFailure: ${error.localizedMessage}"
         systemMessageSendChannel.offer(createTGSystemMessage(text))
 
-        showNeededScreen()
+        checkAuthState()
     }
 
     private fun createLogMessage(text: String): SystemMessage = SystemMessage(
@@ -346,9 +380,10 @@ class AuthorizationCoordinatorImp(
         shouldBeShownInLogs = true
     )
 
+    private var getAuthorizationStateRequestCatchingJob: Job? = null
     private var setTdLibParametersCatchingJob: Job? = null
+    private var checkDatabaseEncryptionKeyCatchingJob: Job? = null
     private var showEnterPhoneNumberScreenJob: Job? = null
     private var showEnterAuthCodeScreenJob: Job? = null
-    private var checkDatabaseEncryptionKeyCatchingJob: Job? = null
 
 }

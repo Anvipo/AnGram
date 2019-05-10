@@ -2,8 +2,12 @@
     <string name="app_name" translatable="false">AnGram</string>
 
     <string name="share_to">Share to</string>
+
     <string name="loading">Loading</string>
     <string name="lorem_ipsum" translatable="false" tools:keep="@string/lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus vitae egestas odio. In dui tortor, lobortis vel commodo at, viverra eu neque. Suspendisse sodales congue fringilla. Praesent venenatis ante in eros sollicitudin, imperdiet vulputate velit finibus. Aenean viverra tempus nisl, et gravida quam pellentesque interdum. Aliquam non lacinia tortor. Etiam malesuada suscipit arcu ut fringilla. Vestibulum fringilla nulla ac varius ultricies. Quisque non tristique est. Morbi congue eleifend placerat.</string>
+
+    <!--Auth flow-->
+
     <string name="phone_number_invalid">Phone number invalid</string>
     <string name="unknown_error">Unknown error</string>
     <string name="error_title">Error</string>
@@ -12,17 +16,14 @@
     <string name="phone_number_text_input_hint">Phone number</string>
     <string name="phone_number_cant_be_empty">Phone number can\'t be empty</string>
     <string name="query_canceled">Query canceled</string>
-    <string name="invalid_phone_number_length">Некорректная длина номера телефона</string>
+    <string name="invalid_phone_number_length">Invalid phone number length</string>
     <string name="enter_auth_code_title">Enter auth code</string>
     <string name="authentication_code_cant_be_empty">Authentication code can\'t be empty</string>
     <string name="authentication_code">Authentication code</string>
-
-    <string name="please_provide_read_phone_state">For further ease of use, please allow the application to make and manage calls.</string>
-    <string name="no">No</string>
-
-    <string name="go_to">Go to</string>
-    <string name="go_to_applications_settings_and_provide_read_phone_state_permission">For further ease of use, you need to go to the application settings and allow the application to make calls and manage them.</string>
     <string name="first_name_hint">First name</string>
     <string name="last_name_hint">Last name</string>
+    <string name="code_is_invalid">Code is invalid</string>
+
+    <!--\\Auth flow-->
 
 </resources>

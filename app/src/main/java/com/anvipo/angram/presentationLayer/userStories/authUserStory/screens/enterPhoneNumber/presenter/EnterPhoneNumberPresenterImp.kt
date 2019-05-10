@@ -104,7 +104,7 @@ class EnterPhoneNumberPresenterImp(
 
             return when (telephonyManager.simCountryIso) {
                 "ru" -> 12u
-                // TODO
+                // TODO: other countries
                 else -> 12u
             }
         }

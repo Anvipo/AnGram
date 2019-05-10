@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import ru.terrakok.cicerone.android.support.SupportAppScreen
 
+@Suppress("unused")
 object ScreensFactory {
 
     data class ExternalBrowserFlow(

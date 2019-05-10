@@ -22,4 +22,6 @@ interface TDLibGateway : BaseGateway {
         firstName: String
     ): Result<TdApi.Ok>
 
+    suspend fun logoutCatching(): Result<TdApi.Ok>
+
 }

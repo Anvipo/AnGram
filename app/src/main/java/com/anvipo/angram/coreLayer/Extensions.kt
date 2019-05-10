@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.anvipo.angram.coreLayer
 
 import android.content.Context
@@ -55,7 +57,7 @@ fun TextView.setStartDrawable(drawable: Drawable) {
     )
 }
 
-fun ImageView.tint(colorRes: Int) = this.setColorFilter(this.context.color(colorRes))
+fun ImageView.tint(colorRes: Int): Unit = this.setColorFilter(this.context.color(colorRes))
 
 fun ViewGroup.inflate(@LayoutRes layoutRes: Int, attachToRoot: Boolean = false): View {
     return LayoutInflater.from(context).inflate(layoutRes, this, attachToRoot)
@@ -134,7 +136,7 @@ fun Context.hideKeyboard(view: View) {
     inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
 }
 
-fun Any.objectScopeName() = "${javaClass.simpleName}_${hashCode()}"
+fun Any.objectScopeName(): String = "${javaClass.simpleName}_${hashCode()}"
 
 fun View.setBackgroundTintByColor(@ColorInt color: Int) {
     val wrappedDrawable = DrawableCompat.wrap(background)

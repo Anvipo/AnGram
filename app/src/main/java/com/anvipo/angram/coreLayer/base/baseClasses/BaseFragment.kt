@@ -23,6 +23,7 @@ import com.anvipo.angram.coreLayer.showSnackbarMessage
 import com.anvipo.angram.presentationLayer.common.interfaces.BasePresenter
 import com.anvipo.angram.presentationLayer.common.mvp.MvpAppCompatFragment
 
+@Suppress("unused")
 abstract class BaseFragment : MvpAppCompatFragment(), BaseView {
 
     override fun onCreateView(

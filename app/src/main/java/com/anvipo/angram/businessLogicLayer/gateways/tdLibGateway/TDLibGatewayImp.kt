@@ -14,8 +14,7 @@ import kotlin.coroutines.resume
 
 @Suppress("DirectUseOfResultType")
 class TDLibGatewayImp(
-    private val tdClient: Client,
-    private val context: Context
+    private val tdClient: Client
 ) : TDLibGateway {
 
     override suspend fun getAuthorizationStateRequestCatching(): Result<TdApi.AuthorizationState> =
@@ -163,6 +162,32 @@ class TDLibGatewayImp(
             )
         }
 
+    override suspend fun logoutCatching(): Result<TdApi.Ok> =
+        suspendCancellableCoroutine { continuation ->
+            val logoutQueryResultHandler = Client.ResultHandler { result ->
+                when (result) {
+                    is TdApi.Ok -> continuation.resume(Result.success(result))
+                    is TdApi.Error -> {
+                        val tdApiError = parseTDApiError(result)
+
+                        continuation.resume(Result.failure(tdApiError))
+                    }
+                    else -> continuation.resume(Result.failure(TdApiError.Unspecified))
+                }
+            }
+
+            val logoutQueryExceptionHandler = Client.ExceptionHandler { exception ->
+                continuation.resume(Result.failure(exception))
+            }
+
+            val logoutQuery = TdApi.LogOut()
+
+            tdClient.send(
+                logoutQuery,
+                logoutQueryResultHandler,
+                logoutQueryExceptionHandler
+            )
+        }
 
     /// PRIVATE
 
@@ -223,7 +248,7 @@ class TDLibGatewayImp(
         parameters.useFileDatabase = true
         parameters.useMessageDatabase = true
         parameters.useSecretChats = false
-        // TODo: use production
+        // TODO: use production
         parameters.useTestDc = true
         return parameters
     }

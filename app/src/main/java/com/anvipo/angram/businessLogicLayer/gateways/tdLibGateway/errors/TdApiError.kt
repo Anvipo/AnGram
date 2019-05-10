@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway.errors
 
 sealed class TdApiError : Error() {

@@ -24,11 +24,9 @@ class EnterAuthCodePresenterImp(
     override fun coldStart() {
         viewState.hideNextButton()
         viewState.hideRegistrationViews()
-        viewState.showProgress()
     }
 
     override fun onStartTriggered() {
-        viewState.hideProgress()
         if (registrationRequired) {
             viewState.showRegistrationViews()
         }
@@ -58,13 +56,23 @@ class EnterAuthCodePresenterImp(
                 firstName = firstName
             )
                 .onSuccess {
+                    withContext(Dispatchers.Main) {
+                        viewState.hideProgress()
+                    }
+
                     coordinator.onEnterCorrectAuthCode()
                 }
                 .onFailure { error ->
                     val errorMessage: String = resourceManager.run {
                         when (error) {
                             is TdApiError.Custom.EmptyParameter -> getString(R.string.unknown_error)
-                            is TdApiError.Custom.BadRequest -> getString(R.string.unknown_error)
+                            is TdApiError.Custom.BadRequest -> {
+                                if (error.message == "PHONE_CODE_INVALID") {
+                                    getString(R.string.code_is_invalid)
+                                } else {
+                                    getString(R.string.unknown_error)
+                                }
+                            }
                             else -> getString(R.string.unknown_error)
                         }
                     }
@@ -92,7 +100,9 @@ class EnterAuthCodePresenterImp(
     }
 
     override fun onGetTermsOfServiceText(termsOfServiceText: String) {
-        viewState.showAlertMessage(termsOfServiceText)
+        if (termsOfServiceText.isNotBlank() && termsOfServiceText.isNotEmpty()) {
+            viewState.showAlertMessage(termsOfServiceText)
+        }
     }
 
     override fun onAuthCodeTextChanged(text: CharSequence?) {
@@ -111,6 +121,11 @@ class EnterAuthCodePresenterImp(
         authCodeIsEnteredAndCorrect = true
 
         if (authCodeIsEnteredAndCorrect) {
+            if (!registrationRequired) {
+                viewState.showNextButton()
+                return
+            }
+
             if (registrationRequired && firstNameIsEntered && lastNameIsEntered) {
                 viewState.showNextButton()
             } else {
@@ -167,7 +182,7 @@ class EnterAuthCodePresenterImp(
 
     private var onNextButtonPressedJob: Job? = null
     private var enteredPhoneNumber: String = ""
-    private var expectedCodeLength: UInt = 0u
+    private var expectedCodeLength: UInt = 10u
 
     private var authCodeIsEnteredAndCorrect: Boolean = false
 

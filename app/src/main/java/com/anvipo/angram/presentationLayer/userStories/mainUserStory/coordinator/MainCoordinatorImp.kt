@@ -20,6 +20,8 @@ class MainCoordinatorImp(
     override var finishFlow: (() -> Unit)? = null
 
     override fun coldStart() {
+        TODO()
+
         showMainScreen()
     }
 
