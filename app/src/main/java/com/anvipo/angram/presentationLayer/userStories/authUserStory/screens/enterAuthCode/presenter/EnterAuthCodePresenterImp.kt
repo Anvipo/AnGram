@@ -72,7 +72,7 @@ class EnterAuthCodePresenterImp(
 
     override fun onGetExpectedCodeLength(expectedCodeLength: UInt) {
         this.expectedCodeLength = expectedCodeLength
-        viewState.setMaxLengthOfEditText(this.expectedCodeLength)
+        viewState.setMaxLengthOfEditText(this.expectedCodeLength.toInt())
     }
 
     override fun onGetEnteredPhoneNumber(enteredPhoneNumber: String) {

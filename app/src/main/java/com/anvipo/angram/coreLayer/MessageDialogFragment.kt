@@ -14,6 +14,7 @@ class MessageDialogFragment : DialogFragment() {
     private val positiveText: String? by argument(ARG_POSITIVE_TEXT)
     private val negativeText: String? by argument(ARG_NEGATIVE_TEXT)
     private val neutralText: String? by argument(ARG_NEUTRAL_TEXT)
+    private val cancelable: Boolean by argument(ARG_CANCELABLE)
 
     private val clickListener: OnClickListener
         get() = when {
@@ -22,9 +23,12 @@ class MessageDialogFragment : DialogFragment() {
             else -> object : OnClickListener {}
         }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
-        AlertDialog.Builder(context!!).apply {
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        this.isCancelable = cancelable
+
+        return AlertDialog.Builder(context!!).apply {
             setTitle(title)
+            setCancelable(cancelable)
             setMessage(message)
             positiveText?.let { positiveText ->
                 setPositiveButton(positiveText) { _, _ ->
@@ -45,6 +49,7 @@ class MessageDialogFragment : DialogFragment() {
                 }
             }
         }.create()
+    }
 
     override fun onCancel(dialog: DialogInterface?) {
         super.onCancel(dialog)
@@ -58,6 +63,7 @@ class MessageDialogFragment : DialogFragment() {
         private const val ARG_POSITIVE_TEXT = "arg_positive_text"
         private const val ARG_NEGATIVE_TEXT = "arg_negative_text"
         private const val ARG_NEUTRAL_TEXT = "arg_neutral_text"
+        private const val ARG_CANCELABLE = "arg_cancelable"
 
         fun create(
             title: String? = null,
@@ -65,7 +71,8 @@ class MessageDialogFragment : DialogFragment() {
             positive: String? = null,
             negative: String? = null,
             neutral: String? = null,
-            tag: String? = null
+            tag: String? = null,
+            cancelable: Boolean = false
         ): MessageDialogFragment =
             MessageDialogFragment().apply {
                 arguments = Bundle().apply {
@@ -74,6 +81,7 @@ class MessageDialogFragment : DialogFragment() {
                     putString(ARG_POSITIVE_TEXT, positive)
                     putString(ARG_NEGATIVE_TEXT, negative)
                     putString(ARG_NEUTRAL_TEXT, neutral)
+                    putBoolean(ARG_CANCELABLE, cancelable)
                     putString(ARG_TAG, tag)
                 }
             }

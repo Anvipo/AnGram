@@ -14,7 +14,8 @@ import kotlin.coroutines.resume
 
 @Suppress("DirectUseOfResultType")
 class TDLibGatewayImp(
-    private val tdClient: Client
+    private val tdClient: Client,
+    private val context: Context
 ) : TDLibGateway {
 
     override suspend fun getAuthorizationStateRequestCatching(): Result<TdApi.AuthorizationState> =

@@ -63,7 +63,8 @@ object GatewaysModule {
 
         single<TDLibGateway>(tdLibGateway) {
             TDLibGatewayImp(
-                tdClient = get<Client>(tdClient)
+                tdClient = get<Client>(tdClient),
+                context = get()
             )
         }
 

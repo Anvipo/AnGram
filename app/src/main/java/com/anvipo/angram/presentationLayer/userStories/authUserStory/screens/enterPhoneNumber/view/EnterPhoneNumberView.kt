@@ -14,4 +14,12 @@ interface EnterPhoneNumberView : BaseView {
     @StateStrategyType(OneExecutionStateStrategy::class)
     fun showNextButton()
 
+    @StateStrategyType(OneExecutionStateStrategy::class)
+    fun askForReadPhoneStatePermission(withNoOption: Boolean = false)
+
+    @StateStrategyType(OneExecutionStateStrategy::class)
+    fun askForGoToSettingsForReadPhoneStatePermission()
+
+    fun setMaxLengthOfPhoneNumber(maxLength: Int)
+
 }

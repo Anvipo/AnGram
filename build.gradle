@@ -20,6 +20,7 @@ ext {
     koin_version = '2.0.0-GA'
     coroutines_version = '1.2.1'
     lottie_version = '3.0.1'
+    runtime_permission_kotlin = '1.1.0'
 }
 
 buildscript {

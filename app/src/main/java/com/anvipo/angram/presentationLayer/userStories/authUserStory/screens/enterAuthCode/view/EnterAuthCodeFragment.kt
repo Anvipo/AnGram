@@ -52,8 +52,8 @@ class EnterAuthCodeFragment : BaseFragment(), EnterAuthCodeView {
         presenter.onGetEnteredPhoneNumber(enteredPhoneNumber)
     }
 
-    override fun setMaxLengthOfEditText(expectedCodeLength: UInt) {
-        enter_auth_code_edit_text.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(expectedCodeLength.toInt()))
+    override fun setMaxLengthOfEditText(expectedCodeLength: Int) {
+        enter_auth_code_edit_text.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(expectedCodeLength))
     }
 
     override fun setupClickListeners() {

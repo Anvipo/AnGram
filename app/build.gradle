@@ -75,4 +75,7 @@ dependencies {
 
     // Lottie
     implementation "com.airbnb.android:lottie:$lottie_version"
+
+    // Android Permissions with Kotlin Coroutines
+    implementation "com.github.florent37:runtime-permission-kotlin:$runtime_permission_kotlin"
 }

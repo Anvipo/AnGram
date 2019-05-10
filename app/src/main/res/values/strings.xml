@@ -16,4 +16,11 @@
     <string name="enter_auth_code_title">Enter auth code</string>
     <string name="authentication_code_cant_be_empty">Authentication code can\'t be empty</string>
     <string name="authentication_code">Authentication code</string>
+
+    <string name="please_provide_read_phone_state">For further ease of use, please allow the application to make and manage calls.</string>
+    <string name="no">No</string>
+
+    <string name="go_to">Go to</string>
+    <string name="go_to_applications_settings_and_provide_read_phone_state_permission">For further ease of use, you need to go to the application settings and allow the application to make calls and manage them.</string>
+
 </resources>

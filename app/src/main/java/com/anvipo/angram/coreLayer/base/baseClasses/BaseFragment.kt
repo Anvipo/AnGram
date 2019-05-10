@@ -1,6 +1,9 @@
 package com.anvipo.angram.coreLayer.base.baseClasses
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +12,7 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.R
 import com.anvipo.angram.coreLayer.CoreHelpers.debugLog
 import com.anvipo.angram.coreLayer.MessageDialogFragment
@@ -154,6 +158,26 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseView {
         supportActionBar.setDisplayHomeAsUpEnabled(true)
     }
 
+    protected fun goToSettings() {
+        val applicationID = BuildConfig.APPLICATION_ID //activity?.packageName is same
+
+        val showApplicationDetailsSettings = Intent(
+            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+            Uri.fromParts("package", applicationID, null)
+        )
+
+        startActivityForResult(showApplicationDetailsSettings, fromApplicationSettingsRequestCode)
+    }
+
+    override fun onActivityResult(
+        requestCode: Int,
+        resultCode: Int,
+        data: Intent?
+    ) {
+        super.onActivityResult(requestCode, resultCode, data)
+        presenter.onActivityResult(requestCode, resultCode, data)
+    }
+
     protected abstract fun setupClickListeners()
 
     protected open fun extractDataFromBundle() {}
@@ -179,5 +203,11 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseView {
     protected var shouldShowBackButton: Boolean = false
 
     private var instanceStateSaved: Boolean = false
+
+    companion object {
+
+        internal const val fromApplicationSettingsRequestCode: Int = 10_000
+
+    }
 
 }

@@ -2,10 +2,12 @@ package com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.en
 
 
 import android.text.Editable
+import android.text.InputFilter
 import android.text.TextWatcher
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import com.anvipo.angram.R
+import com.anvipo.angram.coreLayer.MessageDialogFragment
 import com.anvipo.angram.coreLayer.base.baseClasses.BaseFragment
 import com.anvipo.angram.coreLayer.hideKeyboard
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.di.EnterPhoneNumberModule.enterPhoneNumberPresenter
@@ -17,7 +19,10 @@ import kotlinx.android.synthetic.main.appbar.*
 import kotlinx.android.synthetic.main.fragment_enter_phone_number.*
 import org.koin.android.ext.android.get
 
-class EnterPhoneNumberFragment : BaseFragment(), EnterPhoneNumberView {
+class EnterPhoneNumberFragment :
+    BaseFragment(),
+    EnterPhoneNumberView,
+    MessageDialogFragment.OnClickListener {
 
     companion object {
         @JvmStatic
@@ -30,6 +35,50 @@ class EnterPhoneNumberFragment : BaseFragment(), EnterPhoneNumberView {
 
     override fun showNextButton() {
         enter_phone_number_next_button.visibility = View.VISIBLE
+    }
+
+    override fun askForReadPhoneStatePermission(withNoOption: Boolean) {
+        val text = getString(R.string.please_provide_read_phone_state)
+
+        MessageDialogFragment
+            .create(
+                message = text,
+                positive = getString(android.R.string.ok),
+                negative = if (withNoOption) getString(R.string.no) else null,
+                cancelable = false,
+                tag = DialogTags.AskForReadPhoneStatePermissionTag.tag
+            )
+            .show(childFragmentManager, null)
+    }
+
+    override fun dialogPositiveClicked(tag: String) {
+        when (tag) {
+            DialogTags.AskForReadPhoneStatePermissionTag.tag ->
+                presenter.onAskForReadPhoneStatePermissionPositiveClick()
+            DialogTags.AskForGoToSettingsForReadPhoneStatePermissionTag.tag -> goToSettings()
+        }
+    }
+
+    override fun askForGoToSettingsForReadPhoneStatePermission() {
+        val part1 =
+            getString(R.string.go_to_applications_settings_and_provide_read_phone_state_permission)
+        val part2 = getString(R.string.go_to)
+
+        val text = "$part1 $part2?"
+
+        MessageDialogFragment
+            .create(
+                message = text,
+                positive = getString(android.R.string.ok),
+                negative = getString(R.string.no),
+                cancelable = false,
+                tag = DialogTags.AskForGoToSettingsForReadPhoneStatePermissionTag.tag
+            )
+            .show(childFragmentManager, null)
+    }
+
+    override fun setMaxLengthOfPhoneNumber(maxLength: Int) {
+        enter_phone_number_edit_text.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(maxLength))
     }
 
     override val presenter: EnterPhoneNumberPresenter by lazy { mPresenter }
@@ -49,7 +98,8 @@ class EnterPhoneNumberFragment : BaseFragment(), EnterPhoneNumberView {
 
     @Suppress("ProtectedInFinal")
     @ProvidePresenter
-    protected fun providePresenter(): EnterPhoneNumberPresenterImp = get(enterPhoneNumberPresenter)
+    protected fun providePresenter(): EnterPhoneNumberPresenterImp =
+        get(enterPhoneNumberPresenter)
 
     @InjectPresenter
     internal lateinit var mPresenter: EnterPhoneNumberPresenterImp
@@ -93,6 +143,11 @@ class EnterPhoneNumberFragment : BaseFragment(), EnterPhoneNumberView {
         val enteredPhoneNumber = enter_phone_number_edit_text.text.toString()
 
         presenter.onNextButtonPressed(enteredPhoneNumber)
+    }
+
+    private enum class DialogTags(val tag: String) {
+        AskForReadPhoneStatePermissionTag("ask_for_read_phone_state_permission"),
+        AskForGoToSettingsForReadPhoneStatePermissionTag("ask_for_go_to_settings_for_read_phone_state_permission")
     }
 
 }

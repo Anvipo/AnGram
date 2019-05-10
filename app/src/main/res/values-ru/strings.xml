@@ -14,4 +14,11 @@
     <string name="enter_auth_code_title">Введите код аутентификации</string>
     <string name="authentication_code_cant_be_empty">Код аутентификации не может быть пустым</string>
     <string name="authentication_code">Код аутентификации</string>
+
+    <string name="please_provide_read_phone_state">Для дальнейшего удобства пользования, пожалуйста, разрешите приложению совершать звонки и управлять ими.</string>
+    <string name="no">Нет</string>
+
+    <string name="go_to">Перейти</string>
+    <string name="go_to_applications_settings_and_provide_read_phone_state_permission">Для дальнейшего удобства пользования, необходимо перейти в настройки приложения и разрешить приложению совершать звонки и управлять ими.</string>
+
 </resources>
