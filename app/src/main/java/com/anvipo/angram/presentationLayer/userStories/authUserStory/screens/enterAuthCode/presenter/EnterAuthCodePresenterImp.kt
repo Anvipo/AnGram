@@ -23,9 +23,22 @@ class EnterAuthCodePresenterImp(
 
     override fun coldStart() {
         viewState.hideNextButton()
+        viewState.hideRegistrationViews()
+        viewState.showProgress()
     }
 
-    override fun onNextButtonPressed(enteredAuthCode: CorrectAuthCodeType) {
+    override fun onStartTriggered() {
+        viewState.hideProgress()
+        if (registrationRequired) {
+            viewState.showRegistrationViews()
+        }
+    }
+
+    override fun onNextButtonPressed(
+        enteredAuthCode: CorrectAuthCodeType,
+        lastName: String,
+        firstName: String
+    ) {
         val onNextButtonPressedCoroutineExceptionHandler = CoroutineExceptionHandler { _, error ->
             if (BuildConfig.DEBUG) {
                 val errorText = error.localizedMessage
@@ -39,20 +52,15 @@ class EnterAuthCodePresenterImp(
         onNextButtonPressedJob = launch(
             context = coroutineContext + onNextButtonPressedCoroutineExceptionHandler
         ) {
-            useCase.checkAuthenticationCodeCatching(enteredAuthCode)
+            useCase.checkAuthenticationCodeCatching(
+                enteredAuthCode = enteredAuthCode,
+                lastName = lastName,
+                firstName = firstName
+            )
                 .onSuccess {
-                    withContext(Dispatchers.Main) {
-                        viewState.hideProgress()
-                    }
-
-                    coordinator.onEnterCorrectAuthCode(enteredAuthCode)
+                    coordinator.onEnterCorrectAuthCode()
                 }
                 .onFailure { error ->
-                    if (error.message == "PHONE_NUMBER_UNOCCUPIED") {
-                        coordinator.onEnterCorrectAuthCode(enteredAuthCode)
-                        return@launch
-                    }
-
                     val errorMessage: String = resourceManager.run {
                         when (error) {
                             is TdApiError.Custom.EmptyParameter -> getString(R.string.unknown_error)
@@ -79,18 +87,72 @@ class EnterAuthCodePresenterImp(
         this.enteredPhoneNumber = enteredPhoneNumber
     }
 
+    override fun onGetRegistrationRequired(registrationRequired: Boolean) {
+        this.registrationRequired = registrationRequired
+    }
+
+    override fun onGetTermsOfServiceText(termsOfServiceText: String) {
+        viewState.showAlertMessage(termsOfServiceText)
+    }
+
     override fun onAuthCodeTextChanged(text: CharSequence?) {
-        if (text == null) {
+        if (text.isNullOrBlank()) {
+            authCodeIsEnteredAndCorrect = false
             viewState.hideNextButton()
             return
         }
 
         if (text.length.toUInt() < expectedCodeLength) {
+            authCodeIsEnteredAndCorrect = false
             viewState.hideNextButton()
             return
         }
 
-        viewState.showNextButton()
+        authCodeIsEnteredAndCorrect = true
+
+        if (authCodeIsEnteredAndCorrect) {
+            if (registrationRequired && firstNameIsEntered && lastNameIsEntered) {
+                viewState.showNextButton()
+            } else {
+                viewState.hideNextButton()
+            }
+        }
+    }
+
+    override fun onFirstNameTextChanged(text: CharSequence?) {
+        if (text.isNullOrBlank()) {
+            firstNameIsEntered = false
+            viewState.hideNextButton()
+            return
+        }
+
+        firstNameIsEntered = true
+
+        if (authCodeIsEnteredAndCorrect) {
+            if (registrationRequired && firstNameIsEntered && lastNameIsEntered) {
+                viewState.showNextButton()
+            } else {
+                viewState.hideNextButton()
+            }
+        }
+    }
+
+    override fun onLastNameTextChanged(text: CharSequence?) {
+        if (text.isNullOrBlank()) {
+            lastNameIsEntered = false
+            viewState.hideNextButton()
+            return
+        }
+
+        lastNameIsEntered = true
+
+        if (authCodeIsEnteredAndCorrect) {
+            if (registrationRequired && firstNameIsEntered && lastNameIsEntered) {
+                viewState.showNextButton()
+            } else {
+                viewState.hideNextButton()
+            }
+        }
     }
 
     override fun onBackPressed() {
@@ -106,5 +168,12 @@ class EnterAuthCodePresenterImp(
     private var onNextButtonPressedJob: Job? = null
     private var enteredPhoneNumber: String = ""
     private var expectedCodeLength: UInt = 0u
+
+    private var authCodeIsEnteredAndCorrect: Boolean = false
+
+    private var registrationRequired: Boolean = false
+
+    private var firstNameIsEntered: Boolean = false
+    private var lastNameIsEntered: Boolean = false
 
 }

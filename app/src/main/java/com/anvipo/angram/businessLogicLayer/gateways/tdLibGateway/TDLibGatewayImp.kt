@@ -128,7 +128,11 @@ class TDLibGatewayImp(
             )
         }
 
-    override suspend fun checkAuthenticationCodeCatching(enteredAuthCode: CorrectAuthCodeType): Result<TdApi.Ok> =
+    override suspend fun checkAuthenticationCodeCatching(
+        enteredAuthCode: CorrectAuthCodeType,
+        lastName: String,
+        firstName: String
+    ): Result<TdApi.Ok> =
         suspendCancellableCoroutine { continuation ->
             val checkAuthenticationCodeResultHandler = Client.ResultHandler { result ->
                 when (result) {
@@ -148,8 +152,8 @@ class TDLibGatewayImp(
 
             val checkAuthenticationCodeQuery = TdApi.CheckAuthenticationCode(
                 enteredAuthCode,
-                "",
-                ""
+                firstName,
+                lastName
             )
 
             tdClient.send(

@@ -9,24 +9,32 @@ object EnterAuthCodeScreenFactoryImp : EnterAuthCodeScreenFactory {
     data class EnterAuthCodeScreen(
         private val shouldShowBackButton: Boolean,
         private val expectedCodeLength: Int,
-        private val enteredPhoneNumber: String
+        private val enteredPhoneNumber: String,
+        private val registrationRequired: Boolean,
+        private val termsOfServiceText: String
     ) : SupportAppScreen() {
         override fun getFragment(): Fragment =
             EnterAuthCodeFragment.createNewInstance(
                 shouldShowBackButton = shouldShowBackButton,
                 expectedCodeLength = expectedCodeLength,
-                enteredPhoneNumber = enteredPhoneNumber
+                enteredPhoneNumber = enteredPhoneNumber,
+                registrationRequired = registrationRequired,
+                termsOfServiceText = termsOfServiceText
             ) as Fragment
     }
 
     override fun createEnterAuthCodeViewController(
         shouldShowBackButton: Boolean,
         expectedCodeLength: Int,
-        enteredPhoneNumber: String
+        enteredPhoneNumber: String,
+        registrationRequired: Boolean,
+        termsOfServiceText: String
     ): SupportAppScreen = EnterAuthCodeScreen(
         shouldShowBackButton = shouldShowBackButton,
         expectedCodeLength = expectedCodeLength,
-        enteredPhoneNumber = enteredPhoneNumber
+        enteredPhoneNumber = enteredPhoneNumber,
+        registrationRequired = registrationRequired,
+        termsOfServiceText = termsOfServiceText
     )
 
 }

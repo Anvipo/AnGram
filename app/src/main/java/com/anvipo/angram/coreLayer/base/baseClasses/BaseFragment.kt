@@ -45,9 +45,15 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseView {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        presenter.onStartTriggered()
+    }
+
     override fun onResume() {
         super.onResume()
         instanceStateSaved = false
+        presenter.onResumeTriggered()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -76,7 +82,10 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseView {
 
     override fun showAlertMessage(text: String) {
         MessageDialogFragment
-            .create(message = text)
+            .create(
+                message = text,
+                positive = getString(android.R.string.ok)
+            )
             .show(childFragmentManager, null)
     }
 

@@ -7,6 +7,10 @@ interface BasePresenter {
     fun coldStart(): Unit = Unit
     fun hotStart(): Unit = Unit
 
+    fun onStartTriggered(): Unit = Unit
+
+    fun onResumeTriggered(): Unit = Unit
+
     fun onBackPressed(): Unit = Unit
 
     fun onCanceledProgressDialog(): Unit = Unit

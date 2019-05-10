@@ -7,7 +7,9 @@ interface EnterAuthCodeScreenFactory {
     fun createEnterAuthCodeViewController(
         shouldShowBackButton: Boolean,
         expectedCodeLength: Int,
-        enteredPhoneNumber: String
+        enteredPhoneNumber: String,
+        registrationRequired: Boolean,
+        termsOfServiceText: String
     ): SupportAppScreen
 
 }

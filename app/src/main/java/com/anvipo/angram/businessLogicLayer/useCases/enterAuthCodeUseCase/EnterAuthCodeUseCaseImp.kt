@@ -10,7 +10,13 @@ class EnterAuthCodeUseCaseImp(
 
     @Suppress("DirectUseOfResultType")
     override suspend fun checkAuthenticationCodeCatching(
-        enteredAuthCode: CorrectAuthCodeType
-    ): Result<TdApi.Ok> = tdLibGateway.checkAuthenticationCodeCatching(enteredAuthCode)
+        enteredAuthCode: CorrectAuthCodeType,
+        lastName: String,
+        firstName: String
+    ): Result<TdApi.Ok> = tdLibGateway.checkAuthenticationCodeCatching(
+        enteredAuthCode,
+        lastName = lastName,
+        firstName = firstName
+    )
 
 }

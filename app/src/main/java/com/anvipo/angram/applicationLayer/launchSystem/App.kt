@@ -87,6 +87,11 @@ class App : Application() {
 
     private val tdUpdateOptionStack: IMutableStack<TdApi.UpdateOption> = MutableStack()
 
+    private val tdUpdateUserStack: IMutableStack<TdApi.UpdateUser> = MutableStack()
+
+    private val tdUpdateHavePendingNotificationsStack: IMutableStack<TdApi.UpdateHavePendingNotifications> =
+        MutableStack()
+
     private val tdUpdateAuthorizationStateMutableList: UpdateAuthorizationStateMutableList
             by inject(updateAuthorizationStateMutableList)
 
@@ -172,16 +177,22 @@ class App : Application() {
             is TdApi.UpdateConnectionState -> onUpdateConnectionState(tag, tdApiUpdate)
             is TdApi.UpdateAuthorizationState -> onUpdateAuthorizationState(tag, tdApiUpdate)
             is TdApi.UpdateOption -> onUpdateOption(tag, tdApiUpdate)
+            is TdApi.UpdateUser -> {
+                tdUpdateUserStack.push(tdApiUpdate)
+                debugLog(tdApiUpdate.toString())
+            }
+            is TdApi.UpdateHavePendingNotifications -> {
+                tdUpdateHavePendingNotificationsStack.push(tdApiUpdate)
+                debugLog(tdApiUpdate.toString())
+            }
             else -> {
-                // TODO: handle this case
-
                 val text = tdApiUpdate.toString()
 
                 debugLog(text)
 
                 systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
 
-                assertionFailure()
+                assertionFailure("Unspecified tdApiUpdate")
             }
         }
     }

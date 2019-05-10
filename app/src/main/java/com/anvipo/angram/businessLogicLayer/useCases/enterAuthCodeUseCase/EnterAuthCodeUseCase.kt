@@ -7,6 +7,10 @@ import org.drinkless.td.libcore.telegram.TdApi
 interface EnterAuthCodeUseCase : BaseUseCase {
 
     @Suppress("DirectUseOfResultType")
-    suspend fun checkAuthenticationCodeCatching(enteredAuthCode: CorrectAuthCodeType): Result<TdApi.Ok>
+    suspend fun checkAuthenticationCodeCatching(
+        enteredAuthCode: CorrectAuthCodeType,
+        lastName: String,
+        firstName: String
+    ): Result<TdApi.Ok>
 
 }

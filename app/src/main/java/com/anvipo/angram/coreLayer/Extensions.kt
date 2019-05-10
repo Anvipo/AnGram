@@ -140,3 +140,21 @@ fun View.setBackgroundTintByColor(@ColorInt color: Int) {
     val wrappedDrawable = DrawableCompat.wrap(background)
     DrawableCompat.setTint(wrappedDrawable.mutate(), color)
 }
+
+fun View.showWithAnimate(animationDuration: Long = 250) {
+    this.clearAnimation()
+
+    this.animate()
+        .translationY(0f)
+        .alpha(1.0f)
+        .duration = animationDuration
+}
+
+fun View.hideWithAnimate(animationDuration: Long = 250) {
+    this.clearAnimation()
+
+    this.animate()
+        .translationY(this.height.toFloat())
+        .alpha(0.0f)
+        .duration = animationDuration
+}

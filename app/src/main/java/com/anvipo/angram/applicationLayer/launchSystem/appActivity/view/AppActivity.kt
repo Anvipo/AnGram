@@ -1,7 +1,6 @@
 package com.anvipo.angram.applicationLayer.launchSystem.appActivity.view
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.anvipo.angram.R
@@ -9,7 +8,6 @@ import com.anvipo.angram.applicationLayer.di.LaunchSystemModule
 import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule
 import com.anvipo.angram.applicationLayer.launchSystem.appActivity.presenter.AppPresenter
 import com.anvipo.angram.applicationLayer.launchSystem.appActivity.presenter.AppPresenterImp
-import com.anvipo.angram.coreLayer.MessageDialogFragment
 import com.anvipo.angram.coreLayer.base.baseClasses.BaseActivity
 import com.anvipo.angram.coreLayer.base.baseClasses.BaseFragment
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -52,16 +50,6 @@ class AppActivity : BaseActivity(), AppView {
         currentFragment?.onBackPressed() ?: super.onBackPressed()
     }
 
-
-    override fun showAlertMessage(text: String) {
-        MessageDialogFragment
-            .create(message = text)
-            .show(supportFragmentManager, null)
-    }
-
-    override fun showToastMessage(text: String) {
-        Toast.makeText(this, text, Toast.LENGTH_LONG).show()
-    }
 
     override fun setupClickListeners(): Unit = Unit
 

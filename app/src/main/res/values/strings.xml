@@ -22,5 +22,7 @@
 
     <string name="go_to">Go to</string>
     <string name="go_to_applications_settings_and_provide_read_phone_state_permission">For further ease of use, you need to go to the application settings and allow the application to make calls and manage them.</string>
+    <string name="first_name_hint">First name</string>
+    <string name="last_name_hint">Last name</string>
 
 </resources>

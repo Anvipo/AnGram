@@ -8,6 +8,4 @@ interface EnterPhoneNumberPresenter : BasePresenter {
 
     fun onPhoneNumberTextChanged(text: CharSequence?)
 
-    fun onAskForReadPhoneStatePermissionPositiveClick()
-
 }

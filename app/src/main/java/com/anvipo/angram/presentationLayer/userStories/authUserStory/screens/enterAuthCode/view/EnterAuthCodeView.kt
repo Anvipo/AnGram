@@ -17,4 +17,10 @@ interface EnterAuthCodeView : BaseView {
     @StateStrategyType(AddToEndSingleStrategy::class)
     fun setMaxLengthOfEditText(expectedCodeLength: Int)
 
+    @StateStrategyType(AddToEndSingleStrategy::class)
+    fun showRegistrationViews()
+
+    @StateStrategyType(AddToEndSingleStrategy::class)
+    fun hideRegistrationViews()
+
 }
