@@ -42,4 +42,8 @@
     <string name="enabled_proxy_id" translatable="false">enabled_proxy_id</string>
     <!--\\Proxy-->
 
+    <!--Chat list-->
+    <string name="chat_list_action_bar_title">Chat list</string>
+    <!--\\Chat list-->
+
 </resources>

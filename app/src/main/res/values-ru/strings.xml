@@ -39,4 +39,8 @@
     <string name="choose_proxy_server_type">Выберите нужный тип прокси сервера</string>
     <!--\\Proxy-->
 
+    <!--Chat list-->
+    <string name="chat_list_action_bar_title">Список чатов</string>
+    <!--\\Chat list-->
+
 </resources>

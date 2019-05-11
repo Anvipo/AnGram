@@ -11,9 +11,12 @@ import com.anvipo.angram.layers.businessLogic.useCases.flows.authorization.enter
 import com.anvipo.angram.layers.businessLogic.useCases.flows.authorization.enterAuthenticationPassword.EnterAuthenticationPasswordUseCaseImpl
 import com.anvipo.angram.layers.businessLogic.useCases.flows.authorization.enterAuthenticationPhoneNumber.EnterAuthenticationPhoneNumberUseCase
 import com.anvipo.angram.layers.businessLogic.useCases.flows.authorization.enterAuthenticationPhoneNumber.EnterAuthenticationPhoneNumberUseCaseImpl
+import com.anvipo.angram.layers.businessLogic.useCases.flows.main.chatList.ChatListUseCase
+import com.anvipo.angram.layers.businessLogic.useCases.flows.main.chatList.ChatListUseCaseImpl
 import com.anvipo.angram.layers.data.di.GatewaysModule.tdClientScopeQualifier
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorScope
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorScopeQualifier
+import com.anvipo.angram.layers.presentation.flows.main.coordinator.di.MainCoordinatorModule.mainCoordinatorScopeQualifier
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
@@ -61,6 +64,14 @@ object UseCasesModule {
                 tdLibGateway = get(),
                 dbGateway = get()
             )
+        }
+
+        scope(mainCoordinatorScopeQualifier) {
+
+            scoped<ChatListUseCase> {
+                ChatListUseCaseImpl()
+            }
+
         }
 
     }

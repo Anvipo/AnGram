@@ -14,6 +14,8 @@ import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.di.EnterAuthenticationCodeModule
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.di.EnterAuthenticationPasswordModule
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.di.EnterAuthenticationPhoneNumberModule
+import com.anvipo.angram.layers.presentation.flows.main.coordinator.di.MainCoordinatorModule.mainCoordinatorScope
+import com.anvipo.angram.layers.presentation.flows.main.coordinator.di.MainCoordinatorModule.mainCoordinatorScopeQualifier
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.withContext
@@ -136,15 +138,11 @@ class ApplicationCoordinatorImpl(
         startAuthorizationFlow(startAuthorizationState)
     }
 
-    private fun onAuthorizationStateReady() {
+    private suspend fun onAuthorizationStateReady() {
         val invokationPlace = object {}.javaClass.enclosingMethod!!.name
         myLog(invokationPlace = invokationPlace)
 
-        // TODO: start main flow
-        myLog(
-            text = "START MAIN FLOW",
-            invokationPlace = invokationPlace
-        )
+        startMainFlow()
     }
 
     private fun onAuthorizationStateLoggingOut() {
@@ -212,7 +210,29 @@ class ApplicationCoordinatorImpl(
 
         authorizationFlowHasBeenStarted = false
 
-        // TODO: start main flow
+        startMainFlow()
+    }
+
+    private suspend fun startMainFlow() {
+        val invokationPlace = object {}.javaClass.enclosingMethod!!.name
+
+        mainCoordinatorScope = koinScope.getKoin().createScope(
+            scopeId = "Main flow scope ID",
+            qualifier = mainCoordinatorScopeQualifier
+        )
+
+        val mainCoordinator = withContext(Dispatchers.Default) {
+            coordinatorsFactory.createMainCoordinator()
+        }
+
+        val mainFlowCoordinateResult = coordinateTo(mainCoordinator)
+
+        myLog(
+            text = "mainFlowCoordinateResult = $mainFlowCoordinateResult",
+            invokationPlace = invokationPlace
+        )
+
+        mainCoordinatorScope.close()
     }
 
     @Suppress("unused")
