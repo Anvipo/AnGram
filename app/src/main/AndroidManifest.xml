@@ -6,6 +6,10 @@
 
     <dist:module dist:instant="true" />
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!--<uses-permission android:name="android.permission.READ_PHONE_STATE" />-->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:name=".applicationLayer.launchSystem.App"
         android:allowBackup="false"
@@ -17,7 +21,7 @@
         tools:ignore="GoogleAppIndexingWarning">
 
         <activity
-            android:name=".applicationLayer.launchSystem.AppActivity"
+            android:name=".applicationLayer.launchSystem.appActivity.view.AppActivity"
             android:launchMode="singleInstance"
             android:theme="@style/AppTheme.Splash"
             android:windowSoftInputMode="adjustResize">

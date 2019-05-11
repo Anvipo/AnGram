@@ -4,31 +4,79 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'kotlin-kapt'
+
 android {
-    compileSdkVersion 28
-    defaultConfig {
-        applicationId "com.anvipo.angram"
-        minSdkVersion 21
-        targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    compileSdkVersion compile_sdk_version
+
+    sourceSets.main {
+        jniLibs.srcDir 'src/main/libs'
+        jni.srcDirs = [] //disable automatic ndk-build call
     }
+
+    defaultConfig {
+        applicationId application_id
+        minSdkVersion min_sdk_version
+        targetSdkVersion target_sdk_version
+        versionCode version_code
+        versionName version_name
+        testInstrumentationRunner test_instrumentation_runner_class_name
+        multiDexEnabled = multi_dex_enabled
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    lintOptions {
+        // use this line to check all rules except those listed
+        disable 'InvalidPackage'
+    }
+    buildToolsVersion = build_tools_version
+    compileOptions {
+        sourceCompatibility = source_compatibility
+        targetCompatibility = target_compatibility
+    }
+
+    kotlinOptions {
+        freeCompilerArgs = ["-Xallow-result-return-type"]
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.0.2'
-    implementation 'androidx.core:core-ktx:1.0.1'
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
+
+    // Android libs
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation "com.google.android.material:material:$material_version"
+
+    // Tests
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+
+    // Koin
+    implementation "org.koin:koin-android:$koin_version"
+
+    //Cicerone Navigation
+    implementation "ru.terrakok.cicerone:cicerone:$cicerone_version"
+
+    // MVP Moxy
+    kapt "com.arello-mobile:moxy-compiler:$moxy_version"
+    implementation "com.arello-mobile:moxy:$moxy_version"
+
+    // Lottie
+    implementation "com.airbnb.android:lottie:$lottie_version"
+
+    // Android Permissions with Kotlin Coroutines
+    implementation "com.github.florent37:runtime-permission-kotlin:$runtime_permission_kotlin"
 }

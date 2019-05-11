@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="share_to">Поделиться с</string>
+
+    <string name="loading">Загрузка</string>
+
+    <!--Auth flow-->
+
+    <string name="phone_number_invalid">Неверный номер телефона</string>
+    <string name="enter_your_phone_number_title">Введите Ваш номер телефона</string>
+    <string name="unknown_error">Неизвестная ошибка</string>
+    <string name="phone_number_text_input_hint">Номер телефона</string>
+    <string name="next_button_text">Далее</string>
+    <string name="error_title">Ошибка</string>
+    <string name="phone_number_cant_be_empty">Номер телефона не может быть пустым</string>
+    <string name="query_canceled">Запрос отменён</string>
+    <string name="invalid_phone_number_length">Некорректная длина номера телефона</string>
+    <string name="enter_auth_code_title">Введите код аутентификации</string>
+    <string name="authentication_code_cant_be_empty">Код аутентификации не может быть пустым</string>
+    <string name="authentication_code">Код аутентификации</string>
+    <string name="first_name_hint">Имя</string>
+    <string name="last_name_hint">Фамилия</string>
+    <string name="code_is_invalid">Код неверен</string>
+    <string name="enter_password">Введите пароль</string>
+    <string name="password_type_input_hint">Пароль</string>
+    <string name="too_many_requests_try_later">Слишком много запросов. Попробуйте позже.</string>
+    <string name="resend_code_button_text">Выслать код заново</string>
+
+    <!--\\Auth flow-->
+
+</resources>
