@@ -1,8 +1,8 @@
-package com.anvipo.angram.businessLogicLayer.di
+package com.anvipo.angram.dataLayer.di
 
 import com.anvipo.angram.applicationLayer.launchSystem.App
-import com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway.TDLibGateway
-import com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway.TDLibGatewayImp
+import com.anvipo.angram.dataLayer.gateways.tdLibGateway.TDLibGateway
+import com.anvipo.angram.dataLayer.gateways.tdLibGateway.TDLibGatewayImp
 import org.drinkless.td.libcore.telegram.Client
 import org.koin.android.ext.koin.androidApplication
 import org.koin.core.module.Module

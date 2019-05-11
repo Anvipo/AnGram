@@ -1,6 +1,6 @@
 package com.anvipo.angram.businessLogicLayer.useCases.enterAuthenticationCodeUseCase
 
-import com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway.TDLibGateway
+import com.anvipo.angram.dataLayer.gateways.tdLibGateway.TDLibGateway
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationCode.types.CorrectAuthenticationCodeType
 import org.drinkless.td.libcore.telegram.TdApi
 

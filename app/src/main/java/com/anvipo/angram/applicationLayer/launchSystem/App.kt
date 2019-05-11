@@ -6,7 +6,6 @@ import com.anvipo.angram.applicationLayer.coordinator.di.ApplicationRootCoordina
 import com.anvipo.angram.applicationLayer.di.LaunchSystemModule
 import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule
 import com.anvipo.angram.applicationLayer.types.SystemMessageSendChannel
-import com.anvipo.angram.businessLogicLayer.di.GatewaysModule
 import com.anvipo.angram.businessLogicLayer.di.UseCasesModule
 import com.anvipo.angram.coreLayer.CoreErrors
 import com.anvipo.angram.coreLayer.CoreHelpers.assertionFailure
@@ -15,6 +14,7 @@ import com.anvipo.angram.coreLayer.collections.IMutableStack
 import com.anvipo.angram.coreLayer.collections.MutableStack
 import com.anvipo.angram.coreLayer.message.SystemMessage
 import com.anvipo.angram.coreLayer.message.SystemMessageType
+import com.anvipo.angram.dataLayer.di.GatewaysModule
 import com.anvipo.angram.global.CoreHelpers.createTGSystemMessageFromApp
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationCode.di.EnterAuthenticationCodeModule
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.di.EnterPhoneNumberModule

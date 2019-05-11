@@ -1,9 +1,9 @@
-package com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway
+package com.anvipo.angram.dataLayer.gateways.tdLibGateway
 
 import android.content.Context
 import android.os.Build
 import com.anvipo.angram.BuildConfig
-import com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway.errors.TdApiError
+import com.anvipo.angram.dataLayer.gateways.tdLibGateway.errors.TdApiError
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationCode.types.CorrectAuthenticationCodeType
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationPassword.types.CorrectAuthenticationPasswordType
 import kotlinx.coroutines.suspendCancellableCoroutine

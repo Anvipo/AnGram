@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway.errors
+package com.anvipo.angram.dataLayer.gateways.tdLibGateway.errors
 
 sealed class TdApiError : Error() {
 
