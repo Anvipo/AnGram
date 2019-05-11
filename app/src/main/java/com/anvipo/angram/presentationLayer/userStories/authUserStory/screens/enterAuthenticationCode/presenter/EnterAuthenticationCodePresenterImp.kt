@@ -1,25 +1,26 @@
-package com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthCode.presenter
+package com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationCode.presenter
 
 import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.R
 import com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway.errors.TdApiError
-import com.anvipo.angram.businessLogicLayer.useCases.enterAuthCodeUseCase.EnterAuthCodeUseCase
+import com.anvipo.angram.businessLogicLayer.useCases.enterAuthenticationCodeUseCase.EnterAuthenticationCodeUseCase
 import com.anvipo.angram.coreLayer.CoreHelpers
+import com.anvipo.angram.coreLayer.CoreHelpers.debugLog
 import com.anvipo.angram.coreLayer.ResourceManager
 import com.anvipo.angram.presentationLayer.common.baseClasses.BasePresenterImp
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinatorEnterAuthCodeOutput
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthCode.types.CorrectAuthCodeType
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthCode.view.EnterAuthCodeView
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationCode.types.CorrectAuthenticationCodeType
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationCode.view.EnterAuthenticationCodeView
 import com.arellomobile.mvp.InjectViewState
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
 @InjectViewState
-class EnterAuthCodePresenterImp(
+class EnterAuthenticationCodePresenterImp(
     override val coordinator: AuthorizationCoordinatorEnterAuthCodeOutput,
-    override val useCase: EnterAuthCodeUseCase,
+    override val useCase: EnterAuthenticationCodeUseCase,
     private val resourceManager: ResourceManager
-) : BasePresenterImp<EnterAuthCodeView>(), EnterAuthCodePresenter {
+) : BasePresenterImp<EnterAuthenticationCodeView>(), EnterAuthenticationCodePresenter {
 
     override fun coldStart() {
         viewState.hideNextButton()
@@ -33,7 +34,7 @@ class EnterAuthCodePresenterImp(
     }
 
     override fun onNextButtonPressed(
-        enteredAuthCode: CorrectAuthCodeType,
+        enteredAuthenticationCode: CorrectAuthenticationCodeType,
         lastName: String,
         firstName: String
     ) {
@@ -51,15 +52,11 @@ class EnterAuthCodePresenterImp(
             context = coroutineContext + onNextButtonPressedCoroutineExceptionHandler
         ) {
             useCase.checkAuthenticationCodeCatching(
-                enteredAuthCode = enteredAuthCode,
+                enteredAuthenticationCode = enteredAuthenticationCode,
                 lastName = lastName,
                 firstName = firstName
             )
                 .onSuccess {
-                    withContext(Dispatchers.Main) {
-                        viewState.hideProgress()
-                    }
-
                     coordinator.onEnterCorrectAuthCode()
                 }
                 .onFailure { error ->
@@ -83,7 +80,49 @@ class EnterAuthCodePresenterImp(
                     }
                 }
         }
+    }
 
+    override fun onResendAuthenticationCodeButtonPressed() {
+        val onResendAuthenticationCodeButtonPressedCoroutineExceptionHandler = CoroutineExceptionHandler { _, error ->
+            if (BuildConfig.DEBUG) {
+                val errorText = error.localizedMessage
+                debugLog(errorText)
+                viewState.showErrorAlert(errorText)
+            }
+        }
+
+        viewState.showProgress()
+
+        onResendAuthenticationCodeButtonPressedJob = launch(
+            context = coroutineContext + onResendAuthenticationCodeButtonPressedCoroutineExceptionHandler
+        ) {
+            useCase.resendAuthenticationCodeCatching()
+                .onSuccess {
+                    withContext(Dispatchers.Main) {
+                        viewState.hideProgress()
+                    }
+                }
+                .onFailure { error ->
+                    val errorMessage: String = resourceManager.run {
+                        when (error) {
+                            is TdApiError.Custom.EmptyParameter -> getString(R.string.unknown_error)
+                            is TdApiError.Custom.BadRequest -> {
+                                if (error.message == "PHONE_CODE_INVALID") {
+                                    getString(R.string.code_is_invalid)
+                                } else {
+                                    getString(R.string.unknown_error)
+                                }
+                            }
+                            else -> getString(R.string.unknown_error)
+                        }
+                    }
+
+                    withContext(Dispatchers.Main) {
+                        viewState.hideProgress()
+                        viewState.showErrorAlert(errorMessage)
+                    }
+                }
+        }
     }
 
     override fun onGetExpectedCodeLength(expectedCodeLength: UInt) {
@@ -105,22 +144,22 @@ class EnterAuthCodePresenterImp(
         }
     }
 
-    override fun onAuthCodeTextChanged(text: CharSequence?) {
+    override fun onAuthenticationCodeTextChanged(text: CharSequence?) {
         if (text.isNullOrBlank()) {
-            authCodeIsEnteredAndCorrect = false
+            authenticationCodeIsEnteredAndCorrect = false
             viewState.hideNextButton()
             return
         }
 
         if (text.length.toUInt() < expectedCodeLength) {
-            authCodeIsEnteredAndCorrect = false
+            authenticationCodeIsEnteredAndCorrect = false
             viewState.hideNextButton()
             return
         }
 
-        authCodeIsEnteredAndCorrect = true
+        authenticationCodeIsEnteredAndCorrect = true
 
-        if (authCodeIsEnteredAndCorrect) {
+        if (authenticationCodeIsEnteredAndCorrect) {
             if (!registrationRequired) {
                 viewState.showNextButton()
                 return
@@ -143,7 +182,7 @@ class EnterAuthCodePresenterImp(
 
         firstNameIsEntered = true
 
-        if (authCodeIsEnteredAndCorrect) {
+        if (authenticationCodeIsEnteredAndCorrect) {
             if (registrationRequired && firstNameIsEntered && lastNameIsEntered) {
                 viewState.showNextButton()
             } else {
@@ -161,7 +200,7 @@ class EnterAuthCodePresenterImp(
 
         lastNameIsEntered = true
 
-        if (authCodeIsEnteredAndCorrect) {
+        if (authenticationCodeIsEnteredAndCorrect) {
             if (registrationRequired && firstNameIsEntered && lastNameIsEntered) {
                 viewState.showNextButton()
             } else {
@@ -171,20 +210,23 @@ class EnterAuthCodePresenterImp(
     }
 
     override fun onBackPressed() {
-        coordinator.onPressedBackButtonInEnterAuthCodeScreen()
+        coordinator.onPressedBackButtonInEnterAuthenticationCodeScreen()
     }
 
     override fun cancelAllJobs() {
         onNextButtonPressedJob?.cancel()
+        onResendAuthenticationCodeButtonPressedJob?.cancel()
     }
 
     override val coroutineContext: CoroutineContext = Dispatchers.IO
 
+    private var onResendAuthenticationCodeButtonPressedJob: Job? = null
     private var onNextButtonPressedJob: Job? = null
+
     private var enteredPhoneNumber: String = ""
     private var expectedCodeLength: UInt = 10u
 
-    private var authCodeIsEnteredAndCorrect: Boolean = false
+    private var authenticationCodeIsEnteredAndCorrect: Boolean = false
 
     private var registrationRequired: Boolean = false
 

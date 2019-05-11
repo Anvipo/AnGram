@@ -1,7 +1,7 @@
 package com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.enterAuthCodeScreenFactory
 
 import androidx.fragment.app.Fragment
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthCode.view.EnterAuthCodeFragment
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationCode.view.EnterAuthenticationCodeFragment
 import ru.terrakok.cicerone.android.support.SupportAppScreen
 
 object EnterAuthCodeScreenFactoryImp : EnterAuthCodeScreenFactory {
@@ -14,7 +14,7 @@ object EnterAuthCodeScreenFactoryImp : EnterAuthCodeScreenFactory {
         private val termsOfServiceText: String
     ) : SupportAppScreen() {
         override fun getFragment(): Fragment =
-            EnterAuthCodeFragment.createNewInstance(
+            EnterAuthenticationCodeFragment.createNewInstance(
                 shouldShowBackButton = shouldShowBackButton,
                 expectedCodeLength = expectedCodeLength,
                 enteredPhoneNumber = enteredPhoneNumber,

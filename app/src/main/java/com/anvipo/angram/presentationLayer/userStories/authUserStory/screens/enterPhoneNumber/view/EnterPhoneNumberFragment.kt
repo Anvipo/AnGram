@@ -17,7 +17,6 @@ import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.ent
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.presenter.EnterPhoneNumberPresenterImp
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import kotlinx.android.synthetic.main.appbar.*
 import kotlinx.android.synthetic.main.fragment_enter_phone_number.*
 import org.koin.android.ext.android.get
 
@@ -48,7 +47,7 @@ class EnterPhoneNumberFragment :
     override val layoutRes: Int by lazy { R.layout.fragment_enter_phone_number }
 
     override val actionBarTitle: String by lazy { getString(R.string.enter_your_phone_number_title) }
-    override val actionBar: Toolbar by lazy { toolbar }
+    override val actionBar: Toolbar by lazy { enter_phone_number_toolbar as Toolbar }
 
     override fun setupClickListeners() {
         enter_phone_number_next_button.setOnClickListener(::onClickedPhoneNumberNextButton)

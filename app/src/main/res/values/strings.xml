@@ -23,6 +23,10 @@
     <string name="first_name_hint">First name</string>
     <string name="last_name_hint">Last name</string>
     <string name="code_is_invalid">Code is invalid</string>
+    <string name="enter_password">Enter password</string>
+    <string name="password_type_input_hint">Password</string>
+    <string name="too_many_requests_try_later">Too many requests. Try later.</string>
+    <string name="resend_code_button_text">Resend code</string>
 
     <!--\\Auth flow-->
 

@@ -5,7 +5,7 @@ import androidx.appcompat.widget.Toolbar
 import com.anvipo.angram.R
 import com.anvipo.angram.coreLayer.base.baseClasses.BaseFragment
 import com.anvipo.angram.presentationLayer.common.interfaces.BasePresenter
-import kotlinx.android.synthetic.main.appbar.*
+import kotlinx.android.synthetic.main.toolbar.*
 
 class MainFragment : BaseFragment(), MainView {
 

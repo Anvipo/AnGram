@@ -132,6 +132,7 @@ class ApplicationCoordinatorImp(
             is TdApi.AuthorizationStateWaitEncryptionKey -> onAuthorizationStateWaitEncryptionKey()
             is TdApi.AuthorizationStateWaitPhoneNumber -> onAuthorizationStateWaitPhoneNumber()
             is TdApi.AuthorizationStateWaitCode -> onAuthorizationStateWaitCode()
+            is TdApi.AuthorizationStateWaitPassword -> onAuthorizationStateWaitPassword()
             is TdApi.AuthorizationStateReady -> onAuthorizationStateReady()
             is TdApi.AuthorizationStateLoggingOut -> onAuthorizationStateLoggingOut()
             is TdApi.AuthorizationStateClosed -> onAuthorizationStateClosed()
@@ -144,6 +145,14 @@ class ApplicationCoordinatorImp(
                 assertionFailure("Undefined authState")
             }
         }
+    }
+
+    private fun onAuthorizationStateWaitPassword() {
+        val tag = "${this::class.java.simpleName} onAuthorizationStateWaitPassword"
+
+        systemMessageSendChannel.offer(SystemMessage(text = tag))
+
+        startAuthFlow()
     }
 
     private fun onAuthorizationStateClosed() {

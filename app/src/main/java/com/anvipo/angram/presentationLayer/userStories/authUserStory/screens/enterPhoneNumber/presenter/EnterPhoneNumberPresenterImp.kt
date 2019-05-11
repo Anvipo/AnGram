@@ -54,6 +54,8 @@ class EnterPhoneNumberPresenterImp(
                                 getString(R.string.phone_number_cant_be_empty)
                             is TdApiError.Custom.BadRequest ->
                                 getString(R.string.phone_number_invalid)
+                            is TdApiError.Custom.TooManyRequests ->
+                                getString(R.string.too_many_requests_try_later)
                             else -> getString(R.string.unknown_error)
                         }
                     }

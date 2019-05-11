@@ -7,7 +7,8 @@ sealed class TdApiError : Error() {
     enum class Codes(val value: Int) {
         EMPTY_PARAMETER(8),
         BAD_REQUEST(400),
-        DATABASE_ENCRYPTION_KEY_IS_NEEDED(401)
+        DATABASE_ENCRYPTION_KEY_IS_NEEDED(401),
+        TOO_MANY_REQUESTS(429)
     }
 
     sealed class Custom(
@@ -26,6 +27,11 @@ sealed class TdApiError : Error() {
         ) : Custom(code, message)
 
         class DatabaseEncryptionKeyIsNeeded(
+            override val code: Int,
+            override val message: String
+        ) : Custom(code, message)
+
+        class TooManyRequests(
             override val code: Int,
             override val message: String
         ) : Custom(code, message)

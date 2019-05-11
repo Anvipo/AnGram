@@ -21,6 +21,10 @@
     <string name="first_name_hint">Имя</string>
     <string name="last_name_hint">Фамилия</string>
     <string name="code_is_invalid">Код неверен</string>
+    <string name="enter_password">Введите пароль</string>
+    <string name="password_type_input_hint">Пароль</string>
+    <string name="too_many_requests_try_later">Слишком много запросов. Попробуйте позже.</string>
+    <string name="resend_code_button_text">Выслать код заново</string>
 
     <!--\\Auth flow-->
 

@@ -16,7 +16,7 @@ import com.anvipo.angram.coreLayer.collections.MutableStack
 import com.anvipo.angram.coreLayer.message.SystemMessage
 import com.anvipo.angram.coreLayer.message.SystemMessageType
 import com.anvipo.angram.global.CoreHelpers.createTGSystemMessageFromApp
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthCode.di.EnterAuthCodeModule
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationCode.di.EnterAuthenticationCodeModule
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.di.EnterPhoneNumberModule
 import org.drinkless.td.libcore.telegram.TdApi
 import org.koin.android.ext.android.inject
@@ -64,7 +64,7 @@ class App : Application() {
                     GatewaysModule.module,
                     ApplicationRootCoordinatorModule.module,
                     EnterPhoneNumberModule.module,
-                    EnterAuthCodeModule.module
+                    EnterAuthenticationCodeModule.module
                 )
             }
         } else {
@@ -284,6 +284,13 @@ class App : Application() {
             }
             is TdApi.AuthorizationStateClosed -> {
                 val text = "$tag: AuthorizationStateClosed"
+
+                debugLog(text)
+
+                systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
+            }
+            is TdApi.AuthorizationStateWaitPassword -> {
+                val text = "$tag: AuthorizationStateWaitPassword"
 
                 debugLog(text)
 

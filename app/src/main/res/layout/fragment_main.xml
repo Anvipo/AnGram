@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".presentationLayer.userStories.mainUserStory.screens.main.view.MainFragment">
 
-    <include layout="@layout/appbar" />
+    <include layout="@layout/toolbar" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

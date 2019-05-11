@@ -4,7 +4,8 @@ import android.content.Context
 import android.os.Build
 import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.businessLogicLayer.gateways.tdLibGateway.errors.TdApiError
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthCode.types.CorrectAuthCodeType
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationCode.types.CorrectAuthenticationCodeType
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationPassword.types.CorrectAuthenticationPasswordType
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.drinkless.td.libcore.telegram.Client
 import org.drinkless.td.libcore.telegram.TdApi
@@ -116,8 +117,8 @@ class TDLibGatewayImp(
 
             val setAuthenticationPhoneNumberQuery = TdApi.SetAuthenticationPhoneNumber(
                 enteredPhoneNumber,
-                false,
-                false
+                true,
+                true
             )
 
             tdClient.send(
@@ -127,8 +128,35 @@ class TDLibGatewayImp(
             )
         }
 
+    override suspend fun resendAuthenticationCodeCatching(): Result<TdApi.Ok> =
+        suspendCancellableCoroutine { continuation ->
+            val resendAuthenticationCodeQueryResultHandler = Client.ResultHandler { result ->
+                when (result) {
+                    is TdApi.Ok -> continuation.resume(Result.success(result))
+                    is TdApi.Error -> {
+                        val tdApiError = parseTDApiError(result)
+
+                        continuation.resume(Result.failure(tdApiError))
+                    }
+                    else -> continuation.resume(Result.failure(TdApiError.Unspecified))
+                }
+            }
+
+            val resendAuthenticationCodeQueryExceptionHandler = Client.ExceptionHandler { exception ->
+                continuation.resume(Result.failure(exception))
+            }
+
+            val resendAuthenticationCodeQuery = TdApi.ResendAuthenticationCode()
+
+            tdClient.send(
+                resendAuthenticationCodeQuery,
+                resendAuthenticationCodeQueryResultHandler,
+                resendAuthenticationCodeQueryExceptionHandler
+            )
+        }
+
     override suspend fun checkAuthenticationCodeCatching(
-        enteredAuthCode: CorrectAuthCodeType,
+        enteredAuthenticationCode: CorrectAuthenticationCodeType,
         lastName: String,
         firstName: String
     ): Result<TdApi.Ok> =
@@ -150,7 +178,7 @@ class TDLibGatewayImp(
             }
 
             val checkAuthenticationCodeQuery = TdApi.CheckAuthenticationCode(
-                enteredAuthCode,
+                enteredAuthenticationCode,
                 firstName,
                 lastName
             )
@@ -159,6 +187,35 @@ class TDLibGatewayImp(
                 checkAuthenticationCodeQuery,
                 checkAuthenticationCodeResultHandler,
                 checkAuthenticationCodeExceptionHandler
+            )
+        }
+
+    override suspend fun checkAuthenticationPasswordCatching(
+        enteredAuthenticationPassword: CorrectAuthenticationPasswordType
+    ): Result<TdApi.Ok> =
+        suspendCancellableCoroutine { continuation ->
+            val checkAuthenticationPasswordQueryResultHandler = Client.ResultHandler { result ->
+                when (result) {
+                    is TdApi.Ok -> continuation.resume(Result.success(result))
+                    is TdApi.Error -> {
+                        val tdApiError = parseTDApiError(result)
+
+                        continuation.resume(Result.failure(tdApiError))
+                    }
+                    else -> continuation.resume(Result.failure(TdApiError.Unspecified))
+                }
+            }
+
+            val checkAuthenticationPasswordQueryExceptionHandler = Client.ExceptionHandler { exception ->
+                continuation.resume(Result.failure(exception))
+            }
+
+            val checkAuthenticationPasswordQuery = TdApi.CheckAuthenticationPassword(enteredAuthenticationPassword)
+
+            tdClient.send(
+                checkAuthenticationPasswordQuery,
+                checkAuthenticationPasswordQueryResultHandler,
+                checkAuthenticationPasswordQueryExceptionHandler
             )
         }
 
@@ -189,6 +246,7 @@ class TDLibGatewayImp(
             )
         }
 
+
     /// PRIVATE
 
 
@@ -206,6 +264,11 @@ class TDLibGatewayImp(
                 )
             TdApiError.Codes.DATABASE_ENCRYPTION_KEY_IS_NEEDED.value ->
                 TdApiError.Custom.DatabaseEncryptionKeyIsNeeded(
+                    errorCode,
+                    result.message
+                )
+            TdApiError.Codes.TOO_MANY_REQUESTS.value ->
+                TdApiError.Custom.TooManyRequests(
                     errorCode,
                     result.message
                 )
@@ -248,7 +311,6 @@ class TDLibGatewayImp(
         parameters.useFileDatabase = true
         parameters.useMessageDatabase = true
         parameters.useSecretChats = false
-        // TODO: use production
         parameters.useTestDc = true
         return parameters
     }

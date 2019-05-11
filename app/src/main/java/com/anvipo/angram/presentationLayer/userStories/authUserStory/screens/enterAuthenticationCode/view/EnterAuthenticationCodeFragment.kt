@@ -1,4 +1,4 @@
-package com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthCode.view
+package com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationCode.view
 
 
 import android.os.Bundle
@@ -12,17 +12,16 @@ import com.anvipo.angram.coreLayer.base.baseClasses.BaseFragment
 import com.anvipo.angram.coreLayer.hideKeyboard
 import com.anvipo.angram.coreLayer.hideWithAnimate
 import com.anvipo.angram.coreLayer.showWithAnimate
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthCode.di.EnterAuthCodeModule.enterAuthCodePresenter
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthCode.presenter.EnterAuthCodePresenter
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthCode.presenter.EnterAuthCodePresenterImp
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationCode.di.EnterAuthenticationCodeModule.enterAuthenticationCodePresenter
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationCode.presenter.EnterAuthenticationCodePresenter
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationCode.presenter.EnterAuthenticationCodePresenterImp
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import kotlinx.android.synthetic.main.appbar.*
-import kotlinx.android.synthetic.main.fragment_enter_auth_code.*
+import kotlinx.android.synthetic.main.fragment_enter_authentication_code.*
 import org.koin.android.ext.android.get
 
 
-class EnterAuthCodeFragment : BaseFragment(), EnterAuthCodeView {
+class EnterAuthenticationCodeFragment : BaseFragment(), EnterAuthenticationCodeView {
 
     companion object {
         private const val ARG_SHOULD_SHOW_BACK_BUTTON = "arg_should_show_back_button"
@@ -38,8 +37,8 @@ class EnterAuthCodeFragment : BaseFragment(), EnterAuthCodeView {
             enteredPhoneNumber: String,
             registrationRequired: Boolean,
             termsOfServiceText: String
-        ): EnterAuthCodeView =
-            EnterAuthCodeFragment().apply {
+        ): EnterAuthenticationCodeView =
+            EnterAuthenticationCodeFragment().apply {
                 arguments = Bundle().apply {
                     putBoolean(ARG_SHOULD_SHOW_BACK_BUTTON, shouldShowBackButton)
                     putBoolean(ARG_REGISTRATION_REQUIRED, registrationRequired)
@@ -83,6 +82,8 @@ class EnterAuthCodeFragment : BaseFragment(), EnterAuthCodeView {
     override fun setupClickListeners() {
         enter_auth_code_next_button.setOnClickListener(::onClickedPhoneNumberNextButton)
 
+        resend_authentication_code_button.setOnClickListener(::onClickedResendAuthenticationCodeButton)
+
         enter_auth_code_edit_text.setOnFocusChangeListener(::onChangedFocusInPhoneNumberEditText)
 
         enter_auth_code_edit_text.addTextChangedListener(authCodeTextWatcher)
@@ -99,18 +100,24 @@ class EnterAuthCodeFragment : BaseFragment(), EnterAuthCodeView {
     }
 
     override val actionBarTitle: String by lazy { getString(R.string.enter_auth_code_title) }
-    override val actionBar: Toolbar by lazy { toolbar }
+    override val actionBar: Toolbar by lazy { enter_authentication_code_toolbar as Toolbar }
 
-    override val layoutRes: Int = R.layout.fragment_enter_auth_code
+    override val layoutRes: Int = R.layout.fragment_enter_authentication_code
 
-    override val presenter: EnterAuthCodePresenter  by lazy { mPresenter }
+    override val presenter: EnterAuthenticationCodePresenter by lazy { mPresenter }
 
     @Suppress("ProtectedInFinal")
     @ProvidePresenter
-    protected fun providePresenter(): EnterAuthCodePresenterImp = get(enterAuthCodePresenter)
+    protected fun providePresenter(): EnterAuthenticationCodePresenterImp = get(enterAuthenticationCodePresenter)
 
     @InjectPresenter
-    internal lateinit var mPresenter: EnterAuthCodePresenterImp
+    internal lateinit var mPresenter: EnterAuthenticationCodePresenterImp
+
+    private fun onClickedResendAuthenticationCodeButton(
+        @Suppress("UNUSED_PARAMETER") view: View
+    ) {
+        presenter.onResendAuthenticationCodeButtonPressed()
+    }
 
     private fun onClickedPhoneNumberNextButton(
         @Suppress("UNUSED_PARAMETER") view: View
@@ -118,7 +125,7 @@ class EnterAuthCodeFragment : BaseFragment(), EnterAuthCodeView {
         val enteredAuthCode = enter_auth_code_edit_text.text.toString()
 
         presenter.onNextButtonPressed(
-            enteredAuthCode = enteredAuthCode,
+            enteredAuthenticationCode = enteredAuthCode,
             lastName = last_name_edit_text.text.toString(),
             firstName = first_name_edit_text.text.toString()
         )
@@ -152,7 +159,7 @@ class EnterAuthCodeFragment : BaseFragment(), EnterAuthCodeView {
                 before: Int,
                 count: Int
             ) {
-                presenter.onAuthCodeTextChanged(text)
+                presenter.onAuthenticationCodeTextChanged(text)
             }
         }
     }
