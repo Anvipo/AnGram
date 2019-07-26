@@ -2,10 +2,10 @@ package com.anvipo.angram.applicationLayer.coordinator.di
 
 import com.anvipo.angram.applicationLayer.coordinator.ApplicationCoordinatorImp
 import com.anvipo.angram.applicationLayer.coordinator.ApplicationCoordinatorInput
-import com.anvipo.angram.applicationLayer.di.LaunchSystemModule
-import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule
+import com.anvipo.angram.applicationLayer.di.LaunchSystemModule.systemMessageSendChannelQualifier
+import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule.routerQualifier
 import com.anvipo.angram.applicationLayer.types.SystemMessageSendChannel
-import com.anvipo.angram.dataLayer.di.GatewaysModule
+import com.anvipo.angram.dataLayer.di.GatewaysModule.tdLibGatewayQualifier
 import com.anvipo.angram.dataLayer.gateways.tdLibGateway.TDLibGateway
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.AuthorizationCoordinatorImp
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinatorInput
@@ -14,47 +14,46 @@ import com.anvipo.angram.presentationLayer.userStories.mainUserStory.coordinator
 import com.anvipo.angram.presentationLayer.userStories.mainUserStory.coordinator.MainCoordinatorInput
 import com.anvipo.angram.presentationLayer.userStories.mainUserStory.coordinator.screensFactory.MainViewControllersFactoryImp
 import org.koin.core.module.Module
-import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import ru.terrakok.cicerone.Router
 
 object ApplicationRootCoordinatorModule {
 
-    internal val applicationCoordinator: StringQualifier = named("applicationCoordinator")
-    internal val authorizationCoordinator: StringQualifier = named("authorizationCoordinator")
+    internal val applicationCoordinatorQualifier = named("applicationCoordinator")
+    internal val authorizationCoordinatorQualifier = named("authorizationCoordinator")
     @Suppress("MemberVisibilityCanBePrivate")
-    internal val mainCoordinator: StringQualifier = named("mainCoordinator")
+    internal val mainCoordinatorQualifier = named("mainCoordinator")
 
     @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
 
-        single<ApplicationCoordinatorInput>(applicationCoordinator) {
+        single<ApplicationCoordinatorInput>(applicationCoordinatorQualifier) {
             ApplicationCoordinatorImp(
-                tdLibGateway = get<TDLibGateway>(GatewaysModule.tdLibGateway),
+                tdLibGateway = get<TDLibGateway>(tdLibGatewayQualifier),
                 systemMessageSendChannel =
-                get<SystemMessageSendChannel>(LaunchSystemModule.systemMessageSendChannel),
+                get<SystemMessageSendChannel>(systemMessageSendChannelQualifier),
                 authorizationCoordinator =
-                get<AuthorizationCoordinatorInput>(authorizationCoordinator),
-                mainCoordinator = get<MainCoordinatorInput>(mainCoordinator),
+                get<AuthorizationCoordinatorInput>(authorizationCoordinatorQualifier),
+                mainCoordinator = get<MainCoordinatorInput>(mainCoordinatorQualifier),
                 context = get()
             )
         }
 
-        single<AuthorizationCoordinatorInput>(authorizationCoordinator) {
+        single<AuthorizationCoordinatorInput>(authorizationCoordinatorQualifier) {
             AuthorizationCoordinatorImp(
                 context = get(),
-                router = get<Router>(SystemInfrastructureModule.router),
+                router = get<Router>(routerQualifier),
                 screensFactory = AuthorizationScreensFactoryImp,
                 systemMessageSendChannel =
-                get<SystemMessageSendChannel>(LaunchSystemModule.systemMessageSendChannel),
-                tdLibGateway = get<TDLibGateway>(GatewaysModule.tdLibGateway)
+                get<SystemMessageSendChannel>(systemMessageSendChannelQualifier),
+                tdLibGateway = get<TDLibGateway>(tdLibGatewayQualifier)
             )
         }
 
-        single<MainCoordinatorInput>(mainCoordinator) {
+        single<MainCoordinatorInput>(mainCoordinatorQualifier) {
             MainCoordinatorImp(
-                router = get<Router>(SystemInfrastructureModule.router),
+                router = get<Router>(routerQualifier),
                 viewControllersFactory = MainViewControllersFactoryImp
             )
         }

@@ -2,7 +2,6 @@ package com.anvipo.angram.applicationLayer.di
 
 import com.anvipo.angram.coreLayer.ResourceManager
 import org.koin.core.module.Module
-import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import ru.terrakok.cicerone.Cicerone
@@ -11,27 +10,27 @@ import ru.terrakok.cicerone.Router
 
 object SystemInfrastructureModule {
 
-    private val cicerone: StringQualifier = named("cicerone")
-    internal val router: StringQualifier = named("router")
-    internal val navigatorHolder: StringQualifier = named("navigatorHolder")
-    internal val resourceManager: StringQualifier = named("resourceManager")
+    private val ciceroneQualifier = named("cicerone")
+    internal val routerQualifier = named("router")
+    internal val navigatorHolderQualifier = named("navigatorHolder")
+    internal val resourceManagerQualifier = named("resourceManager")
 
     @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
 
-        single<Cicerone<Router>>(cicerone) {
+        single<Cicerone<Router>>(ciceroneQualifier) {
             Cicerone.create()
         }
 
-        single<Router>(router) {
-            get<Cicerone<Router>>(cicerone).router
+        single<Router>(routerQualifier) {
+            get<Cicerone<Router>>(ciceroneQualifier).router
         }
 
-        single<NavigatorHolder>(navigatorHolder) {
-            get<Cicerone<Router>>(cicerone).navigatorHolder
+        single<NavigatorHolder>(navigatorHolderQualifier) {
+            get<Cicerone<Router>>(ciceroneQualifier).navigatorHolder
         }
 
-        single<ResourceManager>(resourceManager) {
+        single<ResourceManager>(resourceManagerQualifier) {
             ResourceManager(
                 context = get()
             )

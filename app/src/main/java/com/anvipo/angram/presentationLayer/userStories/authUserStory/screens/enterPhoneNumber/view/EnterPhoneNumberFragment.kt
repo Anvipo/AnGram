@@ -12,7 +12,7 @@ import com.anvipo.angram.coreLayer.base.baseClasses.BaseFragment
 import com.anvipo.angram.coreLayer.hideKeyboard
 import com.anvipo.angram.coreLayer.hideWithAnimate
 import com.anvipo.angram.coreLayer.showWithAnimate
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.di.EnterPhoneNumberModule.enterPhoneNumberPresenter
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.di.EnterPhoneNumberModule.enterPhoneNumberPresenterQualifier
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.presenter.EnterPhoneNumberPresenter
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.presenter.EnterPhoneNumberPresenterImp
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -60,7 +60,7 @@ class EnterPhoneNumberFragment :
     @Suppress("ProtectedInFinal")
     @ProvidePresenter
     protected fun providePresenter(): EnterPhoneNumberPresenterImp =
-        get(enterPhoneNumberPresenter)
+        get(enterPhoneNumberPresenterQualifier)
 
     @InjectPresenter
     internal lateinit var mPresenter: EnterPhoneNumberPresenterImp

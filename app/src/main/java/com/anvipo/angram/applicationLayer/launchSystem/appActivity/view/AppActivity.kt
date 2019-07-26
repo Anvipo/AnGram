@@ -4,8 +4,8 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.anvipo.angram.R
-import com.anvipo.angram.applicationLayer.di.LaunchSystemModule
-import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule
+import com.anvipo.angram.applicationLayer.di.LaunchSystemModule.appPresenterQualifier
+import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule.navigatorHolderQualifier
 import com.anvipo.angram.applicationLayer.launchSystem.appActivity.presenter.AppPresenter
 import com.anvipo.angram.applicationLayer.launchSystem.appActivity.presenter.AppPresenterImp
 import com.anvipo.angram.coreLayer.base.baseClasses.BaseActivity
@@ -68,7 +68,7 @@ class AppActivity : BaseActivity(), AppView {
     private val currentFragment: BaseFragment?
         get() = supportFragmentManager.findFragmentById(R.id.container) as? BaseFragment
 
-    private val navigatorHolder: NavigatorHolder by inject(SystemInfrastructureModule.navigatorHolder)
+    private val navigatorHolder: NavigatorHolder by inject(navigatorHolderQualifier)
 
     private val navigator: Navigator by lazy {
         object : SupportAppNavigator(this, supportFragmentManager, R.id.container) {
@@ -88,7 +88,7 @@ class AppActivity : BaseActivity(), AppView {
     @Suppress("ProtectedInFinal")
     @ProvidePresenter
     protected fun providePresenter(): AppPresenterImp =
-        get(LaunchSystemModule.appPresenter)
+        get(appPresenterQualifier)
 
     @InjectPresenter
     internal lateinit var mPresenter: AppPresenterImp

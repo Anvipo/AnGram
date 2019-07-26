@@ -1,33 +1,34 @@
 package com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationPassword.di
 
-import com.anvipo.angram.applicationLayer.coordinator.di.ApplicationRootCoordinatorModule.authorizationCoordinator
-import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule.resourceManager
-import com.anvipo.angram.businessLogicLayer.di.UseCasesModule.enterAuthenticationPasswordUseCase
+import com.anvipo.angram.applicationLayer.coordinator.di.ApplicationRootCoordinatorModule.authorizationCoordinatorQualifier
+import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule.resourceManagerQualifier
+import com.anvipo.angram.businessLogicLayer.di.UseCasesModule.enterAuthenticationPasswordUseCaseQualifier
 import com.anvipo.angram.businessLogicLayer.useCases.enterAuthenticationPasswordUseCase.EnterAuthenticationPasswordUseCase
 import com.anvipo.angram.coreLayer.ResourceManager
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinatorEnterAuthenticationPasswordOutput
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationPassword.presenter.EnterAuthenticationPasswordPresenter
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationPassword.presenter.EnterAuthenticationPasswordPresenterImp
 import org.koin.core.module.Module
-import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 object EnterAuthenticationPasswordModule {
 
+    internal val enterAuthenticationPasswordPresenterQualifier = named("enterAuthenticationPasswordPresenter")
+
     @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
 
-        single<EnterAuthenticationPasswordPresenterImp>(enterAuthenticationPasswordPresenter) {
+        single<EnterAuthenticationPasswordPresenter>(enterAuthenticationPasswordPresenterQualifier) {
             EnterAuthenticationPasswordPresenterImp(
-                useCase = get<EnterAuthenticationPasswordUseCase>(enterAuthenticationPasswordUseCase),
-                coordinator = get<AuthorizationCoordinatorEnterAuthenticationPasswordOutput>(authorizationCoordinator),
-                resourceManager = get<ResourceManager>(resourceManager)
+                useCase = get<EnterAuthenticationPasswordUseCase>(enterAuthenticationPasswordUseCaseQualifier),
+                coordinator = get<AuthorizationCoordinatorEnterAuthenticationPasswordOutput>(
+                    authorizationCoordinatorQualifier
+                ),
+                resourceManager = get<ResourceManager>(resourceManagerQualifier)
             )
         }
 
     }
-
-    internal val enterAuthenticationPasswordPresenter: StringQualifier =
-        named("enterAuthenticationPasswordPresenter")
 
 }

@@ -4,6 +4,7 @@ import android.app.Application
 import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.applicationLayer.coordinator.di.ApplicationRootCoordinatorModule
 import com.anvipo.angram.applicationLayer.di.LaunchSystemModule
+import com.anvipo.angram.applicationLayer.di.LaunchSystemModule.systemMessageSendChannelQualifier
 import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule
 import com.anvipo.angram.applicationLayer.types.SystemMessageSendChannel
 import com.anvipo.angram.businessLogicLayer.di.UseCasesModule
@@ -17,6 +18,7 @@ import com.anvipo.angram.coreLayer.message.SystemMessageType
 import com.anvipo.angram.dataLayer.di.GatewaysModule
 import com.anvipo.angram.global.CoreHelpers.createTGSystemMessageFromApp
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationCode.di.EnterAuthenticationCodeModule
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationPassword.di.EnterAuthenticationPasswordModule
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.di.EnterPhoneNumberModule
 import org.drinkless.td.libcore.telegram.TdApi
 import org.koin.android.ext.android.inject
@@ -47,25 +49,24 @@ class App : Application() {
 
 
     private fun initDI() {
+        val debugModules = listOf(
+            LaunchSystemModule.module,
+            SystemInfrastructureModule.module,
+            UseCasesModule.module,
+            GatewaysModule.module,
+            ApplicationRootCoordinatorModule.module,
+            EnterPhoneNumberModule.module,
+            EnterAuthenticationCodeModule.module,
+            EnterAuthenticationPasswordModule.module
+        )
+
         if (BuildConfig.DEBUG) {
-            // start Koin!
-
             startKoin {
-                // Android context
-                androidContext(this@App)
-
                 androidLogger()
 
-                // modules
-                modules(
-                    LaunchSystemModule.module,
-                    SystemInfrastructureModule.module,
-                    UseCasesModule.module,
-                    GatewaysModule.module,
-                    ApplicationRootCoordinatorModule.module,
-                    EnterPhoneNumberModule.module,
-                    EnterAuthenticationCodeModule.module
-                )
+                androidContext(this@App)
+
+                modules(debugModules)
             }
         } else {
             // TODO: release config
@@ -74,7 +75,7 @@ class App : Application() {
     }
 
     private val systemMessageSendChannel: SystemMessageSendChannel
-            by inject(LaunchSystemModule.systemMessageSendChannel)
+            by inject(systemMessageSendChannelQualifier)
 
 
     // ------- TG Client properties and methods

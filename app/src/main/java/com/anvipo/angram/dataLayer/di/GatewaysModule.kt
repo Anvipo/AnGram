@@ -6,53 +6,52 @@ import com.anvipo.angram.dataLayer.gateways.tdLibGateway.TDLibGatewayImp
 import org.drinkless.td.libcore.telegram.Client
 import org.koin.android.ext.koin.androidApplication
 import org.koin.core.module.Module
-import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 object GatewaysModule {
 
-    internal val tdLibGateway: StringQualifier = named("tdLibGateway")
+    internal val tdLibGatewayQualifier = named("tdLibGateway")
 
-    private val tdClient: StringQualifier = named("tdClient")
+    private val tdClientQualifier = named("tdClient")
 
-    private val updatesExceptionHandler: StringQualifier = named("updatesExceptionHandler")
+    private val updatesExceptionHandlerQualifier = named("updatesExceptionHandler")
 
-    private val updatesHandler: StringQualifier = named("updatesHandler")
+    private val updatesHandlerQualifier = named("updatesHandler")
 
-    private val defaultExceptionHandler: StringQualifier = named("defaultExceptionHandler")
+    private val defaultExceptionHandlerQualifier = named("defaultExceptionHandler")
 
     @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
 
         // ----------------------------- TG -------------------------
 
-        single<Client.ResultHandler>(updatesHandler) {
+        single<Client.ResultHandler>(updatesHandlerQualifier) {
             val app = androidApplication() as App
             val updatesHandlerFunction = app.updatesHandlerFunction
 
             Client.ResultHandler(updatesHandlerFunction)
         }
 
-        single<Client.ExceptionHandler>(updatesExceptionHandler) {
+        single<Client.ExceptionHandler>(updatesExceptionHandlerQualifier) {
             val app = androidApplication() as App
             val updatesExceptionHandlerFunction = app.updatesExceptionHandlerFunction
 
             Client.ExceptionHandler(updatesExceptionHandlerFunction)
         }
 
-        single<Client.ExceptionHandler>(defaultExceptionHandler) {
+        single<Client.ExceptionHandler>(defaultExceptionHandlerQualifier) {
             val app = androidApplication() as App
             val defaultExceptionHandlerFunction = app.defaultExceptionHandlerFunction
 
             Client.ExceptionHandler(defaultExceptionHandlerFunction)
         }
 
-        single<Client>(tdClient) {
+        single<Client>(tdClientQualifier) {
             Client.create(
-                get<Client.ResultHandler>(updatesHandler),
-                get<Client.ExceptionHandler>(updatesExceptionHandler),
-                get<Client.ExceptionHandler>(defaultExceptionHandler)
+                get<Client.ResultHandler>(updatesHandlerQualifier),
+                get<Client.ExceptionHandler>(updatesExceptionHandlerQualifier),
+                get<Client.ExceptionHandler>(defaultExceptionHandlerQualifier)
             )
         }
 
@@ -61,9 +60,9 @@ object GatewaysModule {
 
         // ---------------------------- GATEWAYS ---------------------
 
-        single<TDLibGateway>(tdLibGateway) {
+        single<TDLibGateway>(tdLibGatewayQualifier) {
             TDLibGatewayImp(
-                tdClient = get<Client>(tdClient)
+                tdClient = get<Client>(tdClientQualifier)
             )
         }
 

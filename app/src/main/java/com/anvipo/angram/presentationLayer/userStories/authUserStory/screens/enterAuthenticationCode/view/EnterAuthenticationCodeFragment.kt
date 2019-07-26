@@ -12,7 +12,7 @@ import com.anvipo.angram.coreLayer.base.baseClasses.BaseFragment
 import com.anvipo.angram.coreLayer.hideKeyboard
 import com.anvipo.angram.coreLayer.hideWithAnimate
 import com.anvipo.angram.coreLayer.showWithAnimate
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationCode.di.EnterAuthenticationCodeModule.enterAuthenticationCodePresenter
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationCode.di.EnterAuthenticationCodeModule.enterAuthenticationCodePresenterQualifier
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationCode.presenter.EnterAuthenticationCodePresenter
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationCode.presenter.EnterAuthenticationCodePresenterImp
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -108,7 +108,8 @@ class EnterAuthenticationCodeFragment : BaseFragment(), EnterAuthenticationCodeV
 
     @Suppress("ProtectedInFinal")
     @ProvidePresenter
-    protected fun providePresenter(): EnterAuthenticationCodePresenterImp = get(enterAuthenticationCodePresenter)
+    protected fun providePresenter(): EnterAuthenticationCodePresenterImp =
+        get(enterAuthenticationCodePresenterQualifier)
 
     @InjectPresenter
     internal lateinit var mPresenter: EnterAuthenticationCodePresenterImp

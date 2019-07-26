@@ -3,7 +3,7 @@ package com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.en
 import androidx.appcompat.widget.Toolbar
 import com.anvipo.angram.R
 import com.anvipo.angram.coreLayer.base.baseClasses.BaseFragment
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationPassword.di.EnterAuthenticationPasswordModule
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationPassword.di.EnterAuthenticationPasswordModule.enterAuthenticationPasswordPresenterQualifier
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationPassword.presenter.EnterAuthenticationPasswordPresenter
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationPassword.presenter.EnterAuthenticationPasswordPresenterImp
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -34,7 +34,7 @@ class EnterAuthenticationPasswordFragment : BaseFragment(), EnterAuthenticationP
     @Suppress("ProtectedInFinal")
     @ProvidePresenter
     protected fun providePresenter(): EnterAuthenticationPasswordPresenterImp =
-        get(EnterAuthenticationPasswordModule.enterAuthenticationPasswordPresenter)
+        get(enterAuthenticationPasswordPresenterQualifier)
 
     @InjectPresenter
     internal lateinit var mPresenter: EnterAuthenticationPasswordPresenterImp
