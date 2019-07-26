@@ -23,6 +23,7 @@ object ApplicationRootCoordinatorModule {
 
     internal val applicationCoordinator: StringQualifier = named("applicationCoordinator")
     internal val authorizationCoordinator: StringQualifier = named("authorizationCoordinator")
+    @Suppress("MemberVisibilityCanBePrivate")
     internal val mainCoordinator: StringQualifier = named("mainCoordinator")
 
     @Suppress("RemoveExplicitTypeArguments")

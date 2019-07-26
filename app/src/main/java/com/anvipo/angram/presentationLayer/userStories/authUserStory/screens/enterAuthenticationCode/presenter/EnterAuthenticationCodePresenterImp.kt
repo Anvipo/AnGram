@@ -3,7 +3,6 @@ package com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.en
 import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.R
 import com.anvipo.angram.businessLogicLayer.useCases.enterAuthenticationCodeUseCase.EnterAuthenticationCodeUseCase
-import com.anvipo.angram.coreLayer.CoreHelpers
 import com.anvipo.angram.coreLayer.CoreHelpers.debugLog
 import com.anvipo.angram.coreLayer.ResourceManager
 import com.anvipo.angram.dataLayer.gateways.tdLibGateway.errors.TdApiError
@@ -41,7 +40,7 @@ class EnterAuthenticationCodePresenterImp(
         val onNextButtonPressedCoroutineExceptionHandler = CoroutineExceptionHandler { _, error ->
             if (BuildConfig.DEBUG) {
                 val errorText = error.localizedMessage
-                CoreHelpers.debugLog(errorText)
+                debugLog(errorText)
                 viewState.showErrorAlert(errorText)
             }
         }
