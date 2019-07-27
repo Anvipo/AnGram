@@ -1,21 +1,13 @@
-package com.anvipo.angram.dataLayer.gateways.tdLibGateway
+package com.anvipo.angram.dataLayer.gateways.tdLibGateway.authorization
 
-import android.content.Context
+import com.anvipo.angram.dataLayer.gateways.tdLibGateway.base.BaseTdLibGateway
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationCode.types.CorrectAuthenticationCodeType
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationPassword.types.CorrectAuthenticationPasswordType
 import org.drinkless.td.libcore.telegram.TdApi
 
-interface TDLibGateway {
-
-    suspend fun getAuthorizationStateRequestCatching(): Result<TdApi.AuthorizationState>
-
-    suspend fun setTdLibParametersCatching(context: Context): Result<TdApi.Ok>
-
-    suspend fun checkDatabaseEncryptionKeyCatching(): Result<TdApi.Ok>
+interface AuthorizationTDLibGateway : BaseTdLibGateway {
 
     suspend fun setAuthenticationPhoneNumberCatching(enteredPhoneNumber: String): Result<TdApi.Ok>
-
-    suspend fun resendAuthenticationCodeCatching(): Result<TdApi.Ok>
 
     suspend fun checkAuthenticationCodeCatching(
         enteredAuthenticationCode: CorrectAuthenticationCodeType,
@@ -23,7 +15,7 @@ interface TDLibGateway {
         firstName: String
     ): Result<TdApi.Ok>
 
-    suspend fun logoutCatching(): Result<TdApi.Ok>
+    suspend fun resendAuthenticationCodeCatching(): Result<TdApi.Ok>
 
     suspend fun checkAuthenticationPasswordCatching(
         enteredAuthenticationPassword: CorrectAuthenticationPasswordType

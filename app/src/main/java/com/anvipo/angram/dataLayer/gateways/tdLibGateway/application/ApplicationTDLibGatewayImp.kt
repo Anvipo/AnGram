@@ -1,19 +1,16 @@
-package com.anvipo.angram.dataLayer.gateways.tdLibGateway
+package com.anvipo.angram.dataLayer.gateways.tdLibGateway.application
 
 import android.content.Context
 import android.os.Build
 import com.anvipo.angram.BuildConfig
-import com.anvipo.angram.dataLayer.gateways.tdLibGateway.base.BaseTdLibGateway
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationCode.types.CorrectAuthenticationCodeType
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationPassword.types.CorrectAuthenticationPasswordType
+import com.anvipo.angram.dataLayer.gateways.tdLibGateway.base.BaseTdLibGatewayImp
 import org.drinkless.td.libcore.telegram.Client
 import org.drinkless.td.libcore.telegram.TdApi
 import java.util.*
 
-class TDLibGatewayImp(tdClient: Client) : BaseTdLibGateway(tdClient), TDLibGateway {
-
-    override suspend fun getAuthorizationStateRequestCatching(): Result<TdApi.AuthorizationState> =
-        doRequestCatching(TdApi.GetAuthorizationState())
+class ApplicationTDLibGatewayImp(tdClient: Client) :
+    BaseTdLibGatewayImp(tdClient),
+    ApplicationTDLibGateway {
 
     override suspend fun setTdLibParametersCatching(context: Context): Result<TdApi.Ok> =
         doRequestCatching(TdApi.SetTdlibParameters(createTDLibParameters(context)))
@@ -21,38 +18,9 @@ class TDLibGatewayImp(tdClient: Client) : BaseTdLibGateway(tdClient), TDLibGatew
     override suspend fun checkDatabaseEncryptionKeyCatching(): Result<TdApi.Ok> =
         doRequestCatching(TdApi.CheckDatabaseEncryptionKey())
 
-    override suspend fun setAuthenticationPhoneNumberCatching(enteredPhoneNumber: String): Result<TdApi.Ok> =
-        doRequestCatching(
-            TdApi.SetAuthenticationPhoneNumber(
-                enteredPhoneNumber,
-                true,
-                true
-            )
-        )
-
-    override suspend fun resendAuthenticationCodeCatching(): Result<TdApi.Ok> =
-        doRequestCatching(TdApi.ResendAuthenticationCode())
-
-    override suspend fun checkAuthenticationCodeCatching(
-        enteredAuthenticationCode: CorrectAuthenticationCodeType,
-        lastName: String,
-        firstName: String
-    ): Result<TdApi.Ok> =
-        doRequestCatching(
-            TdApi.CheckAuthenticationCode(
-                enteredAuthenticationCode,
-                firstName,
-                lastName
-            )
-        )
-
-    override suspend fun checkAuthenticationPasswordCatching(
-        enteredAuthenticationPassword: CorrectAuthenticationPasswordType
-    ): Result<TdApi.Ok> =
-        doRequestCatching(TdApi.CheckAuthenticationPassword(enteredAuthenticationPassword))
-
     override suspend fun logoutCatching(): Result<TdApi.Ok> =
         doRequestCatching(TdApi.LogOut())
+
 
     /// PRIVATE
 

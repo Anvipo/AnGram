@@ -6,8 +6,8 @@ import com.anvipo.angram.businessLogicLayer.useCases.enterAuthenticationPassword
 import com.anvipo.angram.businessLogicLayer.useCases.enterAuthenticationPasswordUseCase.EnterAuthenticationPasswordUseCaseImp
 import com.anvipo.angram.businessLogicLayer.useCases.enterPhoneNumberUseCase.EnterPhoneNumberUseCase
 import com.anvipo.angram.businessLogicLayer.useCases.enterPhoneNumberUseCase.EnterPhoneNumberUseCaseImp
-import com.anvipo.angram.dataLayer.di.GatewaysModule.tdLibGatewayQualifier
-import com.anvipo.angram.dataLayer.gateways.tdLibGateway.TDLibGateway
+import com.anvipo.angram.dataLayer.di.GatewaysModule.authorizationTDLibGatewayQualifier
+import com.anvipo.angram.dataLayer.gateways.tdLibGateway.authorization.AuthorizationTDLibGateway
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -23,19 +23,19 @@ object UseCasesModule {
 
         single<EnterPhoneNumberUseCase>(enterPhoneNumberUseCaseQualifier) {
             EnterPhoneNumberUseCaseImp(
-                tdLibGateway = get<TDLibGateway>(tdLibGatewayQualifier)
+                tdLibGateway = get<AuthorizationTDLibGateway>(authorizationTDLibGatewayQualifier)
             )
         }
 
         single<EnterAuthenticationCodeUseCase>(enterAuthenticationCodeUseCaseQualifier) {
             EnterAuthenticationCodeUseCaseImp(
-                tdLibGateway = get<TDLibGateway>(tdLibGatewayQualifier)
+                tdLibGateway = get<AuthorizationTDLibGateway>(authorizationTDLibGatewayQualifier)
             )
         }
 
         single<EnterAuthenticationPasswordUseCase>(enterAuthenticationPasswordUseCaseQualifier) {
             EnterAuthenticationPasswordUseCaseImp(
-                tdLibGateway = get<TDLibGateway>(tdLibGatewayQualifier)
+                tdLibGateway = get<AuthorizationTDLibGateway>(authorizationTDLibGatewayQualifier)
             )
         }
     }

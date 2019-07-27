@@ -1,11 +1,10 @@
 package com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator
 
-import android.content.Context
 import com.anvipo.angram.applicationLayer.types.SystemMessageSendChannel
 import com.anvipo.angram.coreLayer.CoreHelpers.assertionFailure
 import com.anvipo.angram.coreLayer.CoreHelpers.debugLog
 import com.anvipo.angram.coreLayer.message.SystemMessage
-import com.anvipo.angram.dataLayer.gateways.tdLibGateway.TDLibGateway
+import com.anvipo.angram.dataLayer.gateways.tdLibGateway.authorization.AuthorizationTDLibGateway
 import com.anvipo.angram.global.GlobalHelpers.createTGSystemMessage
 import com.anvipo.angram.presentationLayer.common.baseClasses.BaseCoordinatorImp
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinator
@@ -23,10 +22,9 @@ import ru.terrakok.cicerone.Router
 import kotlin.coroutines.CoroutineContext
 
 class AuthorizationCoordinatorImp(
-    private val context: Context,
     private val router: Router,
     private val screensFactory: AuthorizationScreensFactory,
-    private val tdLibGateway: TDLibGateway,
+    private val tdLibGateway: AuthorizationTDLibGateway,
     private val systemMessageSendChannel: SystemMessageSendChannel
 ) : BaseCoordinatorImp(),
     AuthorizationCoordinator,
@@ -211,8 +209,6 @@ class AuthorizationCoordinatorImp(
             is TdApi.AuthorizationStateWaitCode -> onAuthStateWaitsCode(authState)
             is TdApi.AuthorizationStateWaitPassword -> onAuthorizationStateWaitPassword(authState)
             is TdApi.AuthorizationStateReady -> onAuthorizationStateReady()
-            is TdApi.AuthorizationStateWaitTdlibParameters -> onAuthStateWaitsTdlibParameters()
-            is TdApi.AuthorizationStateWaitEncryptionKey -> onAuthStateWaitsEncryptionKey()
             else -> {
                 val tag = "${this::class.java.simpleName} showNeededScreen"
                 assertionFailure("$tag: Undefined authState: currentAuthorizationState.toString()")
@@ -220,48 +216,6 @@ class AuthorizationCoordinatorImp(
         }
     }
 
-
-    private fun onAuthStateWaitsEncryptionKey() {
-        val tag = "${this::class.java.simpleName} onAuthStateWaitsEncryptionKey"
-
-        val checkDatabaseEncryptionKeyCatchingCoroutineExceptionHandler =
-            CoroutineExceptionHandler { _, error ->
-                val errorText = error.localizedMessage
-
-                systemMessageSendChannel.offer(createTGSystemMessage(errorText))
-            }
-
-        checkDatabaseEncryptionKeyCatchingJob = launch(
-            context = coroutineContext + checkDatabaseEncryptionKeyCatchingCoroutineExceptionHandler
-        ) {
-            val checkDatabaseEncryptionKeyResult = tdLibGateway.checkDatabaseEncryptionKeyCatching()
-
-            checkDatabaseEncryptionKeyResult
-                .onSuccess(onSuccessCheckDatabaseEncryptionKeyResult(tag))
-                .onFailure(onFailureCheckDatabaseEncryptionKeyResult(tag))
-        }
-    }
-
-    private fun onAuthStateWaitsTdlibParameters() {
-        val tag = "${this::class.java.simpleName} onAuthStateWaitsTdlibParameters"
-
-        val setTdLibParametersCatchingCoroutineExceptionHandler =
-            CoroutineExceptionHandler { _, error ->
-                val errorText = error.localizedMessage
-
-                systemMessageSendChannel.offer(createTGSystemMessage(errorText))
-            }
-
-        setTdLibParametersCatchingJob = launch(
-            context = coroutineContext + setTdLibParametersCatchingCoroutineExceptionHandler
-        ) {
-            val setTdLibParametersResult = tdLibGateway.setTdLibParametersCatching(context)
-
-            setTdLibParametersResult
-                .onSuccess(onSuccessSetTDLibParametersResult(tag))
-                .onFailure(onFailureSetTDLibParametersResult(tag))
-        }
-    }
 
     private fun onAuthStateWaitsPhoneNumber() {
         val showEnterPhoneNumberScreenCoroutineExceptionHandler =
@@ -468,35 +422,6 @@ class AuthorizationCoordinatorImp(
         )
     }
 
-
-    private fun onSuccessSetTDLibParametersResult(tag: String): (TdApi.Ok) -> Unit = { _ ->
-        val text = "$tag: TDLib successfully set parameters"
-        systemMessageSendChannel.offer(createTGSystemMessage(text))
-
-        checkAuthState()
-    }
-
-    private fun onFailureSetTDLibParametersResult(tag: String): (Throwable) -> Unit = { error ->
-        val text = "$tag: setTDLibParameters.onFailure: ${error.localizedMessage}"
-        systemMessageSendChannel.offer(createTGSystemMessage(text))
-
-        checkAuthState()
-    }
-
-
-    private fun onSuccessCheckDatabaseEncryptionKeyResult(tag: String): (TdApi.Ok) -> Unit = { _ ->
-        val text = "$tag: TDLib successfully checked database encryption key"
-        systemMessageSendChannel.offer(createTGSystemMessage(text))
-
-        checkAuthState()
-    }
-
-    private fun onFailureCheckDatabaseEncryptionKeyResult(tag: String): (Throwable) -> Unit = { error ->
-        val text = "$tag: setTDLibParameters.onFailure: ${error.localizedMessage}"
-        systemMessageSendChannel.offer(createTGSystemMessage(text))
-
-        checkAuthState()
-    }
 
     private fun createLogMessage(text: String): SystemMessage = SystemMessage(
         text,

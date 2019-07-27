@@ -1,8 +1,10 @@
 package com.anvipo.angram.dataLayer.di
 
 import com.anvipo.angram.applicationLayer.launchSystem.App
-import com.anvipo.angram.dataLayer.gateways.tdLibGateway.TDLibGateway
-import com.anvipo.angram.dataLayer.gateways.tdLibGateway.TDLibGatewayImp
+import com.anvipo.angram.dataLayer.gateways.tdLibGateway.application.ApplicationTDLibGateway
+import com.anvipo.angram.dataLayer.gateways.tdLibGateway.application.ApplicationTDLibGatewayImp
+import com.anvipo.angram.dataLayer.gateways.tdLibGateway.authorization.AuthorizationTDLibGateway
+import com.anvipo.angram.dataLayer.gateways.tdLibGateway.authorization.AuthorizationTDLibGatewayImp
 import org.drinkless.td.libcore.telegram.Client
 import org.koin.android.ext.koin.androidApplication
 import org.koin.core.module.Module
@@ -11,7 +13,8 @@ import org.koin.dsl.module
 
 object GatewaysModule {
 
-    internal val tdLibGatewayQualifier = named("tdLibGateway")
+    internal val applicationTDLibGatewayQualifier = named("applicationTDLibGateway")
+    internal val authorizationTDLibGatewayQualifier = named("authorizationTDLibGateway")
 
     private val tdClientQualifier = named("tdClient")
 
@@ -60,8 +63,14 @@ object GatewaysModule {
 
         // ---------------------------- GATEWAYS ---------------------
 
-        single<TDLibGateway>(tdLibGatewayQualifier) {
-            TDLibGatewayImp(
+        single<ApplicationTDLibGateway>(applicationTDLibGatewayQualifier) {
+            ApplicationTDLibGatewayImp(
+                tdClient = get<Client>(tdClientQualifier)
+            )
+        }
+
+        single<AuthorizationTDLibGateway>(authorizationTDLibGatewayQualifier) {
+            AuthorizationTDLibGatewayImp(
                 tdClient = get<Client>(tdClientQualifier)
             )
         }

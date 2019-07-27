@@ -5,8 +5,10 @@ import com.anvipo.angram.applicationLayer.coordinator.ApplicationCoordinatorImp
 import com.anvipo.angram.applicationLayer.di.LaunchSystemModule.systemMessageSendChannelQualifier
 import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule.routerQualifier
 import com.anvipo.angram.applicationLayer.types.SystemMessageSendChannel
-import com.anvipo.angram.dataLayer.di.GatewaysModule.tdLibGatewayQualifier
-import com.anvipo.angram.dataLayer.gateways.tdLibGateway.TDLibGateway
+import com.anvipo.angram.dataLayer.di.GatewaysModule.applicationTDLibGatewayQualifier
+import com.anvipo.angram.dataLayer.di.GatewaysModule.authorizationTDLibGatewayQualifier
+import com.anvipo.angram.dataLayer.gateways.tdLibGateway.application.ApplicationTDLibGateway
+import com.anvipo.angram.dataLayer.gateways.tdLibGateway.authorization.AuthorizationTDLibGateway
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.AuthorizationCoordinatorImp
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinator
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.authorizationScreensFactory.AuthorizationScreensFactoryImp
@@ -30,7 +32,7 @@ object ApplicationCoordinatorModule {
 
         single<ApplicationCoordinator>(applicationCoordinatorQualifier) {
             ApplicationCoordinatorImp(
-                tdLibGateway = get<TDLibGateway>(tdLibGatewayQualifier),
+                tdLibGateway = get<ApplicationTDLibGateway>(applicationTDLibGatewayQualifier),
                 systemMessageSendChannel =
                 get<SystemMessageSendChannel>(systemMessageSendChannelQualifier),
                 authorizationCoordinator =
@@ -42,12 +44,11 @@ object ApplicationCoordinatorModule {
 
         single<AuthorizationCoordinator>(authorizationCoordinatorQualifier) {
             AuthorizationCoordinatorImp(
-                context = get(),
                 router = get<Router>(routerQualifier),
                 screensFactory = AuthorizationScreensFactoryImp,
+                tdLibGateway = get<AuthorizationTDLibGateway>(authorizationTDLibGatewayQualifier),
                 systemMessageSendChannel =
-                get<SystemMessageSendChannel>(systemMessageSendChannelQualifier),
-                tdLibGateway = get<TDLibGateway>(tdLibGatewayQualifier)
+                get<SystemMessageSendChannel>(systemMessageSendChannelQualifier)
             )
         }
 

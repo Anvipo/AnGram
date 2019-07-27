@@ -4,7 +4,7 @@ import android.content.Context
 import com.anvipo.angram.applicationLayer.types.SystemMessageSendChannel
 import com.anvipo.angram.coreLayer.CoreHelpers.assertionFailure
 import com.anvipo.angram.coreLayer.message.SystemMessage
-import com.anvipo.angram.dataLayer.gateways.tdLibGateway.TDLibGateway
+import com.anvipo.angram.dataLayer.gateways.tdLibGateway.application.ApplicationTDLibGateway
 import com.anvipo.angram.global.GlobalHelpers.createTGSystemMessage
 import com.anvipo.angram.presentationLayer.common.baseClasses.BaseCoordinatorImp
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinator
@@ -19,7 +19,7 @@ import kotlin.coroutines.CoroutineContext
 class ApplicationCoordinatorImp(
     private val authorizationCoordinator: AuthorizationCoordinator,
     private val mainCoordinator: MainCoordinator,
-    private val tdLibGateway: TDLibGateway,
+    private val tdLibGateway: ApplicationTDLibGateway,
     private val systemMessageSendChannel: SystemMessageSendChannel,
     private val context: Context
 ) : BaseCoordinatorImp(),
