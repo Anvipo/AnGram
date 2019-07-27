@@ -43,7 +43,6 @@ class EnterPhoneNumberFragment :
     }
 
     override val presenter: EnterPhoneNumberPresenter by lazy { mPresenter }
-
     override val layoutRes: Int by lazy { R.layout.fragment_enter_phone_number }
 
     override val actionBarTitle: String by lazy { getString(R.string.enter_your_phone_number_title) }

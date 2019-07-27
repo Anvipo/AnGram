@@ -21,10 +21,10 @@ object EnterAuthenticationPasswordModule {
 
         single<EnterAuthenticationPasswordPresenter>(enterAuthenticationPasswordPresenterQualifier) {
             EnterAuthenticationPasswordPresenterImp(
-                useCase = get<EnterAuthenticationPasswordUseCase>(enterAuthenticationPasswordUseCaseQualifier),
                 coordinator = get<AuthorizationCoordinatorEnterAuthenticationPasswordOutput>(
                     authorizationCoordinatorQualifier
                 ),
+                useCase = get<EnterAuthenticationPasswordUseCase>(enterAuthenticationPasswordUseCaseQualifier),
                 resourceManager = get<ResourceManager>(resourceManagerQualifier)
             )
         }

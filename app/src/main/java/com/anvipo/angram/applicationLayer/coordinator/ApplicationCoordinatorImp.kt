@@ -52,11 +52,11 @@ class ApplicationCoordinatorImp(
     Starts needed flow
      */
     private fun startApp() {
-        checkAuthState()
+        checkAuthorizationState()
     }
 
-    private fun checkAuthState() {
-        val tag = "${this::class.java.simpleName} checkAuthState"
+    private fun checkAuthorizationState() {
+        val tag = "${this::class.java.simpleName} checkAuthorizationState"
 
         val getAuthorizationStateRequestCatchingCoroutineExceptionHandler =
             CoroutineExceptionHandler { _, error ->
@@ -73,12 +73,12 @@ class ApplicationCoordinatorImp(
             val authorizationStateResult = tdLibGateway.getAuthorizationStateRequestCatching()
 
             authorizationStateResult
-                .onSuccess(::onSuccessGetAuthStateResult)
-                .onFailure(::onFailureGetAuthStateResult)
+                .onSuccess(::onSuccessGetAuthorizationStateResult)
+                .onFailure(::onFailureGetAuthorizationStateResult)
         }
     }
 
-    private fun startAuthFlow(withEnterAuthCodeAsRootScreen: Boolean = false) {
+    private fun startAuthorizationFlow(withEnterAuthorizationCodeAsRootScreen: Boolean = false) {
         authorizationCoordinator.finishFlow = {
             removeChildCoordinator(coordinator = authorizationCoordinator)
             startMainFlow()
@@ -86,8 +86,8 @@ class ApplicationCoordinatorImp(
 
         addChildCoordinator(coordinator = authorizationCoordinator)
 
-        if (withEnterAuthCodeAsRootScreen) {
-            authorizationCoordinator.startAuthFlowWithEnterAuthCodeAsRootScreen()
+        if (withEnterAuthorizationCodeAsRootScreen) {
+            authorizationCoordinator.startAuthorizationFlowWithEnterAuthorizationCodeAsRootScreen()
         } else {
             authorizationCoordinator.coldStart()
         }
@@ -115,7 +115,7 @@ class ApplicationCoordinatorImp(
                         TODO("should recreate tdlib client")
                     }
                     .onFailure {
-                        checkAuthState()
+                        checkAuthorizationState()
                     }
             }
         }
@@ -126,7 +126,7 @@ class ApplicationCoordinatorImp(
     }
 
 
-    private fun onSuccessGetAuthStateResult(authState: TdApi.AuthorizationState) {
+    private fun onSuccessGetAuthorizationStateResult(authState: TdApi.AuthorizationState) {
         when (authState) {
             is TdApi.AuthorizationStateWaitTdlibParameters -> onAuthorizationStateWaitTdlibParameters()
             is TdApi.AuthorizationStateWaitEncryptionKey -> onAuthorizationStateWaitEncryptionKey()
@@ -137,7 +137,7 @@ class ApplicationCoordinatorImp(
             is TdApi.AuthorizationStateLoggingOut -> onAuthorizationStateLoggingOut()
             is TdApi.AuthorizationStateClosed -> onAuthorizationStateClosed()
             else -> {
-                val tag = "${this::class.java.simpleName} onSuccessGetAuthStateResult"
+                val tag = "${this::class.java.simpleName} onSuccessGetAuthorizationStateResult"
                 val text = "$tag: TdApi.AuthorizationState: $authState"
 
                 systemMessageSendChannel.offer(SystemMessage(text = text))
@@ -152,7 +152,7 @@ class ApplicationCoordinatorImp(
 
         systemMessageSendChannel.offer(SystemMessage(text = tag))
 
-        startAuthFlow()
+        startAuthorizationFlow()
     }
 
     private fun onAuthorizationStateClosed() {
@@ -160,7 +160,7 @@ class ApplicationCoordinatorImp(
 
         systemMessageSendChannel.offer(SystemMessage(text = tag))
 
-        checkAuthState()
+        checkAuthorizationState()
     }
 
     private fun onAuthorizationStateLoggingOut() {
@@ -168,16 +168,16 @@ class ApplicationCoordinatorImp(
 
         systemMessageSendChannel.offer(SystemMessage(text = tag))
 
-        checkAuthState()
+        checkAuthorizationState()
     }
 
-    private fun onFailureGetAuthStateResult(error: Throwable) {
-        val tag = "${this::class.java.simpleName} onFailureGetAuthStateResult"
+    private fun onFailureGetAuthorizationStateResult(error: Throwable) {
+        val tag = "${this::class.java.simpleName} onFailureGetAuthorizationStateResult"
         val text = "$tag error: ${error.localizedMessage}"
 
         systemMessageSendChannel.offer(SystemMessage(text = text))
 
-        checkAuthState()
+        checkAuthorizationState()
     }
 
 
@@ -200,10 +200,10 @@ class ApplicationCoordinatorImp(
 
             setTdLibParametersResult
                 .onSuccess {
-                    checkAuthState()
+                    checkAuthorizationState()
                 }
                 .onFailure {
-                    checkAuthState()
+                    checkAuthorizationState()
                 }
         }
     }
@@ -227,10 +227,10 @@ class ApplicationCoordinatorImp(
 
             setTdLibParametersResult
                 .onSuccess {
-                    checkAuthState()
+                    checkAuthorizationState()
                 }
                 .onFailure {
-                    checkAuthState()
+                    checkAuthorizationState()
                 }
         }
     }
@@ -248,7 +248,7 @@ class ApplicationCoordinatorImp(
 
         systemMessageSendChannel.offer(SystemMessage(text = tag))
 
-        startAuthFlow(withEnterAuthCodeAsRootScreen = true)
+        startAuthorizationFlow(withEnterAuthorizationCodeAsRootScreen = true)
     }
 
     private fun onAuthorizationStateWaitPhoneNumber() {
@@ -256,7 +256,7 @@ class ApplicationCoordinatorImp(
 
         systemMessageSendChannel.offer(SystemMessage(text = tag))
 
-        startAuthFlow()
+        startAuthorizationFlow()
     }
 
 

@@ -1,7 +1,7 @@
 package com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.authorizationScreensFactory
 
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.enterAuthCodeScreenFactory.EnterAuthCodeScreenFactory
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.enterAuthCodeScreenFactory.EnterAuthCodeScreenFactoryImp
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.enterAuthCodeScreenFactory.EnterAuthenticationCodeScreenFactory
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.enterAuthCodeScreenFactory.EnterAuthenticationCodeScreenFactoryImp
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.enterPasswordScreenFactory.EnterPasswordScreenFactory
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.enterPasswordScreenFactory.EnterPasswordScreenFactoryImp
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.enterPhoneNumberScreenFactory.EnterPhoneNumberScreenFactory
@@ -11,7 +11,8 @@ object AuthorizationScreensFactoryImp : AuthorizationScreensFactory {
 
     override val enterPhoneNumberScreenFactory: EnterPhoneNumberScreenFactory = EnterPhoneNumberScreenFactoryImp
 
-    override val enterAuthCodeScreenFactory: EnterAuthCodeScreenFactory = EnterAuthCodeScreenFactoryImp
+    override val enterAuthenticationCodeScreenFactory: EnterAuthenticationCodeScreenFactory =
+        EnterAuthenticationCodeScreenFactoryImp
 
     override val enterPasswordScreenFactory: EnterPasswordScreenFactory = EnterPasswordScreenFactoryImp
 

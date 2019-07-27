@@ -21,8 +21,8 @@ object EnterPhoneNumberModule {
 
         single<EnterPhoneNumberPresenter>(enterPhoneNumberPresenterQualifier) {
             EnterPhoneNumberPresenterImp(
-                useCase = get<EnterPhoneNumberUseCase>(enterPhoneNumberUseCaseQualifier),
                 coordinator = get<AuthorizationCoordinatorEnterPhoneNumberOutput>(authorizationCoordinatorQualifier),
+                useCase = get<EnterPhoneNumberUseCase>(enterPhoneNumberUseCaseQualifier),
                 resourceManager = get<ResourceManager>(resourceManagerQualifier)
             )
         }

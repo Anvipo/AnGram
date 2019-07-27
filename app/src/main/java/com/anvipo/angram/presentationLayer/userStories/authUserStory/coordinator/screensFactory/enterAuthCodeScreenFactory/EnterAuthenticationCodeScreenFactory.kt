@@ -2,7 +2,7 @@ package com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinato
 
 import ru.terrakok.cicerone.android.support.SupportAppScreen
 
-interface EnterAuthCodeScreenFactory {
+interface EnterAuthenticationCodeScreenFactory {
 
     fun createEnterAuthCodeViewController(
         expectedCodeLength: Int,

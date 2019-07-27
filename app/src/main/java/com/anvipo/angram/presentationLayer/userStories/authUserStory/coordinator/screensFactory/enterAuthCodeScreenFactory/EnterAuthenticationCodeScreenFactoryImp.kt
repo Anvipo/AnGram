@@ -4,7 +4,7 @@ import androidx.fragment.app.Fragment
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationCode.view.EnterAuthenticationCodeFragment
 import ru.terrakok.cicerone.android.support.SupportAppScreen
 
-object EnterAuthCodeScreenFactoryImp : EnterAuthCodeScreenFactory {
+object EnterAuthenticationCodeScreenFactoryImp : EnterAuthenticationCodeScreenFactory {
 
     data class EnterAuthCodeScreen(
         private val shouldShowBackButton: Boolean,

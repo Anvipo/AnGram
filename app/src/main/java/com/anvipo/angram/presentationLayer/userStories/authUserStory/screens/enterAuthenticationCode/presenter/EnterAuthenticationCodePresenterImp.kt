@@ -7,7 +7,7 @@ import com.anvipo.angram.coreLayer.CoreHelpers.debugLog
 import com.anvipo.angram.coreLayer.ResourceManager
 import com.anvipo.angram.dataLayer.gateways.tdLibGateway.errors.TdApiError
 import com.anvipo.angram.presentationLayer.common.baseClasses.BasePresenterImp
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinatorEnterAuthCodeOutput
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinatorEnterAuthenticationCodeOutput
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationCode.types.CorrectAuthenticationCodeType
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationCode.view.EnterAuthenticationCodeView
 import com.arellomobile.mvp.InjectViewState
@@ -16,7 +16,7 @@ import kotlin.coroutines.CoroutineContext
 
 @InjectViewState
 class EnterAuthenticationCodePresenterImp(
-    override val coordinator: AuthorizationCoordinatorEnterAuthCodeOutput,
+    override val coordinator: AuthorizationCoordinatorEnterAuthenticationCodeOutput,
     override val useCase: EnterAuthenticationCodeUseCase,
     private val resourceManager: ResourceManager
 ) : BasePresenterImp<EnterAuthenticationCodeView>(), EnterAuthenticationCodePresenter {
@@ -60,7 +60,7 @@ class EnterAuthenticationCodePresenterImp(
                 firstName = firstName
             )
                 .onSuccess {
-                    coordinator.onEnterCorrectAuthCode()
+                    coordinator.onEnterCorrectAuthenticationCode()
                 }
                 .onFailure { error ->
                     val errorMessage: String = resourceManager.run {

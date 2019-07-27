@@ -20,9 +20,9 @@ class TDLibGatewayImp(
 
     override suspend fun getAuthorizationStateRequestCatching(): Result<TdApi.AuthorizationState> =
         suspendCancellableCoroutine { continuation ->
-            val getAuthStateQuery = TdApi.GetAuthorizationState()
+            val getAuthorizationStateQuery = TdApi.GetAuthorizationState()
 
-            val getAuthStateResultHandler = Client.ResultHandler { result ->
+            val getAuthorizationStateResultHandler = Client.ResultHandler { result ->
                 when (result) {
                     is TdApi.AuthorizationState -> continuation.resume(Result.success(result))
                     is TdApi.Error -> {
@@ -34,11 +34,15 @@ class TDLibGatewayImp(
                 }
             }
 
-            val getAuthStateExceptionHandler = Client.ExceptionHandler { exception ->
+            val getAuthorizationStateExceptionHandler = Client.ExceptionHandler { exception ->
                 continuation.resume(Result.failure(exception))
             }
 
-            tdClient.send(getAuthStateQuery, getAuthStateResultHandler, getAuthStateExceptionHandler)
+            tdClient.send(
+                getAuthorizationStateQuery,
+                getAuthorizationStateResultHandler,
+                getAuthorizationStateExceptionHandler
+            )
         }
 
     override suspend fun setTdLibParametersCatching(context: Context): Result<TdApi.Ok> =

@@ -2,9 +2,9 @@ package com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinato
 
 import com.anvipo.angram.presentationLayer.common.interfaces.CoordinatorOutput
 
-interface AuthorizationCoordinatorEnterAuthCodeOutput : CoordinatorOutput {
+interface AuthorizationCoordinatorEnterAuthenticationCodeOutput : CoordinatorOutput {
 
     fun onPressedBackButtonInEnterAuthenticationCodeScreen()
-    fun onEnterCorrectAuthCode()
+    fun onEnterCorrectAuthenticationCode()
 
 }

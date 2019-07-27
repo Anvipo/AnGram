@@ -18,7 +18,6 @@ object UseCasesModule {
     internal val enterPhoneNumberUseCaseQualifier = named("enterPhoneNumberUseCase")
     internal val enterAuthenticationCodeUseCaseQualifier = named("enterAuthenticationCodeUseCase")
     internal val enterAuthenticationPasswordUseCaseQualifier = named("enterAuthenticationPasswordUseCase")
-
     @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
 
@@ -39,7 +38,6 @@ object UseCasesModule {
                 tdLibGateway = get<TDLibGateway>(tdLibGatewayQualifier)
             )
         }
-
     }
 
 }

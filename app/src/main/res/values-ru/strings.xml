@@ -4,7 +4,7 @@
 
     <string name="loading">Загрузка</string>
 
-    <!--Auth flow-->
+    <!--Authorization flow-->
 
     <string name="phone_number_invalid">Неверный номер телефона</string>
     <string name="enter_your_phone_number_title">Введите Ваш номер телефона</string>
@@ -27,6 +27,6 @@
     <string name="resend_code_button_text">Выслать код заново</string>
     <string name="connection_state">Состояние соединения</string>
 
-    <!--\\Auth flow-->
+    <!--\\Authorization flow-->
 
 </resources>

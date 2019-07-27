@@ -9,7 +9,6 @@ import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.ent
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import kotlinx.android.synthetic.main.fragment_enter_authentication_password.*
-import kotlinx.android.synthetic.main.toolbar.*
 import org.koin.android.ext.android.get
 
 class EnterAuthenticationPasswordFragment : BaseFragment(), EnterAuthenticationPasswordView {

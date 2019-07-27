@@ -8,7 +8,7 @@ import com.anvipo.angram.coreLayer.message.SystemMessage
 import com.anvipo.angram.dataLayer.gateways.tdLibGateway.TDLibGateway
 import com.anvipo.angram.global.CoreHelpers.createTGSystemMessage
 import com.anvipo.angram.presentationLayer.common.baseClasses.BaseCoordinator
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinatorEnterAuthCodeOutput
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinatorEnterAuthenticationCodeOutput
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinatorEnterAuthenticationPasswordOutput
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinatorEnterPhoneNumberOutput
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinatorInput
@@ -31,14 +31,14 @@ class AuthorizationCoordinatorImp(
 ) : BaseCoordinator(),
     AuthorizationCoordinatorInput,
     AuthorizationCoordinatorEnterPhoneNumberOutput,
-    AuthorizationCoordinatorEnterAuthCodeOutput,
+    AuthorizationCoordinatorEnterAuthenticationCodeOutput,
     AuthorizationCoordinatorEnterAuthenticationPasswordOutput {
 
     override fun coldStart() {
         checkAuthState()
     }
 
-    override fun startAuthFlowWithEnterAuthCodeAsRootScreen() {
+    override fun startAuthorizationFlowWithEnterAuthorizationCodeAsRootScreen() {
         val getAuthorizationStateRequestCatchingCoroutineExceptionHandler =
             CoroutineExceptionHandler { _, error ->
                 val errorText = error.localizedMessage
@@ -125,8 +125,8 @@ class AuthorizationCoordinatorImp(
         router.exit()
     }
 
-    override fun onEnterCorrectAuthCode() {
-        val tag = "${this::class.java.simpleName} onEnterCorrectAuthCode"
+    override fun onEnterCorrectAuthenticationCode() {
+        val tag = "${this::class.java.simpleName} onEnterCorrectAuthenticationCode"
 
         val text = "$tag: entered correct auth code"
 
@@ -382,7 +382,7 @@ class AuthorizationCoordinatorImp(
         if (withEnterAuthCodeAsRootScreen) {
             val enterAuthCodeScreen =
                 screensFactory
-                    .enterAuthCodeScreenFactory
+                    .enterAuthenticationCodeScreenFactory
                     .createEnterAuthCodeViewController(
                         expectedCodeLength = expectedCodeLength,
                         enteredPhoneNumber = enteredPhoneNumber,
@@ -399,7 +399,7 @@ class AuthorizationCoordinatorImp(
         } else {
             val enterAuthCodeScreen =
                 screensFactory
-                    .enterAuthCodeScreenFactory
+                    .enterAuthenticationCodeScreenFactory
                     .createEnterAuthCodeViewController(
                         expectedCodeLength = expectedCodeLength,
                         enteredPhoneNumber = enteredPhoneNumber,
