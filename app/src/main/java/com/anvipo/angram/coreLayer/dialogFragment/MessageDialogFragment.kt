@@ -1,14 +1,18 @@
-package com.anvipo.angram.coreLayer
+package com.anvipo.angram.coreLayer.dialogFragment
 
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
+import com.anvipo.angram.coreLayer.argument
 
 class MessageDialogFragment : DialogFragment() {
 
-    private val startTag: String by argument(ARG_TAG, "")
+    private val startTag: String by argument(
+        ARG_TAG,
+        ""
+    )
     private val title: String? by argument(ARG_TITLE)
     private val message: String? by argument(ARG_MESSAGE)
     private val positiveText: String? by argument(ARG_POSITIVE_TEXT)

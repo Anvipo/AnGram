@@ -7,8 +7,9 @@ import android.text.TextWatcher
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import com.anvipo.angram.R
-import com.anvipo.angram.coreLayer.MessageDialogFragment
 import com.anvipo.angram.coreLayer.base.baseClasses.BaseFragment
+import com.anvipo.angram.coreLayer.dialogFragment.ItemsDialogFragment
+import com.anvipo.angram.coreLayer.dialogFragment.MessageDialogFragment
 import com.anvipo.angram.coreLayer.hideKeyboard
 import com.anvipo.angram.coreLayer.hideWithAnimate
 import com.anvipo.angram.coreLayer.showWithAnimate
@@ -23,7 +24,8 @@ import org.koin.android.ext.android.get
 class EnterPhoneNumberFragment :
     BaseFragment(),
     EnterPhoneNumberView,
-    MessageDialogFragment.OnClickListener {
+    MessageDialogFragment.OnClickListener,
+    ItemsDialogFragment.OnClickListener {
 
     companion object {
         @JvmStatic
@@ -58,11 +60,24 @@ class EnterPhoneNumberFragment :
         get() = enter_phone_number_toolbar as Toolbar
 
     override fun setupClickListeners() {
+        enter_phone_number_add_proxy_button.setOnClickListener(::onClickedPhoneNumberAddProxyButton)
+
         enter_phone_number_next_button.setOnClickListener(::onClickedPhoneNumberNextButton)
 
         enter_phone_number_edit_text.setOnFocusChangeListener(::onChangedFocusInPhoneNumberEditText)
 
         enter_phone_number_edit_text.addTextChangedListener(phoneNumberTextWatcher)
+    }
+
+    override fun itemClicked(
+        tag: String,
+        index: Int
+    ) {
+        presenter.onItemClicked(index)
+    }
+
+    override fun dialogCanceled(tag: String) {
+        println()
     }
 
     @Suppress("ProtectedInFinal")
@@ -104,6 +119,12 @@ class EnterPhoneNumberFragment :
         if (lostFocus) {
             context?.hideKeyboard(view)
         }
+    }
+
+    private fun onClickedPhoneNumberAddProxyButton(
+        @Suppress("UNUSED_PARAMETER") view: View
+    ) {
+        presenter.onAddProxyButtonPressed()
     }
 
     private fun onClickedPhoneNumberNextButton(

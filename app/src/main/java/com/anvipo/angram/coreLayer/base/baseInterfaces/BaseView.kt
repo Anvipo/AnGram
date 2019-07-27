@@ -40,4 +40,12 @@ interface BaseView : Presentable, MvpView {
     @StateStrategyType(OneExecutionStateStrategy::class)
     fun showErrorAlert(text: String): Unit = Unit
 
+    @StateStrategyType(OneExecutionStateStrategy::class)
+    fun showItemsDialog(
+        title: String? = null,
+        items: List<String>,
+        tag: String? = null,
+        cancelable: Boolean = false
+    ): Unit = Unit
+
 }

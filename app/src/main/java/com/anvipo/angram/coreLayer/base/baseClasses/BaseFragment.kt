@@ -15,10 +15,11 @@ import androidx.appcompat.widget.Toolbar
 import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.R
 import com.anvipo.angram.coreLayer.CoreHelpers.debugLog
-import com.anvipo.angram.coreLayer.MessageDialogFragment
 import com.anvipo.angram.coreLayer.MyProgressDialog
 import com.anvipo.angram.coreLayer.base.CoreConstants.PROGRESS_TAG
 import com.anvipo.angram.coreLayer.base.baseInterfaces.BaseView
+import com.anvipo.angram.coreLayer.dialogFragment.ItemsDialogFragment
+import com.anvipo.angram.coreLayer.dialogFragment.MessageDialogFragment
 import com.anvipo.angram.coreLayer.showSnackbarMessage
 import com.anvipo.angram.presentationLayer.common.interfaces.BasePresenter
 import com.anvipo.angram.presentationLayer.common.mvp.MvpAppCompatFragment
@@ -62,6 +63,22 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseView {
         instanceStateSaved = true
     }
 
+
+    override fun showItemsDialog(
+        title: String?,
+        items: List<String>,
+        tag: String?,
+        cancelable: Boolean
+    ) {
+        ItemsDialogFragment
+            .create(
+                title,
+                items,
+                tag,
+                cancelable
+            )
+            .show(childFragmentManager, null)
+    }
 
     override fun showErrorAlert(text: String) {
         MessageDialogFragment

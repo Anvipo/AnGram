@@ -28,6 +28,7 @@
     <string name="too_many_requests_try_later">Too many requests. Try later.</string>
     <string name="resend_code_button_text">Resend code</string>
     <string name="connection_state">Connection state</string>
+    <string name="add_proxy">Add proxy</string>
 
     <!--\\Authorization flow-->
 

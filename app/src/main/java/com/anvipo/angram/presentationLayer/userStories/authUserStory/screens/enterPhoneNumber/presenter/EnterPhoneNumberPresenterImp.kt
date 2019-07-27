@@ -41,6 +41,23 @@ class EnterPhoneNumberPresenterImp(
         connectionStateReceiveChannel.cancel(CancellationException("EnterPhoneNumberView onPause"))
     }
 
+    override fun onAddProxyButtonPressed() {
+        viewState.showItemsDialog(
+            "Выберите нужный тип прокси сервера",
+            listOf(
+                "MTPROTO"
+            )
+        )
+    }
+
+    override fun onItemClicked(index: Int) {
+        when (proxys[index]) {
+            mtprotoPair.second -> {
+                println()
+            }
+        }
+    }
+
     override fun onNextButtonPressed(enteredPhoneNumber: String) {
         val onNextButtonPressedCoroutineExceptionHandler = CoroutineExceptionHandler { _, error ->
             if (BuildConfig.DEBUG) {
@@ -191,5 +208,11 @@ class EnterPhoneNumberPresenterImp(
             }
         }
     }
+
+    private val mtprotoPair = 0 to "MTPROTO"
+
+    private val proxys: Map<Int, String> = mapOf(
+        mtprotoPair
+    )
 
 }

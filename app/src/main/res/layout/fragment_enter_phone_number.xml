@@ -22,6 +22,20 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <Button
+            android:id="@+id/enter_phone_number_add_proxy_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="32dp"
+            android:text="@string/add_proxy"
+            app:layout_constraintBottom_toTopOf="@+id/enter_phone_number_text_input"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/enter_phone_number_toolbar" />
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/enter_phone_number_text_input"
             android:layout_width="0dp"
