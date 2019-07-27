@@ -1,6 +1,7 @@
 package com.anvipo.angram.applicationLayer.launchSystem.appActivity.view
 
 import android.os.Bundle
+import android.view.View
 import androidx.annotation.AnimRes
 import androidx.annotation.AnimatorRes
 import androidx.fragment.app.Fragment
@@ -14,6 +15,7 @@ import com.anvipo.angram.coreLayer.base.baseClasses.BaseActivity
 import com.anvipo.angram.coreLayer.base.baseClasses.BaseFragment
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import kotlinx.android.synthetic.main.layout_container.*
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import ru.terrakok.cicerone.Navigator
@@ -58,6 +60,8 @@ class AppActivity : BaseActivity(), AppView {
     override val presenter: AppPresenter by lazy { mPresenter }
 
     override val layoutRes: Int = R.layout.layout_container
+
+    override val rootView: View by lazy { container }
 
 
     /// PRIVATE

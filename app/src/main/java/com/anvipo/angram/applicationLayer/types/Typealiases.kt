@@ -9,3 +9,7 @@ import kotlinx.coroutines.channels.SendChannel
 typealias SystemMessageSendChannel = SendChannel<SystemMessage>
 typealias SystemMessageReceiveChannel = ReceiveChannel<SystemMessage>
 typealias SystemMessageBroadcastChannel = BroadcastChannel<SystemMessage>
+
+typealias ConnectionStateSendChannel = SendChannel<ConnectionState>
+typealias ConnectionStateReceiveChannel = ReceiveChannel<ConnectionState>
+typealias ConnectionStateBroadcastChannel = BroadcastChannel<ConnectionState>

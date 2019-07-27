@@ -77,8 +77,18 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseView {
         Toast.makeText(this.context, text, Toast.LENGTH_LONG).show()
     }
 
-    override fun showSnackMessage(text: String) {
-        this.view?.showSnackbarMessage(text)
+    override fun showSnackMessage(
+        text: String,
+        duration: Int,
+        withProgressBar: Boolean,
+        isProgressBarIndeterminate: Boolean
+    ) {
+        this.view?.showSnackbarMessage(
+            text = text,
+            duration = duration,
+            withProgressBar = withProgressBar,
+            isProgressBarIndeterminate = isProgressBarIndeterminate
+        )
     }
 
     override fun showAlertMessage(text: String) {

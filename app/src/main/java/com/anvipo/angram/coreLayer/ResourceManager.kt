@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.annotation.StringRes
 
 @Suppress("unused")
-class ResourceManager(internal val context: Context) {
+class ResourceManager(private val context: Context) {
 
     fun getString(@StringRes id: Int): String = context.getString(id)
 
@@ -12,5 +12,7 @@ class ResourceManager(internal val context: Context) {
         @StringRes id: Int,
         vararg formatArgs: Any
     ): String = String.format(context.getString(id, *formatArgs))
+
+    fun getSystemService(serviceName: String): Any? = context.getSystemService(serviceName)
 
 }

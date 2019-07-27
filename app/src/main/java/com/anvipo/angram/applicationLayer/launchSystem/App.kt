@@ -4,8 +4,12 @@ import android.app.Application
 import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.applicationLayer.coordinator.di.ApplicationRootCoordinatorModule
 import com.anvipo.angram.applicationLayer.di.LaunchSystemModule
+import com.anvipo.angram.applicationLayer.di.LaunchSystemModule.connectionStateSendChannelQualifier
 import com.anvipo.angram.applicationLayer.di.LaunchSystemModule.systemMessageSendChannelQualifier
 import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule
+import com.anvipo.angram.applicationLayer.types.ConnectionState
+import com.anvipo.angram.applicationLayer.types.ConnectionState.*
+import com.anvipo.angram.applicationLayer.types.ConnectionStateSendChannel
 import com.anvipo.angram.applicationLayer.types.SystemMessageSendChannel
 import com.anvipo.angram.businessLogicLayer.di.UseCasesModule
 import com.anvipo.angram.coreLayer.CoreErrors
@@ -76,6 +80,9 @@ class App : Application() {
 
     private val systemMessageSendChannel: SystemMessageSendChannel
             by inject(systemMessageSendChannelQualifier)
+
+    private val connectionStateSendChannel: ConnectionStateSendChannel
+            by inject(connectionStateSendChannelQualifier)
 
 
     // ------- TG Client properties and methods
@@ -237,7 +244,16 @@ class App : Application() {
 
         systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
 
-        // TODO: show connection state
+        val connectionState: ConnectionState = when (tdApiUpdateConnectionState.state) {
+            is TdApi.ConnectionStateWaitingForNetwork -> WaitingForNetwork
+            is TdApi.ConnectionStateConnectingToProxy -> ConnectingToProxy
+            is TdApi.ConnectionStateConnecting -> Connecting
+            is TdApi.ConnectionStateUpdating -> Updating
+            is TdApi.ConnectionStateReady -> Ready
+            else -> Undefined
+        }
+
+        connectionStateSendChannel.offer(connectionState)
     }
 
     private fun onUpdateAuthorizationState(

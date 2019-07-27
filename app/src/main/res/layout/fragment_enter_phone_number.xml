@@ -52,7 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:layout_marginBottom="48dp"
+            android:layout_marginBottom="60dp"
             android:alpha="0"
             android:text="@string/next_button_text"
             app:layout_constraintBottom_toBottomOf="parent"

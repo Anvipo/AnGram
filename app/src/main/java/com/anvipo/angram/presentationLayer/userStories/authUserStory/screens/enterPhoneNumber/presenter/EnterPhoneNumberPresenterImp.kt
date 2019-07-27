@@ -106,7 +106,7 @@ class EnterPhoneNumberPresenterImp(
     private val phoneNumberLength: UInt
         get() {
             val telephonyManager =
-                resourceManager.context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+                resourceManager.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
 
             return when (telephonyManager.simCountryIso) {
                 "ru" -> 12u

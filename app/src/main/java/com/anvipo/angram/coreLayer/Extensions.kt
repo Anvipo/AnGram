@@ -1,4 +1,4 @@
-@file:Suppress("unused")
+@file:Suppress("unused", "UNUSED_PARAMETER")
 
 package com.anvipo.angram.coreLayer
 
@@ -117,8 +117,13 @@ fun Fragment.sendEmail(email: String) {
     )
 }
 
-fun View.showSnackbarMessage(message: String) {
-    val snackbar = Snackbar.make(this, message, Snackbar.LENGTH_LONG)
+fun View.showSnackbarMessage(
+    text: String,
+    duration: Int = Snackbar.LENGTH_LONG,
+    withProgressBar: Boolean = false,
+    isProgressBarIndeterminate: Boolean = false
+) {
+    val snackbar = Snackbar.make(this, text, duration)
     val messageTextView = snackbar.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
     messageTextView.setTextColor(Color.WHITE)
     snackbar.show()

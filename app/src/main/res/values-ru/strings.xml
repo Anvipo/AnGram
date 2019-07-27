@@ -25,6 +25,7 @@
     <string name="password_type_input_hint">Пароль</string>
     <string name="too_many_requests_try_later">Слишком много запросов. Попробуйте позже.</string>
     <string name="resend_code_button_text">Выслать код заново</string>
+    <string name="connection_state">Состояние соединения</string>
 
     <!--\\Auth flow-->
 

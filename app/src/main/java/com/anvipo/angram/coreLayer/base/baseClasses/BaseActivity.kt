@@ -1,11 +1,14 @@
 package com.anvipo.angram.coreLayer.base.baseClasses
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.Toolbar
+import com.anvipo.angram.R
 import com.anvipo.angram.coreLayer.MessageDialogFragment
 import com.anvipo.angram.coreLayer.base.baseInterfaces.BaseView
+import com.anvipo.angram.coreLayer.showSnackbarMessage
 import com.anvipo.angram.presentationLayer.common.interfaces.BasePresenter
 import com.anvipo.angram.presentationLayer.common.mvp.MvpAppCompatActivity
 
@@ -36,6 +39,30 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseView {
         Toast.makeText(this, text, Toast.LENGTH_LONG).show()
     }
 
+    override fun showSnackMessage(
+        text: String,
+        duration: Int,
+        withProgressBar: Boolean,
+        isProgressBarIndeterminate: Boolean
+    ) {
+        rootView.showSnackbarMessage(
+            text = text,
+            duration = duration,
+            withProgressBar = withProgressBar,
+            isProgressBarIndeterminate = isProgressBarIndeterminate
+        )
+    }
+
+    override fun showErrorAlert(text: String) {
+        MessageDialogFragment
+            .create(
+                message = text,
+                title = getString(R.string.error_title),
+                positive = getString(android.R.string.ok)
+            )
+            .show(supportFragmentManager, null)
+    }
+
     protected abstract fun setupClickListeners()
     protected open fun setupToolbar() {}
 
@@ -52,5 +79,7 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseView {
 
     protected val simpleName: String
         get() = this::class.java.simpleName
+
+    protected abstract val rootView: View
 
 }

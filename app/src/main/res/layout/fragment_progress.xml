@@ -15,7 +15,7 @@
             android:layout_height="80dp"
             android:layout_margin="8dp"
             app:lottie_autoPlay="true"
-            app:lottie_fileName="lottie/loading.json"
+            app:lottie_fileName="lottie/paper_plane.json"
             app:lottie_loop="true" />
 
         <TextView
