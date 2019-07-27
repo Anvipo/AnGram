@@ -2,7 +2,7 @@ package com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.en
 
 import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.R
-import com.anvipo.angram.businessLogicLayer.useCases.enterAuthenticationPasswordUseCase.EnterAuthenticationPasswordUseCase
+import com.anvipo.angram.businessLogicLayer.useCases.authUserStory.enterAuthenticationPasswordUseCase.EnterAuthenticationPasswordUseCase
 import com.anvipo.angram.coreLayer.CoreHelpers
 import com.anvipo.angram.coreLayer.ResourceManager
 import com.anvipo.angram.presentationLayer.common.baseClasses.BasePresenterImp

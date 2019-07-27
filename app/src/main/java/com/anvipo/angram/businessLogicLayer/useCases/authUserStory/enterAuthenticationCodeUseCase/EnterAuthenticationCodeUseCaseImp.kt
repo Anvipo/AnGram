@@ -1,8 +1,7 @@
-package com.anvipo.angram.businessLogicLayer.useCases.enterAuthenticationCodeUseCase
+package com.anvipo.angram.businessLogicLayer.useCases.authUserStory.enterAuthenticationCodeUseCase
 
 import com.anvipo.angram.dataLayer.gateways.tdLibGateway.authorization.AuthorizationTDLibGateway
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationCode.types.CorrectAuthenticationCodeType
-import org.drinkless.td.libcore.telegram.TdApi
 
 class EnterAuthenticationCodeUseCaseImp(
     private val tdLibGateway: AuthorizationTDLibGateway
@@ -12,13 +11,17 @@ class EnterAuthenticationCodeUseCaseImp(
         enteredAuthenticationCode: CorrectAuthenticationCodeType,
         lastName: String,
         firstName: String
-    ): Result<TdApi.Ok> = tdLibGateway.checkAuthenticationCodeCatching(
-        enteredAuthenticationCode,
-        lastName = lastName,
-        firstName = firstName
-    )
+    ): Result<Unit> = tdLibGateway
+        .checkAuthenticationCodeCatching(
+            enteredAuthenticationCode,
+            lastName,
+            firstName
+        )
+        .map {}
 
-    override suspend fun resendAuthenticationCodeCatching(): Result<TdApi.Ok> =
-        tdLibGateway.resendAuthenticationCodeCatching()
+    override suspend fun resendAuthenticationCodeCatching(): Result<Unit> =
+        tdLibGateway
+            .resendAuthenticationCodeCatching()
+            .map {}
 
 }

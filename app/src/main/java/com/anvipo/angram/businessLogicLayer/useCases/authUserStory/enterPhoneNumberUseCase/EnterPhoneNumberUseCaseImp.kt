@@ -1,8 +1,7 @@
-package com.anvipo.angram.businessLogicLayer.useCases.enterPhoneNumberUseCase
+package com.anvipo.angram.businessLogicLayer.useCases.authUserStory.enterPhoneNumberUseCase
 
 import com.anvipo.angram.dataLayer.gateways.tdLibGateway.authorization.AuthorizationTDLibGateway
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.types.CorrectPhoneNumberType
-import org.drinkless.td.libcore.telegram.TdApi
 
 class EnterPhoneNumberUseCaseImp(
     private val tdLibGateway: AuthorizationTDLibGateway
@@ -10,6 +9,8 @@ class EnterPhoneNumberUseCaseImp(
 
     override suspend fun setAuthenticationPhoneNumberCatching(
         enteredPhoneNumber: CorrectPhoneNumberType
-    ): Result<TdApi.Ok> = tdLibGateway.setAuthenticationPhoneNumberCatching(enteredPhoneNumber)
+    ): Result<Unit> = tdLibGateway
+        .setAuthenticationPhoneNumberCatching(enteredPhoneNumber)
+        .map {}
 
 }
