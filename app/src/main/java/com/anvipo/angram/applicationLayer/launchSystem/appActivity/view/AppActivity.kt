@@ -1,6 +1,8 @@
 package com.anvipo.angram.applicationLayer.launchSystem.appActivity.view
 
 import android.os.Bundle
+import androidx.annotation.AnimRes
+import androidx.annotation.AnimatorRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.anvipo.angram.R
@@ -17,7 +19,7 @@ import org.koin.android.ext.android.inject
 import ru.terrakok.cicerone.Navigator
 import ru.terrakok.cicerone.NavigatorHolder
 import ru.terrakok.cicerone.android.support.SupportAppNavigator
-import ru.terrakok.cicerone.commands.Command
+import ru.terrakok.cicerone.commands.*
 
 class AppActivity : BaseActivity(), AppView {
 
@@ -79,6 +81,55 @@ class AppActivity : BaseActivity(), AppView {
                 nextFragment: Fragment?,
                 fragmentTransaction: FragmentTransaction
             ) {
+                @AnimatorRes @AnimRes val enter: Int
+                @AnimatorRes @AnimRes val exit: Int
+                @AnimatorRes @AnimRes val popEnter: Int
+                @AnimatorRes @AnimRes val popExit: Int
+                when (command) {
+                    is Back -> {
+                        enter = R.anim.enter_from_left
+                        popExit = R.anim.exit_to_left
+
+                        popEnter = R.anim.enter_from_right
+                        exit = R.anim.exit_to_right
+                    }
+                    is BackTo -> {
+                        enter = R.anim.enter_from_left
+                        popExit = R.anim.exit_to_left
+
+                        popEnter = R.anim.enter_from_right
+                        exit = R.anim.exit_to_right
+                    }
+                    is Forward -> {
+                        enter = R.anim.enter_from_right
+                        popExit = R.anim.exit_to_right
+
+                        popEnter = R.anim.enter_from_left
+                        exit = R.anim.exit_to_left
+                    }
+                    is Replace -> {
+                        enter = android.R.anim.fade_in
+                        popExit = android.R.anim.fade_out
+
+                        popEnter = android.R.anim.fade_in
+                        exit = android.R.anim.fade_out
+                    }
+                    else -> {
+                        enter = R.anim.enter_from_right
+                        popExit = R.anim.exit_to_right
+
+                        popEnter = R.anim.enter_from_left
+                        exit = R.anim.exit_to_left
+                    }
+                }
+
+                fragmentTransaction.setCustomAnimations(
+                    enter,
+                    exit,
+                    popEnter,
+                    popExit
+                )
+
                 fragmentTransaction.setReorderingAllowed(true)
             }
 

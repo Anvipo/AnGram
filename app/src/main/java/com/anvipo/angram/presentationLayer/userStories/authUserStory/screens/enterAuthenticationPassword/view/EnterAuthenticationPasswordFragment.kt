@@ -27,7 +27,8 @@ class EnterAuthenticationPasswordFragment : BaseFragment(), EnterAuthenticationP
 
     override val presenter: EnterAuthenticationPasswordPresenter by lazy { mPresenter }
     override val actionBarTitle: String by lazy { getString(R.string.enter_password) }
-    override val actionBar: Toolbar by lazy { toolbar }
+    override val actionBar: Toolbar
+        get() = toolbar
     override val layoutRes: Int = R.layout.fragment_enter_authentication_password
 
 

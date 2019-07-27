@@ -21,15 +21,19 @@ class EnterAuthenticationCodePresenterImp(
     private val resourceManager: ResourceManager
 ) : BasePresenterImp<EnterAuthenticationCodeView>(), EnterAuthenticationCodePresenter {
 
-    override fun coldStart() {
+    override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
+
         viewState.hideNextButton()
         viewState.hideRegistrationViews()
+        viewState.hideProgress()
     }
 
-    override fun onStartTriggered() {
+    override fun onResumeTriggered() {
         if (registrationRequired) {
             viewState.showRegistrationViews()
         }
+        viewState.hideProgress()
     }
 
     override fun onNextButtonPressed(

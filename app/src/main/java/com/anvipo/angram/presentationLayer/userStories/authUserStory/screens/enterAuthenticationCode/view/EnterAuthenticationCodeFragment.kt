@@ -100,7 +100,8 @@ class EnterAuthenticationCodeFragment : BaseFragment(), EnterAuthenticationCodeV
     }
 
     override val actionBarTitle: String by lazy { getString(R.string.enter_auth_code_title) }
-    override val actionBar: Toolbar by lazy { enter_authentication_code_toolbar as Toolbar }
+    override val actionBar: Toolbar
+        get() = enter_authentication_code_toolbar as Toolbar
 
     override val layoutRes: Int = R.layout.fragment_enter_authentication_code
 

@@ -29,6 +29,10 @@ class EnterPhoneNumberPresenterImp(
         viewState.setMaxLengthOfPhoneNumber(phoneNumberLength.toInt())
     }
 
+    override fun onResumeTriggered() {
+        viewState.hideProgress()
+    }
+
     override fun onNextButtonPressed(enteredPhoneNumber: String) {
         val onNextButtonPressedCoroutineExceptionHandler = CoroutineExceptionHandler { _, error ->
             if (BuildConfig.DEBUG) {

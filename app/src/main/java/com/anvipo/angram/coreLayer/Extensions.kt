@@ -143,7 +143,9 @@ fun View.setBackgroundTintByColor(@ColorInt color: Int) {
     DrawableCompat.setTint(wrappedDrawable.mutate(), color)
 }
 
-fun View.showWithAnimate(animationDuration: Long = 250) {
+fun View.showWithAnimate(
+    animationDuration: Long = 200
+) {
     this.clearAnimation()
 
     this.animate()
@@ -152,7 +154,9 @@ fun View.showWithAnimate(animationDuration: Long = 250) {
         .duration = animationDuration
 }
 
-fun View.hideWithAnimate(animationDuration: Long = 250) {
+fun View.hideWithAnimate(
+    animationDuration: Long = 200
+) {
     this.clearAnimation()
 
     this.animate()

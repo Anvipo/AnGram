@@ -20,6 +20,10 @@ class EnterAuthenticationPasswordPresenterImp(
     private val resourceManager: ResourceManager
 ) : BasePresenterImp<EnterAuthenticationPasswordView>(), EnterAuthenticationPasswordPresenter {
 
+    override fun onResumeTriggered() {
+        viewState.hideProgress()
+    }
+
     override fun onNextButtonPressed(enteredAuthenticationPassword: CorrectAuthenticationPasswordType) {
         val onNextButtonPressedCoroutineExceptionHandler = CoroutineExceptionHandler { _, error ->
             if (BuildConfig.DEBUG) {

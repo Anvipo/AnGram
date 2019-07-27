@@ -47,7 +47,8 @@ class EnterPhoneNumberFragment :
     override val layoutRes: Int by lazy { R.layout.fragment_enter_phone_number }
 
     override val actionBarTitle: String by lazy { getString(R.string.enter_your_phone_number_title) }
-    override val actionBar: Toolbar by lazy { enter_phone_number_toolbar as Toolbar }
+    override val actionBar: Toolbar
+        get() = enter_phone_number_toolbar as Toolbar
 
     override fun setupClickListeners() {
         enter_phone_number_next_button.setOnClickListener(::onClickedPhoneNumberNextButton)
