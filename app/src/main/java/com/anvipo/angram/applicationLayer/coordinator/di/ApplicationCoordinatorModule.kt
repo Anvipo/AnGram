@@ -1,7 +1,7 @@
 package com.anvipo.angram.applicationLayer.coordinator.di
 
-import com.anvipo.angram.applicationLayer.coordinator.ApplicationCoordinatorImp
 import com.anvipo.angram.applicationLayer.coordinator.ApplicationCoordinator
+import com.anvipo.angram.applicationLayer.coordinator.ApplicationCoordinatorImp
 import com.anvipo.angram.applicationLayer.di.LaunchSystemModule.systemMessageSendChannelQualifier
 import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule.routerQualifier
 import com.anvipo.angram.applicationLayer.types.SystemMessageSendChannel

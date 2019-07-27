@@ -1,12 +1,11 @@
 package com.anvipo.angram.dataLayer.gateways.tdLibGateway
 
 import android.content.Context
-import com.anvipo.angram.dataLayer.gateways.base.BaseGateway
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationCode.types.CorrectAuthenticationCodeType
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationPassword.types.CorrectAuthenticationPasswordType
 import org.drinkless.td.libcore.telegram.TdApi
 
-interface TDLibGateway : BaseGateway {
+interface TDLibGateway {
 
     suspend fun getAuthorizationStateRequestCatching(): Result<TdApi.AuthorizationState>
 
