@@ -5,6 +5,8 @@ import com.anvipo.angram.dataLayer.gateways.tdLibGateway.application.Application
 import com.anvipo.angram.dataLayer.gateways.tdLibGateway.application.ApplicationTDLibGatewayImp
 import com.anvipo.angram.dataLayer.gateways.tdLibGateway.authorization.AuthorizationTDLibGateway
 import com.anvipo.angram.dataLayer.gateways.tdLibGateway.authorization.AuthorizationTDLibGatewayImp
+import com.anvipo.angram.dataLayer.gateways.tdLibGateway.proxy.ProxyTDLibGateway
+import com.anvipo.angram.dataLayer.gateways.tdLibGateway.proxy.ProxyTDLibGatewayImp
 import org.drinkless.td.libcore.telegram.Client
 import org.koin.android.ext.koin.androidApplication
 import org.koin.core.module.Module
@@ -13,6 +15,7 @@ import org.koin.dsl.module
 
 object GatewaysModule {
 
+    internal val proxyTDLibGatewayQualifier = named("proxyTDLibGateway")
     internal val applicationTDLibGatewayQualifier = named("applicationTDLibGateway")
     internal val authorizationTDLibGatewayQualifier = named("authorizationTDLibGateway")
 
@@ -71,6 +74,12 @@ object GatewaysModule {
 
         single<AuthorizationTDLibGateway>(authorizationTDLibGatewayQualifier) {
             AuthorizationTDLibGatewayImp(
+                tdClient = get<Client>(tdClientQualifier)
+            )
+        }
+
+        single<ProxyTDLibGateway>(proxyTDLibGatewayQualifier) {
+            ProxyTDLibGatewayImp(
                 tdClient = get<Client>(tdClientQualifier)
             )
         }

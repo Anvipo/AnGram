@@ -26,16 +26,6 @@ class AppPresenterImp(
     private val resourceManager: ResourceManager
 ) : BasePresenterImp<AppView>(), AppPresenter {
 
-    override fun onPauseTriggered() {
-        viewState.removeNavigator()
-        unsubscribeFromChannels()
-    }
-
-    override fun onResumeFragments() {
-        subscribeToChannels()
-        viewState.setNavigator()
-    }
-
     override fun coldStart() {
         coordinator.coldStart()
     }
@@ -43,6 +33,17 @@ class AppPresenterImp(
     override fun hotStart() {
         coordinator.hotStart()
     }
+
+    override fun onResumeFragments() {
+        subscribeToChannels()
+        viewState.setNavigator()
+    }
+
+    override fun onPauseTriggered() {
+        viewState.removeNavigator()
+        unsubscribeFromChannels()
+    }
+
 
     override val coroutineContext: CoroutineContext = Dispatchers.IO
 
@@ -122,8 +123,6 @@ class AppPresenterImp(
         receiveConnectionStatesJob = launch(
             context = coroutineContext + receiveConnectionStatesCoroutineExceptionHandler
         ) {
-            val text: String
-            val duration: Int
             val receivedConnectionState = connectionStateReceiveChannel.receive()
 
             if (receivedConnectionState == Undefined) {
@@ -137,6 +136,8 @@ class AppPresenterImp(
             }
 
             val connectionState = resourceManager.getString(R.string.connection_state)
+            val text: String
+            val duration: Int
             when (receivedConnectionState) {
                 WaitingForNetwork -> {
                     text = "$connectionState: waiting for network"
@@ -164,7 +165,7 @@ class AppPresenterImp(
                 }
             }
 
-            val showSnackbarCoroutineExceptionHandler = CoroutineExceptionHandler { _, error ->
+            val showSnackbarCEH = CoroutineExceptionHandler { _, error ->
                 if (BuildConfig.DEBUG) {
                     val errorText = error.localizedMessage
                     debugLog(errorText)
@@ -173,9 +174,9 @@ class AppPresenterImp(
             }
 
             showSnackbarJob = launch(
-                context = Dispatchers.Main + showSnackbarCoroutineExceptionHandler
+                context = Dispatchers.Main + showSnackbarCEH
             ) {
-                viewState.showSnackMessage(
+                viewState.showConnectionErrorSnackMessage(
                     text = text,
                     duration = duration,
                     withProgressBar = duration == Snackbar.LENGTH_INDEFINITE,

@@ -24,7 +24,7 @@ import kotlin.coroutines.CoroutineContext
 class AuthorizationCoordinatorImp(
     private val router: Router,
     private val screensFactory: AuthorizationScreensFactory,
-    private val tdLibGateway: AuthorizationTDLibGateway,
+    private val authorizationTDLibGateway: AuthorizationTDLibGateway,
     private val systemMessageSendChannel: SystemMessageSendChannel
 ) : BaseCoordinatorImp(),
     AuthorizationCoordinator,
@@ -47,7 +47,7 @@ class AuthorizationCoordinatorImp(
         getAuthorizationStateRequestCatchingJob = launch(
             context = coroutineContext + getAuthorizationStateRequestCatchingCoroutineExceptionHandler
         ) {
-            val authorizationStateResult = tdLibGateway.getAuthorizationStateRequestCatching()
+            val authorizationStateResult = authorizationTDLibGateway.getAuthorizationStateRequestCatching()
 
             authorizationStateResult
                 .onSuccess {
@@ -75,7 +75,7 @@ class AuthorizationCoordinatorImp(
         getAuthorizationStateRequestCatchingJob = launch(
             context = coroutineContext + getAuthorizationStateRequestCatchingCoroutineExceptionHandler
         ) {
-            val authorizationStateResult = tdLibGateway.getAuthorizationStateRequestCatching()
+            val authorizationStateResult = authorizationTDLibGateway.getAuthorizationStateRequestCatching()
 
             authorizationStateResult
                 .onSuccess {
@@ -181,7 +181,7 @@ class AuthorizationCoordinatorImp(
         getAuthorizationStateRequestCatchingJob = launch(
             context = coroutineContext + getAuthorizationStateRequestCatchingCoroutineExceptionHandler
         ) {
-            val authorizationStateResult = tdLibGateway.getAuthorizationStateRequestCatching()
+            val authorizationStateResult = authorizationTDLibGateway.getAuthorizationStateRequestCatching()
 
             authorizationStateResult
                 .onSuccess(::onSuccessGetAuthStateResult)
@@ -290,7 +290,7 @@ class AuthorizationCoordinatorImp(
             val enterPhoneNumberScreen =
                 screensFactory
                     .enterPhoneNumberScreenFactory
-                    .createEnterPhoneNumberViewController(tdLibGateway)
+                    .createEnterPhoneNumberViewController(authorizationTDLibGateway)
 
             val enterPasswordScreen =
                 screensFactory
@@ -321,7 +321,7 @@ class AuthorizationCoordinatorImp(
         val enterPhoneNumberScreen =
             screensFactory
                 .enterPhoneNumberScreenFactory
-                .createEnterPhoneNumberViewController(tdLibGateway)
+                .createEnterPhoneNumberViewController(authorizationTDLibGateway)
 
         router.newRootScreen(enterPhoneNumberScreen)
     }
@@ -347,7 +347,7 @@ class AuthorizationCoordinatorImp(
             val enterPhoneNumberScreen =
                 screensFactory
                     .enterPhoneNumberScreenFactory
-                    .createEnterPhoneNumberViewController(tdLibGateway)
+                    .createEnterPhoneNumberViewController(authorizationTDLibGateway)
 
             router.newRootChain(enterPhoneNumberScreen, enterAuthCodeScreen)
         } else {

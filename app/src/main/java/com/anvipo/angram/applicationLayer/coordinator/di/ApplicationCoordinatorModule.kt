@@ -46,7 +46,7 @@ object ApplicationCoordinatorModule {
             AuthorizationCoordinatorImp(
                 router = get<Router>(routerQualifier),
                 screensFactory = AuthorizationScreensFactoryImp,
-                tdLibGateway = get<AuthorizationTDLibGateway>(authorizationTDLibGatewayQualifier),
+                authorizationTDLibGateway = get<AuthorizationTDLibGateway>(authorizationTDLibGatewayQualifier),
                 systemMessageSendChannel =
                 get<SystemMessageSendChannel>(systemMessageSendChannelQualifier)
             )

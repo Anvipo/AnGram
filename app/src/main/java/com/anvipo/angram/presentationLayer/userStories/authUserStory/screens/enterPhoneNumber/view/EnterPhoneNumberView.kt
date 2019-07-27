@@ -8,11 +8,15 @@ import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 @StateStrategyType(AddToEndSingleStrategy::class)
 interface EnterPhoneNumberView : BaseView {
 
-    @StateStrategyType(OneExecutionStateStrategy::class)
-    fun hideNextButton()
+    fun enableNextButton()
+
+    fun disableNextButton()
 
     @StateStrategyType(OneExecutionStateStrategy::class)
     fun showNextButton()
+
+    @StateStrategyType(OneExecutionStateStrategy::class)
+    fun hideNextButton()
 
     fun setMaxLengthOfPhoneNumber(maxLength: Int)
 

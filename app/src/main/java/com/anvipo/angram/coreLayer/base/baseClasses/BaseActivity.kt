@@ -58,6 +58,15 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseView {
         )
     }
 
+    override fun showConnectionErrorSnackMessage(
+        text: String,
+        duration: Int,
+        withProgressBar: Boolean,
+        isProgressBarIndeterminate: Boolean
+    ) {
+        showSnackMessage(text, duration, withProgressBar, isProgressBarIndeterminate)
+    }
+
     override fun showErrorAlert(text: String) {
         MessageDialogFragment
             .create(

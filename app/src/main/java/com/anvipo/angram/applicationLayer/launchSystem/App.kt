@@ -4,7 +4,7 @@ import android.app.Application
 import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.applicationLayer.coordinator.di.ApplicationCoordinatorModule
 import com.anvipo.angram.applicationLayer.di.LaunchSystemModule
-import com.anvipo.angram.applicationLayer.di.LaunchSystemModule.connectionStateSendChannelQualifier
+import com.anvipo.angram.applicationLayer.di.LaunchSystemModule.connectionStateAppSendChannelQualifier
 import com.anvipo.angram.applicationLayer.di.LaunchSystemModule.systemMessageSendChannelQualifier
 import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule
 import com.anvipo.angram.applicationLayer.types.ConnectionState
@@ -24,6 +24,7 @@ import com.anvipo.angram.global.GlobalHelpers.createTGSystemMessageFromApp
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationCode.di.EnterAuthenticationCodeModule
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationPassword.di.EnterAuthenticationPasswordModule
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.di.EnterPhoneNumberModule
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.di.EnterPhoneNumberModule.connectionStateEnterPhoneNumberSendChannelQualifier
 import org.drinkless.td.libcore.telegram.TdApi
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
@@ -81,8 +82,11 @@ class App : Application() {
     private val systemMessageSendChannel: SystemMessageSendChannel
             by inject(systemMessageSendChannelQualifier)
 
-    private val connectionStateSendChannel: ConnectionStateSendChannel
-            by inject(connectionStateSendChannelQualifier)
+    private val connectionStateAppSendChannel: ConnectionStateSendChannel
+            by inject(connectionStateAppSendChannelQualifier)
+
+    private val connectionStateEnterPhoneNumberSendChannel: ConnectionStateSendChannel
+            by inject(connectionStateEnterPhoneNumberSendChannelQualifier)
 
 
     // ------- TG Client properties and methods
@@ -253,7 +257,8 @@ class App : Application() {
             else -> Undefined
         }
 
-        connectionStateSendChannel.offer(connectionState)
+        connectionStateAppSendChannel.offer(connectionState)
+        connectionStateEnterPhoneNumberSendChannel.offer(connectionState)
     }
 
     private fun onUpdateAuthorizationState(

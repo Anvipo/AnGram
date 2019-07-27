@@ -30,12 +30,20 @@ class EnterPhoneNumberFragment :
         fun createNewInstance(): EnterPhoneNumberView = EnterPhoneNumberFragment()
     }
 
-    override fun hideNextButton() {
-        enter_phone_number_next_button.hideWithAnimate()
+    override fun enableNextButton() {
+        enter_phone_number_next_button.isEnabled = true
+    }
+
+    override fun disableNextButton() {
+        enter_phone_number_next_button.isEnabled = false
     }
 
     override fun showNextButton() {
         enter_phone_number_next_button.showWithAnimate()
+    }
+
+    override fun hideNextButton() {
+        enter_phone_number_next_button.hideWithAnimate()
     }
 
     override fun setMaxLengthOfPhoneNumber(maxLength: Int) {

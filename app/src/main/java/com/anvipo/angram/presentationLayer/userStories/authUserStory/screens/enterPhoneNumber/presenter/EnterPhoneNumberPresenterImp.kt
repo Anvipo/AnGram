@@ -4,6 +4,8 @@ import android.content.Context
 import android.telephony.TelephonyManager
 import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.R
+import com.anvipo.angram.applicationLayer.types.ConnectionState
+import com.anvipo.angram.applicationLayer.types.ConnectionStateReceiveChannel
 import com.anvipo.angram.businessLogicLayer.useCases.authUserStory.enterPhoneNumberUseCase.EnterPhoneNumberUseCase
 import com.anvipo.angram.coreLayer.CoreHelpers.debugLog
 import com.anvipo.angram.coreLayer.ResourceManager
@@ -15,12 +17,13 @@ import com.arellomobile.mvp.InjectViewState
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
-
+@Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS")
 @InjectViewState
 class EnterPhoneNumberPresenterImp(
     private val useCase: EnterPhoneNumberUseCase,
     private val routeEventHandler: AuthorizationCoordinatorEnterPhoneNumberRouteEventHandler,
-    private val resourceManager: ResourceManager
+    private val resourceManager: ResourceManager,
+    private val connectionStateReceiveChannel: ConnectionStateReceiveChannel
 ) : BasePresenterImp<EnterPhoneNumberView>(), EnterPhoneNumberPresenter {
 
     override fun coldStart() {
@@ -31,6 +34,11 @@ class EnterPhoneNumberPresenterImp(
 
     override fun onResumeTriggered() {
         viewState.hideProgress()
+        subscribeOnConnectionStates()
+    }
+
+    override fun onPauseTriggered() {
+        connectionStateReceiveChannel.cancel(CancellationException("EnterPhoneNumberView onPause"))
     }
 
     override fun onNextButtonPressed(enteredPhoneNumber: String) {
@@ -99,9 +107,15 @@ class EnterPhoneNumberPresenterImp(
 
     override fun cancelAllJobs() {
         onNextButtonPressedJob?.cancel()
+        receiveFirstConnectionStatesJob?.cancel()
+        receiveConnectionStatesJob?.cancel()
+        doOnNewConnectionStateJob?.cancel()
     }
 
     private var onNextButtonPressedJob: Job? = null
+    private var receiveFirstConnectionStatesJob: Job? = null
+    private var receiveConnectionStatesJob: Job? = null
+    private var doOnNewConnectionStateJob: Job? = null
 
     private val phoneNumberLength: UInt
         get() {
@@ -114,5 +128,68 @@ class EnterPhoneNumberPresenterImp(
                 else -> 12u
             }
         }
+
+    private fun subscribeOnConnectionStates() {
+        val receiveConnectionStatesCoroutineExceptionHandler = CoroutineExceptionHandler { _, error ->
+            if (BuildConfig.DEBUG) {
+                val text = error.localizedMessage
+                debugLog(text)
+                viewState.showErrorAlert(text)
+            }
+        }
+
+        receiveConnectionStatesJob = launch(
+            context = coroutineContext + receiveConnectionStatesCoroutineExceptionHandler
+        ) {
+            val receivedConnectionState = connectionStateReceiveChannel.receive()
+
+            if (receivedConnectionState == ConnectionState.Undefined) {
+                val errorText = "receivedConnectionState == Undefined"
+                debugLog(errorText)
+                if (BuildConfig.DEBUG) {
+                    viewState.showToastMessage(errorText)
+                }
+
+                return@launch
+            }
+
+            val block: () -> Unit = {
+                when (receivedConnectionState) {
+                    ConnectionState.WaitingForNetwork -> {
+                        TODO()
+                    }
+                    ConnectionState.ConnectingToProxy -> {
+                        TODO()
+                    }
+                    ConnectionState.Connecting -> {
+                        viewState.disableNextButton()
+                    }
+                    ConnectionState.Updating -> {
+                        TODO()
+                    }
+                    ConnectionState.Ready -> {
+                        TODO()
+                    }
+                    ConnectionState.Undefined -> {
+                        TODO()
+                    }
+                }
+            }
+
+            val doOnNewConnectionStateCEH = CoroutineExceptionHandler { _, error ->
+                if (BuildConfig.DEBUG) {
+                    val errorText = error.localizedMessage
+                    debugLog(errorText)
+                    viewState.showErrorAlert(errorText)
+                }
+            }
+
+            doOnNewConnectionStateJob = launch(
+                context = Dispatchers.Main + doOnNewConnectionStateCEH
+            ) {
+                block()
+            }
+        }
+    }
 
 }
