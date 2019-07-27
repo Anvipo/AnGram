@@ -7,11 +7,11 @@ import com.anvipo.angram.coreLayer.CoreHelpers.debugLog
 import com.anvipo.angram.coreLayer.message.SystemMessage
 import com.anvipo.angram.dataLayer.gateways.tdLibGateway.TDLibGateway
 import com.anvipo.angram.global.CoreHelpers.createTGSystemMessage
-import com.anvipo.angram.presentationLayer.common.baseClasses.BaseCoordinator
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinatorEnterAuthenticationCodeOutput
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinatorEnterAuthenticationPasswordOutput
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinatorEnterPhoneNumberOutput
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinatorInput
+import com.anvipo.angram.presentationLayer.common.baseClasses.BaseCoordinatorImp
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinator
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinatorEnterAuthenticationCodeRouteEventHandler
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinatorEnterAuthenticationPasswordRouteEventHandler
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinatorEnterPhoneNumberRouteEventHandler
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.authorizationScreensFactory.AuthorizationScreensFactory
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.enterPhoneNumberScreenFactory.EnterPhoneNumberScreenFactoryImp
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -28,11 +28,11 @@ class AuthorizationCoordinatorImp(
     private val screensFactory: AuthorizationScreensFactory,
     private val tdLibGateway: TDLibGateway,
     private val systemMessageSendChannel: SystemMessageSendChannel
-) : BaseCoordinator(),
-    AuthorizationCoordinatorInput,
-    AuthorizationCoordinatorEnterPhoneNumberOutput,
-    AuthorizationCoordinatorEnterAuthenticationCodeOutput,
-    AuthorizationCoordinatorEnterAuthenticationPasswordOutput {
+) : BaseCoordinatorImp(),
+    AuthorizationCoordinator,
+    AuthorizationCoordinatorEnterPhoneNumberRouteEventHandler,
+    AuthorizationCoordinatorEnterAuthenticationCodeRouteEventHandler,
+    AuthorizationCoordinatorEnterAuthenticationPasswordRouteEventHandler {
 
     override fun coldStart() {
         checkAuthState()

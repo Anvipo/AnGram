@@ -1,14 +1,16 @@
 package com.anvipo.angram.applicationLayer.coordinator
 
 import android.content.Context
+import com.anvipo.angram.applicationLayer.coordinator.interfaces.ApplicationCoordinator
+import com.anvipo.angram.applicationLayer.coordinator.interfaces.ApplicationCoordinatorRouteEventHandler
 import com.anvipo.angram.applicationLayer.types.SystemMessageSendChannel
 import com.anvipo.angram.coreLayer.CoreHelpers.assertionFailure
 import com.anvipo.angram.coreLayer.message.SystemMessage
 import com.anvipo.angram.dataLayer.gateways.tdLibGateway.TDLibGateway
 import com.anvipo.angram.global.CoreHelpers.createTGSystemMessage
-import com.anvipo.angram.presentationLayer.common.baseClasses.BaseCoordinator
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinatorInput
-import com.anvipo.angram.presentationLayer.userStories.mainUserStory.coordinator.MainCoordinatorInput
+import com.anvipo.angram.presentationLayer.common.baseClasses.BaseCoordinatorImp
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinator
+import com.anvipo.angram.presentationLayer.userStories.mainUserStory.coordinator.interfaces.MainCoordinator
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -19,12 +21,14 @@ import kotlin.coroutines.CoroutineContext
 class ApplicationCoordinatorImp(
     private val tdLibGateway: TDLibGateway,
     private val systemMessageSendChannel: SystemMessageSendChannel,
-    private val authorizationCoordinator: AuthorizationCoordinatorInput,
-    private val mainCoordinator: MainCoordinatorInput,
+    private val authorizationCoordinator: AuthorizationCoordinator,
+    private val mainCoordinator: MainCoordinator,
     private val context: Context
-) : BaseCoordinator(), ApplicationCoordinatorInput, ApplicationCoordinatorOutput {
+) : BaseCoordinatorImp(),
+    ApplicationCoordinator,
+    ApplicationCoordinatorRouteEventHandler {
 
-    override fun coldStartApp() {
+    override fun coldStart() {
         childCoordinators.clear()
 
         configureApp()

@@ -9,7 +9,7 @@ import com.anvipo.angram.coreLayer.CoreHelpers.debugLog
 import com.anvipo.angram.coreLayer.ResourceManager
 import com.anvipo.angram.dataLayer.gateways.tdLibGateway.errors.TdApiError
 import com.anvipo.angram.presentationLayer.common.baseClasses.BasePresenterImp
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinatorEnterPhoneNumberOutput
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinatorEnterPhoneNumberRouteEventHandler
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.view.EnterPhoneNumberView
 import com.arellomobile.mvp.InjectViewState
 import kotlinx.coroutines.*
@@ -18,8 +18,8 @@ import kotlin.coroutines.CoroutineContext
 
 @InjectViewState
 class EnterPhoneNumberPresenterImp(
-    override val useCase: EnterPhoneNumberUseCase,
-    override val coordinator: AuthorizationCoordinatorEnterPhoneNumberOutput,
+    private val useCase: EnterPhoneNumberUseCase,
+    private val routeEventHandler: AuthorizationCoordinatorEnterPhoneNumberRouteEventHandler,
     private val resourceManager: ResourceManager
 ) : BasePresenterImp<EnterPhoneNumberView>(), EnterPhoneNumberPresenter {
 
@@ -49,7 +49,7 @@ class EnterPhoneNumberPresenterImp(
         ) {
             useCase.setAuthenticationPhoneNumberCatching(enteredPhoneNumber)
                 .onSuccess {
-                    coordinator.onEnterCorrectPhoneNumber()
+                    routeEventHandler.onEnterCorrectPhoneNumber()
                 }
                 .onFailure { error ->
                     val errorMessage: String = resourceManager.run {
@@ -87,7 +87,7 @@ class EnterPhoneNumberPresenterImp(
     }
 
     override fun onBackPressed() {
-        coordinator.onPressedBackButtonInEnterPhoneNumberScreen()
+        routeEventHandler.onPressedBackButtonInEnterPhoneNumberScreen()
     }
 
     override fun onCanceledProgressDialog() {

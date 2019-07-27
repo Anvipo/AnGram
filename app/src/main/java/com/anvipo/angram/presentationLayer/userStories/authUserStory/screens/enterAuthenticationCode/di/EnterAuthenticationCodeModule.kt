@@ -5,7 +5,7 @@ import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule.resource
 import com.anvipo.angram.businessLogicLayer.di.UseCasesModule.enterAuthenticationCodeUseCaseQualifier
 import com.anvipo.angram.businessLogicLayer.useCases.enterAuthenticationCodeUseCase.EnterAuthenticationCodeUseCase
 import com.anvipo.angram.coreLayer.ResourceManager
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinatorEnterAuthenticationCodeOutput
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinatorEnterAuthenticationCodeRouteEventHandler
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationCode.presenter.EnterAuthenticationCodePresenter
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationCode.presenter.EnterAuthenticationCodePresenterImp
 import org.koin.core.module.Module
@@ -21,7 +21,7 @@ object EnterAuthenticationCodeModule {
 
         single<EnterAuthenticationCodePresenter>(enterAuthenticationCodePresenterQualifier) {
             EnterAuthenticationCodePresenterImp(
-                coordinator = get<AuthorizationCoordinatorEnterAuthenticationCodeOutput>(
+                routeEventHandler = get<AuthorizationCoordinatorEnterAuthenticationCodeRouteEventHandler>(
                     authorizationCoordinatorQualifier
                 ),
                 useCase = get<EnterAuthenticationCodeUseCase>(enterAuthenticationCodeUseCaseQualifier),

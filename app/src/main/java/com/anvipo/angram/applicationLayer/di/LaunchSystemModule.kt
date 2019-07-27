@@ -1,7 +1,7 @@
 package com.anvipo.angram.applicationLayer.di
 
-import com.anvipo.angram.applicationLayer.coordinator.ApplicationCoordinatorOutput
 import com.anvipo.angram.applicationLayer.coordinator.di.ApplicationRootCoordinatorModule.applicationCoordinatorQualifier
+import com.anvipo.angram.applicationLayer.coordinator.interfaces.ApplicationCoordinator
 import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule.resourceManagerQualifier
 import com.anvipo.angram.applicationLayer.launchSystem.appActivity.presenter.AppPresenter
 import com.anvipo.angram.applicationLayer.launchSystem.appActivity.presenter.AppPresenterImp
@@ -51,7 +51,7 @@ object LaunchSystemModule {
 
         single<AppPresenter>(appPresenterQualifier) {
             AppPresenterImp(
-                coordinator = get<ApplicationCoordinatorOutput>(
+                coordinator = get<ApplicationCoordinator>(
                     applicationCoordinatorQualifier
                 ),
                 systemMessageReceiveChannel = get<SystemMessageReceiveChannel>(

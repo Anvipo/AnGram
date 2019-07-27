@@ -1,8 +1,8 @@
 package com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces
 
-import com.anvipo.angram.presentationLayer.common.interfaces.CoordinatorOutput
+import com.anvipo.angram.presentationLayer.common.interfaces.BaseRouteEventHandler
 
-interface AuthorizationCoordinatorEnterAuthenticationPasswordOutput : CoordinatorOutput {
+interface AuthorizationCoordinatorEnterAuthenticationPasswordRouteEventHandler : BaseRouteEventHandler {
 
     fun onPressedBackButtonInEnterAuthenticationPasswordScreen()
     fun onEnterCorrectAuthenticationPassword()

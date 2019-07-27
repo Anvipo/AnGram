@@ -7,7 +7,7 @@ import com.anvipo.angram.coreLayer.CoreHelpers.debugLog
 import com.anvipo.angram.coreLayer.ResourceManager
 import com.anvipo.angram.dataLayer.gateways.tdLibGateway.errors.TdApiError
 import com.anvipo.angram.presentationLayer.common.baseClasses.BasePresenterImp
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinatorEnterAuthenticationCodeOutput
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinatorEnterAuthenticationCodeRouteEventHandler
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationCode.types.CorrectAuthenticationCodeType
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationCode.view.EnterAuthenticationCodeView
 import com.arellomobile.mvp.InjectViewState
@@ -16,8 +16,8 @@ import kotlin.coroutines.CoroutineContext
 
 @InjectViewState
 class EnterAuthenticationCodePresenterImp(
-    override val coordinator: AuthorizationCoordinatorEnterAuthenticationCodeOutput,
-    override val useCase: EnterAuthenticationCodeUseCase,
+    private val routeEventHandler: AuthorizationCoordinatorEnterAuthenticationCodeRouteEventHandler,
+    private val useCase: EnterAuthenticationCodeUseCase,
     private val resourceManager: ResourceManager
 ) : BasePresenterImp<EnterAuthenticationCodeView>(), EnterAuthenticationCodePresenter {
 
@@ -60,7 +60,7 @@ class EnterAuthenticationCodePresenterImp(
                 firstName = firstName
             )
                 .onSuccess {
-                    coordinator.onEnterCorrectAuthenticationCode()
+                    routeEventHandler.onEnterCorrectAuthenticationCode()
                 }
                 .onFailure { error ->
                     val errorMessage: String = resourceManager.run {
@@ -213,7 +213,7 @@ class EnterAuthenticationCodePresenterImp(
     }
 
     override fun onBackPressed() {
-        coordinator.onPressedBackButtonInEnterAuthenticationCodeScreen()
+        routeEventHandler.onPressedBackButtonInEnterAuthenticationCodeScreen()
     }
 
     override fun cancelAllJobs() {

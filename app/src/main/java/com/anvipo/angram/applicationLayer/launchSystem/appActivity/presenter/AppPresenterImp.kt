@@ -3,13 +3,12 @@ package com.anvipo.angram.applicationLayer.launchSystem.appActivity.presenter
 import android.util.Log
 import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.R
-import com.anvipo.angram.applicationLayer.coordinator.ApplicationCoordinatorOutput
+import com.anvipo.angram.applicationLayer.coordinator.interfaces.ApplicationCoordinator
 import com.anvipo.angram.applicationLayer.launchSystem.App
 import com.anvipo.angram.applicationLayer.launchSystem.appActivity.view.AppView
 import com.anvipo.angram.applicationLayer.types.ConnectionState.*
 import com.anvipo.angram.applicationLayer.types.ConnectionStateReceiveChannel
 import com.anvipo.angram.applicationLayer.types.SystemMessageReceiveChannel
-import com.anvipo.angram.businessLogicLayer.useCases.base.BaseUseCase
 import com.anvipo.angram.coreLayer.CoreHelpers.debugLog
 import com.anvipo.angram.coreLayer.ResourceManager
 import com.anvipo.angram.coreLayer.message.SystemMessageType
@@ -21,7 +20,7 @@ import kotlin.coroutines.CoroutineContext
 
 @InjectViewState
 class AppPresenterImp(
-    override val coordinator: ApplicationCoordinatorOutput,
+    private val coordinator: ApplicationCoordinator,
     private val systemMessageReceiveChannel: SystemMessageReceiveChannel,
     private val connectionStateReceiveChannel: ConnectionStateReceiveChannel,
     private val resourceManager: ResourceManager
@@ -38,11 +37,11 @@ class AppPresenterImp(
     }
 
     override fun coldStart() {
-        coordinator.coldStartApp()
+        coordinator.coldStart()
     }
 
     override fun hotStart() {
-        coordinator.hotStartApp()
+        coordinator.hotStart()
     }
 
     override val coroutineContext: CoroutineContext = Dispatchers.IO
@@ -55,8 +54,6 @@ class AppPresenterImp(
         showSnackbarJob?.cancel()
     }
 
-    override val useCase: BaseUseCase
-        get() = TODO("not implemented")
 
     private fun subscribeOnSystemMessages() {
         val receiveSystemMessagesCoroutineExceptionHandler = CoroutineExceptionHandler { _, error ->

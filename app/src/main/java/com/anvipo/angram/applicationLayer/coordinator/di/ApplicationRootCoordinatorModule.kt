@@ -1,17 +1,17 @@
 package com.anvipo.angram.applicationLayer.coordinator.di
 
+import com.anvipo.angram.applicationLayer.coordinator.interfaces.ApplicationCoordinator
 import com.anvipo.angram.applicationLayer.coordinator.ApplicationCoordinatorImp
-import com.anvipo.angram.applicationLayer.coordinator.ApplicationCoordinatorInput
 import com.anvipo.angram.applicationLayer.di.LaunchSystemModule.systemMessageSendChannelQualifier
 import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule.routerQualifier
 import com.anvipo.angram.applicationLayer.types.SystemMessageSendChannel
 import com.anvipo.angram.dataLayer.di.GatewaysModule.tdLibGatewayQualifier
 import com.anvipo.angram.dataLayer.gateways.tdLibGateway.TDLibGateway
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.AuthorizationCoordinatorImp
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinatorInput
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinator
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.authorizationScreensFactory.AuthorizationScreensFactoryImp
 import com.anvipo.angram.presentationLayer.userStories.mainUserStory.coordinator.MainCoordinatorImp
-import com.anvipo.angram.presentationLayer.userStories.mainUserStory.coordinator.MainCoordinatorInput
+import com.anvipo.angram.presentationLayer.userStories.mainUserStory.coordinator.interfaces.MainCoordinator
 import com.anvipo.angram.presentationLayer.userStories.mainUserStory.coordinator.screensFactory.MainViewControllersFactoryImp
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
@@ -28,19 +28,19 @@ object ApplicationRootCoordinatorModule {
     @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
 
-        single<ApplicationCoordinatorInput>(applicationCoordinatorQualifier) {
+        single<ApplicationCoordinator>(applicationCoordinatorQualifier) {
             ApplicationCoordinatorImp(
                 tdLibGateway = get<TDLibGateway>(tdLibGatewayQualifier),
                 systemMessageSendChannel =
                 get<SystemMessageSendChannel>(systemMessageSendChannelQualifier),
                 authorizationCoordinator =
-                get<AuthorizationCoordinatorInput>(authorizationCoordinatorQualifier),
-                mainCoordinator = get<MainCoordinatorInput>(mainCoordinatorQualifier),
+                get<AuthorizationCoordinator>(authorizationCoordinatorQualifier),
+                mainCoordinator = get<MainCoordinator>(mainCoordinatorQualifier),
                 context = get()
             )
         }
 
-        single<AuthorizationCoordinatorInput>(authorizationCoordinatorQualifier) {
+        single<AuthorizationCoordinator>(authorizationCoordinatorQualifier) {
             AuthorizationCoordinatorImp(
                 context = get(),
                 router = get<Router>(routerQualifier),
@@ -51,7 +51,7 @@ object ApplicationRootCoordinatorModule {
             )
         }
 
-        single<MainCoordinatorInput>(mainCoordinatorQualifier) {
+        single<MainCoordinator>(mainCoordinatorQualifier) {
             MainCoordinatorImp(
                 router = get<Router>(routerQualifier),
                 viewControllersFactory = MainViewControllersFactoryImp

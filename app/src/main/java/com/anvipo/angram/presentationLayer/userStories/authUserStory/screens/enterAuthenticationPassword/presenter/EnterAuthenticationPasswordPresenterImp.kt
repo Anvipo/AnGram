@@ -6,7 +6,7 @@ import com.anvipo.angram.businessLogicLayer.useCases.enterAuthenticationPassword
 import com.anvipo.angram.coreLayer.CoreHelpers
 import com.anvipo.angram.coreLayer.ResourceManager
 import com.anvipo.angram.presentationLayer.common.baseClasses.BasePresenterImp
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinatorEnterAuthenticationPasswordOutput
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinatorEnterAuthenticationPasswordRouteEventHandler
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationPassword.types.CorrectAuthenticationPasswordType
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationPassword.view.EnterAuthenticationPasswordView
 import com.arellomobile.mvp.InjectViewState
@@ -15,8 +15,8 @@ import kotlin.coroutines.CoroutineContext
 
 @InjectViewState
 class EnterAuthenticationPasswordPresenterImp(
-    override val coordinator: AuthorizationCoordinatorEnterAuthenticationPasswordOutput,
-    override val useCase: EnterAuthenticationPasswordUseCase,
+    private val routeEventHandler: AuthorizationCoordinatorEnterAuthenticationPasswordRouteEventHandler,
+    private val useCase: EnterAuthenticationPasswordUseCase,
     private val resourceManager: ResourceManager
 ) : BasePresenterImp<EnterAuthenticationPasswordView>(), EnterAuthenticationPasswordPresenter {
 
@@ -40,7 +40,7 @@ class EnterAuthenticationPasswordPresenterImp(
         ) {
             useCase.checkAuthenticationPasswordCatching(enteredAuthenticationPassword)
                 .onSuccess {
-                    coordinator.onEnterCorrectAuthenticationPassword()
+                    routeEventHandler.onEnterCorrectAuthenticationPassword()
                 }
                 .onFailure { error ->
                     val errorMessage: String = resourceManager.run {
@@ -59,7 +59,7 @@ class EnterAuthenticationPasswordPresenterImp(
     }
 
     override fun onBackPressed() {
-        coordinator.onPressedBackButtonInEnterAuthenticationPasswordScreen()
+        routeEventHandler.onPressedBackButtonInEnterAuthenticationPasswordScreen()
     }
 
     override fun cancelAllJobs() {

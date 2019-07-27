@@ -1,8 +1,10 @@
 package com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces
 
-import com.anvipo.angram.presentationLayer.common.interfaces.CoordinatorInput
+import com.anvipo.angram.presentationLayer.common.interfaces.BaseCoordinator
 
-interface AuthorizationCoordinatorInput : CoordinatorInput {
+interface AuthorizationCoordinator : BaseCoordinator {
+
     fun startAuthorizationFlowWithEnterAuthorizationCodeAsRootScreen()
     fun startAuthFlowWithEnterPasswordAsRootScreen()
+
 }
