@@ -3,8 +3,12 @@ package com.anvipo.angram.presentationLayer.common.baseClasses
 import com.anvipo.angram.presentationLayer.common.interfaces.BaseCoordinator
 import com.anvipo.angram.presentationLayer.common.interfaces.Coordinatorable
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlin.coroutines.CoroutineContext
 
 abstract class BaseCoordinatorImp : BaseCoordinator, CoroutineScope {
+
+    override val coroutineContext: CoroutineContext = Dispatchers.Default
 
     protected val childCoordinators: MutableList<Coordinatorable> = mutableListOf()
 
@@ -30,7 +34,7 @@ abstract class BaseCoordinatorImp : BaseCoordinator, CoroutineScope {
         }
     }
 
-    protected abstract fun cancelAllJobs()
+    protected open fun cancelAllJobs() {}
 
     protected fun onFinishFlowWrapper() {
         cancelAllJobs()

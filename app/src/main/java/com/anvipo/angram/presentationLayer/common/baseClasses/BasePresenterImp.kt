@@ -6,6 +6,8 @@ import com.anvipo.angram.coreLayer.base.baseInterfaces.BaseView
 import com.anvipo.angram.presentationLayer.common.interfaces.BasePresenter
 import com.arellomobile.mvp.MvpPresenter
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlin.coroutines.CoroutineContext
 
 abstract class BasePresenterImp<V : BaseView> : MvpPresenter<V>(), BasePresenter, CoroutineScope {
 
@@ -14,7 +16,9 @@ abstract class BasePresenterImp<V : BaseView> : MvpPresenter<V>(), BasePresenter
         super.onDestroy()
     }
 
-    protected abstract fun cancelAllJobs()
+    override val coroutineContext: CoroutineContext = Dispatchers.Default
+
+    protected open fun cancelAllJobs() {}
 
     protected val currentFragment: Fragment?
         get() {

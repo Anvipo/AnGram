@@ -14,6 +14,7 @@ import com.arellomobile.mvp.InjectViewState
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
+@Suppress("EXPERIMENTAL_API_USAGE")
 @InjectViewState
 class EnterAuthenticationCodePresenterImp(
     private val routeEventHandler: AuthorizationCoordinatorEnterAuthenticationCodeRouteEventHandler,

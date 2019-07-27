@@ -19,8 +19,6 @@ class MainFragment : BaseFragment(), MainView {
         }
     }
 
-    override fun setupClickListeners() {}
-
     override val actionBarTitle: String = "Main"
     override val actionBarSubtitle: String = ""
     override val actionBar: Toolbar

@@ -21,6 +21,7 @@ import com.anvipo.angram.coreLayer.message.SystemMessage
 import com.anvipo.angram.coreLayer.message.SystemMessageType
 import com.anvipo.angram.dataLayer.di.GatewaysModule
 import com.anvipo.angram.global.GlobalHelpers.createTGSystemMessageFromApp
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.addProxy.di.AddProxyModule
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationCode.di.EnterAuthenticationCodeModule
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationPassword.di.EnterAuthenticationPasswordModule
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.di.EnterPhoneNumberModule
@@ -62,7 +63,8 @@ class App : Application() {
             ApplicationCoordinatorModule.module,
             EnterPhoneNumberModule.module,
             EnterAuthenticationCodeModule.module,
-            EnterAuthenticationPasswordModule.module
+            EnterAuthenticationPasswordModule.module,
+            AddProxyModule.module
         )
 
         if (BuildConfig.DEBUG) {

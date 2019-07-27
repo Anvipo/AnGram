@@ -50,8 +50,6 @@ class AppActivity : BaseActivity(), AppView {
     }
 
 
-    override fun setupClickListeners(): Unit = Unit
-
     override val presenter: AppPresenter by lazy { mPresenter }
 
     override val layoutRes: Int = R.layout.layout_container

@@ -6,7 +6,7 @@ import ru.terrakok.cicerone.android.support.SupportAppScreen
 
 object EnterAuthenticationCodeScreenFactoryImp : EnterAuthenticationCodeScreenFactory {
 
-    data class EnterAuthCodeScreen(
+    class EnterAuthCodeScreen(
         private val shouldShowBackButton: Boolean,
         private val expectedCodeLength: Int,
         private val enteredPhoneNumber: String,
@@ -23,7 +23,7 @@ object EnterAuthenticationCodeScreenFactoryImp : EnterAuthenticationCodeScreenFa
             ) as Fragment
     }
 
-    override fun createEnterAuthCodeViewController(
+    override fun createEnterAuthCodeScreen(
         expectedCodeLength: Int,
         enteredPhoneNumber: String,
         registrationRequired: Boolean,

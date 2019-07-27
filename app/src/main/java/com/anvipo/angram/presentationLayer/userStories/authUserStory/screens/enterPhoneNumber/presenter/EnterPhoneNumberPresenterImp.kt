@@ -12,6 +12,7 @@ import com.anvipo.angram.coreLayer.ResourceManager
 import com.anvipo.angram.dataLayer.gateways.tdLibGateway.errors.TdApiError
 import com.anvipo.angram.presentationLayer.common.baseClasses.BasePresenterImp
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinatorEnterPhoneNumberRouteEventHandler
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.addProxy.types.ProxyType
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.view.EnterPhoneNumberView
 import com.arellomobile.mvp.InjectViewState
 import kotlinx.coroutines.*
@@ -44,16 +45,14 @@ class EnterPhoneNumberPresenterImp(
     override fun onAddProxyButtonPressed() {
         viewState.showItemsDialog(
             "Выберите нужный тип прокси сервера",
-            listOf(
-                "MTPROTO"
-            )
+            proxysList
         )
     }
 
     override fun onItemClicked(index: Int) {
         when (proxys[index]) {
             mtprotoPair.second -> {
-                println()
+                routeEventHandler.onAddProxyButtonTapped(ProxyType.MTPROTO)
             }
         }
     }
@@ -210,6 +209,17 @@ class EnterPhoneNumberPresenterImp(
     }
 
     private val mtprotoPair = 0 to "MTPROTO"
+
+    private val proxysList: List<String>
+        get() {
+            val result = arrayOfNulls<String>(proxys.size)
+
+            for ((proxyIndex, proxyName) in proxys) {
+                result[proxyIndex] = proxyName
+            }
+
+            return result.filterNotNull()
+        }
 
     private val proxys: Map<Int, String> = mapOf(
         mtprotoPair

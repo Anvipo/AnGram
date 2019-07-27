@@ -33,7 +33,8 @@ class ItemsDialogFragment : DialogFragment() {
             setCancelable(cancelable)
             setItems(
                 items?.toTypedArray(),
-                DialogInterface.OnClickListener { _, which ->
+                DialogInterface.OnClickListener { dialog, which ->
+                    dialog.dismiss()
                     clickListener.itemClicked(startTag, which)
                 }
             )
@@ -68,7 +69,12 @@ class ItemsDialogFragment : DialogFragment() {
     }
 
     interface OnClickListener {
-        fun itemClicked(tag: String, index: Int) {}
+        fun itemClicked(
+            tag: String,
+            index: Int
+        ) {
+        }
+
         fun dialogCanceled(tag: String) {}
     }
 

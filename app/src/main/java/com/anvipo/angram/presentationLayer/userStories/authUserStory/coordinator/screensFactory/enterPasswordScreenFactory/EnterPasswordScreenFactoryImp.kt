@@ -10,6 +10,6 @@ object EnterPasswordScreenFactoryImp : EnterPasswordScreenFactory {
         override fun getFragment(): Fragment = EnterAuthenticationPasswordFragment.createNewInstance() as Fragment
     }
 
-    override fun createEnterPasswordViewController(): SupportAppScreen = EnterPhoneNumberScreen
+    override fun createEnterPasswordScreen(): SupportAppScreen = EnterPhoneNumberScreen
 
 }

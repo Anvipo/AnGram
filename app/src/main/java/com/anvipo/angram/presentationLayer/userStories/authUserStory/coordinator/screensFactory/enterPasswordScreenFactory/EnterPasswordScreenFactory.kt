@@ -3,5 +3,7 @@ package com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinato
 import ru.terrakok.cicerone.android.support.SupportAppScreen
 
 interface EnterPasswordScreenFactory {
-    fun createEnterPasswordViewController(): SupportAppScreen
+
+    fun createEnterPasswordScreen(): SupportAppScreen
+
 }

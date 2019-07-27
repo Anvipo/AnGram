@@ -21,6 +21,7 @@ import kotlinx.android.synthetic.main.fragment_enter_authentication_code.*
 import org.koin.android.ext.android.get
 
 
+@Suppress("EXPERIMENTAL_API_USAGE")
 class EnterAuthenticationCodeFragment : BaseFragment(), EnterAuthenticationCodeView {
 
     companion object {

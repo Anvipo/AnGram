@@ -1,5 +1,6 @@
 package com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.authorizationScreensFactory
 
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.addProxyScreenFactory.AddProxyScreenFactory
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.enterAuthCodeScreenFactory.EnterAuthenticationCodeScreenFactory
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.enterPasswordScreenFactory.EnterPasswordScreenFactory
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.enterPhoneNumberScreenFactory.EnterPhoneNumberScreenFactory
@@ -11,5 +12,7 @@ interface AuthorizationScreensFactory {
     val enterAuthenticationCodeScreenFactory: EnterAuthenticationCodeScreenFactory
 
     val enterPasswordScreenFactory: EnterPasswordScreenFactory
+
+    val addProxyScreenFactory: AddProxyScreenFactory
 
 }

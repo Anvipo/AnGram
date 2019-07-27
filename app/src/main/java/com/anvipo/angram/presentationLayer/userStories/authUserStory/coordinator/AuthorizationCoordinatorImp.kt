@@ -7,12 +7,10 @@ import com.anvipo.angram.coreLayer.message.SystemMessage
 import com.anvipo.angram.dataLayer.gateways.tdLibGateway.authorization.AuthorizationTDLibGateway
 import com.anvipo.angram.global.GlobalHelpers.createTGSystemMessage
 import com.anvipo.angram.presentationLayer.common.baseClasses.BaseCoordinatorImp
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinator
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinatorEnterAuthenticationCodeRouteEventHandler
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinatorEnterAuthenticationPasswordRouteEventHandler
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinatorEnterPhoneNumberRouteEventHandler
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.*
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.authorizationScreensFactory.AuthorizationScreensFactory
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.enterPhoneNumberScreenFactory.EnterPhoneNumberScreenFactoryImp
+import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.addProxy.types.ProxyType
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -30,7 +28,8 @@ class AuthorizationCoordinatorImp(
     AuthorizationCoordinator,
     AuthorizationCoordinatorEnterPhoneNumberRouteEventHandler,
     AuthorizationCoordinatorEnterAuthenticationCodeRouteEventHandler,
-    AuthorizationCoordinatorEnterAuthenticationPasswordRouteEventHandler {
+    AuthorizationCoordinatorEnterAuthenticationPasswordRouteEventHandler,
+    AuthorizationCoordinatorAddProxyRouteEventHandler {
 
     override fun coldStart() {
         checkAuthState()
@@ -113,6 +112,14 @@ class AuthorizationCoordinatorImp(
         router.exit()
     }
 
+    override fun onAddProxyButtonTapped(proxyType: ProxyType) {
+        val addProxyScreen = screensFactory
+            .addProxyScreenFactory
+            .createAddProxyScreen(proxyType)
+
+        router.navigateTo(addProxyScreen)
+    }
+
     override fun onPressedBackButtonInEnterAuthenticationCodeScreen() {
         val tag = "${this::class.java.simpleName} onPressedBackButtonInEnterAuthenticationCodeScreen"
 
@@ -151,6 +158,16 @@ class AuthorizationCoordinatorImp(
         systemMessageSendChannel.offer(createLogMessage(text))
 
         checkAuthState()
+    }
+
+    override fun onPressedBackButtonInAddProxyScreen() {
+        val tag = "${this::class.java.simpleName} onPressedBackButtonInAddProxyScreen"
+
+        val text = "$tag: back button pressed in add proxy screen"
+
+        systemMessageSendChannel.offer(createLogMessage(text))
+
+        router.exit()
     }
 
 
@@ -290,19 +307,19 @@ class AuthorizationCoordinatorImp(
             val enterPhoneNumberScreen =
                 screensFactory
                     .enterPhoneNumberScreenFactory
-                    .createEnterPhoneNumberViewController(authorizationTDLibGateway)
+                    .createEnterPhoneNumberScreen()
 
             val enterPasswordScreen =
                 screensFactory
                     .enterPasswordScreenFactory
-                    .createEnterPasswordViewController()
+                    .createEnterPasswordScreen()
 
             router.newRootChain(enterPhoneNumberScreen, enterPasswordScreen)
         } else {
             val enterPasswordScreen =
                 screensFactory
                     .enterPasswordScreenFactory
-                    .createEnterPasswordViewController()
+                    .createEnterPasswordScreen()
 
             router.navigateTo(enterPasswordScreen)
         }
@@ -321,7 +338,7 @@ class AuthorizationCoordinatorImp(
         val enterPhoneNumberScreen =
             screensFactory
                 .enterPhoneNumberScreenFactory
-                .createEnterPhoneNumberViewController(authorizationTDLibGateway)
+                .createEnterPhoneNumberScreen()
 
         router.newRootScreen(enterPhoneNumberScreen)
     }
@@ -337,7 +354,7 @@ class AuthorizationCoordinatorImp(
             val enterAuthCodeScreen =
                 screensFactory
                     .enterAuthenticationCodeScreenFactory
-                    .createEnterAuthCodeViewController(
+                    .createEnterAuthCodeScreen(
                         expectedCodeLength = expectedCodeLength,
                         enteredPhoneNumber = enteredPhoneNumber,
                         registrationRequired = registrationRequired,
@@ -347,14 +364,14 @@ class AuthorizationCoordinatorImp(
             val enterPhoneNumberScreen =
                 screensFactory
                     .enterPhoneNumberScreenFactory
-                    .createEnterPhoneNumberViewController(authorizationTDLibGateway)
+                    .createEnterPhoneNumberScreen()
 
             router.newRootChain(enterPhoneNumberScreen, enterAuthCodeScreen)
         } else {
             val enterAuthCodeScreen =
                 screensFactory
                     .enterAuthenticationCodeScreenFactory
-                    .createEnterAuthCodeViewController(
+                    .createEnterAuthCodeScreen(
                         expectedCodeLength = expectedCodeLength,
                         enteredPhoneNumber = enteredPhoneNumber,
                         registrationRequired = registrationRequired,

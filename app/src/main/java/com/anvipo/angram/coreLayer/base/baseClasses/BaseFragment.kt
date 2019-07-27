@@ -215,7 +215,7 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseView {
         presenter.onActivityResult(requestCode, resultCode, data)
     }
 
-    protected abstract fun setupClickListeners()
+    protected open fun setupClickListeners() {}
 
     protected open fun extractDataFromBundle() {}
 
