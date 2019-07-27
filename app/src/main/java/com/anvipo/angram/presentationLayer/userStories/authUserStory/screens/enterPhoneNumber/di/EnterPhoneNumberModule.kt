@@ -1,6 +1,6 @@
 package com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.di
 
-import com.anvipo.angram.applicationLayer.coordinator.di.ApplicationRootCoordinatorModule.authorizationCoordinatorQualifier
+import com.anvipo.angram.applicationLayer.coordinator.di.ApplicationCoordinatorModule.authorizationCoordinatorQualifier
 import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule.resourceManagerQualifier
 import com.anvipo.angram.businessLogicLayer.di.UseCasesModule.enterPhoneNumberUseCaseQualifier
 import com.anvipo.angram.businessLogicLayer.useCases.enterPhoneNumberUseCase.EnterPhoneNumberUseCase

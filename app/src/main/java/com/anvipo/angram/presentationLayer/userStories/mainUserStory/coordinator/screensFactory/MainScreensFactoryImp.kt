@@ -5,7 +5,7 @@ import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.ent
 import com.anvipo.angram.presentationLayer.userStories.mainUserStory.screens.main.view.MainView
 import ru.terrakok.cicerone.android.support.SupportAppScreen
 
-object MainViewControllersFactoryImp : MainScreensFactory {
+object MainScreensFactoryImp : MainScreensFactory {
 
     override fun createMainScreen(): MainView = object : SupportAppScreen() {
         override fun getFragment(): Fragment = EnterPhoneNumberFragment.createNewInstance() as Fragment

@@ -5,6 +5,7 @@ import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.ent
 import org.drinkless.td.libcore.telegram.TdApi
 
 interface EnterAuthenticationPasswordUseCase : BaseUseCase {
-    @Suppress("DirectUseOfResultType")
+
     suspend fun checkAuthenticationPasswordCatching(enteredAuthenticationPassword: CorrectAuthenticationPasswordType): Result<TdApi.Ok>
+
 }

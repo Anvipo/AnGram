@@ -10,7 +10,7 @@ import kotlin.coroutines.CoroutineContext
 
 class MainCoordinatorImp(
     private val router: Router,
-    private val viewControllersFactory: MainScreensFactory
+    private val screensFactory: MainScreensFactory
 ) :
     BaseCoordinatorImp(),
     MainCoordinator,
@@ -36,7 +36,7 @@ class MainCoordinatorImp(
 
 
     private fun showMainScreen() {
-        val mainScreen = viewControllersFactory.createMainScreen()
+        val mainScreen = screensFactory.createMainScreen()
 
         router.newRootScreen(mainScreen as Screen)
     }

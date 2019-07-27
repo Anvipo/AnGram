@@ -6,7 +6,6 @@ import org.drinkless.td.libcore.telegram.TdApi
 
 interface EnterPhoneNumberUseCase : BaseUseCase {
 
-    @Suppress("DirectUseOfResultType")
     suspend fun setAuthenticationPhoneNumberCatching(enteredPhoneNumber: CorrectPhoneNumberType): Result<TdApi.Ok>
 
 }

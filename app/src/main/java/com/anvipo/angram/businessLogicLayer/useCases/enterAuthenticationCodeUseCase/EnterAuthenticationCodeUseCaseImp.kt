@@ -4,7 +4,6 @@ import com.anvipo.angram.dataLayer.gateways.tdLibGateway.TDLibGateway
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationCode.types.CorrectAuthenticationCodeType
 import org.drinkless.td.libcore.telegram.TdApi
 
-@Suppress("DirectUseOfResultType")
 class EnterAuthenticationCodeUseCaseImp(
     private val tdLibGateway: TDLibGateway
 ) : EnterAuthenticationCodeUseCase {

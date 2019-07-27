@@ -35,11 +35,6 @@ class AppActivity : BaseActivity(), AppView {
         presenter.onResumeFragments()
     }
 
-    override fun onPause() {
-        presenter.onPause()
-        super.onPause()
-    }
-
 
     override fun setNavigator() {
         navigatorHolder.setNavigator(navigator)

@@ -1,13 +1,11 @@
 package com.anvipo.angram.applicationLayer.coordinator
 
 import android.content.Context
-import com.anvipo.angram.applicationLayer.coordinator.interfaces.ApplicationCoordinator
-import com.anvipo.angram.applicationLayer.coordinator.interfaces.ApplicationCoordinatorRouteEventHandler
 import com.anvipo.angram.applicationLayer.types.SystemMessageSendChannel
 import com.anvipo.angram.coreLayer.CoreHelpers.assertionFailure
 import com.anvipo.angram.coreLayer.message.SystemMessage
 import com.anvipo.angram.dataLayer.gateways.tdLibGateway.TDLibGateway
-import com.anvipo.angram.global.CoreHelpers.createTGSystemMessage
+import com.anvipo.angram.global.GlobalHelpers.createTGSystemMessage
 import com.anvipo.angram.presentationLayer.common.baseClasses.BaseCoordinatorImp
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinator
 import com.anvipo.angram.presentationLayer.userStories.mainUserStory.coordinator.interfaces.MainCoordinator
@@ -19,14 +17,13 @@ import org.drinkless.td.libcore.telegram.TdApi
 import kotlin.coroutines.CoroutineContext
 
 class ApplicationCoordinatorImp(
-    private val tdLibGateway: TDLibGateway,
-    private val systemMessageSendChannel: SystemMessageSendChannel,
     private val authorizationCoordinator: AuthorizationCoordinator,
     private val mainCoordinator: MainCoordinator,
+    private val tdLibGateway: TDLibGateway,
+    private val systemMessageSendChannel: SystemMessageSendChannel,
     private val context: Context
 ) : BaseCoordinatorImp(),
-    ApplicationCoordinator,
-    ApplicationCoordinatorRouteEventHandler {
+    ApplicationCoordinator {
 
     override fun coldStart() {
         childCoordinators.clear()
@@ -45,16 +42,10 @@ class ApplicationCoordinatorImp(
 
     override val coroutineContext: CoroutineContext = Dispatchers.IO
 
-    /**
-    Configure and starts app
-     */
     private fun configureApp() {
         startApp()
     }
 
-    /**
-    Starts needed flow
-     */
     private fun startApp() {
         checkAuthorizationState()
     }

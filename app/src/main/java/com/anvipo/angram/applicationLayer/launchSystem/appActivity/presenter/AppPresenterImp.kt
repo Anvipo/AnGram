@@ -3,7 +3,7 @@ package com.anvipo.angram.applicationLayer.launchSystem.appActivity.presenter
 import android.util.Log
 import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.R
-import com.anvipo.angram.applicationLayer.coordinator.interfaces.ApplicationCoordinator
+import com.anvipo.angram.applicationLayer.coordinator.ApplicationCoordinator
 import com.anvipo.angram.applicationLayer.launchSystem.App
 import com.anvipo.angram.applicationLayer.launchSystem.appActivity.view.AppView
 import com.anvipo.angram.applicationLayer.types.ConnectionState.*
@@ -26,7 +26,7 @@ class AppPresenterImp(
     private val resourceManager: ResourceManager
 ) : BasePresenterImp<AppView>(), AppPresenter {
 
-    override fun onPause() {
+    override fun onPauseTriggered() {
         viewState.removeNavigator()
         unsubscribeFromChannels()
     }

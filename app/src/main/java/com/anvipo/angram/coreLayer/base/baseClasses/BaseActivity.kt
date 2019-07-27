@@ -29,6 +29,11 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseView {
         }
     }
 
+    override fun onPause() {
+        presenter.onPauseTriggered()
+        super.onPause()
+    }
+
     override fun showAlertMessage(text: String) {
         MessageDialogFragment
             .create(message = text)

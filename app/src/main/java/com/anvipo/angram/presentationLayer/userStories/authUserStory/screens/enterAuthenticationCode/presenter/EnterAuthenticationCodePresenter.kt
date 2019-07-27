@@ -4,6 +4,7 @@ import com.anvipo.angram.presentationLayer.common.interfaces.BasePresenter
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationCode.types.CorrectAuthenticationCodeType
 
 interface EnterAuthenticationCodePresenter : BasePresenter {
+
     fun onNextButtonPressed(
         enteredAuthenticationCode: CorrectAuthenticationCodeType,
         lastName: String,
@@ -20,4 +21,5 @@ interface EnterAuthenticationCodePresenter : BasePresenter {
     fun onAuthenticationCodeTextChanged(text: CharSequence?)
     fun onFirstNameTextChanged(text: CharSequence?)
     fun onLastNameTextChanged(text: CharSequence?)
+
 }

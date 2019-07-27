@@ -6,7 +6,6 @@ import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.ent
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationPassword.types.CorrectAuthenticationPasswordType
 import org.drinkless.td.libcore.telegram.TdApi
 
-@Suppress("DirectUseOfResultType")
 interface TDLibGateway : BaseGateway {
 
     suspend fun getAuthorizationStateRequestCatching(): Result<TdApi.AuthorizationState>

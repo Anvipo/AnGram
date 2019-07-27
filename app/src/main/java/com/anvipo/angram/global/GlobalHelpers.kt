@@ -4,7 +4,7 @@ import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.coreLayer.message.SystemMessage
 import com.anvipo.angram.coreLayer.message.SystemMessageType
 
-object CoreHelpers {
+object GlobalHelpers {
 
     fun createTGSystemMessage(text: String): SystemMessage = SystemMessage(
         text = text,

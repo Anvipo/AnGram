@@ -11,6 +11,8 @@ interface BasePresenter {
 
     fun onResumeTriggered(): Unit = Unit
 
+    fun onPauseTriggered(): Unit = Unit
+
     fun onBackPressed(): Unit = Unit
 
     fun onCanceledProgressDialog(): Unit = Unit

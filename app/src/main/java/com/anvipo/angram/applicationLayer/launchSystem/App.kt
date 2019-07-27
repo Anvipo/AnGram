@@ -2,7 +2,7 @@ package com.anvipo.angram.applicationLayer.launchSystem
 
 import android.app.Application
 import com.anvipo.angram.BuildConfig
-import com.anvipo.angram.applicationLayer.coordinator.di.ApplicationRootCoordinatorModule
+import com.anvipo.angram.applicationLayer.coordinator.di.ApplicationCoordinatorModule
 import com.anvipo.angram.applicationLayer.di.LaunchSystemModule
 import com.anvipo.angram.applicationLayer.di.LaunchSystemModule.connectionStateSendChannelQualifier
 import com.anvipo.angram.applicationLayer.di.LaunchSystemModule.systemMessageSendChannelQualifier
@@ -20,7 +20,7 @@ import com.anvipo.angram.coreLayer.collections.MutableStack
 import com.anvipo.angram.coreLayer.message.SystemMessage
 import com.anvipo.angram.coreLayer.message.SystemMessageType
 import com.anvipo.angram.dataLayer.di.GatewaysModule
-import com.anvipo.angram.global.CoreHelpers.createTGSystemMessageFromApp
+import com.anvipo.angram.global.GlobalHelpers.createTGSystemMessageFromApp
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationCode.di.EnterAuthenticationCodeModule
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationPassword.di.EnterAuthenticationPasswordModule
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterPhoneNumber.di.EnterPhoneNumberModule
@@ -58,7 +58,7 @@ class App : Application() {
             SystemInfrastructureModule.module,
             UseCasesModule.module,
             GatewaysModule.module,
-            ApplicationRootCoordinatorModule.module,
+            ApplicationCoordinatorModule.module,
             EnterPhoneNumberModule.module,
             EnterAuthenticationCodeModule.module,
             EnterAuthenticationPasswordModule.module

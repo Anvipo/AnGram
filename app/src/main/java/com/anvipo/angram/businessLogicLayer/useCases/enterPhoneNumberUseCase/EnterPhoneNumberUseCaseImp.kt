@@ -8,7 +8,6 @@ class EnterPhoneNumberUseCaseImp(
     private val tdLibGateway: TDLibGateway
 ) : EnterPhoneNumberUseCase {
 
-    @Suppress("DirectUseOfResultType")
     override suspend fun setAuthenticationPhoneNumberCatching(
         enteredPhoneNumber: CorrectPhoneNumberType
     ): Result<TdApi.Ok> = tdLibGateway.setAuthenticationPhoneNumberCatching(enteredPhoneNumber)

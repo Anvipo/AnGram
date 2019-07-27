@@ -12,8 +12,6 @@ import org.drinkless.td.libcore.telegram.TdApi
 import java.util.*
 import kotlin.coroutines.resume
 
-
-@Suppress("DirectUseOfResultType")
 class TDLibGatewayImp(
     private val tdClient: Client
 ) : TDLibGateway {

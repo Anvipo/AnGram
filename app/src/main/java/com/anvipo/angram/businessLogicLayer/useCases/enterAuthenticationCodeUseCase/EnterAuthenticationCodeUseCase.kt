@@ -4,7 +4,6 @@ import com.anvipo.angram.businessLogicLayer.useCases.base.BaseUseCase
 import com.anvipo.angram.presentationLayer.userStories.authUserStory.screens.enterAuthenticationCode.types.CorrectAuthenticationCodeType
 import org.drinkless.td.libcore.telegram.TdApi
 
-@Suppress("DirectUseOfResultType")
 interface EnterAuthenticationCodeUseCase : BaseUseCase {
 
     suspend fun checkAuthenticationCodeCatching(
