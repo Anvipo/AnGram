@@ -5,6 +5,9 @@ import ru.terrakok.cicerone.android.support.SupportAppScreen
 
 interface AddProxyScreenFactory {
 
-    fun createAddProxyScreen(proxyType: ProxyType): SupportAppScreen
+    fun createAddProxyScreen(
+        proxyType: ProxyType,
+        shouldShowBackButton: Boolean
+    ): SupportAppScreen
 
 }

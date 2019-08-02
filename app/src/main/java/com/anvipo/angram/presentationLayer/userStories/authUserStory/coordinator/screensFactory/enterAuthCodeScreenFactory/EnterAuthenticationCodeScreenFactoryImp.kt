@@ -27,9 +27,10 @@ object EnterAuthenticationCodeScreenFactoryImp : EnterAuthenticationCodeScreenFa
         expectedCodeLength: Int,
         enteredPhoneNumber: String,
         registrationRequired: Boolean,
-        termsOfServiceText: String
+        termsOfServiceText: String,
+        shouldShowBackButton: Boolean
     ): SupportAppScreen = EnterAuthCodeScreen(
-        shouldShowBackButton = true,
+        shouldShowBackButton = shouldShowBackButton,
         expectedCodeLength = expectedCodeLength,
         enteredPhoneNumber = enteredPhoneNumber,
         registrationRequired = registrationRequired,

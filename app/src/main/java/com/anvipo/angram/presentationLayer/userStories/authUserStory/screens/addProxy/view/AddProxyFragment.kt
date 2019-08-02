@@ -17,12 +17,17 @@ class AddProxyFragment : BaseFragment(), AddProxyView {
 
     companion object {
         private const val ARG_PROXY_TYPE = "arg_proxy_type"
+        private const val ARG_SHOULD_SHOW_BACK_BUTTON = "arg_should_show_back_button"
 
         @JvmStatic
-        fun createNewInstance(proxyType: ProxyType): AddProxyView =
+        fun createNewInstance(
+            proxyType: ProxyType,
+            shouldShowBackButton: Boolean
+        ): AddProxyView =
             AddProxyFragment().apply {
                 arguments = Bundle().apply {
                     putSerializable(ARG_PROXY_TYPE, proxyType)
+                    putBoolean(ARG_SHOULD_SHOW_BACK_BUTTON, shouldShowBackButton)
                 }
             }
     }

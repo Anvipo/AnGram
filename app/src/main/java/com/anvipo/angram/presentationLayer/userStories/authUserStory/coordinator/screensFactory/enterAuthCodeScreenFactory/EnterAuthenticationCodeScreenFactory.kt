@@ -8,7 +8,8 @@ interface EnterAuthenticationCodeScreenFactory {
         expectedCodeLength: Int,
         enteredPhoneNumber: String,
         registrationRequired: Boolean,
-        termsOfServiceText: String
+        termsOfServiceText: String,
+        shouldShowBackButton: Boolean
     ): SupportAppScreen
 
 }

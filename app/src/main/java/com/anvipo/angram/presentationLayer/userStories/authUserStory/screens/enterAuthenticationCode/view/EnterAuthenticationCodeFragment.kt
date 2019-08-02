@@ -25,7 +25,6 @@ import org.koin.android.ext.android.get
 class EnterAuthenticationCodeFragment : BaseFragment(), EnterAuthenticationCodeView {
 
     companion object {
-        private const val ARG_SHOULD_SHOW_BACK_BUTTON = "arg_should_show_back_button"
         private const val ARG_EXPECTED_CODE_LENGTH = "arg_expected_code_length"
         private const val ARG_ENTERED_PHONE_NUMBER = "arg_entered_phone_number"
         private const val ARG_REGISTRATION_REQUIRED = "arg_registration_required"
@@ -51,8 +50,6 @@ class EnterAuthenticationCodeFragment : BaseFragment(), EnterAuthenticationCodeV
     }
 
     override fun extractDataFromBundle() {
-        shouldShowBackButton = arguments?.getBoolean(ARG_SHOULD_SHOW_BACK_BUTTON) ?: false
-
         val expectedCodeLength = arguments?.getInt(ARG_EXPECTED_CODE_LENGTH) ?: 5
         presenter.onGetExpectedCodeLength(expectedCodeLength.toUInt())
 

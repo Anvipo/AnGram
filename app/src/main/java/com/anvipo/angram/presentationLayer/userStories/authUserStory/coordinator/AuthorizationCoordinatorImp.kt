@@ -115,7 +115,10 @@ class AuthorizationCoordinatorImp(
     override fun onAddProxyButtonTapped(proxyType: ProxyType) {
         val addProxyScreen = screensFactory
             .addProxyScreenFactory
-            .createAddProxyScreen(proxyType)
+            .createAddProxyScreen(
+                proxyType = proxyType,
+                shouldShowBackButton = true
+            )
 
         router.navigateTo(addProxyScreen)
     }
@@ -358,7 +361,8 @@ class AuthorizationCoordinatorImp(
                         expectedCodeLength = expectedCodeLength,
                         enteredPhoneNumber = enteredPhoneNumber,
                         registrationRequired = registrationRequired,
-                        termsOfServiceText = termsOfServiceText
+                        termsOfServiceText = termsOfServiceText,
+                        shouldShowBackButton = true
                     )
 
             val enterPhoneNumberScreen =
@@ -375,7 +379,8 @@ class AuthorizationCoordinatorImp(
                         expectedCodeLength = expectedCodeLength,
                         enteredPhoneNumber = enteredPhoneNumber,
                         registrationRequired = registrationRequired,
-                        termsOfServiceText = termsOfServiceText
+                        termsOfServiceText = termsOfServiceText,
+                        shouldShowBackButton = true
                     )
 
             router.navigateTo(enterAuthCodeScreen)

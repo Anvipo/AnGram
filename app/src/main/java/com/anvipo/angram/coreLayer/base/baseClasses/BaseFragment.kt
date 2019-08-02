@@ -237,13 +237,16 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseView {
     protected val supportActionBar: ActionBar?
         get() = appCompatActivity?.supportActionBar
 
-    protected var shouldShowBackButton: Boolean = false
+    protected open val shouldShowBackButton: Boolean
+        get() = arguments?.getBoolean(ARG_SHOULD_SHOW_BACK_BUTTON) ?: false
 
     private var instanceStateSaved: Boolean = false
 
     companion object {
 
         internal const val fromApplicationSettingsRequestCode: Int = 10_000
+
+        internal const val ARG_SHOULD_SHOW_BACK_BUTTON: String = "arg_should_show_back_button"
 
     }
 
