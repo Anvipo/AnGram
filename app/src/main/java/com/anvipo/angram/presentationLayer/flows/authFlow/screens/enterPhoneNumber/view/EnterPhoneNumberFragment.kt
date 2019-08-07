@@ -76,13 +76,8 @@ class EnterPhoneNumberFragment :
         presenter.onItemClicked(index)
     }
 
-    override fun dialogCanceled(tag: String) {
-        println()
-    }
-
-    @Suppress("ProtectedInFinal")
     @ProvidePresenter
-    protected fun providePresenter(): EnterPhoneNumberPresenterImp =
+    internal fun providePresenter(): EnterPhoneNumberPresenterImp =
         get(enterPhoneNumberPresenterQualifier)
 
     @InjectPresenter

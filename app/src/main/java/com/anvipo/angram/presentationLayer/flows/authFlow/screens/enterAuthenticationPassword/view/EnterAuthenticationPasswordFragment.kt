@@ -31,9 +31,8 @@ class EnterAuthenticationPasswordFragment : BaseFragment(), EnterAuthenticationP
     override val layoutRes: Int = R.layout.fragment_enter_authentication_password
 
 
-    @Suppress("ProtectedInFinal")
     @ProvidePresenter
-    protected fun providePresenter(): EnterAuthenticationPasswordPresenterImp =
+    internal fun providePresenter(): EnterAuthenticationPasswordPresenterImp =
         get(enterAuthenticationPasswordPresenterQualifier)
 
     @InjectPresenter

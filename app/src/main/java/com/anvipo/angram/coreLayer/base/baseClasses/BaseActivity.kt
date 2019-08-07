@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.LayoutRes
-import androidx.appcompat.widget.Toolbar
 import com.anvipo.angram.R
 import com.anvipo.angram.coreLayer.base.baseInterfaces.BaseView
 import com.anvipo.angram.coreLayer.dialogFragment.MessageDialogFragment
@@ -79,22 +78,13 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseView {
     }
 
 
-    protected open fun setupClickListeners() {}
-    protected open fun setupToolbar() {}
+    protected open fun setupClickListeners(): Unit = Unit
+    protected open fun setupToolbar(): Unit = Unit
 
     protected abstract val presenter: BasePresenter
     protected abstract val layoutRes: Int
         @LayoutRes
         get
-
-    protected open val actionBarTitle: String = ""
-    protected open val actionBarSubtitle: String = ""
-
-    protected open val actionBar: Toolbar
-        get() = TODO()
-
-    protected val simpleName: String
-        get() = this::class.java.simpleName
 
     protected abstract val rootView: View
 

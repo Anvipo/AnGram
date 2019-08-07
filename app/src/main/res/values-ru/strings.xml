@@ -26,7 +26,14 @@
     <string name="too_many_requests_try_later">Слишком много запросов. Попробуйте позже.</string>
     <string name="resend_code_button_text">Выслать код заново</string>
     <string name="connection_state">Состояние соединения</string>
+
     <string name="add_proxy">Добавить прокси</string>
+    <string name="server_add_mt_proto_proxy_label">Сервер</string>
+    <string name="port_add_mt_proto_proxy_label">Порт</string>
+    <string name="connect_add_mt_proto_proxy_label">Подключение</string>
+    <string name="enter_proxy_server_data">Введите данные прокси сервера</string>
+    <string name="key_add_mtproto_proxy_label">Ключ</string>
+    <string name="credentials_add_mtproto_proxy_label">Учётные данные</string>
 
     <!--\\Authorization flow-->
 

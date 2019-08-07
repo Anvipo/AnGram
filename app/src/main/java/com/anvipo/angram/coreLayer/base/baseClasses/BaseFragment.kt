@@ -39,6 +39,7 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseView {
         extractDataFromBundle()
         setupClickListeners()
         setupToolbar()
+        setupUI()
 
         if (savedInstanceState == null) {
             presenter.coldStart()
@@ -160,7 +161,57 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseView {
     }
 
 
-    protected open fun setupToolbar() {
+    protected fun goToSettings() {
+        val applicationID = BuildConfig.APPLICATION_ID //activity?.packageName is same
+
+        val showApplicationDetailsSettings = Intent(
+            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+            Uri.fromParts("package", applicationID, null)
+        )
+
+        startActivityForResult(showApplicationDetailsSettings, fromApplicationSettingsRequestCode)
+    }
+
+    protected open fun setupUI(): Unit = Unit
+    protected open fun setupClickListeners(): Unit = Unit
+
+    protected open fun extractDataFromBundle(): Unit = Unit
+
+    protected open val shouldShowBackButton: Boolean
+        get() = arguments?.getBoolean(ARG_SHOULD_SHOW_BACK_BUTTON) ?: false
+
+    protected open val actionBarSubtitle: String = ""
+
+    protected abstract val presenter: BasePresenter
+    protected abstract val actionBarTitle: String
+    protected abstract val actionBar: Toolbar
+    protected abstract val layoutRes: Int
+        @LayoutRes
+        get
+
+    @Suppress("MemberVisibilityCanBePrivate")
+    protected val appCompatActivity: AppCompatActivity?
+        get() = (activity as? AppCompatActivity)
+
+    @Suppress("MemberVisibilityCanBePrivate")
+    protected val supportActionBar: ActionBar?
+        get() = appCompatActivity?.supportActionBar
+
+    private var instanceStateSaved: Boolean = false
+
+    private fun showBackButtonHelper() {
+        val supportActionBar = this.supportActionBar
+
+        if (supportActionBar == null) {
+            debugLog("supportActionBar == null")
+            return
+        }
+
+        supportActionBar.setDisplayShowHomeEnabled(true)
+        supportActionBar.setDisplayHomeAsUpEnabled(true)
+    }
+
+    private fun setupToolbar() {
         val appCompatActivity = this.appCompatActivity
 
         if (appCompatActivity == null) {
@@ -188,56 +239,6 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseView {
             appCompatActivity.onBackPressed()
         }
     }
-
-    @Suppress("MemberVisibilityCanBePrivate")
-    protected fun showBackButtonHelper() {
-        val supportActionBar = this.supportActionBar
-
-        if (supportActionBar == null) {
-            debugLog("supportActionBar == null")
-            return
-        }
-
-        supportActionBar.setDisplayShowHomeEnabled(true)
-        supportActionBar.setDisplayHomeAsUpEnabled(true)
-    }
-
-    protected fun goToSettings() {
-        val applicationID = BuildConfig.APPLICATION_ID //activity?.packageName is same
-
-        val showApplicationDetailsSettings = Intent(
-            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-            Uri.fromParts("package", applicationID, null)
-        )
-
-        startActivityForResult(showApplicationDetailsSettings, fromApplicationSettingsRequestCode)
-    }
-
-    protected open fun setupClickListeners() {}
-
-    protected open fun extractDataFromBundle() {}
-
-    protected open val shouldShowBackButton: Boolean
-        get() = arguments?.getBoolean(ARG_SHOULD_SHOW_BACK_BUTTON) ?: false
-
-    protected open val actionBarSubtitle: String = ""
-
-    protected abstract val presenter: BasePresenter
-    protected abstract val actionBarTitle: String
-    protected abstract val actionBar: Toolbar
-    protected abstract val layoutRes: Int
-        @LayoutRes
-        get
-
-    @Suppress("MemberVisibilityCanBePrivate")
-    protected val appCompatActivity: AppCompatActivity?
-        get() = (activity as? AppCompatActivity)
-
-    @Suppress("MemberVisibilityCanBePrivate")
-    protected val supportActionBar: ActionBar?
-        get() = appCompatActivity?.supportActionBar
-
-    private var instanceStateSaved: Boolean = false
 
     companion object {
 

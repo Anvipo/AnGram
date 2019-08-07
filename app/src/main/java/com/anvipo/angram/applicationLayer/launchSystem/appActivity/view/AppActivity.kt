@@ -57,6 +57,12 @@ class AppActivity : BaseActivity(), AppView {
     override val rootView: View by lazy { container }
 
 
+    @ProvidePresenter
+    internal fun providePresenter(): AppPresenterImp = get(appPresenterQualifier)
+
+    @InjectPresenter
+    internal lateinit var mPresenter: AppPresenterImp
+
     /// PRIVATE
 
 
@@ -132,13 +138,5 @@ class AppActivity : BaseActivity(), AppView {
 
         }
     }
-
-    @Suppress("ProtectedInFinal")
-    @ProvidePresenter
-    protected fun providePresenter(): AppPresenterImp =
-        get(appPresenterQualifier)
-
-    @InjectPresenter
-    internal lateinit var mPresenter: AppPresenterImp
 
 }

@@ -34,7 +34,7 @@ abstract class BaseCoordinatorImp : BaseCoordinator, CoroutineScope {
         }
     }
 
-    protected open fun cancelAllJobs() {}
+    protected open fun cancelAllJobs(): Unit = Unit
 
     protected fun onFinishFlowWrapper() {
         cancelAllJobs()

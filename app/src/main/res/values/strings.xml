@@ -30,8 +30,12 @@
     <string name="connection_state">Connection state</string>
     <string name="add_proxy">Add proxy</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="server_add_mt_proto_proxy_label">Server</string>
+    <string name="port_add_mt_proto_proxy_label">Port</string>
+    <string name="connect_add_mt_proto_proxy_label">Connect</string>
+    <string name="enter_proxy_server_data">Enter proxy server data</string>
+    <string name="key_add_mtproto_proxy_label">Key</string>
+    <string name="credentials_add_mtproto_proxy_label">Credentials</string>
 
     <!--\\Authorization flow-->
 

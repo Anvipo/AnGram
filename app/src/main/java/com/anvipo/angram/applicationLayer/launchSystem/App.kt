@@ -32,20 +32,15 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 import org.koin.core.error.*
-import java.util.*
 
 class App : Application() {
 
     companion object {
-        lateinit var appCode: String
-            private set
-
         const val TAG: String = "AnGram"
     }
 
     override fun onCreate() {
         super.onCreate()
-        appCode = UUID.randomUUID().toString()
 
         initDI()
     }

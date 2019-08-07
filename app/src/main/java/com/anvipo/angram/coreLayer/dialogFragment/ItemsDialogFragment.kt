@@ -43,7 +43,7 @@ class ItemsDialogFragment : DialogFragment() {
 
     override fun onCancel(dialog: DialogInterface?) {
         super.onCancel(dialog)
-        clickListener.dialogCanceled(startTag)
+        clickListener.itemsDialogCanceled(startTag)
     }
 
     companion object {
@@ -69,13 +69,14 @@ class ItemsDialogFragment : DialogFragment() {
     }
 
     interface OnClickListener {
+
         fun itemClicked(
             tag: String,
             index: Int
-        ) {
-        }
+        ): Unit = Unit
 
-        fun dialogCanceled(tag: String) {}
+        fun itemsDialogCanceled(tag: String): Unit = Unit
+
     }
 
 }

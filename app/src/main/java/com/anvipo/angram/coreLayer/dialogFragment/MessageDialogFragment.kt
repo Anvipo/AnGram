@@ -37,19 +37,19 @@ class MessageDialogFragment : DialogFragment() {
             positiveText?.let { positiveText ->
                 setPositiveButton(positiveText) { _, _ ->
                     dismissAllowingStateLoss()
-                    clickListener.dialogPositiveClicked(startTag)
+                    clickListener.messageDialogPositiveClicked(startTag)
                 }
             }
             neutralText?.let { neutralText ->
                 setNeutralButton(neutralText) { _, _ ->
                     dismissAllowingStateLoss()
-                    clickListener.dialogNeutralClicked(startTag)
+                    clickListener.messageDialogNeutralClicked(startTag)
                 }
             }
             negativeText?.let { negativeText ->
                 setNegativeButton(negativeText) { _, _ ->
                     dismissAllowingStateLoss()
-                    clickListener.dialogNegativeClicked(startTag)
+                    clickListener.messageDialogNegativeClicked(startTag)
                 }
             }
         }.create()
@@ -57,7 +57,7 @@ class MessageDialogFragment : DialogFragment() {
 
     override fun onCancel(dialog: DialogInterface?) {
         super.onCancel(dialog)
-        clickListener.dialogCanceled(startTag)
+        clickListener.messageDialogCanceled(startTag)
     }
 
     companion object {
@@ -92,10 +92,12 @@ class MessageDialogFragment : DialogFragment() {
     }
 
     interface OnClickListener {
-        fun dialogPositiveClicked(tag: String) {}
-        fun dialogNegativeClicked(tag: String) {}
-        fun dialogNeutralClicked(tag: String) {}
-        fun dialogCanceled(tag: String) {}
+
+        fun messageDialogPositiveClicked(tag: String): Unit = Unit
+        fun messageDialogNegativeClicked(tag: String): Unit = Unit
+        fun messageDialogNeutralClicked(tag: String): Unit = Unit
+        fun messageDialogCanceled(tag: String): Unit = Unit
+
     }
 
 }

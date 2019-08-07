@@ -105,9 +105,8 @@ class EnterAuthenticationCodeFragment : BaseFragment(), EnterAuthenticationCodeV
 
     override val presenter: EnterAuthenticationCodePresenter by lazy { mPresenter }
 
-    @Suppress("ProtectedInFinal")
     @ProvidePresenter
-    protected fun providePresenter(): EnterAuthenticationCodePresenterImp =
+    internal fun providePresenter(): EnterAuthenticationCodePresenterImp =
         get(enterAuthenticationCodePresenterQualifier)
 
     @InjectPresenter
