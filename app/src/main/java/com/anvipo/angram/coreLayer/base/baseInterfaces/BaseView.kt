@@ -35,7 +35,10 @@ interface BaseView : Presentable, MvpView {
     ): Unit = Unit
 
     @StateStrategyType(OneExecutionStateStrategy::class)
-    fun showAlertMessage(text: String): Unit = Unit
+    fun showAlertMessage(
+        text: String,
+        title: String? = null
+    ): Unit = Unit
 
     @StateStrategyType(OneExecutionStateStrategy::class)
     fun showErrorAlert(text: String): Unit = Unit
@@ -45,7 +48,7 @@ interface BaseView : Presentable, MvpView {
         title: String? = null,
         items: List<String>,
         tag: String? = null,
-        cancelable: Boolean = false
+        cancelable: Boolean = true
     ): Unit = Unit
 
 }

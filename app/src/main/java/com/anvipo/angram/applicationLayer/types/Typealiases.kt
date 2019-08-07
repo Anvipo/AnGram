@@ -1,3 +1,5 @@
+@file:Suppress("EXPERIMENTAL_API_USAGE")
+
 package com.anvipo.angram.applicationLayer.types
 
 import com.anvipo.angram.coreLayer.message.SystemMessage

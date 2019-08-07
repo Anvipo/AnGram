@@ -34,10 +34,21 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseView {
         super.onPause()
     }
 
-    override fun showAlertMessage(text: String) {
+    override fun showAlertMessage(
+        text: String,
+        title: String?
+    ) {
         MessageDialogFragment
-            .create(message = text)
+            .create(
+                message = text,
+                title = title,
+                positive = getString(android.R.string.ok)
+            )
             .show(supportFragmentManager, null)
+    }
+
+    override fun showErrorAlert(text: String) {
+        showAlertMessage(title = getString(R.string.error_title), text = text)
     }
 
     override fun showToastMessage(text: String) {
@@ -67,29 +78,20 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseView {
         showSnackMessage(text, duration, withProgressBar, isProgressBarIndeterminate)
     }
 
-    override fun showErrorAlert(text: String) {
-        MessageDialogFragment
-            .create(
-                message = text,
-                title = getString(R.string.error_title),
-                positive = getString(android.R.string.ok)
-            )
-            .show(supportFragmentManager, null)
-    }
 
     protected open fun setupClickListeners() {}
     protected open fun setupToolbar() {}
 
     protected abstract val presenter: BasePresenter
-
-    protected open val actionBarTitle: String = ""
-    protected open val actionBarSubtitle: String = ""
-    protected open val actionBar: Toolbar
-        get() = TODO()
-
     protected abstract val layoutRes: Int
         @LayoutRes
         get
+
+    protected open val actionBarTitle: String = ""
+    protected open val actionBarSubtitle: String = ""
+
+    protected open val actionBar: Toolbar
+        get() = TODO()
 
     protected val simpleName: String
         get() = this::class.java.simpleName

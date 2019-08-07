@@ -63,6 +63,15 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseView {
         instanceStateSaved = true
     }
 
+    override fun onActivityResult(
+        requestCode: Int,
+        resultCode: Int,
+        data: Intent?
+    ) {
+        super.onActivityResult(requestCode, resultCode, data)
+        presenter.onActivityResult(requestCode, resultCode, data)
+    }
+
 
     override fun showItemsDialog(
         title: String?,
@@ -80,14 +89,21 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseView {
             .show(childFragmentManager, null)
     }
 
-    override fun showErrorAlert(text: String) {
+    override fun showAlertMessage(
+        text: String,
+        title: String?
+    ) {
         MessageDialogFragment
             .create(
                 message = text,
-                title = getString(R.string.error_title),
+                title = title,
                 positive = getString(android.R.string.ok)
             )
             .show(childFragmentManager, null)
+    }
+
+    override fun showErrorAlert(text: String) {
+        showAlertMessage(title = getString(R.string.error_title), text = text)
     }
 
     override fun showToastMessage(text: String) {
@@ -106,15 +122,6 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseView {
             withProgressBar = withProgressBar,
             isProgressBarIndeterminate = isProgressBarIndeterminate
         )
-    }
-
-    override fun showAlertMessage(text: String) {
-        MessageDialogFragment
-            .create(
-                message = text,
-                positive = getString(android.R.string.ok)
-            )
-            .show(childFragmentManager, null)
     }
 
     override fun showProgress() {
@@ -206,25 +213,18 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseView {
         startActivityForResult(showApplicationDetailsSettings, fromApplicationSettingsRequestCode)
     }
 
-    override fun onActivityResult(
-        requestCode: Int,
-        resultCode: Int,
-        data: Intent?
-    ) {
-        super.onActivityResult(requestCode, resultCode, data)
-        presenter.onActivityResult(requestCode, resultCode, data)
-    }
-
     protected open fun setupClickListeners() {}
 
     protected open fun extractDataFromBundle() {}
 
-    protected abstract val presenter: BasePresenter
+    protected open val shouldShowBackButton: Boolean
+        get() = arguments?.getBoolean(ARG_SHOULD_SHOW_BACK_BUTTON) ?: false
 
-    protected abstract val actionBarTitle: String
     protected open val actionBarSubtitle: String = ""
-    protected abstract val actionBar: Toolbar
 
+    protected abstract val presenter: BasePresenter
+    protected abstract val actionBarTitle: String
+    protected abstract val actionBar: Toolbar
     protected abstract val layoutRes: Int
         @LayoutRes
         get
@@ -236,9 +236,6 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseView {
     @Suppress("MemberVisibilityCanBePrivate")
     protected val supportActionBar: ActionBar?
         get() = appCompatActivity?.supportActionBar
-
-    protected open val shouldShowBackButton: Boolean
-        get() = arguments?.getBoolean(ARG_SHOULD_SHOW_BACK_BUTTON) ?: false
 
     private var instanceStateSaved: Boolean = false
 

@@ -7,8 +7,7 @@ import com.anvipo.angram.coreLayer.message.SystemMessage
 import com.anvipo.angram.dataLayer.gateways.tdLibGateway.application.ApplicationTDLibGateway
 import com.anvipo.angram.global.GlobalHelpers.createTGSystemMessage
 import com.anvipo.angram.presentationLayer.common.baseClasses.BaseCoordinatorImp
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinator
-import com.anvipo.angram.presentationLayer.userStories.mainUserStory.coordinator.interfaces.MainCoordinator
+import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.interfaces.AuthorizationCoordinator
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -18,7 +17,6 @@ import kotlin.coroutines.CoroutineContext
 
 class ApplicationCoordinatorImp(
     private val authorizationCoordinator: AuthorizationCoordinator,
-    private val mainCoordinator: MainCoordinator,
     private val tdLibGateway: ApplicationTDLibGateway,
     private val systemMessageSendChannel: SystemMessageSendChannel,
     private val context: Context
@@ -76,7 +74,7 @@ class ApplicationCoordinatorImp(
     private fun startAuthorizationFlow(withEnterAuthorizationCodeAsRootScreen: Boolean = false) {
         authorizationCoordinator.finishFlow = {
             removeChildCoordinator(coordinator = authorizationCoordinator)
-            startMainFlow()
+            TODO()
         }
 
         addChildCoordinator(coordinator = authorizationCoordinator)
@@ -86,38 +84,6 @@ class ApplicationCoordinatorImp(
         } else {
             authorizationCoordinator.coldStart()
         }
-    }
-
-    private fun startMainFlow() {
-        val tag = "${this::class.java.simpleName} startMainFlow"
-        systemMessageSendChannel.offer(SystemMessage(text = tag))
-
-        mainCoordinator.finishFlow = {
-            val logoutCatchingCoroutineExceptionHandler =
-                CoroutineExceptionHandler { _, error ->
-                    val errorText = "$tag ${error.localizedMessage}"
-
-                    systemMessageSendChannel.offer(createTGSystemMessage(errorText))
-                }
-
-            logoutCatchingJob = launch(
-                context = coroutineContext + logoutCatchingCoroutineExceptionHandler
-            ) {
-                val logoutResult = tdLibGateway.logoutCatching()
-
-                logoutResult
-                    .onSuccess {
-                        TODO("should recreate tdlib client")
-                    }
-                    .onFailure {
-                        checkAuthorizationState()
-                    }
-            }
-        }
-
-        addChildCoordinator(coordinator = mainCoordinator)
-
-        mainCoordinator.coldStart()
     }
 
 
@@ -235,7 +201,7 @@ class ApplicationCoordinatorImp(
 
         systemMessageSendChannel.offer(SystemMessage(text = tag))
 
-        startMainFlow()
+        TODO()
     }
 
     private fun onAuthorizationStateWaitCode() {

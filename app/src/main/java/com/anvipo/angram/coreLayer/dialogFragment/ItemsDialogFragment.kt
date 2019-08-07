@@ -56,7 +56,7 @@ class ItemsDialogFragment : DialogFragment() {
             title: String? = null,
             items: List<String>,
             tag: String? = null,
-            cancelable: Boolean = false
+            cancelable: Boolean = true
         ): ItemsDialogFragment =
             ItemsDialogFragment().apply {
                 arguments = Bundle().apply {

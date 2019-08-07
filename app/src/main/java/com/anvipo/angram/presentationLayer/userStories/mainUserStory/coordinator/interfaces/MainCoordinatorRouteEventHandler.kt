@@ -1,3 +1,0 @@
-package com.anvipo.angram.presentationLayer.userStories.mainUserStory.coordinator.interfaces
-
-interface MainCoordinatorRouteEventHandler
