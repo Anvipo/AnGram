@@ -34,6 +34,7 @@
     <string name="enter_proxy_server_data">Введите данные прокси сервера</string>
     <string name="key_add_mtproto_proxy_label">Ключ</string>
     <string name="credentials_add_mtproto_proxy_label">Учётные данные</string>
+    <string name="proxy_successfully_has_been_added">Proxy successfullty has been added</string>
 
     <!--\\Authorization flow-->
 

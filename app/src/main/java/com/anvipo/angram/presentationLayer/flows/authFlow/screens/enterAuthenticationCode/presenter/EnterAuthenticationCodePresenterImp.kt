@@ -55,34 +55,14 @@ class EnterAuthenticationCodePresenterImp(
         onNextButtonPressedJob = launch(
             context = coroutineContext + onNextButtonPressedCoroutineExceptionHandler
         ) {
-            useCase.checkAuthenticationCodeCatching(
-                enteredAuthenticationCode = enteredAuthenticationCode,
-                lastName = lastName,
-                firstName = firstName
-            )
-                .onSuccess {
-                    routeEventHandler.onEnterCorrectAuthenticationCode()
-                }
-                .onFailure { error ->
-                    val errorMessage: String = resourceManager.run {
-                        when (error) {
-                            is TdApiError.Custom.EmptyParameter -> getString(R.string.unknown_error)
-                            is TdApiError.Custom.BadRequest -> {
-                                if (error.message == "PHONE_CODE_INVALID") {
-                                    getString(R.string.code_is_invalid)
-                                } else {
-                                    getString(R.string.unknown_error)
-                                }
-                            }
-                            else -> getString(R.string.unknown_error)
-                        }
-                    }
-
-                    withContext(Dispatchers.Main) {
-                        viewState.hideProgress()
-                        viewState.showErrorAlert(errorMessage)
-                    }
-                }
+            useCase
+                .checkAuthenticationCodeCatching(
+                    enteredAuthenticationCode = enteredAuthenticationCode,
+                    lastName = lastName,
+                    firstName = firstName
+                )
+                .onSuccess { routeEventHandler.onEnterCorrectAuthenticationCode() }
+                .onFailure { handleAuthenticationCodeFailure(it) }
         }
     }
 
@@ -100,32 +80,10 @@ class EnterAuthenticationCodePresenterImp(
         onResendAuthenticationCodeButtonPressedJob = launch(
             context = coroutineContext + onResendAuthenticationCodeButtonPressedCoroutineExceptionHandler
         ) {
-            useCase.resendAuthenticationCodeCatching()
-                .onSuccess {
-                    withContext(Dispatchers.Main) {
-                        viewState.hideProgress()
-                    }
-                }
-                .onFailure { error ->
-                    val errorMessage: String = resourceManager.run {
-                        when (error) {
-                            is TdApiError.Custom.EmptyParameter -> getString(R.string.unknown_error)
-                            is TdApiError.Custom.BadRequest -> {
-                                if (error.message == "PHONE_CODE_INVALID") {
-                                    getString(R.string.code_is_invalid)
-                                } else {
-                                    getString(R.string.unknown_error)
-                                }
-                            }
-                            else -> getString(R.string.unknown_error)
-                        }
-                    }
-
-                    withContext(Dispatchers.Main) {
-                        viewState.hideProgress()
-                        viewState.showErrorAlert(errorMessage)
-                    }
-                }
+            useCase
+                .resendAuthenticationCodeCatching()
+                .onSuccess { withContext(Dispatchers.Main) { viewState.hideProgress() } }
+                .onFailure { handleAuthenticationCodeFailure(it) }
         }
     }
 
@@ -236,5 +194,24 @@ class EnterAuthenticationCodePresenterImp(
 
     private var firstNameIsEntered: Boolean = false
     private var lastNameIsEntered: Boolean = false
+
+    private suspend fun handleAuthenticationCodeFailure(error: Throwable) {
+        val errorMessage: String = resourceManager.run {
+            if (error is TdApiError) {
+                when {
+                    error.code == 400 && error.message == "PHONE_CODE_INVALID" ->
+                        getString(R.string.code_is_invalid)
+                    else -> getString(R.string.unknown_error)
+                }
+            } else {
+                getString(R.string.unknown_error)
+            }
+        }
+
+        withContext(Dispatchers.Main) {
+            viewState.hideProgress()
+            viewState.showErrorAlert(errorMessage)
+        }
+    }
 
 }

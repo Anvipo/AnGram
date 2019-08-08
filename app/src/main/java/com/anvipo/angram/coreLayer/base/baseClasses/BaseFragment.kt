@@ -92,13 +92,17 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseView {
 
     override fun showAlertMessage(
         text: String,
-        title: String?
+        title: String?,
+        cancelable: Boolean,
+        messageDialogTag: String
     ) {
         MessageDialogFragment
             .create(
                 message = text,
                 title = title,
-                positive = getString(android.R.string.ok)
+                positive = getString(android.R.string.ok),
+                cancelable = cancelable,
+                messageDialogTag = messageDialogTag
             )
             .show(childFragmentManager, null)
     }
@@ -113,15 +117,11 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseView {
 
     override fun showSnackMessage(
         text: String,
-        duration: Int,
-        withProgressBar: Boolean,
-        isProgressBarIndeterminate: Boolean
+        duration: Int
     ) {
         this.view?.showSnackbarMessage(
             text = text,
-            duration = duration,
-            withProgressBar = withProgressBar,
-            isProgressBarIndeterminate = isProgressBarIndeterminate
+            duration = duration
         )
     }
 

@@ -21,23 +21,21 @@ interface BaseView : Presentable, MvpView {
     @StateStrategyType(OneExecutionStateStrategy::class)
     fun showSnackMessage(
         text: String,
-        duration: Int = Snackbar.LENGTH_LONG,
-        withProgressBar: Boolean = false,
-        isProgressBarIndeterminate: Boolean = false
+        duration: Int = Snackbar.LENGTH_LONG
     ): Unit = Unit
 
     @StateStrategyType(AddToEndSingleStrategy::class)
-    fun showConnectionErrorSnackMessage(
+    fun showConnectionStateSnackMessage(
         text: String,
-        duration: Int = Snackbar.LENGTH_LONG,
-        withProgressBar: Boolean = false,
-        isProgressBarIndeterminate: Boolean = false
+        duration: Int = Snackbar.LENGTH_LONG
     ): Unit = Unit
 
     @StateStrategyType(OneExecutionStateStrategy::class)
     fun showAlertMessage(
         text: String,
-        title: String? = null
+        title: String? = null,
+        cancelable: Boolean = true,
+        messageDialogTag: String = ""
     ): Unit = Unit
 
     @StateStrategyType(OneExecutionStateStrategy::class)

@@ -172,6 +172,15 @@ class AuthorizationCoordinatorImp(
         router.exit()
     }
 
+    override fun onSuccessAddProxy() {
+        val tag = "${this::class.java.simpleName} onSuccessAddProxy"
+
+        val text = "$tag: successfully added proxy in add proxy screen"
+
+        systemMessageSendChannel.offer(createLogMessage(text))
+
+        router.exit()
+    }
 
     override var finishFlow: (() -> Unit)? = null
 

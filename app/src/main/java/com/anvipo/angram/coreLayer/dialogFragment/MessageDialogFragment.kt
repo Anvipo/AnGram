@@ -9,10 +9,7 @@ import com.anvipo.angram.coreLayer.argument
 
 class MessageDialogFragment : DialogFragment() {
 
-    private val startTag: String by argument(
-        ARG_TAG,
-        ""
-    )
+    private val messageDialogTag: String by argument(ARG_MESSAGE_DIALOG_TAG)
     private val title: String? by argument(ARG_TITLE)
     private val message: String? by argument(ARG_MESSAGE)
     private val positiveText: String? by argument(ARG_POSITIVE_TEXT)
@@ -37,19 +34,19 @@ class MessageDialogFragment : DialogFragment() {
             positiveText?.let { positiveText ->
                 setPositiveButton(positiveText) { _, _ ->
                     dismissAllowingStateLoss()
-                    clickListener.messageDialogPositiveClicked(startTag)
+                    clickListener.messageDialogPositiveClicked(messageDialogTag)
                 }
             }
             neutralText?.let { neutralText ->
                 setNeutralButton(neutralText) { _, _ ->
                     dismissAllowingStateLoss()
-                    clickListener.messageDialogNeutralClicked(startTag)
+                    clickListener.messageDialogNeutralClicked(messageDialogTag)
                 }
             }
             negativeText?.let { negativeText ->
                 setNegativeButton(negativeText) { _, _ ->
                     dismissAllowingStateLoss()
-                    clickListener.messageDialogNegativeClicked(startTag)
+                    clickListener.messageDialogNegativeClicked(messageDialogTag)
                 }
             }
         }.create()
@@ -57,13 +54,13 @@ class MessageDialogFragment : DialogFragment() {
 
     override fun onCancel(dialog: DialogInterface?) {
         super.onCancel(dialog)
-        clickListener.messageDialogCanceled(startTag)
+        clickListener.messageDialogCanceled(messageDialogTag)
     }
 
     companion object {
         private const val ARG_TITLE = "arg_title"
         private const val ARG_MESSAGE = "arg_message"
-        private const val ARG_TAG = "arg_tag"
+        private const val ARG_MESSAGE_DIALOG_TAG = "arg_message_dialog_tag"
         private const val ARG_POSITIVE_TEXT = "arg_positive_text"
         private const val ARG_NEGATIVE_TEXT = "arg_negative_text"
         private const val ARG_NEUTRAL_TEXT = "arg_neutral_text"
@@ -75,8 +72,8 @@ class MessageDialogFragment : DialogFragment() {
             positive: String? = null,
             negative: String? = null,
             neutral: String? = null,
-            tag: String? = null,
-            cancelable: Boolean = false
+            messageDialogTag: String = "",
+            cancelable: Boolean = true
         ): MessageDialogFragment =
             MessageDialogFragment().apply {
                 arguments = Bundle().apply {
@@ -86,7 +83,7 @@ class MessageDialogFragment : DialogFragment() {
                     putString(ARG_NEGATIVE_TEXT, negative)
                     putString(ARG_NEUTRAL_TEXT, neutral)
                     putBoolean(ARG_CANCELABLE, cancelable)
-                    putString(ARG_TAG, tag)
+                    putString(ARG_MESSAGE_DIALOG_TAG, messageDialogTag)
                 }
             }
     }

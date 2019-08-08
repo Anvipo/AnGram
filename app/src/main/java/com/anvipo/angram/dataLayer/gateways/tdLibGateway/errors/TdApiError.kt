@@ -2,6 +2,16 @@
 
 package com.anvipo.angram.dataLayer.gateways.tdLibGateway.errors
 
+open class TdApiError(
+    override val message: String?,
+    val code: Int
+) : Error() {
+
+    object Unspecified : TdApiError(message = null, code = -1)
+
+}
+
+/*
 sealed class TdApiError : Error() {
 
     enum class Codes(val value: Int) {
@@ -46,4 +56,4 @@ sealed class TdApiError : Error() {
 
     object Unspecified : TdApiError()
 
-}
+}*/

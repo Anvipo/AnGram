@@ -161,7 +161,7 @@ class AppPresenterImp(
                 }
                 Undefined -> {
                     text = "receivedConnectionState == Undefined"
-                    duration = Snackbar.LENGTH_SHORT
+                    duration = Snackbar.LENGTH_LONG
                 }
             }
 
@@ -176,11 +176,9 @@ class AppPresenterImp(
             showSnackbarJob = launch(
                 context = Dispatchers.Main + showSnackbarCEH
             ) {
-                viewState.showConnectionErrorSnackMessage(
+                viewState.showConnectionStateSnackMessage(
                     text = text,
-                    duration = duration,
-                    withProgressBar = duration == Snackbar.LENGTH_INDEFINITE,
-                    isProgressBarIndeterminate = duration == Snackbar.LENGTH_INDEFINITE
+                    duration = duration
                 )
             }
         }

@@ -58,7 +58,7 @@ class EnterPhoneNumberPresenterImp(
     }
 
     override fun onNextButtonPressed(enteredPhoneNumber: String) {
-        val onNextButtonPressedCoroutineExceptionHandler = CoroutineExceptionHandler { _, error ->
+        val onNextButtonPressedCEH = CoroutineExceptionHandler { _, error ->
             if (BuildConfig.DEBUG) {
                 val errorText = error.localizedMessage
                 debugLog(errorText)
@@ -69,7 +69,7 @@ class EnterPhoneNumberPresenterImp(
         viewState.showProgress()
 
         onNextButtonPressedJob = launch(
-            context = coroutineContext + onNextButtonPressedCoroutineExceptionHandler
+            context = coroutineContext + onNextButtonPressedCEH
         ) {
             useCase.setAuthenticationPhoneNumberCatching(enteredPhoneNumber)
                 .onSuccess {
@@ -77,14 +77,15 @@ class EnterPhoneNumberPresenterImp(
                 }
                 .onFailure { error ->
                     val errorMessage: String = resourceManager.run {
-                        when (error) {
-                            is TdApiError.Custom.EmptyParameter ->
-                                getString(R.string.phone_number_cant_be_empty)
-                            is TdApiError.Custom.BadRequest ->
-                                getString(R.string.phone_number_invalid)
-                            is TdApiError.Custom.TooManyRequests ->
-                                getString(R.string.too_many_requests_try_later)
-                            else -> getString(R.string.unknown_error)
+                        if (error is TdApiError) {
+                            when (error.code) {
+                                8 -> getString(R.string.phone_number_cant_be_empty)
+                                400 -> getString(R.string.phone_number_invalid)
+                                429 -> getString(R.string.too_many_requests_try_later)
+                                else -> getString(R.string.unknown_error)
+                            }
+                        } else {
+                            getString(R.string.unknown_error)
                         }
                     }
 
@@ -146,7 +147,7 @@ class EnterPhoneNumberPresenterImp(
         }
 
     private fun subscribeOnConnectionStates() {
-        val receiveConnectionStatesCoroutineExceptionHandler = CoroutineExceptionHandler { _, error ->
+        val receiveConnectionStatesCEH = CoroutineExceptionHandler { _, error ->
             if (BuildConfig.DEBUG) {
                 val text = error.localizedMessage
                 debugLog(text)
@@ -155,7 +156,7 @@ class EnterPhoneNumberPresenterImp(
         }
 
         receiveConnectionStatesJob = launch(
-            context = coroutineContext + receiveConnectionStatesCoroutineExceptionHandler
+            context = coroutineContext + receiveConnectionStatesCEH
         ) {
             val receivedConnectionState = connectionStateReceiveChannel.receive()
 

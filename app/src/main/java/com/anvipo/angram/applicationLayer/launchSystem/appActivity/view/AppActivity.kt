@@ -12,7 +12,6 @@ import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule.navigato
 import com.anvipo.angram.applicationLayer.launchSystem.appActivity.presenter.AppPresenter
 import com.anvipo.angram.applicationLayer.launchSystem.appActivity.presenter.AppPresenterImp
 import com.anvipo.angram.coreLayer.base.baseClasses.BaseActivity
-import com.anvipo.angram.coreLayer.base.baseClasses.BaseFragment
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import kotlinx.android.synthetic.main.layout_container.*
@@ -46,7 +45,7 @@ class AppActivity : BaseActivity(), AppView {
 
 
     override fun onBackPressed() {
-        currentFragment?.onBackPressed() ?: super.onBackPressed()
+        currentFragment.onBackPressed()
     }
 
 
@@ -70,8 +69,6 @@ class AppActivity : BaseActivity(), AppView {
         setTheme(R.style.AppTheme)
     }
 
-    private val currentFragment: BaseFragment?
-        get() = supportFragmentManager.findFragmentById(R.id.container) as? BaseFragment
 
     private val navigatorHolder: NavigatorHolder by inject(navigatorHolderQualifier)
 

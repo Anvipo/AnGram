@@ -35,15 +35,20 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseView {
 
     override fun showAlertMessage(
         text: String,
-        title: String?
+        title: String?,
+        cancelable: Boolean,
+        messageDialogTag: String
     ) {
         MessageDialogFragment
             .create(
                 message = text,
                 title = title,
-                positive = getString(android.R.string.ok)
+                positive = getString(android.R.string.ok),
+                cancelable = cancelable,
+                messageDialogTag = messageDialogTag
             )
             .show(supportFragmentManager, null)
+
     }
 
     override fun showErrorAlert(text: String) {
@@ -56,30 +61,28 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseView {
 
     override fun showSnackMessage(
         text: String,
-        duration: Int,
-        withProgressBar: Boolean,
-        isProgressBarIndeterminate: Boolean
+        duration: Int
     ) {
         rootView.showSnackbarMessage(
             text = text,
-            duration = duration,
-            withProgressBar = withProgressBar,
-            isProgressBarIndeterminate = isProgressBarIndeterminate
+            duration = duration
         )
     }
 
-    override fun showConnectionErrorSnackMessage(
+    override fun showConnectionStateSnackMessage(
         text: String,
-        duration: Int,
-        withProgressBar: Boolean,
-        isProgressBarIndeterminate: Boolean
+        duration: Int
     ) {
-        showSnackMessage(text, duration, withProgressBar, isProgressBarIndeterminate)
+        showSnackMessage(text, duration)
     }
 
 
     protected open fun setupClickListeners(): Unit = Unit
     protected open fun setupToolbar(): Unit = Unit
+
+    protected val currentFragment: BaseFragment
+        get() = supportFragmentManager.findFragmentById(R.id.container) as BaseFragment
+
 
     protected abstract val presenter: BasePresenter
     protected abstract val layoutRes: Int

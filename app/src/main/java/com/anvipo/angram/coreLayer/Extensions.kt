@@ -119,9 +119,7 @@ fun Fragment.sendEmail(email: String) {
 
 fun View.showSnackbarMessage(
     text: String,
-    duration: Int = Snackbar.LENGTH_LONG,
-    withProgressBar: Boolean = false,
-    isProgressBarIndeterminate: Boolean = false
+    duration: Int = Snackbar.LENGTH_LONG
 ) {
     val snackbar = Snackbar.make(this, text, duration)
     val messageTextView = snackbar.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)

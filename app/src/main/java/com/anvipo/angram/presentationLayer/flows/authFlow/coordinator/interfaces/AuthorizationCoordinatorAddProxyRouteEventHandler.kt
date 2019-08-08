@@ -4,4 +4,6 @@ interface AuthorizationCoordinatorAddProxyRouteEventHandler {
 
     fun onPressedBackButtonInAddProxyScreen()
 
+    fun onSuccessAddProxy()
+
 }

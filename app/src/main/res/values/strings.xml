@@ -36,6 +36,7 @@
     <string name="enter_proxy_server_data">Enter proxy server data</string>
     <string name="key_add_mtproto_proxy_label">Key</string>
     <string name="credentials_add_mtproto_proxy_label">Credentials</string>
+    <string name="proxy_successfully_has_been_added">Proxy successfullty has been added</string>
 
     <!--\\Authorization flow-->
 
