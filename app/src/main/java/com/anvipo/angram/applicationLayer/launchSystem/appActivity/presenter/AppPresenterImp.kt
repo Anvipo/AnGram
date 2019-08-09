@@ -13,6 +13,7 @@ import com.anvipo.angram.businessLogicLayer.useCases.app.AppUseCase
 import com.anvipo.angram.coreLayer.CoreHelpers.assertionFailure
 import com.anvipo.angram.coreLayer.CoreHelpers.debugLog
 import com.anvipo.angram.coreLayer.ResourceManager
+import com.anvipo.angram.coreLayer.message.SystemMessage
 import com.anvipo.angram.coreLayer.message.SystemMessageType
 import com.anvipo.angram.presentationLayer.common.baseClasses.BasePresenterImp
 import com.arellomobile.mvp.InjectViewState
@@ -65,6 +66,12 @@ class AppPresenterImp(
     override val coroutineContext: CoroutineContext = Dispatchers.IO
 
 
+    private fun subscribeToChannels() {
+        subscribeOnSystemMessages()
+        subscribeOnConnectionStates()
+        subscribeOnEnabledProxyId()
+    }
+
     private fun subscribeOnSystemMessages() {
         val receiveSystemMessagesCEH = CoroutineExceptionHandler { _, error ->
             if (BuildConfig.DEBUG) {
@@ -77,45 +84,8 @@ class AppPresenterImp(
         launch(
             context = coroutineContext + receiveSystemMessagesCEH
         ) {
-            val (text, type, shouldBeShownToUser, shouldBeShownInLogs) = systemMessageReceiveChannel.receive()
-
-            if (shouldBeShownToUser) {
-                when (type) {
-                    SystemMessageType.TOAST -> {
-                        val showToastCEH = CoroutineExceptionHandler { _, error ->
-                            if (BuildConfig.DEBUG) {
-                                val errorText = error.localizedMessage
-                                debugLog(errorText)
-                                viewState.showErrorAlert(errorText)
-                            }
-                        }
-
-                        launch(
-                            context = Dispatchers.Main + showToastCEH
-                        ) {
-                            viewState.showToastMessage(text)
-                        }.also { jobsThatWillBeCancelledInOnDestroy += it }
-                    }
-                    SystemMessageType.ALERT -> {
-                        val showAlertCEH = CoroutineExceptionHandler { _, error ->
-                            if (BuildConfig.DEBUG) {
-                                val errorText = error.localizedMessage
-                                debugLog(errorText)
-                                viewState.showErrorAlert(errorText)
-                            }
-                        }
-
-                        launch(
-                            context = Dispatchers.Main + showAlertCEH
-                        ) {
-                            viewState.showAlertMessage(text)
-                        }.also { jobsThatWillBeCancelledInOnDestroy += it }
-                    }
-                }
-            }
-
-            if (shouldBeShownInLogs) {
-                Log.d(App.TAG, text)
+            for (receivedSystemMessage in systemMessageReceiveChannel) {
+                onReceivedSystemMessage(receivedSystemMessage)
             }
         }.also { jobsThatWillBeCancelledInOnDestroy += it }
     }
@@ -132,56 +102,9 @@ class AppPresenterImp(
         launch(
             context = coroutineContext + receiveConnectionStatesCEH
         ) {
-            val receivedConnectionState = connectionStateReceiveChannel.receive()
-
-            val connectionState = resourceManager.getString(R.string.connection_state)
-            val text: String
-            val duration: Int
-
-            when (receivedConnectionState) {
-                is TdApi.ConnectionStateWaitingForNetwork -> {
-                    text = "$connectionState: waiting for network"
-                    duration = Snackbar.LENGTH_INDEFINITE
-                }
-                is TdApi.ConnectionStateConnectingToProxy -> {
-                    text = "$connectionState: connecting to proxy"
-                    duration = Snackbar.LENGTH_INDEFINITE
-                }
-                is TdApi.ConnectionStateConnecting -> {
-                    text = "$connectionState: connecting"
-                    duration = Snackbar.LENGTH_INDEFINITE
-                }
-                is TdApi.ConnectionStateUpdating -> {
-                    text = "$connectionState: updating"
-                    duration = Snackbar.LENGTH_INDEFINITE
-                }
-                is TdApi.ConnectionStateReady -> {
-                    text = "$connectionState: connected"
-                    duration = Snackbar.LENGTH_LONG
-                }
-                else -> {
-                    assertionFailure()
-                    text = ""
-                    duration = Snackbar.LENGTH_SHORT
-                }
+            for (receivedConnectionState in connectionStateReceiveChannel) {
+                onReceivedConnectionState(receivedConnectionState)
             }
-
-            val showSnackbarCEH = CoroutineExceptionHandler { _, error ->
-                if (BuildConfig.DEBUG) {
-                    val errorText = error.localizedMessage
-                    debugLog(errorText)
-                    viewState.showErrorAlert(errorText)
-                }
-            }
-
-            launch(
-                context = Dispatchers.Main + showSnackbarCEH
-            ) {
-                viewState.showConnectionStateSnackMessage(
-                    text = text,
-                    duration = duration
-                )
-            }.also { jobsThatWillBeCancelledInOnDestroy += it }
         }.also { jobsThatWillBeCancelledInOnDestroy += it }
     }
 
@@ -197,16 +120,108 @@ class AppPresenterImp(
         launch(
             context = coroutineContext + receiveEnabledProxyIdCEH
         ) {
-            val enabledProxyId = enabledProxyIdReceiveChannel.receive()
-
-            useCase.saveEnabledProxyId(enabledProxyId)
+            for (receivedEnabledProxyId in enabledProxyIdReceiveChannel) {
+                onReceivedEnabledProxyId(receivedEnabledProxyId)
+            }
         }.also { jobsThatWillBeCancelledInOnDestroy += it }
     }
 
-    private fun subscribeToChannels() {
-        subscribeOnSystemMessages()
-        subscribeOnConnectionStates()
-        subscribeOnEnabledProxyId()
+    private fun onReceivedSystemMessage(receivedSystemMessage: SystemMessage) {
+        val (text, type, shouldBeShownToUser, shouldBeShownInLogs) = receivedSystemMessage
+
+        if (shouldBeShownToUser) {
+            when (type) {
+                SystemMessageType.TOAST -> {
+                    val showToastCEH = CoroutineExceptionHandler { _, error ->
+                        if (BuildConfig.DEBUG) {
+                            val errorText = error.localizedMessage
+                            debugLog(errorText)
+                            viewState.showErrorAlert(errorText)
+                        }
+                    }
+
+                    launch(
+                        context = Dispatchers.Main + showToastCEH
+                    ) {
+                        viewState.showToastMessage(text)
+                    }.also { jobsThatWillBeCancelledInOnDestroy += it }
+                }
+                SystemMessageType.ALERT -> {
+                    val showAlertCEH = CoroutineExceptionHandler { _, error ->
+                        if (BuildConfig.DEBUG) {
+                            val errorText = error.localizedMessage
+                            debugLog(errorText)
+                            viewState.showErrorAlert(errorText)
+                        }
+                    }
+
+                    launch(
+                        context = Dispatchers.Main + showAlertCEH
+                    ) {
+                        viewState.showAlertMessage(text)
+                    }.also { jobsThatWillBeCancelledInOnDestroy += it }
+                }
+            }
+        }
+
+        if (shouldBeShownInLogs) {
+            Log.d(App.TAG, text)
+        }
+    }
+
+    private fun onReceivedConnectionState(receivedConnectionState: TdApi.ConnectionState) {
+        val connectionState = resourceManager.getString(R.string.connection_state)
+        val text: String
+        val duration: Int
+
+        when (receivedConnectionState) {
+            is TdApi.ConnectionStateWaitingForNetwork -> {
+                text = "$connectionState: waiting for network"
+                duration = Snackbar.LENGTH_INDEFINITE
+            }
+            is TdApi.ConnectionStateConnectingToProxy -> {
+                text = "$connectionState: connecting to proxy"
+                duration = Snackbar.LENGTH_INDEFINITE
+            }
+            is TdApi.ConnectionStateConnecting -> {
+                text = "$connectionState: connecting"
+                duration = Snackbar.LENGTH_INDEFINITE
+            }
+            is TdApi.ConnectionStateUpdating -> {
+                text = "$connectionState: updating"
+                duration = Snackbar.LENGTH_INDEFINITE
+            }
+            is TdApi.ConnectionStateReady -> {
+                text = "$connectionState: connected"
+                duration = Snackbar.LENGTH_SHORT
+            }
+            else -> {
+                assertionFailure()
+                text = "$connectionState: ERROR"
+                duration = Snackbar.LENGTH_INDEFINITE
+            }
+        }
+
+        val showSnackbarCEH = CoroutineExceptionHandler { _, error ->
+            if (BuildConfig.DEBUG) {
+                val errorText = error.localizedMessage
+                debugLog(errorText)
+                viewState.showErrorAlert(errorText)
+            }
+        }
+
+        launch(
+            context = Dispatchers.Main + showSnackbarCEH
+        ) {
+            viewState.showConnectionStateSnackMessage(
+                text = text,
+                duration = duration
+            )
+        }.also { jobsThatWillBeCancelledInOnDestroy += it }
+    }
+
+    private suspend fun onReceivedEnabledProxyId(receivedEnabledProxyId: Int) {
+        useCase.saveEnabledProxyId(receivedEnabledProxyId)
     }
 
 }

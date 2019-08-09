@@ -256,7 +256,10 @@ class App : Application() {
 
         if (updateOption.name == "enabled_proxy_id") {
             if (optionValue is TdApi.OptionValueInteger) {
-                enabledProxyIdSendChannel.offer(optionValue.value)
+                val enabledProxyId = optionValue.value
+
+                enabledProxyIdStack.push(enabledProxyId)
+                enabledProxyIdSendChannel.offer(enabledProxyId)
             } else {
                 assertionFailure()
             }

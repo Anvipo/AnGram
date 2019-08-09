@@ -154,28 +154,32 @@ class EnterPhoneNumberPresenterImp(
         launch(
             context = coroutineContext + receiveConnectionStatesCEH
         ) {
-            val receivedConnectionState = connectionStateReceiveChannel.receive()
-
-            val doOnNewConnectionStateCEH = CoroutineExceptionHandler { _, error ->
-                if (BuildConfig.DEBUG) {
-                    val errorText = error.localizedMessage
-                    debugLog(errorText)
-                    viewState.showErrorAlert(errorText)
-                }
+            for (receivedConnectionState in connectionStateReceiveChannel) {
+                onReceivedConnectionState(receivedConnectionState)
             }
+        }.also { jobsThatWillBeCancelledInOnDestroy += it }
+    }
 
-            launch(
-                context = Dispatchers.Main + doOnNewConnectionStateCEH
-            ) {
-                when (receivedConnectionState) {
-                    is TdApi.ConnectionStateWaitingForNetwork -> viewState.disableNextButton()
-                    is TdApi.ConnectionStateConnectingToProxy -> viewState.disableNextButton()
-                    is TdApi.ConnectionStateConnecting -> viewState.disableNextButton()
-                    is TdApi.ConnectionStateUpdating -> viewState.disableNextButton()
-                    is TdApi.ConnectionStateReady -> viewState.enableNextButton()
-                    else -> assertionFailure()
-                }
-            }.also { jobsThatWillBeCancelledInOnDestroy += it }
+    private fun onReceivedConnectionState(receivedConnectionState: TdApi.ConnectionState) {
+        val doOnNewConnectionStateCEH = CoroutineExceptionHandler { _, error ->
+            if (BuildConfig.DEBUG) {
+                val errorText = error.localizedMessage
+                debugLog(errorText)
+                viewState.showErrorAlert(errorText)
+            }
+        }
+
+        launch(
+            context = Dispatchers.Main + doOnNewConnectionStateCEH
+        ) {
+            when (receivedConnectionState) {
+                is TdApi.ConnectionStateWaitingForNetwork -> viewState.disableNextButton()
+                is TdApi.ConnectionStateConnectingToProxy -> viewState.disableNextButton()
+                is TdApi.ConnectionStateConnecting -> viewState.disableNextButton()
+                is TdApi.ConnectionStateUpdating -> viewState.disableNextButton()
+                is TdApi.ConnectionStateReady -> viewState.enableNextButton()
+                else -> assertionFailure()
+            }
         }.also { jobsThatWillBeCancelledInOnDestroy += it }
     }
 
