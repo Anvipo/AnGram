@@ -13,6 +13,14 @@ abstract class BaseTdLibGatewayImp(
     override suspend fun getAuthorizationStateRequestCatching(): Result<TdApi.AuthorizationState> =
         doRequestCatching(TdApi.GetAuthorizationState())
 
+    override suspend fun setNetworkTypeCatching(type: TdApi.NetworkType): Result<TdApi.Ok> =
+        doRequestCatching(
+            TdApi.SetNetworkType(
+                type
+            )
+        )
+
+
     protected suspend inline fun <reified ResultType : TdApi.Object> doRequestCatching(
         query: TdApi.Function
     ): Result<ResultType> =

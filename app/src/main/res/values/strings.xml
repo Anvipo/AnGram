@@ -38,6 +38,7 @@
     <string name="credentials_add_mtproto_proxy_label">Credentials</string>
     <string name="proxy_successfully_has_been_added">Proxy successfullty has been added</string>
     <string name="preference_file_key">angram_shared_preference_file_key</string>
+    <string name="choose_proxy_server_type">Выберите нужный тип прокси сервера</string>
 
     <!--\\Authorization flow-->
 

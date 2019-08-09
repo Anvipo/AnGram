@@ -35,75 +35,16 @@ class App : Application() {
 
     companion object {
         const val TAG: String = "AnGram"
+
+        lateinit var INSTANCE: App
+            private set
     }
 
     override fun onCreate() {
         super.onCreate()
         initDI()
+        INSTANCE = this
     }
-
-
-    private fun initDI() {
-        val debugModules = listOf(
-            LaunchSystemModule.module,
-            SystemInfrastructureModule.module,
-            UseCasesModule.module,
-            GatewaysModule.module,
-            ApplicationCoordinatorModule.module,
-            EnterPhoneNumberModule.module,
-            EnterAuthenticationCodeModule.module,
-            EnterAuthenticationPasswordModule.module,
-            AddProxyModule.module
-        )
-
-        if (BuildConfig.DEBUG) {
-            startKoin {
-                androidLogger()
-
-                androidContext(this@App)
-
-                modules(debugModules)
-            }
-        } else {
-            // TODO: release config
-            debugLog("TODO")
-        }
-    }
-
-    private val systemMessageSendChannel: SystemMessageSendChannel
-            by inject(systemMessageSendChannelQualifier)
-
-    private val connectionStateAppSendChannel: ConnectionStateSendChannel
-            by inject(connectionStateAppSendChannelQualifier)
-
-    private val connectionStateEnterPhoneNumberSendChannel: ConnectionStateSendChannel
-            by inject(connectionStateEnterPhoneNumberSendChannelQualifier)
-
-
-    // ------- TG Client properties and methods
-
-
-    private val tdObjectsStack: IMutableStack<TdApi.Object> = MutableStack()
-
-    private val tdUpdateStack: IMutableStack<TdApi.Update> = MutableStack()
-
-    private val tdUpdateOptionStack: IMutableStack<TdApi.UpdateOption> = MutableStack()
-
-    private val tdUpdateUserStack: IMutableStack<TdApi.UpdateUser> = MutableStack()
-    private val tdUpdateHavePendingNotificationsStack: IMutableStack<TdApi.UpdateHavePendingNotifications> =
-        MutableStack()
-
-    private val tdUpdateScopeNotificationSettingsStack: IMutableStack<TdApi.UpdateScopeNotificationSettings> =
-        MutableStack()
-    private val tdUpdateTermsOfServiceStack: IMutableStack<TdApi.UpdateTermsOfService> = MutableStack()
-
-    private val tdUpdateAuthorizationStateStack: IMutableStack<TdApi.UpdateAuthorizationState> = MutableStack()
-
-    private val tdUpdateConnectionStateStack: IMutableStack<TdApi.UpdateConnectionState> = MutableStack()
-
-    private val tdErrorsStack: IMutableStack<Throwable> = MutableStack()
-    private val tdObjectsAndErrorsStack: IMutableStack<Any> = MutableStack()
-
 
     internal val updatesHandlerFunction: (TdApi.Object) -> Unit = { tdApiObject ->
         val tag = "${this::class.java.simpleName} updatesHandler"
@@ -167,6 +108,68 @@ class App : Application() {
         debugLog(text)
         systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
     }
+
+
+    private fun initDI() {
+        val debugModules = listOf(
+            LaunchSystemModule.module,
+            SystemInfrastructureModule.module,
+            UseCasesModule.module,
+            GatewaysModule.module,
+            ApplicationCoordinatorModule.module,
+            EnterPhoneNumberModule.module,
+            EnterAuthenticationCodeModule.module,
+            EnterAuthenticationPasswordModule.module,
+            AddProxyModule.module
+        )
+
+        if (BuildConfig.DEBUG) {
+            startKoin {
+                androidLogger()
+
+                androidContext(this@App)
+
+                modules(debugModules)
+            }
+        } else {
+            // TODO: release config
+            debugLog("TODO")
+        }
+    }
+
+    private val systemMessageSendChannel: SystemMessageSendChannel
+            by inject(systemMessageSendChannelQualifier)
+
+    private val connectionStateAppSendChannel: ConnectionStateSendChannel
+            by inject(connectionStateAppSendChannelQualifier)
+
+    private val connectionStateEnterPhoneNumberSendChannel: ConnectionStateSendChannel
+            by inject(connectionStateEnterPhoneNumberSendChannelQualifier)
+
+
+    // ------- TG Client properties and methods
+
+
+    private val tdObjectsStack: IMutableStack<TdApi.Object> = MutableStack()
+
+    private val tdUpdateStack: IMutableStack<TdApi.Update> = MutableStack()
+
+    private val tdUpdateOptionStack: IMutableStack<TdApi.UpdateOption> = MutableStack()
+
+    private val tdUpdateUserStack: IMutableStack<TdApi.UpdateUser> = MutableStack()
+    private val tdUpdateHavePendingNotificationsStack: IMutableStack<TdApi.UpdateHavePendingNotifications> =
+        MutableStack()
+
+    private val tdUpdateScopeNotificationSettingsStack: IMutableStack<TdApi.UpdateScopeNotificationSettings> =
+        MutableStack()
+    private val tdUpdateTermsOfServiceStack: IMutableStack<TdApi.UpdateTermsOfService> = MutableStack()
+
+    private val tdUpdateAuthorizationStateStack: IMutableStack<TdApi.UpdateAuthorizationState> = MutableStack()
+
+    private val tdUpdateConnectionStateStack: IMutableStack<TdApi.UpdateConnectionState> = MutableStack()
+
+    private val tdErrorsStack: IMutableStack<Throwable> = MutableStack()
+    private val tdObjectsAndErrorsStack: IMutableStack<Any> = MutableStack()
 
 
     private fun onUpdate(

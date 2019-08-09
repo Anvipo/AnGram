@@ -4,6 +4,7 @@ import android.content.Context
 import android.telephony.TelephonyManager
 import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.R
+import com.anvipo.angram.applicationLayer.launchSystem.App
 import com.anvipo.angram.applicationLayer.types.ConnectionStateReceiveChannel
 import com.anvipo.angram.businessLogicLayer.useCases.authFlow.enterPhoneNumberUseCase.EnterPhoneNumberUseCase
 import com.anvipo.angram.coreLayer.CoreHelpers.debugLog
@@ -44,7 +45,7 @@ class EnterPhoneNumberPresenterImp(
 
     override fun onAddProxyButtonPressed() {
         viewState.showItemsDialog(
-            "Выберите нужный тип прокси сервера",
+            resourceManager.getString(R.string.choose_proxy_server_type),
             proxysList
         )
     }
@@ -153,16 +154,16 @@ class EnterPhoneNumberPresenterImp(
             val block: () -> Unit = {
                 when (receivedConnectionState) {
                     is TdApi.ConnectionStateWaitingForNetwork -> {
-                        TODO()
+                        viewState.disableNextButton()
                     }
                     is TdApi.ConnectionStateConnectingToProxy -> {
                         viewState.disableNextButton()
                     }
                     is TdApi.ConnectionStateConnecting -> {
-                        TODO()
+                        viewState.disableNextButton()
                     }
                     is TdApi.ConnectionStateUpdating -> {
-                        TODO()
+                        viewState.disableNextButton()
                     }
                     is TdApi.ConnectionStateReady -> {
                         viewState.enableNextButton()

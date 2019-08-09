@@ -69,6 +69,10 @@ class EnterPhoneNumberFragment :
         enter_phone_number_edit_text.addTextChangedListener(phoneNumberTextWatcher)
     }
 
+    override fun setupUI() {
+        enter_phone_number_edit_text.setText("+7")
+    }
+
     override fun itemClicked(
         tag: String,
         index: Int
