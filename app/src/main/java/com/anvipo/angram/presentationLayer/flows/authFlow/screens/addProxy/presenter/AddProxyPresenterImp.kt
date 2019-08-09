@@ -10,7 +10,10 @@ import com.anvipo.angram.presentationLayer.common.baseClasses.BasePresenterImp
 import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.interfaces.AuthorizationCoordinatorAddProxyRouteEventHandler
 import com.anvipo.angram.presentationLayer.flows.authFlow.screens.addProxy.view.AddProxyView
 import com.arellomobile.mvp.InjectViewState
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.drinkless.td.libcore.telegram.TdApi
 import kotlin.coroutines.CoroutineContext
 
@@ -37,7 +40,7 @@ class AddProxyPresenterImp(
 
         viewState.showProgress()
 
-        addProxyButtonTappedJob = launch(
+        launch(
             context = coroutineContext + addProxyButtonTappedCEH
         ) {
             useCase
@@ -70,7 +73,7 @@ class AddProxyPresenterImp(
                         viewState.showErrorAlert(errorMessage)
                     }
                 }
-        }
+        }.also { jobsThatWillBeCancelledInOnDestroy += it }
     }
 
     override fun messageDialogPositiveClicked(tag: String) {
@@ -103,9 +106,6 @@ class AddProxyPresenterImp(
 
     override val coroutineContext: CoroutineContext = Dispatchers.IO
 
-    override fun cancelAllJobs() {
-        addProxyButtonTappedJob?.cancel()
-    }
 
     private val addProxySuccessTag = "addProxySuccessTag"
 
@@ -134,7 +134,5 @@ class AddProxyPresenterImp(
             field = value
             (this.proxyType as TdApi.ProxyTypeMtproto).secret = field
         }
-
-    private var addProxyButtonTappedJob: Job? = null
 
 }

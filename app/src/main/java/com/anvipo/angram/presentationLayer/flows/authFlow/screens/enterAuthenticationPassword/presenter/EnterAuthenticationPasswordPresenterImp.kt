@@ -10,7 +10,10 @@ import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.interfaces
 import com.anvipo.angram.presentationLayer.flows.authFlow.screens.enterAuthenticationPassword.types.CorrectAuthenticationPasswordType
 import com.anvipo.angram.presentationLayer.flows.authFlow.screens.enterAuthenticationPassword.view.EnterAuthenticationPasswordView
 import com.arellomobile.mvp.InjectViewState
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
 @InjectViewState
@@ -25,7 +28,7 @@ class EnterAuthenticationPasswordPresenterImp(
     }
 
     override fun onNextButtonPressed(enteredAuthenticationPassword: CorrectAuthenticationPasswordType) {
-        val onNextButtonPressedCoroutineExceptionHandler = CoroutineExceptionHandler { _, error ->
+        val onNextButtonPressedCEH = CoroutineExceptionHandler { _, error ->
             if (BuildConfig.DEBUG) {
                 val errorText = error.localizedMessage
                 CoreHelpers.debugLog(errorText)
@@ -35,8 +38,8 @@ class EnterAuthenticationPasswordPresenterImp(
 
         viewState.showProgress()
 
-        onNextButtonPressedJob = launch(
-            context = coroutineContext + onNextButtonPressedCoroutineExceptionHandler
+        launch(
+            context = coroutineContext + onNextButtonPressedCEH
         ) {
             useCase.checkAuthenticationPasswordCatching(enteredAuthenticationPassword)
                 .onSuccess {
@@ -52,20 +55,13 @@ class EnterAuthenticationPasswordPresenterImp(
                         viewState.showErrorAlert(errorMessage)
                     }
                 }
-        }
-
+        }.also { jobsThatWillBeCancelledInOnDestroy += it }
     }
 
     override fun onBackPressed() {
         routeEventHandler.onPressedBackButtonInEnterAuthenticationPasswordScreen()
     }
 
-    override fun cancelAllJobs() {
-        onNextButtonPressedJob?.cancel()
-    }
-
     override val coroutineContext: CoroutineContext = Dispatchers.IO
-
-    private var onNextButtonPressedJob: Job? = null
 
 }

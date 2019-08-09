@@ -14,7 +14,10 @@ import com.anvipo.angram.coreLayer.message.SystemMessageType
 import com.anvipo.angram.presentationLayer.common.baseClasses.BasePresenterImp
 import com.arellomobile.mvp.InjectViewState
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.drinkless.td.libcore.telegram.TdApi
 import kotlin.coroutines.CoroutineContext
 
@@ -47,17 +50,9 @@ class AppPresenterImp(
 
     override val coroutineContext: CoroutineContext = Dispatchers.IO
 
-    override fun cancelAllJobs() {
-        receiveSystemMessagesJob?.cancel()
-        receiveConnectionStatesJob?.cancel()
-        showToastJob?.cancel()
-        showAlertJob?.cancel()
-        showSnackbarJob?.cancel()
-    }
-
 
     private fun subscribeOnSystemMessages() {
-        val receiveSystemMessagesCoroutineExceptionHandler = CoroutineExceptionHandler { _, error ->
+        val receiveSystemMessagesCEH = CoroutineExceptionHandler { _, error ->
             if (BuildConfig.DEBUG) {
                 val text = error.localizedMessage
                 debugLog(text)
@@ -65,15 +60,15 @@ class AppPresenterImp(
             }
         }
 
-        receiveSystemMessagesJob = launch(
-            context = coroutineContext + receiveSystemMessagesCoroutineExceptionHandler
+        launch(
+            context = coroutineContext + receiveSystemMessagesCEH
         ) {
             val (text, type, shouldBeShownToUser, shouldBeShownInLogs) = systemMessageReceiveChannel.receive()
 
             if (shouldBeShownToUser) {
                 when (type) {
                     SystemMessageType.TOAST -> {
-                        val showToastCoroutineExceptionHandler = CoroutineExceptionHandler { _, error ->
+                        val showToastCEH = CoroutineExceptionHandler { _, error ->
                             if (BuildConfig.DEBUG) {
                                 val errorText = error.localizedMessage
                                 debugLog(errorText)
@@ -81,14 +76,14 @@ class AppPresenterImp(
                             }
                         }
 
-                        showToastJob = launch(
-                            context = Dispatchers.Main + showToastCoroutineExceptionHandler
+                        launch(
+                            context = Dispatchers.Main + showToastCEH
                         ) {
                             viewState.showToastMessage(text)
-                        }
+                        }.also { jobsThatWillBeCancelledInOnDestroy += it }
                     }
                     SystemMessageType.ALERT -> {
-                        val showAlertCoroutineExceptionHandler = CoroutineExceptionHandler { _, error ->
+                        val showAlertCEH = CoroutineExceptionHandler { _, error ->
                             if (BuildConfig.DEBUG) {
                                 val errorText = error.localizedMessage
                                 debugLog(errorText)
@@ -96,11 +91,11 @@ class AppPresenterImp(
                             }
                         }
 
-                        showAlertJob = launch(
-                            context = Dispatchers.Main + showAlertCoroutineExceptionHandler
+                        launch(
+                            context = Dispatchers.Main + showAlertCEH
                         ) {
                             viewState.showAlertMessage(text)
-                        }
+                        }.also { jobsThatWillBeCancelledInOnDestroy += it }
                     }
                 }
             }
@@ -108,11 +103,11 @@ class AppPresenterImp(
             if (shouldBeShownInLogs) {
                 Log.d(App.TAG, text)
             }
-        }
+        }.also { jobsThatWillBeCancelledInOnDestroy += it }
     }
 
     private fun subscribeOnConnectionStates() {
-        val receiveConnectionStatesCoroutineExceptionHandler = CoroutineExceptionHandler { _, error ->
+        val receiveConnectionStatesCEH = CoroutineExceptionHandler { _, error ->
             if (BuildConfig.DEBUG) {
                 val text = error.localizedMessage
                 debugLog(text)
@@ -120,8 +115,8 @@ class AppPresenterImp(
             }
         }
 
-        receiveConnectionStatesJob = launch(
-            context = coroutineContext + receiveConnectionStatesCoroutineExceptionHandler
+        launch(
+            context = coroutineContext + receiveConnectionStatesCEH
         ) {
             val receivedConnectionState = connectionStateReceiveChannel.receive()
 
@@ -161,15 +156,15 @@ class AppPresenterImp(
                 }
             }
 
-            showSnackbarJob = launch(
+            launch(
                 context = Dispatchers.Main + showSnackbarCEH
             ) {
                 viewState.showConnectionStateSnackMessage(
                     text = text,
                     duration = duration
                 )
-            }
-        }
+            }.also { jobsThatWillBeCancelledInOnDestroy += it }
+        }.also { jobsThatWillBeCancelledInOnDestroy += it }
     }
 
     private fun unsubscribeFromChannels() {
@@ -181,11 +176,5 @@ class AppPresenterImp(
         subscribeOnSystemMessages()
         subscribeOnConnectionStates()
     }
-
-    private var showSnackbarJob: Job? = null
-    private var showToastJob: Job? = null
-    private var showAlertJob: Job? = null
-    private var receiveSystemMessagesJob: Job? = null
-    private var receiveConnectionStatesJob: Job? = null
 
 }

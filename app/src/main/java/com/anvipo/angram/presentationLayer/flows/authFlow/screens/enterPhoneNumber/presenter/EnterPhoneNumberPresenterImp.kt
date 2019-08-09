@@ -122,17 +122,7 @@ class EnterPhoneNumberPresenterImp(
 
     override val coroutineContext: CoroutineContext = Dispatchers.IO
 
-    override fun cancelAllJobs() {
-        onNextButtonPressedJob?.cancel()
-        receiveFirstConnectionStatesJob?.cancel()
-        receiveConnectionStatesJob?.cancel()
-        doOnNewConnectionStateJob?.cancel()
-    }
-
     private var onNextButtonPressedJob: Job? = null
-    private var receiveFirstConnectionStatesJob: Job? = null
-    private var receiveConnectionStatesJob: Job? = null
-    private var doOnNewConnectionStateJob: Job? = null
 
     private val phoneNumberLength: UInt
         get() {
@@ -155,7 +145,7 @@ class EnterPhoneNumberPresenterImp(
             }
         }
 
-        receiveConnectionStatesJob = launch(
+        launch(
             context = coroutineContext + receiveConnectionStatesCEH
         ) {
             val receivedConnectionState = connectionStateReceiveChannel.receive()
@@ -189,12 +179,12 @@ class EnterPhoneNumberPresenterImp(
                 }
             }
 
-            doOnNewConnectionStateJob = launch(
+            launch(
                 context = Dispatchers.Main + doOnNewConnectionStateCEH
             ) {
                 block()
-            }
-        }
+            }.also { jobsThatWillBeCancelledInOnDestroy += it }
+        }.also { jobsThatWillBeCancelledInOnDestroy += it }
     }
 
     private val mtprotoPair = 0 to "MTPROTO"

@@ -11,7 +11,10 @@ import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.interfaces
 import com.anvipo.angram.presentationLayer.flows.authFlow.screens.enterAuthenticationCode.types.CorrectAuthenticationCodeType
 import com.anvipo.angram.presentationLayer.flows.authFlow.screens.enterAuthenticationCode.view.EnterAuthenticationCodeView
 import com.arellomobile.mvp.InjectViewState
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
 @Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS")
@@ -42,7 +45,7 @@ class EnterAuthenticationCodePresenterImp(
         lastName: String,
         firstName: String
     ) {
-        val onNextButtonPressedCoroutineExceptionHandler = CoroutineExceptionHandler { _, error ->
+        val onNextButtonPressedCEH = CoroutineExceptionHandler { _, error ->
             if (BuildConfig.DEBUG) {
                 val errorText = error.localizedMessage
                 debugLog(errorText)
@@ -52,8 +55,8 @@ class EnterAuthenticationCodePresenterImp(
 
         viewState.showProgress()
 
-        onNextButtonPressedJob = launch(
-            context = coroutineContext + onNextButtonPressedCoroutineExceptionHandler
+        launch(
+            context = coroutineContext + onNextButtonPressedCEH
         ) {
             useCase
                 .checkAuthenticationCodeCatching(
@@ -63,11 +66,11 @@ class EnterAuthenticationCodePresenterImp(
                 )
                 .onSuccess { routeEventHandler.onEnterCorrectAuthenticationCode() }
                 .onFailure { handleAuthenticationCodeFailure(it) }
-        }
+        }.also { jobsThatWillBeCancelledInOnDestroy += it }
     }
 
     override fun onResendAuthenticationCodeButtonPressed() {
-        val onResendAuthenticationCodeButtonPressedCoroutineExceptionHandler = CoroutineExceptionHandler { _, error ->
+        val onResendAuthenticationCodeButtonPressedCEH = CoroutineExceptionHandler { _, error ->
             if (BuildConfig.DEBUG) {
                 val errorText = error.localizedMessage
                 debugLog(errorText)
@@ -77,14 +80,14 @@ class EnterAuthenticationCodePresenterImp(
 
         viewState.showProgress()
 
-        onResendAuthenticationCodeButtonPressedJob = launch(
-            context = coroutineContext + onResendAuthenticationCodeButtonPressedCoroutineExceptionHandler
+        launch(
+            context = coroutineContext + onResendAuthenticationCodeButtonPressedCEH
         ) {
             useCase
                 .resendAuthenticationCodeCatching()
                 .onSuccess { withContext(Dispatchers.Main) { viewState.hideProgress() } }
                 .onFailure { handleAuthenticationCodeFailure(it) }
-        }
+        }.also { jobsThatWillBeCancelledInOnDestroy += it }
     }
 
     override fun onGetExpectedCodeLength(expectedCodeLength: UInt) {
@@ -175,15 +178,7 @@ class EnterAuthenticationCodePresenterImp(
         routeEventHandler.onPressedBackButtonInEnterAuthenticationCodeScreen()
     }
 
-    override fun cancelAllJobs() {
-        onNextButtonPressedJob?.cancel()
-        onResendAuthenticationCodeButtonPressedJob?.cancel()
-    }
-
     override val coroutineContext: CoroutineContext = Dispatchers.IO
-
-    private var onResendAuthenticationCodeButtonPressedJob: Job? = null
-    private var onNextButtonPressedJob: Job? = null
 
     private var enteredPhoneNumber: String = ""
     private var expectedCodeLength: UInt = 10u

@@ -39,12 +39,8 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-
         initDI()
     }
-
-
-    /// PRIVATE
 
 
     private fun initDI() {
@@ -122,7 +118,6 @@ class App : Application() {
                 val text = tdApiObject.toString()
 
                 debugLog(text)
-
                 systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
 
                 assertionFailure("Undefined tdApiObject")
@@ -137,7 +132,6 @@ class App : Application() {
         val text = error.localizedMessage
 
         debugLog(text)
-
         when (error) {
             is NoBeanDefFoundException,
             is BadScopeInstanceException,
@@ -171,7 +165,6 @@ class App : Application() {
         val text = error.localizedMessage
 
         debugLog(text)
-
         systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
     }
 
@@ -223,8 +216,8 @@ class App : Application() {
         connectionStateEnterPhoneNumberSendChannel.offer(tdApiUpdateConnectionState.state)
 
         val text = "$tag: connection state updated (${tdApiUpdateConnectionState.state})"
-        debugLog(text)
 
+        debugLog(text)
         systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
     }
 
@@ -234,130 +227,9 @@ class App : Application() {
     ) {
         tdUpdateAuthorizationStateStack.push(updateAuthorizationState)
 
-        when (val authorizationState = updateAuthorizationState.authorizationState) {
-            is TdApi.AuthorizationStateWaitTdlibParameters -> {
-                val text = "$tag: TDLib waits parameters"
-
-                debugLog(text)
-
-                systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
-            }
-            is TdApi.AuthorizationStateWaitEncryptionKey -> {
-                val text = "$tag: TDLib waits encryption key (isEncrypted: ${authorizationState.isEncrypted})"
-
-                debugLog(text)
-
-                systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
-            }
-            is TdApi.AuthorizationStateWaitPhoneNumber -> {
-                val text = "$tag: TDLib waits phone number"
-
-                debugLog(text)
-
-                systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
-            }
-            is TdApi.AuthorizationStateWaitCode -> onAuthorizationStateWaitCode(authorizationState, tag)
-            is TdApi.AuthorizationStateReady -> {
-                val text = "$tag: authorization complete"
-
-                debugLog(text)
-
-                systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
-            }
-            is TdApi.AuthorizationStateLoggingOut -> {
-                val text = "$tag: logging out"
-
-                debugLog(text)
-
-                systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
-            }
-            is TdApi.AuthorizationStateClosed -> {
-                val text = "$tag: AuthorizationStateClosed"
-
-                debugLog(text)
-
-                systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
-            }
-            is TdApi.AuthorizationStateWaitPassword -> {
-                val text = "$tag: AuthorizationStateWaitPassword"
-
-                debugLog(text)
-
-                systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
-            }
-            else -> {
-                val text = "$tag: $authorizationState"
-
-                debugLog(text)
-
-                systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
-
-                assertionFailure("Undefined authorizationState")
-            }
-        }
-    }
-
-    private fun onAuthorizationStateWaitCode(
-        authorizationState: TdApi.AuthorizationStateWaitCode,
-        tag: String
-    ) {
-        val codeInfo = authorizationState.codeInfo
-        val isRegistered = authorizationState.isRegistered
-        val termsOfService = authorizationState.termsOfService
-
-        val extraSB = StringBuilder()
-        if (termsOfService != null) {
-            val minUserAge = termsOfService.minUserAge
-            val showPopup = termsOfService.showPopup
-
-            extraSB.append("minUserAge = $minUserAge; ")
-            extraSB.append("showPopup = $showPopup; ")
-
-            val text = termsOfService.text
-
-            val termsOfServiceText = text.text
-            extraSB.append("termsOfServiceText = $termsOfServiceText; ")
-            if (text.entities.isNotEmpty()) {
-                extraSB.append("text.entities = [\n")
-            }
-
-            text.entities.forEach { textEntity ->
-                val length = textEntity.length
-                val offset = textEntity.offset
-
-                addTextEntityTypeInfoToExtraSB(textEntity.type, extraSB)
-
-                extraSB.append("length = $length; ")
-                extraSB.append("offset = $offset; ")
-            }
-
-            if (text.entities.isNotEmpty()) {
-                extraSB.append("]\n")
-            }
-        }
-
-        if (codeInfo != null) {
-            val phoneNumber = codeInfo.phoneNumber
-            val timeout = codeInfo.timeout
-
-            codeInfo.type?.let {
-                extraSB.append("codeInfo.type: ")
-                addTypeInfoToExtraSB(it, extraSB)
-            }
-
-            codeInfo.nextType?.let {
-                extraSB.append("codeInfo.nextType: ")
-                addTypeInfoToExtraSB(it, extraSB)
-            }
-
-            extraSB.append("phoneNumber = $phoneNumber; ")
-            extraSB.append("timeout = $timeout sec; ")
-        }
-
-        val text = "$tag: TDLib waits code (isRegistered = $isRegistered; $extraSB)"
+        val text = "$tag: ${updateAuthorizationState.authorizationState}"
 
         debugLog(text)
-
         systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
     }
 
@@ -367,122 +239,10 @@ class App : Application() {
     ) {
         tdUpdateOptionStack.push(updateOption)
 
-        val updateOptionName = updateOption.name
-
-        val updateOptionValue: Any =
-            when (val unrecognizedUpdateOptionValue = updateOption.value) {
-                is TdApi.OptionValueString -> unrecognizedUpdateOptionValue.value
-                is TdApi.OptionValueInteger -> unrecognizedUpdateOptionValue.value
-                is TdApi.OptionValueBoolean -> unrecognizedUpdateOptionValue.value
-                is TdApi.OptionValueEmpty -> {
-                    val text = "$tag: TdApi.OptionValueEmpty"
-
-                    debugLog(text)
-
-                    systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
-                    ""
-                }
-                else -> {
-                    val text = "$tag: Unspecified TdApi.OptionValue"
-
-                    debugLog(text)
-
-                    systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
-                    assertionFailure("Undefined updateOptionValue")
-                    ""
-                }
-            }
-
-        val text = "$tag: $updateOptionName: $updateOptionValue"
+        val text = "$tag: ${updateOption.name}: ${updateOption.value}"
 
         debugLog(text)
-
         systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
-    }
-
-    private fun addTextEntityTypeInfoToExtraSB(
-        textEntityType: TdApi.TextEntityType,
-        extraSB: StringBuilder
-    ) {
-        when (textEntityType) {
-            is TdApi.TextEntityTypeMention -> {
-                extraSB.append("TextEntityTypeMention = $textEntityType; ")
-            }
-            is TdApi.TextEntityTypeHashtag -> {
-                extraSB.append("TextEntityTypeHashtag = $textEntityType; ")
-            }
-            is TdApi.TextEntityTypeCashtag -> {
-                extraSB.append("TextEntityTypeCashtag = $textEntityType; ")
-            }
-            is TdApi.TextEntityTypeBotCommand -> {
-                extraSB.append("TextEntityTypeBotCommand = $textEntityType; ")
-            }
-            is TdApi.TextEntityTypeUrl -> {
-                extraSB.append("TextEntityTypeUrl = $textEntityType; ")
-            }
-            is TdApi.TextEntityTypeEmailAddress -> {
-                extraSB.append("TextEntityTypeEmailAddress = $textEntityType; ")
-            }
-            is TdApi.TextEntityTypeBold -> {
-                extraSB.append("TextEntityTypeBold = $textEntityType; ")
-            }
-            is TdApi.TextEntityTypeItalic -> {
-                extraSB.append("TextEntityTypeItalic = $textEntityType; ")
-            }
-            is TdApi.TextEntityTypeCode -> {
-                extraSB.append("TextEntityTypeCode = $textEntityType; ")
-            }
-            is TdApi.TextEntityTypePre -> {
-                extraSB.append("TextEntityTypePre = $textEntityType; ")
-            }
-            is TdApi.TextEntityTypePreCode -> {
-                extraSB.append(
-                    "TextEntityTypePreCode = $textEntityType; " +
-                            "language = ${textEntityType.language}"
-                )
-            }
-            is TdApi.TextEntityTypeTextUrl -> {
-                extraSB.append(
-                    "TextEntityTypeTextUrl = $textEntityType; " +
-                            "url = ${textEntityType.url}"
-                )
-            }
-            is TdApi.TextEntityTypeMentionName -> {
-                extraSB.append(
-                    "TextEntityTypeMentionName = $textEntityType; " +
-                            "userId = ${textEntityType.userId}"
-                )
-            }
-            is TdApi.TextEntityTypePhoneNumber -> {
-                extraSB.append("TextEntityTypePhoneNumber = $textEntityType; ")
-            }
-            else -> {
-                debugLog("Unspecified textEntityType")
-            }
-        }
-    }
-
-    private fun addTypeInfoToExtraSB(
-        authenticationCodeType: TdApi.AuthenticationCodeType,
-        extraSB: StringBuilder
-    ) {
-        when (authenticationCodeType) {
-            is TdApi.AuthenticationCodeTypeSms -> {
-                extraSB.append("AuthenticationCodeTypeSms: length = ${authenticationCodeType.length}; ")
-            }
-            is TdApi.AuthenticationCodeTypeTelegramMessage -> {
-                extraSB.append("AuthenticationCodeTypeTelegramMessage: length = ${authenticationCodeType.length}; ")
-            }
-            is TdApi.AuthenticationCodeTypeCall -> {
-                extraSB.append("AuthenticationCodeTypeCall: length = ${authenticationCodeType.length}; ")
-            }
-            is TdApi.AuthenticationCodeTypeFlashCall -> {
-                extraSB.append("AuthenticationCodeTypeFlashCall: pattern = ${authenticationCodeType.pattern}; ")
-            }
-            else -> {
-                debugLog("Unspecified authenticationCodeType")
-            }
-        }
     }
 
 }
