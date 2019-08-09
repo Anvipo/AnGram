@@ -10,6 +10,7 @@ import com.anvipo.angram.coreLayer.ResourceManager
 import com.anvipo.angram.coreLayer.message.SystemMessage
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
+import org.drinkless.td.libcore.telegram.TdApi
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -48,7 +49,7 @@ object LaunchSystemModule {
             get<ConnectionStateBroadcastChannel>(connectionStateAppBroadcastChannelQualifier).openSubscription()
         }
         single<ConnectionStateBroadcastChannel>(connectionStateAppBroadcastChannelQualifier) {
-            BroadcastChannel<ConnectionState>(Channel.CONFLATED)
+            BroadcastChannel<TdApi.ConnectionState>(Channel.CONFLATED)
         }
 
         single<AppPresenter>(appPresenterQualifier) {

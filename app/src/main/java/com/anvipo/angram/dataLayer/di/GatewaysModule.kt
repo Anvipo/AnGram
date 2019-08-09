@@ -1,6 +1,9 @@
 package com.anvipo.angram.dataLayer.di
 
+import androidx.room.Room
 import com.anvipo.angram.applicationLayer.launchSystem.App
+import com.anvipo.angram.dataLayer.gateways.localGateway.db.room.AppDatabase
+import com.anvipo.angram.dataLayer.gateways.localGateway.db.room.proxy.ProxyRoomDAO
 import com.anvipo.angram.dataLayer.gateways.tdLibGateway.application.ApplicationTDLibGateway
 import com.anvipo.angram.dataLayer.gateways.tdLibGateway.application.ApplicationTDLibGatewayImp
 import com.anvipo.angram.dataLayer.gateways.tdLibGateway.authorization.AuthorizationTDLibGateway
@@ -15,7 +18,10 @@ import org.koin.dsl.module
 
 object GatewaysModule {
 
+    internal val appDatabaseQualifier = named("appDatabase")
+
     internal val proxyTDLibGatewayQualifier = named("proxyTDLibGateway")
+    internal val proxyLocalGatewayQualifier = named("proxyLocalGateway")
     internal val applicationTDLibGatewayQualifier = named("applicationTDLibGateway")
     internal val authorizationTDLibGatewayQualifier = named("authorizationTDLibGateway")
 
@@ -82,6 +88,20 @@ object GatewaysModule {
             ProxyTDLibGatewayImp(
                 tdClient = get<Client>(tdClientQualifier)
             )
+        }
+
+        single<ProxyRoomDAO>(proxyLocalGatewayQualifier) {
+            get<AppDatabase>(appDatabaseQualifier).proxyDao
+        }
+
+        single<AppDatabase>(appDatabaseQualifier) {
+            Room
+                .databaseBuilder(
+                    get(),
+                    AppDatabase::class.java,
+                    "angram-db"
+                )
+                .build()
         }
 
     }

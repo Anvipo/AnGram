@@ -6,7 +6,6 @@ import com.anvipo.angram.R
 import com.anvipo.angram.applicationLayer.coordinator.ApplicationCoordinator
 import com.anvipo.angram.applicationLayer.launchSystem.App
 import com.anvipo.angram.applicationLayer.launchSystem.appActivity.view.AppView
-import com.anvipo.angram.applicationLayer.types.ConnectionState.*
 import com.anvipo.angram.applicationLayer.types.ConnectionStateReceiveChannel
 import com.anvipo.angram.applicationLayer.types.SystemMessageReceiveChannel
 import com.anvipo.angram.coreLayer.CoreHelpers.debugLog
@@ -16,6 +15,7 @@ import com.anvipo.angram.presentationLayer.common.baseClasses.BasePresenterImp
 import com.arellomobile.mvp.InjectViewState
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.*
+import org.drinkless.td.libcore.telegram.TdApi
 import kotlin.coroutines.CoroutineContext
 
 @InjectViewState
@@ -125,44 +125,32 @@ class AppPresenterImp(
         ) {
             val receivedConnectionState = connectionStateReceiveChannel.receive()
 
-            if (receivedConnectionState == Undefined) {
-                val errorText = "receivedConnectionState == Undefined"
-                debugLog(errorText)
-                if (BuildConfig.DEBUG) {
-                    viewState.showToastMessage(errorText)
-                }
-
-                return@launch
-            }
-
             val connectionState = resourceManager.getString(R.string.connection_state)
             val text: String
             val duration: Int
+
             when (receivedConnectionState) {
-                WaitingForNetwork -> {
+                is TdApi.ConnectionStateWaitingForNetwork -> {
                     text = "$connectionState: waiting for network"
                     duration = Snackbar.LENGTH_INDEFINITE
                 }
-                ConnectingToProxy -> {
+                is TdApi.ConnectionStateConnectingToProxy -> {
                     text = "$connectionState: connecting to proxy"
                     duration = Snackbar.LENGTH_INDEFINITE
                 }
-                Connecting -> {
+                is TdApi.ConnectionStateConnecting -> {
                     text = "$connectionState: connecting"
                     duration = Snackbar.LENGTH_INDEFINITE
                 }
-                Updating -> {
+                is TdApi.ConnectionStateUpdating -> {
                     text = "$connectionState: updating"
                     duration = Snackbar.LENGTH_INDEFINITE
                 }
-                Ready -> {
+                is TdApi.ConnectionStateReady -> {
                     text = "$connectionState: connected"
                     duration = Snackbar.LENGTH_LONG
                 }
-                Undefined -> {
-                    text = "receivedConnectionState == Undefined"
-                    duration = Snackbar.LENGTH_LONG
-                }
+                else -> TODO()
             }
 
             val showSnackbarCEH = CoroutineExceptionHandler { _, error ->

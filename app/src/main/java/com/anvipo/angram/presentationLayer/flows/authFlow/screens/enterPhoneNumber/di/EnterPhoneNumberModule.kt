@@ -2,7 +2,6 @@ package com.anvipo.angram.presentationLayer.flows.authFlow.screens.enterPhoneNum
 
 import com.anvipo.angram.applicationLayer.coordinator.di.ApplicationCoordinatorModule.authorizationCoordinatorQualifier
 import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule.resourceManagerQualifier
-import com.anvipo.angram.applicationLayer.types.ConnectionState
 import com.anvipo.angram.applicationLayer.types.ConnectionStateBroadcastChannel
 import com.anvipo.angram.applicationLayer.types.ConnectionStateReceiveChannel
 import com.anvipo.angram.applicationLayer.types.ConnectionStateSendChannel
@@ -14,6 +13,7 @@ import com.anvipo.angram.presentationLayer.flows.authFlow.screens.enterPhoneNumb
 import com.anvipo.angram.presentationLayer.flows.authFlow.screens.enterPhoneNumber.presenter.EnterPhoneNumberPresenterImp
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
+import org.drinkless.td.libcore.telegram.TdApi
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -41,7 +41,7 @@ object EnterPhoneNumberModule {
                 .openSubscription()
         }
         single<ConnectionStateBroadcastChannel>(connectionStateEnterPhoneNumberBroadcastChannelQualifier) {
-            BroadcastChannel<ConnectionState>(Channel.CONFLATED)
+            BroadcastChannel<TdApi.ConnectionState>(Channel.CONFLATED)
         }
 
         single<EnterPhoneNumberPresenter>(enterPhoneNumberPresenterQualifier) {

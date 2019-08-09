@@ -11,4 +11,6 @@ interface ProxyTDLibGateway {
         type: TdApi.ProxyType
     ): Result<TdApi.Proxy>
 
+    suspend fun pingProxyCatching(proxyId: Int): Result<TdApi.Seconds>
+
 }

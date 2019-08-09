@@ -4,7 +4,6 @@ import android.content.Context
 import android.telephony.TelephonyManager
 import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.R
-import com.anvipo.angram.applicationLayer.types.ConnectionState
 import com.anvipo.angram.applicationLayer.types.ConnectionStateReceiveChannel
 import com.anvipo.angram.businessLogicLayer.useCases.authFlow.enterPhoneNumberUseCase.EnterPhoneNumberUseCase
 import com.anvipo.angram.coreLayer.CoreHelpers.debugLog
@@ -16,6 +15,7 @@ import com.anvipo.angram.presentationLayer.flows.authFlow.screens.addProxy.types
 import com.anvipo.angram.presentationLayer.flows.authFlow.screens.enterPhoneNumber.view.EnterPhoneNumberView
 import com.arellomobile.mvp.InjectViewState
 import kotlinx.coroutines.*
+import org.drinkless.td.libcore.telegram.TdApi
 import kotlin.coroutines.CoroutineContext
 
 @Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS")
@@ -160,36 +160,24 @@ class EnterPhoneNumberPresenterImp(
         ) {
             val receivedConnectionState = connectionStateReceiveChannel.receive()
 
-            if (receivedConnectionState == ConnectionState.Undefined) {
-                val errorText = "receivedConnectionState == Undefined"
-                debugLog(errorText)
-                if (BuildConfig.DEBUG) {
-                    viewState.showToastMessage(errorText)
-                }
-
-                return@launch
-            }
-
             val block: () -> Unit = {
                 when (receivedConnectionState) {
-                    ConnectionState.WaitingForNetwork -> {
+                    is TdApi.ConnectionStateWaitingForNetwork -> {
                         TODO()
                     }
-                    ConnectionState.ConnectingToProxy -> {
-                        TODO()
-                    }
-                    ConnectionState.Connecting -> {
+                    is TdApi.ConnectionStateConnectingToProxy -> {
                         viewState.disableNextButton()
                     }
-                    ConnectionState.Updating -> {
+                    is TdApi.ConnectionStateConnecting -> {
                         TODO()
                     }
-                    ConnectionState.Ready -> {
+                    is TdApi.ConnectionStateUpdating -> {
+                        TODO()
+                    }
+                    is TdApi.ConnectionStateReady -> {
                         viewState.enableNextButton()
                     }
-                    ConnectionState.Undefined -> {
-                        TODO()
-                    }
+                    else -> TODO()
                 }
             }
 

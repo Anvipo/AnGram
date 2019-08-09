@@ -20035,11 +20035,11 @@ public class TdApi {
          */
         @Nullable public SavedCredentials savedCredentials;
         /**
-         * True, if the user can choose to save credentials.
+         * True, if the user can choose to insertOrReplace credentials.
          */
         public boolean canSaveCredentials;
         /**
-         * True, if the user will be able to save credentials protected by a password they set up.
+         * True, if the user will be able to insertOrReplace credentials protected by a password they set up.
          */
         public boolean needPassword;
 
@@ -20057,8 +20057,8 @@ public class TdApi {
          * @param paymentsProvider Contains information about the payment provider, if available, to support it natively without the need for opening the URL; may be null.
          * @param savedOrderInfo Saved server-side order information; may be null.
          * @param savedCredentials Contains information about saved card credentials; may be null.
-         * @param canSaveCredentials True, if the user can choose to save credentials.
-         * @param needPassword True, if the user will be able to save credentials protected by a password they set up.
+         * @param canSaveCredentials True, if the user can choose to insertOrReplace credentials.
+         * @param needPassword True, if the user will be able to insertOrReplace credentials protected by a password they set up.
          */
         public PaymentForm(Invoice invoice, String url, PaymentsProviderStripe paymentsProvider, OrderInfo savedOrderInfo, SavedCredentials savedCredentials, boolean canSaveCredentials, boolean needPassword) {
             this.invoice = invoice;

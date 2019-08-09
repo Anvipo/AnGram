@@ -7,8 +7,6 @@ import com.anvipo.angram.applicationLayer.di.LaunchSystemModule
 import com.anvipo.angram.applicationLayer.di.LaunchSystemModule.connectionStateAppSendChannelQualifier
 import com.anvipo.angram.applicationLayer.di.LaunchSystemModule.systemMessageSendChannelQualifier
 import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule
-import com.anvipo.angram.applicationLayer.types.ConnectionState
-import com.anvipo.angram.applicationLayer.types.ConnectionState.*
 import com.anvipo.angram.applicationLayer.types.ConnectionStateSendChannel
 import com.anvipo.angram.applicationLayer.types.SystemMessageSendChannel
 import com.anvipo.angram.businessLogicLayer.di.UseCasesModule
@@ -221,41 +219,13 @@ class App : Application() {
         tdApiUpdateConnectionState: TdApi.UpdateConnectionState
     ) {
         tdUpdateConnectionStateStack.push(tdApiUpdateConnectionState)
+        connectionStateAppSendChannel.offer(tdApiUpdateConnectionState.state)
+        connectionStateEnterPhoneNumberSendChannel.offer(tdApiUpdateConnectionState.state)
 
-        val state: String = when (val connectionState = tdApiUpdateConnectionState.state) {
-            is TdApi.ConnectionStateConnecting -> "connecting"
-            is TdApi.ConnectionStateReady -> "ready"
-            is TdApi.ConnectionStateUpdating -> "updating"
-            else -> {
-                val text = connectionState.toString()
-
-                debugLog(text)
-
-                systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
-
-                assertionFailure("Undefined tdApiUpdateConnectionState")
-
-                ""
-            }
-        }
-
-        val text = "$tag: connection state updated ($state)"
-
+        val text = "$tag: connection state updated (${tdApiUpdateConnectionState.state})"
         debugLog(text)
 
         systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
-
-        val connectionState: ConnectionState = when (tdApiUpdateConnectionState.state) {
-            is TdApi.ConnectionStateWaitingForNetwork -> WaitingForNetwork
-            is TdApi.ConnectionStateConnectingToProxy -> ConnectingToProxy
-            is TdApi.ConnectionStateConnecting -> Connecting
-            is TdApi.ConnectionStateUpdating -> Updating
-            is TdApi.ConnectionStateReady -> Ready
-            else -> Undefined
-        }
-
-        connectionStateAppSendChannel.offer(connectionState)
-        connectionStateEnterPhoneNumberSendChannel.offer(connectionState)
     }
 
     private fun onUpdateAuthorizationState(

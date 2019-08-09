@@ -23,4 +23,11 @@ class ProxyTDLibGatewayImp(tdClient: Client) :
             )
         )
 
+    override suspend fun pingProxyCatching(proxyId: Int): Result<TdApi.Seconds> =
+        doRequestCatching(
+            TdApi.PingProxy(
+                proxyId
+            )
+        )
+
 }

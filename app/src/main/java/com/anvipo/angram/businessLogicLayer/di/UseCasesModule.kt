@@ -9,7 +9,9 @@ import com.anvipo.angram.businessLogicLayer.useCases.authFlow.enterAuthenticatio
 import com.anvipo.angram.businessLogicLayer.useCases.authFlow.enterPhoneNumberUseCase.EnterPhoneNumberUseCase
 import com.anvipo.angram.businessLogicLayer.useCases.authFlow.enterPhoneNumberUseCase.EnterPhoneNumberUseCaseImp
 import com.anvipo.angram.dataLayer.di.GatewaysModule.authorizationTDLibGatewayQualifier
+import com.anvipo.angram.dataLayer.di.GatewaysModule.proxyLocalGatewayQualifier
 import com.anvipo.angram.dataLayer.di.GatewaysModule.proxyTDLibGatewayQualifier
+import com.anvipo.angram.dataLayer.gateways.localGateway.db.room.proxy.ProxyRoomDAO
 import com.anvipo.angram.dataLayer.gateways.tdLibGateway.authorization.AuthorizationTDLibGateway
 import com.anvipo.angram.dataLayer.gateways.tdLibGateway.proxy.ProxyTDLibGateway
 import org.koin.core.module.Module
@@ -49,7 +51,8 @@ object UseCasesModule {
 
         single<AddProxyUseCase>(addProxyUseCaseQualifier) {
             AddProxyUseCaseImp(
-                tdLibGateway = get<ProxyTDLibGateway>(proxyTDLibGatewayQualifier)
+                tdLibGateway = get<ProxyTDLibGateway>(proxyTDLibGatewayQualifier),
+                dbGateway = get<ProxyRoomDAO>(proxyLocalGatewayQualifier)
             )
         }
 

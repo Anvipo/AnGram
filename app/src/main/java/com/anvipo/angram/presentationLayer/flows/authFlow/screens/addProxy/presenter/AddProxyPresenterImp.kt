@@ -23,7 +23,7 @@ class AddProxyPresenterImp(
 ) : BasePresenterImp<AddProxyView>(), AddProxyPresenter {
 
     override fun coldStart() {
-        viewState.hideAddProxyButton()
+//        viewState.hideAddProxyButton()
     }
 
     override fun addProxyButtonTapped() {
@@ -43,7 +43,7 @@ class AddProxyPresenterImp(
             useCase
                 .addProxyCatching(
                     server = serverText,
-                    port = portText.toInt(),
+                    port = portText,
                     type = proxyType!!
                 )
                 .onSuccess {
@@ -89,7 +89,7 @@ class AddProxyPresenterImp(
     }
 
     override fun onPortTextChanged(portText: CharSequence?) {
-        this.portText = portText?.toString()?.toUIntOrNull() ?: 0u
+        this.portText = portText?.toString()?.toIntOrNull() ?: 0
     }
 
     override fun onSecretTextChanged(secretText: CharSequence?) {
@@ -113,21 +113,22 @@ class AddProxyPresenterImp(
     private var serverText: String = ""
         set(value) {
             field = value
-            if (field.isNotEmpty() && portText != 0u) {
+            if (field.isNotEmpty() && portText != 0) {
                 viewState.showAddProxyButton()
             } else {
                 viewState.hideAddProxyButton()
             }
         }
-    private var portText: UInt = 0u
+    private var portText: Int = 0
         set(value) {
             field = value
-            if (serverText.isNotEmpty() && field != 0u) {
+            if (serverText.isNotEmpty() && field != 0) {
                 viewState.showAddProxyButton()
             } else {
                 viewState.hideAddProxyButton()
             }
         }
+
     private var secretText: String = ""
         set(value) {
             field = value
