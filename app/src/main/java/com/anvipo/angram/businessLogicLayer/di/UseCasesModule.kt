@@ -1,13 +1,23 @@
 package com.anvipo.angram.businessLogicLayer.di
 
-import com.anvipo.angram.businessLogicLayer.useCases.authUserStory.enterAuthenticationCodeUseCase.EnterAuthenticationCodeUseCase
-import com.anvipo.angram.businessLogicLayer.useCases.authUserStory.enterAuthenticationCodeUseCase.EnterAuthenticationCodeUseCaseImp
-import com.anvipo.angram.businessLogicLayer.useCases.authUserStory.enterAuthenticationPasswordUseCase.EnterAuthenticationPasswordUseCase
-import com.anvipo.angram.businessLogicLayer.useCases.authUserStory.enterAuthenticationPasswordUseCase.EnterAuthenticationPasswordUseCaseImp
-import com.anvipo.angram.businessLogicLayer.useCases.authUserStory.enterPhoneNumberUseCase.EnterPhoneNumberUseCase
-import com.anvipo.angram.businessLogicLayer.useCases.authUserStory.enterPhoneNumberUseCase.EnterPhoneNumberUseCaseImp
+import com.anvipo.angram.businessLogicLayer.useCases.app.AppUseCase
+import com.anvipo.angram.businessLogicLayer.useCases.app.AppUseCaseImp
+import com.anvipo.angram.businessLogicLayer.useCases.authFlow.addProxyUseCase.AddProxyUseCase
+import com.anvipo.angram.businessLogicLayer.useCases.authFlow.addProxyUseCase.AddProxyUseCaseImp
+import com.anvipo.angram.businessLogicLayer.useCases.authFlow.enterAuthenticationCodeUseCase.EnterAuthenticationCodeUseCase
+import com.anvipo.angram.businessLogicLayer.useCases.authFlow.enterAuthenticationCodeUseCase.EnterAuthenticationCodeUseCaseImp
+import com.anvipo.angram.businessLogicLayer.useCases.authFlow.enterAuthenticationPasswordUseCase.EnterAuthenticationPasswordUseCase
+import com.anvipo.angram.businessLogicLayer.useCases.authFlow.enterAuthenticationPasswordUseCase.EnterAuthenticationPasswordUseCaseImp
+import com.anvipo.angram.businessLogicLayer.useCases.authFlow.enterPhoneNumberUseCase.EnterPhoneNumberUseCase
+import com.anvipo.angram.businessLogicLayer.useCases.authFlow.enterPhoneNumberUseCase.EnterPhoneNumberUseCaseImp
 import com.anvipo.angram.dataLayer.di.GatewaysModule.authorizationTDLibGatewayQualifier
+import com.anvipo.angram.dataLayer.di.GatewaysModule.proxyLocalGatewayQualifier
+import com.anvipo.angram.dataLayer.di.GatewaysModule.proxyTDLibGatewayQualifier
+import com.anvipo.angram.dataLayer.di.GatewaysModule.sharedPreferencesGatewayQualifier
+import com.anvipo.angram.dataLayer.gateways.localGateway.db.room.proxy.ProxyRoomDAO
+import com.anvipo.angram.dataLayer.gateways.localGateway.sharedPreferences.SharedPreferencesDAO
 import com.anvipo.angram.dataLayer.gateways.tdLibGateway.authorization.AuthorizationTDLibGateway
+import com.anvipo.angram.dataLayer.gateways.tdLibGateway.proxy.ProxyTDLibGateway
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -15,15 +25,28 @@ import org.koin.dsl.module
 
 object UseCasesModule {
 
+    internal val appUseCaseQualifier = named("appUseCase")
+
     internal val enterPhoneNumberUseCaseQualifier = named("enterPhoneNumberUseCase")
     internal val enterAuthenticationCodeUseCaseQualifier = named("enterAuthenticationCodeUseCase")
     internal val enterAuthenticationPasswordUseCaseQualifier = named("enterAuthenticationPasswordUseCase")
+
+    internal val addProxyUseCaseQualifier = named("addProxyUseCase")
+
     @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
 
+        single<AppUseCase>(appUseCaseQualifier) {
+            AppUseCaseImp(
+                proxyTDLibGateway = get<ProxyTDLibGateway>(proxyTDLibGatewayQualifier),
+                sharedPreferencesGateway = get<SharedPreferencesDAO>(sharedPreferencesGatewayQualifier)
+            )
+        }
+
         single<EnterPhoneNumberUseCase>(enterPhoneNumberUseCaseQualifier) {
             EnterPhoneNumberUseCaseImp(
-                tdLibGateway = get<AuthorizationTDLibGateway>(authorizationTDLibGatewayQualifier)
+                authorizationTDLibGateway =
+                get<AuthorizationTDLibGateway>(authorizationTDLibGatewayQualifier)
             )
         }
 
@@ -38,6 +61,14 @@ object UseCasesModule {
                 tdLibGateway = get<AuthorizationTDLibGateway>(authorizationTDLibGatewayQualifier)
             )
         }
+
+        single<AddProxyUseCase>(addProxyUseCaseQualifier) {
+            AddProxyUseCaseImp(
+                tdLibGateway = get<ProxyTDLibGateway>(proxyTDLibGatewayQualifier),
+                dbGateway = get<ProxyRoomDAO>(proxyLocalGatewayQualifier)
+            )
+        }
+
     }
 
 }

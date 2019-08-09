@@ -4,10 +4,9 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.LayoutRes
-import androidx.appcompat.widget.Toolbar
 import com.anvipo.angram.R
-import com.anvipo.angram.coreLayer.MessageDialogFragment
 import com.anvipo.angram.coreLayer.base.baseInterfaces.BaseView
+import com.anvipo.angram.coreLayer.dialogFragment.MessageDialogFragment
 import com.anvipo.angram.coreLayer.showSnackbarMessage
 import com.anvipo.angram.presentationLayer.common.interfaces.BasePresenter
 import com.anvipo.angram.presentationLayer.common.mvp.MvpAppCompatActivity
@@ -34,10 +33,26 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseView {
         super.onPause()
     }
 
-    override fun showAlertMessage(text: String) {
+    override fun showAlertMessage(
+        text: String,
+        title: String?,
+        cancelable: Boolean,
+        messageDialogTag: String
+    ) {
         MessageDialogFragment
-            .create(message = text)
+            .create(
+                message = text,
+                title = title,
+                positive = getString(android.R.string.ok),
+                cancelable = cancelable,
+                messageDialogTag = messageDialogTag
+            )
             .show(supportFragmentManager, null)
+
+    }
+
+    override fun showErrorAlert(text: String) {
+        showAlertMessage(title = getString(R.string.error_title), text = text)
     }
 
     override fun showToastMessage(text: String) {
@@ -46,44 +61,33 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseView {
 
     override fun showSnackMessage(
         text: String,
-        duration: Int,
-        withProgressBar: Boolean,
-        isProgressBarIndeterminate: Boolean
+        duration: Int
     ) {
         rootView.showSnackbarMessage(
             text = text,
-            duration = duration,
-            withProgressBar = withProgressBar,
-            isProgressBarIndeterminate = isProgressBarIndeterminate
+            duration = duration
         )
     }
 
-    override fun showErrorAlert(text: String) {
-        MessageDialogFragment
-            .create(
-                message = text,
-                title = getString(R.string.error_title),
-                positive = getString(android.R.string.ok)
-            )
-            .show(supportFragmentManager, null)
+    override fun showConnectionStateSnackMessage(
+        text: String,
+        duration: Int
+    ) {
+        showSnackMessage(text, duration)
     }
 
-    protected abstract fun setupClickListeners()
-    protected open fun setupToolbar() {}
+
+    protected open fun setupClickListeners(): Unit = Unit
+    protected open fun setupToolbar(): Unit = Unit
+
+    protected val currentFragment: BaseFragment
+        get() = supportFragmentManager.findFragmentById(R.id.container) as BaseFragment
+
 
     protected abstract val presenter: BasePresenter
-
-    protected open val actionBarTitle: String = ""
-    protected open val actionBarSubtitle: String = ""
-    protected open val actionBar: Toolbar
-        get() = TODO()
-
     protected abstract val layoutRes: Int
         @LayoutRes
         get
-
-    protected val simpleName: String
-        get() = this::class.java.simpleName
 
     protected abstract val rootView: View
 

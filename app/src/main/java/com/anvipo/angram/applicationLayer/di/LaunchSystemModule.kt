@@ -6,28 +6,48 @@ import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule.resource
 import com.anvipo.angram.applicationLayer.launchSystem.appActivity.presenter.AppPresenter
 import com.anvipo.angram.applicationLayer.launchSystem.appActivity.presenter.AppPresenterImp
 import com.anvipo.angram.applicationLayer.types.*
+import com.anvipo.angram.businessLogicLayer.di.UseCasesModule.appUseCaseQualifier
+import com.anvipo.angram.businessLogicLayer.useCases.app.AppUseCase
 import com.anvipo.angram.coreLayer.ResourceManager
 import com.anvipo.angram.coreLayer.message.SystemMessage
 import kotlinx.coroutines.channels.BroadcastChannel
+import kotlinx.coroutines.channels.Channel
+import org.drinkless.td.libcore.telegram.TdApi
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
+@Suppress("EXPERIMENTAL_API_USAGE")
 object LaunchSystemModule {
+
+    private val enabledProxyIdReceiveChannelQualifier = named("enabledProxyIdReceiveChannel")
+    internal val enabledProxyIdSendChannelQualifier = named("enabledProxyIdSendChannel")
+    private val enabledProxyIdBroadcastChannelQualifier = named("enabledProxyIdBroadcastChannel")
+
 
     private val systemMessageReceiveChannelQualifier = named("systemMessageReceiveChannel")
     internal val systemMessageSendChannelQualifier = named("systemMessageSendChannel")
     private val systemMessageBroadcastChannelQualifier = named("systemMessageBroadcastChannel")
 
-    private val connectionStateReceiveChannelQualifier = named("connectionStateReceiveChannel")
-    internal val connectionStateSendChannelQualifier = named("connectionStateSendChannel")
-    private val connectionStateBroadcastChannelQualifier = named("connectionStateBroadcastChannel")
+    private val connectionStateAppReceiveChannelQualifier = named("connectionStateAppReceiveChannel")
+    internal val connectionStateAppSendChannelQualifier = named("connectionStateAppSendChannel")
+    private val connectionStateAppBroadcastChannelQualifier = named("connectionStateAppBroadcastChannel")
 
 
     internal val appPresenterQualifier = named("appPresenter")
 
     @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
+
+        single<EnabledProxyIdSendChannel>(enabledProxyIdSendChannelQualifier) {
+            get<EnabledProxyIdBroadcastChannel>(enabledProxyIdBroadcastChannelQualifier)
+        }
+        single<EnabledProxyIdReceiveChannel>(enabledProxyIdReceiveChannelQualifier) {
+            get<EnabledProxyIdBroadcastChannel>(enabledProxyIdBroadcastChannelQualifier).openSubscription()
+        }
+        single<EnabledProxyIdBroadcastChannel>(enabledProxyIdBroadcastChannelQualifier) {
+            BroadcastChannel<Int>(Channel.CONFLATED)
+        }
 
         single<SystemMessageSendChannel>(systemMessageSendChannelQualifier) {
             get<SystemMessageBroadcastChannel>(systemMessageBroadcastChannelQualifier)
@@ -36,29 +56,33 @@ object LaunchSystemModule {
             get<SystemMessageBroadcastChannel>(systemMessageBroadcastChannelQualifier).openSubscription()
         }
         single<SystemMessageBroadcastChannel>(systemMessageBroadcastChannelQualifier) {
-            BroadcastChannel<SystemMessage>(1)
+            BroadcastChannel<SystemMessage>(Channel.CONFLATED)
         }
 
-        single<ConnectionStateSendChannel>(connectionStateSendChannelQualifier) {
-            get<ConnectionStateBroadcastChannel>(connectionStateBroadcastChannelQualifier)
+        single<ConnectionStateSendChannel>(connectionStateAppSendChannelQualifier) {
+            get<ConnectionStateBroadcastChannel>(connectionStateAppBroadcastChannelQualifier)
         }
-        single<ConnectionStateReceiveChannel>(connectionStateReceiveChannelQualifier) {
-            get<ConnectionStateBroadcastChannel>(connectionStateBroadcastChannelQualifier).openSubscription()
+        single<ConnectionStateReceiveChannel>(connectionStateAppReceiveChannelQualifier) {
+            get<ConnectionStateBroadcastChannel>(connectionStateAppBroadcastChannelQualifier).openSubscription()
         }
-        single<ConnectionStateBroadcastChannel>(connectionStateBroadcastChannelQualifier) {
-            BroadcastChannel<ConnectionState>(1)
+        single<ConnectionStateBroadcastChannel>(connectionStateAppBroadcastChannelQualifier) {
+            BroadcastChannel<TdApi.ConnectionState>(Channel.CONFLATED)
         }
 
         single<AppPresenter>(appPresenterQualifier) {
             AppPresenterImp(
+                useCase = get<AppUseCase>(appUseCaseQualifier),
                 coordinator = get<ApplicationCoordinator>(
                     applicationCoordinatorQualifier
+                ),
+                enabledProxyIdReceiveChannel = get<EnabledProxyIdReceiveChannel>(
+                    enabledProxyIdReceiveChannelQualifier
                 ),
                 systemMessageReceiveChannel = get<SystemMessageReceiveChannel>(
                     systemMessageReceiveChannelQualifier
                 ),
                 connectionStateReceiveChannel = get<ConnectionStateReceiveChannel>(
-                    connectionStateReceiveChannelQualifier
+                    connectionStateAppReceiveChannelQualifier
                 ),
                 resourceManager = get<ResourceManager>(resourceManagerQualifier)
             )

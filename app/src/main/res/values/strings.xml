@@ -31,4 +31,17 @@
 
     <!--\\Authorization flow-->
 
+    <string name="add_proxy">Add proxy</string>
+    <string name="server_add_mt_proto_proxy_label">Server</string>
+    <string name="port_add_mt_proto_proxy_label">Port</string>
+    <string name="connect_add_mt_proto_proxy_label">Connect</string>
+    <string name="enter_proxy_server_data">Enter proxy server data</string>
+    <string name="key_add_mtproto_proxy_label">Key</string>
+    <string name="credentials_add_mtproto_proxy_label">Credentials</string>
+    <string name="proxy_successfully_has_been_added">Proxy successfullty has been added</string>
+    <string name="choose_proxy_server_type">Выберите нужный тип прокси сервера</string>
+
+    <string name="preference_file_key" translatable="false">angram_shared_preference_file_key</string>
+    <string name="enabled_proxy_id" translatable="false">enabled_proxy_id</string>
+
 </resources>

@@ -5,6 +5,6 @@ interface BaseCoordinator : Coordinatorable {
     var finishFlow: (() -> Unit)?
 
     fun coldStart()
-    fun hotStart() {}
+    fun hotStart(): Unit = Unit
 
 }

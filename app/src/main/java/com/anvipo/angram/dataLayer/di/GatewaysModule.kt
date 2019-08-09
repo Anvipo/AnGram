@@ -1,10 +1,19 @@
 package com.anvipo.angram.dataLayer.di
 
+import androidx.room.Room
+import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule.resourceManagerQualifier
 import com.anvipo.angram.applicationLayer.launchSystem.App
+import com.anvipo.angram.coreLayer.ResourceManager
+import com.anvipo.angram.dataLayer.gateways.localGateway.db.room.AppDatabase
+import com.anvipo.angram.dataLayer.gateways.localGateway.db.room.proxy.ProxyRoomDAO
+import com.anvipo.angram.dataLayer.gateways.localGateway.sharedPreferences.SharedPreferencesDAO
+import com.anvipo.angram.dataLayer.gateways.localGateway.sharedPreferences.SharedPreferencesDAOImp
 import com.anvipo.angram.dataLayer.gateways.tdLibGateway.application.ApplicationTDLibGateway
 import com.anvipo.angram.dataLayer.gateways.tdLibGateway.application.ApplicationTDLibGatewayImp
 import com.anvipo.angram.dataLayer.gateways.tdLibGateway.authorization.AuthorizationTDLibGateway
 import com.anvipo.angram.dataLayer.gateways.tdLibGateway.authorization.AuthorizationTDLibGatewayImp
+import com.anvipo.angram.dataLayer.gateways.tdLibGateway.proxy.ProxyTDLibGateway
+import com.anvipo.angram.dataLayer.gateways.tdLibGateway.proxy.ProxyTDLibGatewayImp
 import org.drinkless.td.libcore.telegram.Client
 import org.koin.android.ext.koin.androidApplication
 import org.koin.core.module.Module
@@ -13,6 +22,12 @@ import org.koin.dsl.module
 
 object GatewaysModule {
 
+    private val appDatabaseQualifier = named("appDatabase")
+
+    internal val sharedPreferencesGatewayQualifier = named("sharedPreferencesGateway")
+    internal val proxyLocalGatewayQualifier = named("proxyLocalGateway")
+
+    internal val proxyTDLibGatewayQualifier = named("proxyTDLibGateway")
     internal val applicationTDLibGatewayQualifier = named("applicationTDLibGateway")
     internal val authorizationTDLibGatewayQualifier = named("authorizationTDLibGateway")
 
@@ -73,6 +88,34 @@ object GatewaysModule {
             AuthorizationTDLibGatewayImp(
                 tdClient = get<Client>(tdClientQualifier)
             )
+        }
+
+        single<ProxyTDLibGateway>(proxyTDLibGatewayQualifier) {
+            ProxyTDLibGatewayImp(
+                tdClient = get<Client>(tdClientQualifier)
+            )
+        }
+
+        single<ProxyRoomDAO>(proxyLocalGatewayQualifier) {
+            get<AppDatabase>(appDatabaseQualifier).proxyDao
+        }
+
+        single<SharedPreferencesDAO>(sharedPreferencesGatewayQualifier) {
+            SharedPreferencesDAOImp(
+                resourceManager = get<ResourceManager>(
+                    resourceManagerQualifier
+                )
+            )
+        }
+
+        single<AppDatabase>(appDatabaseQualifier) {
+            Room
+                .databaseBuilder(
+                    get(),
+                    AppDatabase::class.java,
+                    "angram-db"
+                )
+                .build()
         }
 
     }

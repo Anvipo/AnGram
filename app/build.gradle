@@ -51,6 +51,9 @@ dependencies {
 
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    // Coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
 
     // Android libs
@@ -61,7 +64,7 @@ dependencies {
     // Koin
     implementation "org.koin:koin-android:$koin_version"
 
-    //Cicerone Navigation
+    // Cicerone Navigation
     implementation "ru.terrakok.cicerone:cicerone:$cicerone_version"
 
     // MVP Moxy
@@ -70,4 +73,12 @@ dependencies {
 
     // Lottie
     implementation "com.airbnb.android:lottie:$lottie_version"
+
+    // Room components
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+
+    // optional - Kotlin Extensions and Coroutines support for Room
+    implementation "androidx.room:room-ktx:$room_version"
+
 }

@@ -6,4 +6,6 @@ interface BaseTdLibGateway {
 
     suspend fun getAuthorizationStateRequestCatching(): Result<TdApi.AuthorizationState>
 
+    suspend fun setNetworkTypeCatching(type: TdApi.NetworkType): Result<TdApi.Ok>
+
 }

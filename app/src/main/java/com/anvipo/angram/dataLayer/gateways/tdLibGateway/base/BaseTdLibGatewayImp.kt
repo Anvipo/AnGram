@@ -13,18 +13,26 @@ abstract class BaseTdLibGatewayImp(
     override suspend fun getAuthorizationStateRequestCatching(): Result<TdApi.AuthorizationState> =
         doRequestCatching(TdApi.GetAuthorizationState())
 
+    override suspend fun setNetworkTypeCatching(type: TdApi.NetworkType): Result<TdApi.Ok> =
+        doRequestCatching(
+            TdApi.SetNetworkType(
+                type
+            )
+        )
+
+
     protected suspend inline fun <reified ResultType : TdApi.Object> doRequestCatching(
         query: TdApi.Function
     ): Result<ResultType> =
         suspendCancellableCoroutine { continuation ->
-            val resultHandler = Client.ResultHandler { result ->
-                when (result) {
-                    is ResultType -> continuation.resume(Result.success(result))
-                    is TdApi.Error -> {
-                        val tdApiError = parseTDApiError(result)
-
-                        continuation.resume(Result.failure(tdApiError))
-                    }
+            val resultHandler = Client.ResultHandler {
+                when (it) {
+                    is ResultType -> continuation.resume(Result.success(it))
+                    is TdApi.Error -> continuation.resume(
+                        Result.failure(
+                            TdApiError(message = it.message, code = it.code)
+                        )
+                    )
                     else -> continuation.resume(Result.failure(TdApiError.Unspecified))
                 }
             }
@@ -38,31 +46,6 @@ abstract class BaseTdLibGatewayImp(
                 resultHandler,
                 exceptionHandler
             )
-        }
-
-    protected fun parseTDApiError(result: TdApi.Error): TdApiError =
-        when (val errorCode = result.code) {
-            TdApiError.Codes.EMPTY_PARAMETER.value ->
-                TdApiError.Custom.EmptyParameter(
-                    errorCode,
-                    result.message
-                )
-            TdApiError.Codes.BAD_REQUEST.value ->
-                TdApiError.Custom.BadRequest(
-                    errorCode,
-                    result.message
-                )
-            TdApiError.Codes.DATABASE_ENCRYPTION_KEY_IS_NEEDED.value ->
-                TdApiError.Custom.DatabaseEncryptionKeyIsNeeded(
-                    errorCode,
-                    result.message
-                )
-            TdApiError.Codes.TOO_MANY_REQUESTS.value ->
-                TdApiError.Custom.TooManyRequests(
-                    errorCode,
-                    result.message
-                )
-            else -> TdApiError.Unspecified
         }
 
 }

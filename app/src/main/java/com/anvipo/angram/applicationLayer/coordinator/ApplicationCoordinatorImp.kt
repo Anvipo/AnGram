@@ -7,18 +7,15 @@ import com.anvipo.angram.coreLayer.message.SystemMessage
 import com.anvipo.angram.dataLayer.gateways.tdLibGateway.application.ApplicationTDLibGateway
 import com.anvipo.angram.global.GlobalHelpers.createTGSystemMessage
 import com.anvipo.angram.presentationLayer.common.baseClasses.BaseCoordinatorImp
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinator
-import com.anvipo.angram.presentationLayer.userStories.mainUserStory.coordinator.interfaces.MainCoordinator
+import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.interfaces.AuthorizationCoordinator
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.drinkless.td.libcore.telegram.TdApi
 import kotlin.coroutines.CoroutineContext
 
 class ApplicationCoordinatorImp(
     private val authorizationCoordinator: AuthorizationCoordinator,
-    private val mainCoordinator: MainCoordinator,
     private val tdLibGateway: ApplicationTDLibGateway,
     private val systemMessageSendChannel: SystemMessageSendChannel,
     private val context: Context
@@ -29,13 +26,6 @@ class ApplicationCoordinatorImp(
         childCoordinators.clear()
 
         configureApp()
-    }
-
-    override fun cancelAllJobs() {
-        getAuthorizationStateRequestCatchingJob?.cancel()
-        setTdLibParametersCatchingJob?.cancel()
-        checkDatabaseEncryptionKeyCatchingJob?.cancel()
-        logoutCatchingJob?.cancel()
     }
 
     override var finishFlow: (() -> Unit)? = null
@@ -53,7 +43,7 @@ class ApplicationCoordinatorImp(
     private fun checkAuthorizationState() {
         val tag = "${this::class.java.simpleName} checkAuthorizationState"
 
-        val getAuthorizationStateRequestCatchingCoroutineExceptionHandler =
+        val getAuthorizationStateRequestCatchingCEH =
             CoroutineExceptionHandler { _, error ->
                 val errorText = error.localizedMessage
 
@@ -62,21 +52,21 @@ class ApplicationCoordinatorImp(
                 systemMessageSendChannel.offer(createTGSystemMessage(text))
             }
 
-        getAuthorizationStateRequestCatchingJob = launch(
-            context = coroutineContext + getAuthorizationStateRequestCatchingCoroutineExceptionHandler
+        launch(
+            context = coroutineContext + getAuthorizationStateRequestCatchingCEH
         ) {
             val authorizationStateResult = tdLibGateway.getAuthorizationStateRequestCatching()
 
             authorizationStateResult
                 .onSuccess(::onSuccessGetAuthorizationStateResult)
                 .onFailure(::onFailureGetAuthorizationStateResult)
-        }
+        }.also { jobsThatWillBeCancelledInOnDestroy += it }
     }
 
     private fun startAuthorizationFlow(withEnterAuthorizationCodeAsRootScreen: Boolean = false) {
         authorizationCoordinator.finishFlow = {
             removeChildCoordinator(coordinator = authorizationCoordinator)
-            startMainFlow()
+            assertionFailure()
         }
 
         addChildCoordinator(coordinator = authorizationCoordinator)
@@ -86,38 +76,6 @@ class ApplicationCoordinatorImp(
         } else {
             authorizationCoordinator.coldStart()
         }
-    }
-
-    private fun startMainFlow() {
-        val tag = "${this::class.java.simpleName} startMainFlow"
-        systemMessageSendChannel.offer(SystemMessage(text = tag))
-
-        mainCoordinator.finishFlow = {
-            val logoutCatchingCoroutineExceptionHandler =
-                CoroutineExceptionHandler { _, error ->
-                    val errorText = "$tag ${error.localizedMessage}"
-
-                    systemMessageSendChannel.offer(createTGSystemMessage(errorText))
-                }
-
-            logoutCatchingJob = launch(
-                context = coroutineContext + logoutCatchingCoroutineExceptionHandler
-            ) {
-                val logoutResult = tdLibGateway.logoutCatching()
-
-                logoutResult
-                    .onSuccess {
-                        TODO("should recreate tdlib client")
-                    }
-                    .onFailure {
-                        checkAuthorizationState()
-                    }
-            }
-        }
-
-        addChildCoordinator(coordinator = mainCoordinator)
-
-        mainCoordinator.coldStart()
     }
 
 
@@ -181,26 +139,22 @@ class ApplicationCoordinatorImp(
         val text = "$tag onAuthorizationStateWaitTdlibParameters: TDLib waits parameters"
         systemMessageSendChannel.offer(SystemMessage(text = text))
 
-        val setTdLibParametersCatchingCoroutineExceptionHandler =
+        val setTdLibParametersCatchingCEH =
             CoroutineExceptionHandler { _, error ->
                 val errorText = "$tag ${error.localizedMessage}"
 
                 systemMessageSendChannel.offer(createTGSystemMessage(errorText))
             }
 
-        setTdLibParametersCatchingJob = launch(
-            context = coroutineContext + setTdLibParametersCatchingCoroutineExceptionHandler
+        launch(
+            context = coroutineContext + setTdLibParametersCatchingCEH
         ) {
             val setTdLibParametersResult = tdLibGateway.setTdLibParametersCatching(context)
 
             setTdLibParametersResult
-                .onSuccess {
-                    checkAuthorizationState()
-                }
-                .onFailure {
-                    checkAuthorizationState()
-                }
-        }
+                .onSuccess { checkAuthorizationState() }
+                .onFailure { checkAuthorizationState() }
+        }.also { jobsThatWillBeCancelledInOnDestroy += it }
     }
 
     private fun onAuthorizationStateWaitEncryptionKey() {
@@ -208,26 +162,22 @@ class ApplicationCoordinatorImp(
         val text = "$tag onAuthorizationStateWaitEncryptionKey: TDLib waits encryption key"
         systemMessageSendChannel.offer(SystemMessage(text = text))
 
-        val checkDatabaseEncryptionKeyCatchingCoroutineExceptionHandler =
+        val checkDatabaseEncryptionKeyCatchingCEH =
             CoroutineExceptionHandler { _, error ->
                 val errorText = error.localizedMessage
 
                 systemMessageSendChannel.offer(createTGSystemMessage(errorText))
             }
 
-        checkDatabaseEncryptionKeyCatchingJob = launch(
-            context = coroutineContext + checkDatabaseEncryptionKeyCatchingCoroutineExceptionHandler
+        launch(
+            context = coroutineContext + checkDatabaseEncryptionKeyCatchingCEH
         ) {
             val setTdLibParametersResult = tdLibGateway.checkDatabaseEncryptionKeyCatching()
 
             setTdLibParametersResult
-                .onSuccess {
-                    checkAuthorizationState()
-                }
-                .onFailure {
-                    checkAuthorizationState()
-                }
-        }
+                .onSuccess { checkAuthorizationState() }
+                .onFailure { checkAuthorizationState() }
+        }.also { jobsThatWillBeCancelledInOnDestroy += it }
     }
 
     private fun onAuthorizationStateReady() {
@@ -235,7 +185,7 @@ class ApplicationCoordinatorImp(
 
         systemMessageSendChannel.offer(SystemMessage(text = tag))
 
-        startMainFlow()
+        assertionFailure()
     }
 
     private fun onAuthorizationStateWaitCode() {
@@ -253,11 +203,5 @@ class ApplicationCoordinatorImp(
 
         startAuthorizationFlow()
     }
-
-
-    private var getAuthorizationStateRequestCatchingJob: Job? = null
-    private var setTdLibParametersCatchingJob: Job? = null
-    private var checkDatabaseEncryptionKeyCatchingJob: Job? = null
-    private var logoutCatchingJob: Job? = null
 
 }

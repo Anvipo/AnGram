@@ -9,12 +9,9 @@ import com.anvipo.angram.dataLayer.di.GatewaysModule.applicationTDLibGatewayQual
 import com.anvipo.angram.dataLayer.di.GatewaysModule.authorizationTDLibGatewayQualifier
 import com.anvipo.angram.dataLayer.gateways.tdLibGateway.application.ApplicationTDLibGateway
 import com.anvipo.angram.dataLayer.gateways.tdLibGateway.authorization.AuthorizationTDLibGateway
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.AuthorizationCoordinatorImp
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.interfaces.AuthorizationCoordinator
-import com.anvipo.angram.presentationLayer.userStories.authUserStory.coordinator.screensFactory.authorizationScreensFactory.AuthorizationScreensFactoryImp
-import com.anvipo.angram.presentationLayer.userStories.mainUserStory.coordinator.MainCoordinatorImp
-import com.anvipo.angram.presentationLayer.userStories.mainUserStory.coordinator.interfaces.MainCoordinator
-import com.anvipo.angram.presentationLayer.userStories.mainUserStory.coordinator.screensFactory.MainScreensFactoryImp
+import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.AuthorizationCoordinatorImp
+import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.interfaces.AuthorizationCoordinator
+import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.screensFactory.authorizationScreensFactory.AuthorizationScreensFactoryImp
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -24,8 +21,6 @@ object ApplicationCoordinatorModule {
 
     internal val applicationCoordinatorQualifier = named("applicationCoordinator")
     internal val authorizationCoordinatorQualifier = named("authorizationCoordinator")
-    @Suppress("MemberVisibilityCanBePrivate")
-    internal val mainCoordinatorQualifier = named("mainCoordinator")
 
     @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
@@ -37,7 +32,6 @@ object ApplicationCoordinatorModule {
                 get<SystemMessageSendChannel>(systemMessageSendChannelQualifier),
                 authorizationCoordinator =
                 get<AuthorizationCoordinator>(authorizationCoordinatorQualifier),
-                mainCoordinator = get<MainCoordinator>(mainCoordinatorQualifier),
                 context = get()
             )
         }
@@ -46,16 +40,9 @@ object ApplicationCoordinatorModule {
             AuthorizationCoordinatorImp(
                 router = get<Router>(routerQualifier),
                 screensFactory = AuthorizationScreensFactoryImp,
-                tdLibGateway = get<AuthorizationTDLibGateway>(authorizationTDLibGatewayQualifier),
+                authorizationTDLibGateway = get<AuthorizationTDLibGateway>(authorizationTDLibGatewayQualifier),
                 systemMessageSendChannel =
                 get<SystemMessageSendChannel>(systemMessageSendChannelQualifier)
-            )
-        }
-
-        single<MainCoordinator>(mainCoordinatorQualifier) {
-            MainCoordinatorImp(
-                router = get<Router>(routerQualifier),
-                screensFactory = MainScreensFactoryImp
             )
         }
 
