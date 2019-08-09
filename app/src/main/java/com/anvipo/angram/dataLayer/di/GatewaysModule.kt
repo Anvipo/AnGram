@@ -1,9 +1,13 @@
 package com.anvipo.angram.dataLayer.di
 
 import androidx.room.Room
+import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule.resourceManagerQualifier
 import com.anvipo.angram.applicationLayer.launchSystem.App
+import com.anvipo.angram.coreLayer.ResourceManager
 import com.anvipo.angram.dataLayer.gateways.localGateway.db.room.AppDatabase
 import com.anvipo.angram.dataLayer.gateways.localGateway.db.room.proxy.ProxyRoomDAO
+import com.anvipo.angram.dataLayer.gateways.localGateway.sharedPreferences.SharedPreferencesDAO
+import com.anvipo.angram.dataLayer.gateways.localGateway.sharedPreferences.SharedPreferencesDAOImp
 import com.anvipo.angram.dataLayer.gateways.tdLibGateway.application.ApplicationTDLibGateway
 import com.anvipo.angram.dataLayer.gateways.tdLibGateway.application.ApplicationTDLibGatewayImp
 import com.anvipo.angram.dataLayer.gateways.tdLibGateway.authorization.AuthorizationTDLibGateway
@@ -18,10 +22,12 @@ import org.koin.dsl.module
 
 object GatewaysModule {
 
-    internal val appDatabaseQualifier = named("appDatabase")
+    private val appDatabaseQualifier = named("appDatabase")
+
+    internal val sharedPreferencesGatewayQualifier = named("sharedPreferencesGateway")
+    internal val proxyLocalGatewayQualifier = named("proxyLocalGateway")
 
     internal val proxyTDLibGatewayQualifier = named("proxyTDLibGateway")
-    internal val proxyLocalGatewayQualifier = named("proxyLocalGateway")
     internal val applicationTDLibGatewayQualifier = named("applicationTDLibGateway")
     internal val authorizationTDLibGatewayQualifier = named("authorizationTDLibGateway")
 
@@ -92,6 +98,14 @@ object GatewaysModule {
 
         single<ProxyRoomDAO>(proxyLocalGatewayQualifier) {
             get<AppDatabase>(appDatabaseQualifier).proxyDao
+        }
+
+        single<SharedPreferencesDAO>(sharedPreferencesGatewayQualifier) {
+            SharedPreferencesDAOImp(
+                resourceManager = get<ResourceManager>(
+                    resourceManagerQualifier
+                )
+            )
         }
 
         single<AppDatabase>(appDatabaseQualifier) {

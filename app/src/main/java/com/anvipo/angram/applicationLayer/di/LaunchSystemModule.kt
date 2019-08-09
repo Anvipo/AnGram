@@ -6,6 +6,8 @@ import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule.resource
 import com.anvipo.angram.applicationLayer.launchSystem.appActivity.presenter.AppPresenter
 import com.anvipo.angram.applicationLayer.launchSystem.appActivity.presenter.AppPresenterImp
 import com.anvipo.angram.applicationLayer.types.*
+import com.anvipo.angram.businessLogicLayer.di.UseCasesModule.appUseCaseQualifier
+import com.anvipo.angram.businessLogicLayer.useCases.app.AppUseCase
 import com.anvipo.angram.coreLayer.ResourceManager
 import com.anvipo.angram.coreLayer.message.SystemMessage
 import kotlinx.coroutines.channels.BroadcastChannel
@@ -17,6 +19,11 @@ import org.koin.dsl.module
 
 @Suppress("EXPERIMENTAL_API_USAGE")
 object LaunchSystemModule {
+
+    private val enabledProxyIdReceiveChannelQualifier = named("enabledProxyIdReceiveChannel")
+    internal val enabledProxyIdSendChannelQualifier = named("enabledProxyIdSendChannel")
+    private val enabledProxyIdBroadcastChannelQualifier = named("enabledProxyIdBroadcastChannel")
+
 
     private val systemMessageReceiveChannelQualifier = named("systemMessageReceiveChannel")
     internal val systemMessageSendChannelQualifier = named("systemMessageSendChannel")
@@ -31,6 +38,16 @@ object LaunchSystemModule {
 
     @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
+
+        single<EnabledProxyIdSendChannel>(enabledProxyIdSendChannelQualifier) {
+            get<EnabledProxyIdBroadcastChannel>(enabledProxyIdBroadcastChannelQualifier)
+        }
+        single<EnabledProxyIdReceiveChannel>(enabledProxyIdReceiveChannelQualifier) {
+            get<EnabledProxyIdBroadcastChannel>(enabledProxyIdBroadcastChannelQualifier).openSubscription()
+        }
+        single<EnabledProxyIdBroadcastChannel>(enabledProxyIdBroadcastChannelQualifier) {
+            BroadcastChannel<Int>(Channel.CONFLATED)
+        }
 
         single<SystemMessageSendChannel>(systemMessageSendChannelQualifier) {
             get<SystemMessageBroadcastChannel>(systemMessageBroadcastChannelQualifier)
@@ -54,8 +71,12 @@ object LaunchSystemModule {
 
         single<AppPresenter>(appPresenterQualifier) {
             AppPresenterImp(
+                useCase = get<AppUseCase>(appUseCaseQualifier),
                 coordinator = get<ApplicationCoordinator>(
                     applicationCoordinatorQualifier
+                ),
+                enabledProxyIdReceiveChannel = get<EnabledProxyIdReceiveChannel>(
+                    enabledProxyIdReceiveChannelQualifier
                 ),
                 systemMessageReceiveChannel = get<SystemMessageReceiveChannel>(
                     systemMessageReceiveChannelQualifier

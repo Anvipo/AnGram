@@ -5,9 +5,11 @@ import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.applicationLayer.coordinator.di.ApplicationCoordinatorModule
 import com.anvipo.angram.applicationLayer.di.LaunchSystemModule
 import com.anvipo.angram.applicationLayer.di.LaunchSystemModule.connectionStateAppSendChannelQualifier
+import com.anvipo.angram.applicationLayer.di.LaunchSystemModule.enabledProxyIdSendChannelQualifier
 import com.anvipo.angram.applicationLayer.di.LaunchSystemModule.systemMessageSendChannelQualifier
 import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule
 import com.anvipo.angram.applicationLayer.types.ConnectionStateSendChannel
+import com.anvipo.angram.applicationLayer.types.EnabledProxyIdSendChannel
 import com.anvipo.angram.applicationLayer.types.SystemMessageSendChannel
 import com.anvipo.angram.businessLogicLayer.di.UseCasesModule
 import com.anvipo.angram.coreLayer.CoreErrors
@@ -140,6 +142,9 @@ class App : Application() {
     private val systemMessageSendChannel: SystemMessageSendChannel
             by inject(systemMessageSendChannelQualifier)
 
+    private val enabledProxyIdSendChannel: EnabledProxyIdSendChannel
+            by inject(enabledProxyIdSendChannelQualifier)
+
     private val connectionStateAppSendChannel: ConnectionStateSendChannel
             by inject(connectionStateAppSendChannelQualifier)
 
@@ -155,6 +160,7 @@ class App : Application() {
     private val tdUpdateStack: IMutableStack<TdApi.Update> = MutableStack()
 
     private val tdUpdateOptionStack: IMutableStack<TdApi.UpdateOption> = MutableStack()
+    private val enabledProxyIdStack: IMutableStack<Int> = MutableStack()
 
     private val tdUpdateUserStack: IMutableStack<TdApi.UpdateUser> = MutableStack()
     private val tdUpdateHavePendingNotificationsStack: IMutableStack<TdApi.UpdateHavePendingNotifications> =
@@ -215,10 +221,12 @@ class App : Application() {
         tdApiUpdateConnectionState: TdApi.UpdateConnectionState
     ) {
         tdUpdateConnectionStateStack.push(tdApiUpdateConnectionState)
-        connectionStateAppSendChannel.offer(tdApiUpdateConnectionState.state)
-        connectionStateEnterPhoneNumberSendChannel.offer(tdApiUpdateConnectionState.state)
 
-        val text = "$tag: connection state updated (${tdApiUpdateConnectionState.state})"
+        val connectionState = tdApiUpdateConnectionState.state
+        connectionStateAppSendChannel.offer(connectionState)
+        connectionStateEnterPhoneNumberSendChannel.offer(connectionState)
+
+        val text = "$tag: connection state updated ($connectionState)"
 
         debugLog(text)
         systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
@@ -242,7 +250,17 @@ class App : Application() {
     ) {
         tdUpdateOptionStack.push(updateOption)
 
-        val text = "$tag: ${updateOption.name}: ${updateOption.value}"
+        val optionValue = updateOption.value
+
+        val text = "$tag: ${updateOption.name}: $optionValue"
+
+        if (updateOption.name == "enabled_proxy_id") {
+            if (optionValue is TdApi.OptionValueInteger) {
+                enabledProxyIdSendChannel.offer(optionValue.value)
+            } else {
+                assertionFailure()
+            }
+        }
 
         debugLog(text)
         systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))

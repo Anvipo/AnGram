@@ -66,7 +66,7 @@ class ApplicationCoordinatorImp(
     private fun startAuthorizationFlow(withEnterAuthorizationCodeAsRootScreen: Boolean = false) {
         authorizationCoordinator.finishFlow = {
             removeChildCoordinator(coordinator = authorizationCoordinator)
-            TODO()
+            assertionFailure()
         }
 
         addChildCoordinator(coordinator = authorizationCoordinator)
@@ -185,7 +185,7 @@ class ApplicationCoordinatorImp(
 
         systemMessageSendChannel.offer(SystemMessage(text = tag))
 
-        TODO()
+        assertionFailure()
     }
 
     private fun onAuthorizationStateWaitCode() {

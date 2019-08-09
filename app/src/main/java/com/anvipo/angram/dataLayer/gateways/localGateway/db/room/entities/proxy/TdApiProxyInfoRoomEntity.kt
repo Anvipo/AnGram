@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
+import com.anvipo.angram.coreLayer.CoreHelpers.assertionFailure
 import com.anvipo.angram.dataLayer.gateways.localGateway.db.room.base.BaseConverter
 import com.anvipo.angram.dataLayer.gateways.localGateway.db.room.entities.proxy.TdApiProxyInfoRoomEntity.Companion.TD_API_PROXY_INFOS_TABLE_NAME
 import com.anvipo.angram.dataLayer.gateways.localGateway.db.room.entities.proxy.type.base.TdApiProxyTypeRoomEntity
@@ -75,7 +76,7 @@ class TdApiProxyInfoRoomEntity(
                         if (fieldName == TdApiMTProtoProxyTypeRoomEntity::secret.name) {
                             secretValue = fieldValue
                         } else {
-                            TODO()
+                            assertionFailure()
                         }
                     }
 

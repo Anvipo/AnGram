@@ -26,6 +26,7 @@ class AddProxyPresenterImp(
 ) : BasePresenterImp<AddProxyView>(), AddProxyPresenter {
 
     override fun coldStart() {
+        // TODO: uncomment
 //        viewState.hideAddProxyButton()
     }
 
@@ -45,9 +46,9 @@ class AddProxyPresenterImp(
         ) {
             useCase
                 .addProxyCatching(
-                    server = serverText,
-                    port = portText,
-                    type = proxyType!!
+                    server = "tg-2.rknsosatb.pw",
+                    port = 443,
+                    type = TdApi.ProxyTypeMtproto("dde99993ad3d7146fcf8f3baa789cc62ac")
                 )
                 .onSuccess {
                     withContext(Dispatchers.Main) {

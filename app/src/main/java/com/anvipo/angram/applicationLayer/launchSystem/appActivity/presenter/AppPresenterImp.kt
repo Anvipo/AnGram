@@ -7,14 +7,16 @@ import com.anvipo.angram.applicationLayer.coordinator.ApplicationCoordinator
 import com.anvipo.angram.applicationLayer.launchSystem.App
 import com.anvipo.angram.applicationLayer.launchSystem.appActivity.view.AppView
 import com.anvipo.angram.applicationLayer.types.ConnectionStateReceiveChannel
+import com.anvipo.angram.applicationLayer.types.EnabledProxyIdReceiveChannel
 import com.anvipo.angram.applicationLayer.types.SystemMessageReceiveChannel
+import com.anvipo.angram.businessLogicLayer.useCases.app.AppUseCase
+import com.anvipo.angram.coreLayer.CoreHelpers.assertionFailure
 import com.anvipo.angram.coreLayer.CoreHelpers.debugLog
 import com.anvipo.angram.coreLayer.ResourceManager
 import com.anvipo.angram.coreLayer.message.SystemMessageType
 import com.anvipo.angram.presentationLayer.common.baseClasses.BasePresenterImp
 import com.arellomobile.mvp.InjectViewState
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,11 +25,23 @@ import kotlin.coroutines.CoroutineContext
 
 @InjectViewState
 class AppPresenterImp(
+    private val useCase: AppUseCase,
     private val coordinator: ApplicationCoordinator,
+    private val enabledProxyIdReceiveChannel: EnabledProxyIdReceiveChannel,
     private val systemMessageReceiveChannel: SystemMessageReceiveChannel,
     private val connectionStateReceiveChannel: ConnectionStateReceiveChannel,
     private val resourceManager: ResourceManager
 ) : BasePresenterImp<AppView>(), AppPresenter {
+
+    init {
+        val receiveChannelList = listOf(
+            enabledProxyIdReceiveChannel,
+            systemMessageReceiveChannel,
+            connectionStateReceiveChannel
+        )
+
+        channelsThatWillBeUnsubscribedInOnPause.addAll(receiveChannelList)
+    }
 
     override fun coldStart() {
         coordinator.coldStart()
@@ -43,8 +57,8 @@ class AppPresenterImp(
     }
 
     override fun onPauseTriggered() {
+        super<BasePresenterImp>.onPauseTriggered()
         viewState.removeNavigator()
-        unsubscribeFromChannels()
     }
 
 
@@ -145,7 +159,11 @@ class AppPresenterImp(
                     text = "$connectionState: connected"
                     duration = Snackbar.LENGTH_LONG
                 }
-                else -> TODO()
+                else -> {
+                    assertionFailure()
+                    text = ""
+                    duration = Snackbar.LENGTH_SHORT
+                }
             }
 
             val showSnackbarCEH = CoroutineExceptionHandler { _, error ->
@@ -167,14 +185,28 @@ class AppPresenterImp(
         }.also { jobsThatWillBeCancelledInOnDestroy += it }
     }
 
-    private fun unsubscribeFromChannels() {
-        systemMessageReceiveChannel.cancel(CancellationException("AppActivity onPause"))
-        connectionStateReceiveChannel.cancel(CancellationException("AppActivity onPause"))
+    private fun subscribeOnEnabledProxyId() {
+        val receiveEnabledProxyIdCEH = CoroutineExceptionHandler { _, error ->
+            if (BuildConfig.DEBUG) {
+                val text = error.localizedMessage
+                debugLog(text)
+                viewState.showErrorAlert(text)
+            }
+        }
+
+        launch(
+            context = coroutineContext + receiveEnabledProxyIdCEH
+        ) {
+            val enabledProxyId = enabledProxyIdReceiveChannel.receive()
+
+            useCase.saveEnabledProxyId(enabledProxyId)
+        }.also { jobsThatWillBeCancelledInOnDestroy += it }
     }
 
     private fun subscribeToChannels() {
         subscribeOnSystemMessages()
         subscribeOnConnectionStates()
+        subscribeOnEnabledProxyId()
     }
 
 }

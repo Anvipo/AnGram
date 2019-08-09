@@ -1,5 +1,7 @@
 package com.anvipo.angram.businessLogicLayer.di
 
+import com.anvipo.angram.businessLogicLayer.useCases.app.AppUseCase
+import com.anvipo.angram.businessLogicLayer.useCases.app.AppUseCaseImp
 import com.anvipo.angram.businessLogicLayer.useCases.authFlow.addProxyUseCase.AddProxyUseCase
 import com.anvipo.angram.businessLogicLayer.useCases.authFlow.addProxyUseCase.AddProxyUseCaseImp
 import com.anvipo.angram.businessLogicLayer.useCases.authFlow.enterAuthenticationCodeUseCase.EnterAuthenticationCodeUseCase
@@ -11,7 +13,9 @@ import com.anvipo.angram.businessLogicLayer.useCases.authFlow.enterPhoneNumberUs
 import com.anvipo.angram.dataLayer.di.GatewaysModule.authorizationTDLibGatewayQualifier
 import com.anvipo.angram.dataLayer.di.GatewaysModule.proxyLocalGatewayQualifier
 import com.anvipo.angram.dataLayer.di.GatewaysModule.proxyTDLibGatewayQualifier
+import com.anvipo.angram.dataLayer.di.GatewaysModule.sharedPreferencesGatewayQualifier
 import com.anvipo.angram.dataLayer.gateways.localGateway.db.room.proxy.ProxyRoomDAO
+import com.anvipo.angram.dataLayer.gateways.localGateway.sharedPreferences.SharedPreferencesDAO
 import com.anvipo.angram.dataLayer.gateways.tdLibGateway.authorization.AuthorizationTDLibGateway
 import com.anvipo.angram.dataLayer.gateways.tdLibGateway.proxy.ProxyTDLibGateway
 import org.koin.core.module.Module
@@ -21,6 +25,8 @@ import org.koin.dsl.module
 
 object UseCasesModule {
 
+    internal val appUseCaseQualifier = named("appUseCase")
+
     internal val enterPhoneNumberUseCaseQualifier = named("enterPhoneNumberUseCase")
     internal val enterAuthenticationCodeUseCaseQualifier = named("enterAuthenticationCodeUseCase")
     internal val enterAuthenticationPasswordUseCaseQualifier = named("enterAuthenticationPasswordUseCase")
@@ -29,6 +35,13 @@ object UseCasesModule {
 
     @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
+
+        single<AppUseCase>(appUseCaseQualifier) {
+            AppUseCaseImp(
+                proxyTDLibGateway = get<ProxyTDLibGateway>(proxyTDLibGatewayQualifier),
+                sharedPreferencesGateway = get<SharedPreferencesDAO>(sharedPreferencesGatewayQualifier)
+            )
+        }
 
         single<EnterPhoneNumberUseCase>(enterPhoneNumberUseCaseQualifier) {
             EnterPhoneNumberUseCaseImp(

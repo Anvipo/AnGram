@@ -13,13 +13,23 @@ import androidx.room.Update
 interface BaseRoomDAO<in T> {
 
     @Insert(onConflict = REPLACE)
-    suspend fun insertAllOrReplace(vararg obj: T): LongArray
+    suspend fun insertOrReplace(obj: T): Long
 
     @Insert(onConflict = ABORT)
-    suspend fun insertAllOrAbortTransaction(vararg obj: T): LongArray
+    suspend fun insertOrAbortTransaction(obj: T): Long
 
     @Insert(onConflict = IGNORE)
-    suspend fun insertAllOrIgnoreConflict(vararg obj: T): LongArray
+    suspend fun insertOrIgnoreConflict(obj: T): Long
+
+
+    @Insert(onConflict = REPLACE)
+    suspend fun insertAllOrReplace(vararg objs: T): LongArray
+
+    @Insert(onConflict = ABORT)
+    suspend fun insertAllOrAbortTransaction(vararg objs: T): LongArray
+
+    @Insert(onConflict = IGNORE)
+    suspend fun insertAllOrIgnoreConflict(vararg objs: T): LongArray
 
 
     @Update

@@ -17,7 +17,7 @@ class ResourceManager(private val context: Context) {
 
     fun getSystemService(serviceName: String): Any? = context.getSystemService(serviceName)
 
-    fun getSharedPreference(): SharedPreferences {
+    fun getSharedPreferences(): SharedPreferences {
         val preferenceFileKey = getString(R.string.preference_file_key)
 
         return context.getSharedPreferences(preferenceFileKey, Context.MODE_PRIVATE)

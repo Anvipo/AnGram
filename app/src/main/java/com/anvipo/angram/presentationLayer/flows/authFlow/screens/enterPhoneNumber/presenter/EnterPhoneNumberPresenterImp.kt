@@ -4,9 +4,9 @@ import android.content.Context
 import android.telephony.TelephonyManager
 import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.R
-import com.anvipo.angram.applicationLayer.launchSystem.App
 import com.anvipo.angram.applicationLayer.types.ConnectionStateReceiveChannel
 import com.anvipo.angram.businessLogicLayer.useCases.authFlow.enterPhoneNumberUseCase.EnterPhoneNumberUseCase
+import com.anvipo.angram.coreLayer.CoreHelpers.assertionFailure
 import com.anvipo.angram.coreLayer.CoreHelpers.debugLog
 import com.anvipo.angram.coreLayer.ResourceManager
 import com.anvipo.angram.dataLayer.gateways.tdLibGateway.errors.TdApiError
@@ -28,6 +28,14 @@ class EnterPhoneNumberPresenterImp(
     private val connectionStateReceiveChannel: ConnectionStateReceiveChannel
 ) : BasePresenterImp<EnterPhoneNumberView>(), EnterPhoneNumberPresenter {
 
+    init {
+        val receiveChannelList = listOf(
+            connectionStateReceiveChannel
+        )
+
+        channelsThatWillBeUnsubscribedInOnPause.addAll(receiveChannelList)
+    }
+
     override fun coldStart() {
         viewState.hideNextButton()
 
@@ -39,9 +47,6 @@ class EnterPhoneNumberPresenterImp(
         subscribeOnConnectionStates()
     }
 
-    override fun onPauseTriggered() {
-        connectionStateReceiveChannel.cancel(CancellationException("EnterPhoneNumberView onPause"))
-    }
 
     override fun onAddProxyButtonPressed() {
         viewState.showItemsDialog(
@@ -151,27 +156,6 @@ class EnterPhoneNumberPresenterImp(
         ) {
             val receivedConnectionState = connectionStateReceiveChannel.receive()
 
-            val block: () -> Unit = {
-                when (receivedConnectionState) {
-                    is TdApi.ConnectionStateWaitingForNetwork -> {
-                        viewState.disableNextButton()
-                    }
-                    is TdApi.ConnectionStateConnectingToProxy -> {
-                        viewState.disableNextButton()
-                    }
-                    is TdApi.ConnectionStateConnecting -> {
-                        viewState.disableNextButton()
-                    }
-                    is TdApi.ConnectionStateUpdating -> {
-                        viewState.disableNextButton()
-                    }
-                    is TdApi.ConnectionStateReady -> {
-                        viewState.enableNextButton()
-                    }
-                    else -> TODO()
-                }
-            }
-
             val doOnNewConnectionStateCEH = CoroutineExceptionHandler { _, error ->
                 if (BuildConfig.DEBUG) {
                     val errorText = error.localizedMessage
@@ -183,7 +167,14 @@ class EnterPhoneNumberPresenterImp(
             launch(
                 context = Dispatchers.Main + doOnNewConnectionStateCEH
             ) {
-                block()
+                when (receivedConnectionState) {
+                    is TdApi.ConnectionStateWaitingForNetwork -> viewState.disableNextButton()
+                    is TdApi.ConnectionStateConnectingToProxy -> viewState.disableNextButton()
+                    is TdApi.ConnectionStateConnecting -> viewState.disableNextButton()
+                    is TdApi.ConnectionStateUpdating -> viewState.disableNextButton()
+                    is TdApi.ConnectionStateReady -> viewState.enableNextButton()
+                    else -> assertionFailure()
+                }
             }.also { jobsThatWillBeCancelledInOnDestroy += it }
         }.also { jobsThatWillBeCancelledInOnDestroy += it }
     }

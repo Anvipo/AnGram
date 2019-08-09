@@ -8,6 +8,10 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.SendChannel
 import org.drinkless.td.libcore.telegram.TdApi
 
+typealias EnabledProxyIdSendChannel = SendChannel<Int>
+typealias EnabledProxyIdReceiveChannel = ReceiveChannel<Int>
+typealias EnabledProxyIdBroadcastChannel = BroadcastChannel<Int>
+
 typealias SystemMessageSendChannel = SendChannel<SystemMessage>
 typealias SystemMessageReceiveChannel = ReceiveChannel<SystemMessage>
 typealias SystemMessageBroadcastChannel = BroadcastChannel<SystemMessage>
