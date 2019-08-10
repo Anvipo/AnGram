@@ -21,8 +21,8 @@ import com.anvipo.angram.layers.core.base.interfaces.BaseView
 import com.anvipo.angram.layers.core.dialogFragment.ItemsDialogFragment
 import com.anvipo.angram.layers.core.dialogFragment.MessageDialogFragment
 import com.anvipo.angram.layers.core.showSnackbarMessage
-import com.anvipo.angram.presentationLayer.common.interfaces.BasePresenter
-import com.anvipo.angram.presentationLayer.common.mvp.MvpAppCompatFragment
+import com.anvipo.angram.layers.presentation.common.interfaces.BasePresenter
+import com.anvipo.angram.layers.presentation.common.mvp.MvpAppCompatFragment
 
 @Suppress("unused")
 abstract class BaseFragment : MvpAppCompatFragment(), BaseView {

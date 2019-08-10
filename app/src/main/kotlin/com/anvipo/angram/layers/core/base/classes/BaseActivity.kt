@@ -8,8 +8,8 @@ import com.anvipo.angram.R
 import com.anvipo.angram.layers.core.base.interfaces.BaseView
 import com.anvipo.angram.layers.core.dialogFragment.MessageDialogFragment
 import com.anvipo.angram.layers.core.showSnackbarMessage
-import com.anvipo.angram.presentationLayer.common.interfaces.BasePresenter
-import com.anvipo.angram.presentationLayer.common.mvp.MvpAppCompatActivity
+import com.anvipo.angram.layers.presentation.common.interfaces.BasePresenter
+import com.anvipo.angram.layers.presentation.common.mvp.MvpAppCompatActivity
 
 @Suppress("unused")
 abstract class BaseActivity : MvpAppCompatActivity(), BaseView {

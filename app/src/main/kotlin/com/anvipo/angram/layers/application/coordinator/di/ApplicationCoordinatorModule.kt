@@ -11,10 +11,10 @@ import com.anvipo.angram.layers.data.di.GatewaysModule.applicationTDLibGatewayQu
 import com.anvipo.angram.layers.data.di.GatewaysModule.authorizationTDLibGatewayQualifier
 import com.anvipo.angram.layers.data.gateways.tdLib.application.ApplicationTDLibGateway
 import com.anvipo.angram.layers.data.gateways.tdLib.authorization.AuthorizationTDLibGateway
-import com.anvipo.angram.presentationLayer.flows.auth.coordinator.AuthorizationCoordinatorImp
-import com.anvipo.angram.presentationLayer.flows.auth.coordinator.di.AuthorizationCoordinatorModule.authorizationScreensFactoryQualifier
-import com.anvipo.angram.presentationLayer.flows.auth.coordinator.interfaces.AuthorizationCoordinator
-import com.anvipo.angram.presentationLayer.flows.auth.coordinator.screensFactory.authorization.AuthorizationScreensFactory
+import com.anvipo.angram.layers.presentation.flows.auth.coordinator.AuthorizationCoordinatorImp
+import com.anvipo.angram.layers.presentation.flows.auth.coordinator.di.AuthorizationCoordinatorModule.authorizationScreensFactoryQualifier
+import com.anvipo.angram.layers.presentation.flows.auth.coordinator.interfaces.AuthorizationCoordinator
+import com.anvipo.angram.layers.presentation.flows.auth.coordinator.screensFactory.authorization.AuthorizationScreensFactory
 import org.koin.android.ext.koin.androidApplication
 import org.koin.core.module.Module
 import org.koin.core.qualifier.StringQualifier
