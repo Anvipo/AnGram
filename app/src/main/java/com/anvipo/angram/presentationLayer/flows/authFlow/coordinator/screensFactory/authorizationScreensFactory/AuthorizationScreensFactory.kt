@@ -2,7 +2,7 @@ package com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.screensFa
 
 import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.screensFactory.addProxyScreenFactory.AddProxyScreenFactory
 import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.screensFactory.enterAuthCodeScreenFactory.EnterAuthenticationCodeScreenFactory
-import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.screensFactory.enterPasswordScreenFactory.EnterPasswordScreenFactory
+import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.screensFactory.enterPasswordScreenFactory.EnterAuthenticationPasswordScreenFactory
 import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.screensFactory.enterPhoneNumberScreenFactory.EnterPhoneNumberScreenFactory
 
 interface AuthorizationScreensFactory {
@@ -11,7 +11,7 @@ interface AuthorizationScreensFactory {
 
     val enterAuthenticationCodeScreenFactory: EnterAuthenticationCodeScreenFactory
 
-    val enterPasswordScreenFactory: EnterPasswordScreenFactory
+    val enterAuthenticationPasswordScreenFactory: EnterAuthenticationPasswordScreenFactory
 
     val addProxyScreenFactory: AddProxyScreenFactory
 

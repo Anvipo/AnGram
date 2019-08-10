@@ -19,19 +19,20 @@ import com.anvipo.angram.dataLayer.gateways.local.sharedPreferences.SharedPrefer
 import com.anvipo.angram.dataLayer.gateways.tdLib.authorization.AuthorizationTDLibGateway
 import com.anvipo.angram.dataLayer.gateways.tdLib.proxy.ProxyTDLibGateway
 import org.koin.core.module.Module
+import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 
 object UseCasesModule {
 
-    internal val appUseCaseQualifier = named("appUseCase")
+    val appUseCaseQualifier: StringQualifier = named("appUseCase")
 
-    internal val enterPhoneNumberUseCaseQualifier = named("enterPhoneNumberUseCase")
-    internal val enterAuthenticationCodeUseCaseQualifier = named("enterAuthenticationCodeUseCase")
-    internal val enterAuthenticationPasswordUseCaseQualifier = named("enterAuthenticationPasswordUseCase")
+    val enterPhoneNumberUseCaseQualifier: StringQualifier = named("enterPhoneNumberUseCase")
+    val enterAuthenticationCodeUseCaseQualifier: StringQualifier = named("enterAuthenticationCodeUseCase")
+    val enterAuthenticationPasswordUseCaseQualifier: StringQualifier = named("enterAuthenticationPasswordUseCase")
 
-    internal val addProxyUseCaseQualifier = named("addProxyUseCase")
+    val addProxyUseCaseQualifier: StringQualifier = named("addProxyUseCase")
 
     @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {

@@ -86,11 +86,11 @@ class AddProxyFragment :
     override val layoutRes: Int by lazy { R.layout.fragment_add_proxy }
 
     @ProvidePresenter
-    internal fun providePresenter(): AddProxyPresenterImp =
+    fun providePresenter(): AddProxyPresenterImp =
         get(addProxyPresenterQualifier)
 
     @InjectPresenter
-    internal lateinit var mPresenter: AddProxyPresenterImp
+    lateinit var mPresenter: AddProxyPresenterImp
 
     private val adapter by lazy { AddProxySectionListAdapter() }
 

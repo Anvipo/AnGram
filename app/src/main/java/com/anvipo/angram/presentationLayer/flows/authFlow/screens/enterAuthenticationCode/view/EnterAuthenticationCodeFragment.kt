@@ -2,9 +2,7 @@ package com.anvipo.angram.presentationLayer.flows.authFlow.screens.enterAuthenti
 
 
 import android.os.Bundle
-import android.text.Editable
 import android.text.InputFilter
-import android.text.TextWatcher
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import com.anvipo.angram.R
@@ -12,6 +10,7 @@ import com.anvipo.angram.coreLayer.base.baseClasses.BaseFragment
 import com.anvipo.angram.coreLayer.hideKeyboard
 import com.anvipo.angram.coreLayer.hideWithAnimate
 import com.anvipo.angram.coreLayer.showWithAnimate
+import com.anvipo.angram.presentationLayer.common.TextWatcherImp
 import com.anvipo.angram.presentationLayer.flows.authFlow.screens.enterAuthenticationCode.di.EnterAuthenticationCodeModule.enterAuthenticationCodePresenterQualifier
 import com.anvipo.angram.presentationLayer.flows.authFlow.screens.enterAuthenticationCode.presenter.EnterAuthenticationCodePresenter
 import com.anvipo.angram.presentationLayer.flows.authFlow.screens.enterAuthenticationCode.presenter.EnterAuthenticationCodePresenterImp
@@ -106,11 +105,11 @@ class EnterAuthenticationCodeFragment : BaseFragment(), EnterAuthenticationCodeV
     override val presenter: EnterAuthenticationCodePresenter by lazy { mPresenter }
 
     @ProvidePresenter
-    internal fun providePresenter(): EnterAuthenticationCodePresenterImp =
+    fun providePresenter(): EnterAuthenticationCodePresenterImp =
         get(enterAuthenticationCodePresenterQualifier)
 
     @InjectPresenter
-    internal lateinit var mPresenter: EnterAuthenticationCodePresenterImp
+    lateinit var mPresenter: EnterAuthenticationCodePresenterImp
 
     private fun onClickedResendAuthenticationCodeButton(
         @Suppress("UNUSED_PARAMETER") view: View
@@ -142,69 +141,21 @@ class EnterAuthenticationCodeFragment : BaseFragment(), EnterAuthenticationCodeV
     }
 
     private val authCodeTextWatcher by lazy {
-        object : TextWatcher {
-            override fun afterTextChanged(editText: Editable?): Unit = Unit
-
-            override fun beforeTextChanged(
-                text: CharSequence?,
-                start: Int,
-                count: Int,
-                after: Int
-            ): Unit = Unit
-
-            override fun onTextChanged(
-                text: CharSequence?,
-                start: Int,
-                before: Int,
-                count: Int
-            ) {
-                presenter.onAuthenticationCodeTextChanged(text)
-            }
-        }
+        TextWatcherImp(
+            onEnteredText = { presenter.onAuthenticationCodeTextChanged(it) }
+        )
     }
 
     private val firstNameTextWatcher by lazy {
-        object : TextWatcher {
-            override fun afterTextChanged(editText: Editable?): Unit = Unit
-
-            override fun beforeTextChanged(
-                text: CharSequence?,
-                start: Int,
-                count: Int,
-                after: Int
-            ): Unit = Unit
-
-            override fun onTextChanged(
-                text: CharSequence?,
-                start: Int,
-                before: Int,
-                count: Int
-            ) {
-                presenter.onFirstNameTextChanged(text)
-            }
-        }
+        TextWatcherImp(
+            onEnteredText = { presenter.onFirstNameTextChanged(it) }
+        )
     }
 
     private val lastNameTextWatcher by lazy {
-        object : TextWatcher {
-            override fun afterTextChanged(editText: Editable?): Unit = Unit
-
-            override fun beforeTextChanged(
-                text: CharSequence?,
-                start: Int,
-                count: Int,
-                after: Int
-            ): Unit = Unit
-
-            override fun onTextChanged(
-                text: CharSequence?,
-                start: Int,
-                before: Int,
-                count: Int
-            ) {
-                presenter.onLastNameTextChanged(text)
-            }
-        }
+        TextWatcherImp(
+            onEnteredText = { presenter.onLastNameTextChanged(it) }
+        )
     }
 
 }

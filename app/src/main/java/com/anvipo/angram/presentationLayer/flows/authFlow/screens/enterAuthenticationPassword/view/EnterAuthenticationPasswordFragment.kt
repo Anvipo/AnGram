@@ -32,10 +32,10 @@ class EnterAuthenticationPasswordFragment : BaseFragment(), EnterAuthenticationP
 
 
     @ProvidePresenter
-    internal fun providePresenter(): EnterAuthenticationPasswordPresenterImp =
+    fun providePresenter(): EnterAuthenticationPasswordPresenterImp =
         get(enterAuthenticationPasswordPresenterQualifier)
 
     @InjectPresenter
-    internal lateinit var mPresenter: EnterAuthenticationPasswordPresenterImp
+    lateinit var mPresenter: EnterAuthenticationPasswordPresenterImp
 
 }

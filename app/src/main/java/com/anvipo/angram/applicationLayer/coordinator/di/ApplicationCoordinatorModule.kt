@@ -12,17 +12,19 @@ import com.anvipo.angram.dataLayer.di.GatewaysModule.authorizationTDLibGatewayQu
 import com.anvipo.angram.dataLayer.gateways.tdLib.application.ApplicationTDLibGateway
 import com.anvipo.angram.dataLayer.gateways.tdLib.authorization.AuthorizationTDLibGateway
 import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.AuthorizationCoordinatorImp
+import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.di.AuthorizationCoordinatorModule.authorizationScreensFactoryQualifier
 import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.interfaces.AuthorizationCoordinator
-import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.screensFactory.authorizationScreensFactory.AuthorizationScreensFactoryImp
+import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.screensFactory.authorizationScreensFactory.AuthorizationScreensFactory
 import org.koin.core.module.Module
+import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import ru.terrakok.cicerone.Router
 
 object ApplicationCoordinatorModule {
 
-    internal val applicationCoordinatorQualifier = named("applicationCoordinator")
-    internal val authorizationCoordinatorQualifier = named("authorizationCoordinator")
+    val applicationCoordinatorQualifier: StringQualifier = named("applicationCoordinator")
+    val authorizationCoordinatorQualifier: StringQualifier = named("authorizationCoordinator")
 
     private val applicationCoordinatorsFactoryQualifier = named("applicationCoordinatorsFactory")
 
@@ -43,8 +45,8 @@ object ApplicationCoordinatorModule {
         single<AuthorizationCoordinator>(authorizationCoordinatorQualifier) {
             AuthorizationCoordinatorImp(
                 router = get<Router>(routerQualifier),
-                screensFactory = AuthorizationScreensFactoryImp,
-                authorizationTDLibGateway = get<AuthorizationTDLibGateway>(authorizationTDLibGatewayQualifier),
+                screensFactory = get<AuthorizationScreensFactory>(authorizationScreensFactoryQualifier),
+                tdLibGateway = get<AuthorizationTDLibGateway>(authorizationTDLibGatewayQualifier),
                 systemMessageSendChannel =
                 get<SystemMessageSendChannel>(systemMessageSendChannelQualifier)
             )

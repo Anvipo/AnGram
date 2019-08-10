@@ -14,6 +14,7 @@ import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
 import org.drinkless.td.libcore.telegram.TdApi
 import org.koin.core.module.Module
+import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -21,20 +22,20 @@ import org.koin.dsl.module
 object LaunchSystemModule {
 
     private val enabledProxyIdReceiveChannelQualifier = named("enabledProxyIdReceiveChannel")
-    internal val enabledProxyIdSendChannelQualifier = named("enabledProxyIdSendChannel")
+    val enabledProxyIdSendChannelQualifier: StringQualifier = named("enabledProxyIdSendChannel")
     private val enabledProxyIdBroadcastChannelQualifier = named("enabledProxyIdBroadcastChannel")
 
 
     private val systemMessageReceiveChannelQualifier = named("systemMessageReceiveChannel")
-    internal val systemMessageSendChannelQualifier = named("systemMessageSendChannel")
+    val systemMessageSendChannelQualifier: StringQualifier = named("systemMessageSendChannel")
     private val systemMessageBroadcastChannelQualifier = named("systemMessageBroadcastChannel")
 
     private val connectionStateAppReceiveChannelQualifier = named("connectionStateAppReceiveChannel")
-    internal val connectionStateAppSendChannelQualifier = named("connectionStateAppSendChannel")
+    val connectionStateAppSendChannelQualifier: StringQualifier = named("connectionStateAppSendChannel")
     private val connectionStateAppBroadcastChannelQualifier = named("connectionStateAppBroadcastChannel")
 
 
-    internal val appPresenterQualifier = named("appPresenter")
+    val appPresenterQualifier: StringQualifier = named("appPresenter")
 
     @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {

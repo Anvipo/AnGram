@@ -75,11 +75,11 @@ class EnterPhoneNumberFragment :
     }
 
     @ProvidePresenter
-    internal fun providePresenter(): EnterPhoneNumberPresenterImp =
+    fun providePresenter(): EnterPhoneNumberPresenterImp =
         get(enterPhoneNumberPresenterQualifier)
 
     @InjectPresenter
-    internal lateinit var mPresenter: EnterPhoneNumberPresenterImp
+    lateinit var mPresenter: EnterPhoneNumberPresenterImp
 
     private val phoneNumberTextWatcher by lazy {
         PhoneNumberTextWatcher(

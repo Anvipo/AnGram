@@ -156,7 +156,7 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseView {
     }
 
 
-    internal fun onBackPressed() {
+    fun onBackPressed() {
         presenter.onBackPressed()
     }
 
@@ -242,9 +242,9 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseView {
 
     companion object {
 
-        internal const val fromApplicationSettingsRequestCode: Int = 10_000
+        const val fromApplicationSettingsRequestCode: Int = 10_000
 
-        internal const val ARG_SHOULD_SHOW_BACK_BUTTON: String = "arg_should_show_back_button"
+        const val ARG_SHOULD_SHOW_BACK_BUTTON: String = "arg_should_show_back_button"
 
     }
 

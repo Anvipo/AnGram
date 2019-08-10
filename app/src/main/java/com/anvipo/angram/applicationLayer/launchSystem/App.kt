@@ -21,6 +21,7 @@ import com.anvipo.angram.coreLayer.message.SystemMessage
 import com.anvipo.angram.coreLayer.message.SystemMessageType
 import com.anvipo.angram.dataLayer.di.GatewaysModule
 import com.anvipo.angram.global.GlobalHelpers.createTGSystemMessageFromApp
+import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.di.AuthorizationCoordinatorModule
 import com.anvipo.angram.presentationLayer.flows.authFlow.screens.addProxy.di.AddProxyModule
 import com.anvipo.angram.presentationLayer.flows.authFlow.screens.enterAuthenticationCode.di.EnterAuthenticationCodeModule
 import com.anvipo.angram.presentationLayer.flows.authFlow.screens.enterAuthenticationPassword.di.EnterAuthenticationPasswordModule
@@ -47,7 +48,7 @@ class App : Application() {
         INSTANCE = this
     }
 
-    internal val updatesHandlerFunction: (TdApi.Object) -> Unit = { tdApiObject ->
+    val updatesHandlerFunction: (TdApi.Object) -> Unit = { tdApiObject ->
         tdObjectsStack.push(tdApiObject)
 
         val tag = "${this::class.java.simpleName} updatesHandler"
@@ -62,7 +63,7 @@ class App : Application() {
         }
     }
 
-    internal val updatesExceptionHandlerFunction: (Throwable) -> Unit = { error ->
+    val updatesExceptionHandlerFunction: (Throwable) -> Unit = { error ->
         tdErrorsStack.push(error)
 
         val tag = "${this::class.java.simpleName} updatesExceptionHandlerFunction"
@@ -96,7 +97,7 @@ class App : Application() {
         }
     }
 
-    internal val defaultExceptionHandlerFunction: (Throwable) -> Unit = { error ->
+    val defaultExceptionHandlerFunction: (Throwable) -> Unit = { error ->
         tdErrorsStack.push(error)
 
         val tag = "${this::class.java.simpleName} defaultExceptionHandlerFunction"
@@ -114,6 +115,7 @@ class App : Application() {
             UseCasesModule.module,
             GatewaysModule.module,
             ApplicationCoordinatorModule.module,
+            AuthorizationCoordinatorModule.module,
             EnterPhoneNumberModule.module,
             EnterAuthenticationCodeModule.module,
             EnterAuthenticationPasswordModule.module,

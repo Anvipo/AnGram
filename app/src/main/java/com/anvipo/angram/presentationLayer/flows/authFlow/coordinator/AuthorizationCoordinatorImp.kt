@@ -9,7 +9,6 @@ import com.anvipo.angram.global.GlobalHelpers.createTGSystemMessage
 import com.anvipo.angram.presentationLayer.common.baseClasses.BaseCoordinatorImp
 import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.interfaces.*
 import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.screensFactory.authorizationScreensFactory.AuthorizationScreensFactory
-import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.screensFactory.enterPhoneNumberScreenFactory.EnterPhoneNumberScreenFactoryImp
 import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.types.AuthorizationCoordinateResult
 import com.anvipo.angram.presentationLayer.flows.authFlow.screens.addProxy.types.ProxyType
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -17,6 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.drinkless.td.libcore.telegram.TdApi
 import ru.terrakok.cicerone.Router
+import ru.terrakok.cicerone.android.support.SupportAppScreen
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.resume
@@ -25,7 +25,7 @@ import kotlin.coroutines.suspendCoroutine
 class AuthorizationCoordinatorImp(
     private val router: Router,
     private val screensFactory: AuthorizationScreensFactory,
-    private val authorizationTDLibGateway: AuthorizationTDLibGateway,
+    private val tdLibGateway: AuthorizationTDLibGateway,
     private val systemMessageSendChannel: SystemMessageSendChannel
 ) : BaseCoordinatorImp<AuthorizationCoordinateResult>(),
     AuthorizationCoordinator,
@@ -46,7 +46,7 @@ class AuthorizationCoordinatorImp(
     override suspend fun startAuthFlowWithEnterPasswordAsRootScreen(): AuthorizationCoordinateResult =
         suspendCoroutine {
             finishAuthorizationFlow = it
-            startAuthFlowWithEnterPasswordAsRootScreenHelper()
+            startAuthorizationFlowWithEnterAuthorizationPasswordAsRootScreenHelper()
         }
 
     override fun onEnterCorrectPhoneNumber() {
@@ -107,7 +107,7 @@ class AuthorizationCoordinatorImp(
 
         systemMessageSendChannel.offer(createLogMessage(text))
 
-        router.backTo(EnterPhoneNumberScreenFactoryImp.EnterPhoneNumberScreen)
+        router.backTo(enterPhoneNumberScreen)
     }
 
     override fun onEnterCorrectAuthenticationPassword() {
@@ -147,6 +147,8 @@ class AuthorizationCoordinatorImp(
 
     private lateinit var finishAuthorizationFlow: Continuation<AuthorizationCoordinateResult>
 
+    private var enterPhoneNumberScreen: SupportAppScreen? = null
+
     private fun startAuthorizationFlowWithEnterAuthorizationCodeAsRootScreenHelper() {
         val getAuthorizationStateRequestCatchingCEH =
             CoroutineExceptionHandler { _, error ->
@@ -158,7 +160,7 @@ class AuthorizationCoordinatorImp(
         launch(
             context = coroutineContext + getAuthorizationStateRequestCatchingCEH
         ) {
-            val authorizationStateResult = authorizationTDLibGateway.getAuthorizationStateRequestCatching()
+            val authorizationStateResult = tdLibGateway.getAuthorizationStateRequestCatching()
 
             authorizationStateResult
                 .onSuccess {
@@ -175,7 +177,7 @@ class AuthorizationCoordinatorImp(
         }.also { jobsThatWillBeCancelledInOnDestroy += it }
     }
 
-    private fun startAuthFlowWithEnterPasswordAsRootScreenHelper() {
+    private fun startAuthorizationFlowWithEnterAuthorizationPasswordAsRootScreenHelper() {
         val getAuthorizationStateRequestCatchingCEH =
             CoroutineExceptionHandler { _, error ->
                 val errorText = error.localizedMessage
@@ -186,7 +188,7 @@ class AuthorizationCoordinatorImp(
         launch(
             context = coroutineContext + getAuthorizationStateRequestCatchingCEH
         ) {
-            val authorizationStateResult = authorizationTDLibGateway.getAuthorizationStateRequestCatching()
+            val authorizationStateResult = tdLibGateway.getAuthorizationStateRequestCatching()
 
             authorizationStateResult
                 .onSuccess {
@@ -218,7 +220,7 @@ class AuthorizationCoordinatorImp(
         launch(
             context = coroutineContext + getAuthorizationStateRequestCatchingCEH
         ) {
-            val authorizationStateResult = authorizationTDLibGateway.getAuthorizationStateRequestCatching()
+            val authorizationStateResult = tdLibGateway.getAuthorizationStateRequestCatching()
 
             authorizationStateResult
                 .onSuccess(::onSuccessGetAuthStateResult)
@@ -327,14 +329,14 @@ class AuthorizationCoordinatorImp(
 
             val enterPasswordScreen =
                 screensFactory
-                    .enterPasswordScreenFactory
+                    .enterAuthenticationPasswordScreenFactory
                     .createEnterPasswordScreen()
 
             router.newRootChain(enterPhoneNumberScreen, enterPasswordScreen)
         } else {
             val enterPasswordScreen =
                 screensFactory
-                    .enterPasswordScreenFactory
+                    .enterAuthenticationPasswordScreenFactory
                     .createEnterPasswordScreen()
 
             router.navigateTo(enterPasswordScreen)
@@ -351,12 +353,12 @@ class AuthorizationCoordinatorImp(
 
 
     private fun showEnterPhoneNumberScreen() {
-        val enterPhoneNumberScreen =
+        enterPhoneNumberScreen =
             screensFactory
                 .enterPhoneNumberScreenFactory
                 .createEnterPhoneNumberScreen()
 
-        router.newRootScreen(enterPhoneNumberScreen)
+        router.newRootScreen(enterPhoneNumberScreen!!)
     }
 
     private fun showEnterAuthCodeScreen(

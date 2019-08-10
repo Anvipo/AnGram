@@ -17,6 +17,7 @@ import com.anvipo.angram.dataLayer.gateways.tdLib.proxy.ProxyTDLibGatewayImp
 import org.drinkless.td.libcore.telegram.Client
 import org.koin.android.ext.koin.androidApplication
 import org.koin.core.module.Module
+import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -24,12 +25,12 @@ object GatewaysModule {
 
     private val appDatabaseQualifier = named("appDatabase")
 
-    internal val sharedPreferencesGatewayQualifier = named("sharedPreferencesGateway")
-    internal val proxyLocalGatewayQualifier = named("proxyLocalGateway")
+    val sharedPreferencesGatewayQualifier: StringQualifier = named("sharedPreferencesGateway")
+    val proxyLocalGatewayQualifier: StringQualifier = named("proxyLocalGateway")
 
-    internal val proxyTDLibGatewayQualifier = named("proxyTDLibGateway")
-    internal val applicationTDLibGatewayQualifier = named("applicationTDLibGateway")
-    internal val authorizationTDLibGatewayQualifier = named("authorizationTDLibGateway")
+    val proxyTDLibGatewayQualifier: StringQualifier = named("proxyTDLibGateway")
+    val applicationTDLibGatewayQualifier: StringQualifier = named("applicationTDLibGateway")
+    val authorizationTDLibGatewayQualifier: StringQualifier = named("authorizationTDLibGateway")
 
     private val tdClientQualifier = named("tdClient")
 

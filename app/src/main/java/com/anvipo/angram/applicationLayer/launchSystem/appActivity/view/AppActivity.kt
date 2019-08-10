@@ -57,10 +57,10 @@ class AppActivity : BaseActivity(), AppView {
 
 
     @ProvidePresenter
-    internal fun providePresenter(): AppPresenterImp = get(appPresenterQualifier)
+    fun providePresenter(): AppPresenterImp = get(appPresenterQualifier)
 
     @InjectPresenter
-    internal lateinit var mPresenter: AppPresenterImp
+    lateinit var mPresenter: AppPresenterImp
 
     /// PRIVATE
 

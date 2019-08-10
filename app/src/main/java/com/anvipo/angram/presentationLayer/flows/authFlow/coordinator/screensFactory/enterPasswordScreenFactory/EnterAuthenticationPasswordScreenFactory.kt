@@ -2,7 +2,7 @@ package com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.screensFa
 
 import ru.terrakok.cicerone.android.support.SupportAppScreen
 
-interface EnterPasswordScreenFactory {
+interface EnterAuthenticationPasswordScreenFactory {
 
     fun createEnterPasswordScreen(): SupportAppScreen
 

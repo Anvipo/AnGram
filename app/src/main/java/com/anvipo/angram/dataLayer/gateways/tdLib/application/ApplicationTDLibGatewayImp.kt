@@ -60,7 +60,7 @@ class ApplicationTDLibGatewayImp(tdClient: Client) :
         parameters.useFileDatabase = true
         parameters.useMessageDatabase = true
         parameters.useSecretChats = false
-        parameters.useTestDc = false
+        parameters.useTestDc = true
 
         return parameters
     }

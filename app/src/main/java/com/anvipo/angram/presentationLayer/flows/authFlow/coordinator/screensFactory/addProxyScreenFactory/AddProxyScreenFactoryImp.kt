@@ -1,29 +1,27 @@
 package com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.screensFactory.addProxyScreenFactory
 
-import androidx.fragment.app.Fragment
+import com.anvipo.angram.presentationLayer.flows.authFlow.screens.addProxy.di.AddProxyModule
+import com.anvipo.angram.presentationLayer.flows.authFlow.screens.addProxy.di.AddProxyModule.addProxyScreenCodeScreenQualifier
 import com.anvipo.angram.presentationLayer.flows.authFlow.screens.addProxy.types.ProxyType
-import com.anvipo.angram.presentationLayer.flows.authFlow.screens.addProxy.view.AddProxyFragment
+import org.koin.core.parameter.parametersOf
+import org.koin.core.scope.Scope
 import ru.terrakok.cicerone.android.support.SupportAppScreen
 
-object AddProxyScreenFactoryImp : AddProxyScreenFactory {
-
-    class AddProxyScreen(
-        private val proxyType: ProxyType,
-        private val shouldShowBackButton: Boolean
-    ) : SupportAppScreen() {
-        override fun getFragment(): Fragment =
-            AddProxyFragment.createNewInstance(
-                proxyType = proxyType,
-                shouldShowBackButton = shouldShowBackButton
-            ) as Fragment
-    }
+class AddProxyScreenFactoryImp(
+    private val koinScope: Scope
+) : AddProxyScreenFactory {
 
     override fun createAddProxyScreen(
         proxyType: ProxyType,
         shouldShowBackButton: Boolean
-    ): SupportAppScreen = AddProxyScreen(
-        proxyType = proxyType,
-        shouldShowBackButton = shouldShowBackButton
-    )
+    ): SupportAppScreen =
+        koinScope.get(addProxyScreenCodeScreenQualifier) {
+            parametersOf(
+                AddProxyModule.AddProxyScreenParameters(
+                    shouldShowBackButton = shouldShowBackButton,
+                    proxyType = proxyType
+                )
+            )
+        }
 
 }
