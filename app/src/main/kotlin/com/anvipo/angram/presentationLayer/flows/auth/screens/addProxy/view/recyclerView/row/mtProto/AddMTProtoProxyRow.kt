@@ -1,7 +1,7 @@
 package com.anvipo.angram.presentationLayer.flows.auth.screens.addProxy.view.recyclerView.row.mtProto
 
 import android.text.InputType
-import com.anvipo.angram.coreLayer.IndexPath
+import com.anvipo.angram.layers.core.IndexPath
 import com.anvipo.angram.presentationLayer.flows.auth.screens.addProxy.view.recyclerView.row.base.AddProxyRow
 
 @Suppress("EXPERIMENTAL_API_USAGE")

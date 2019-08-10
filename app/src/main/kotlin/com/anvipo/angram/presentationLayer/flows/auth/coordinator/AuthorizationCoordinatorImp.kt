@@ -1,9 +1,9 @@
 package com.anvipo.angram.presentationLayer.flows.auth.coordinator
 
 import com.anvipo.angram.layers.application.types.SystemMessageSendChannel
-import com.anvipo.angram.coreLayer.CoreHelpers.assertionFailure
-import com.anvipo.angram.coreLayer.CoreHelpers.debugLog
-import com.anvipo.angram.coreLayer.message.SystemMessage
+import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
+import com.anvipo.angram.layers.core.CoreHelpers.debugLog
+import com.anvipo.angram.layers.core.message.SystemMessage
 import com.anvipo.angram.dataLayer.gateways.tdLib.authorization.AuthorizationTDLibGateway
 import com.anvipo.angram.global.GlobalHelpers.createTGSystemMessage
 import com.anvipo.angram.presentationLayer.common.baseClasses.BaseCoordinatorImp

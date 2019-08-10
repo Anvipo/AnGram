@@ -1,6 +1,6 @@
 package com.anvipo.angram.layers.application.di
 
-import com.anvipo.angram.coreLayer.ResourceManager
+import com.anvipo.angram.layers.core.ResourceManager
 import org.koin.android.ext.koin.androidApplication
 import org.koin.core.module.Module
 import org.koin.core.qualifier.StringQualifier

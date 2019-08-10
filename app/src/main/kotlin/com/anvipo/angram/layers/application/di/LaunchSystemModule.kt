@@ -8,8 +8,8 @@ import com.anvipo.angram.layers.application.launchSystem.appActivity.presenter.A
 import com.anvipo.angram.layers.application.types.*
 import com.anvipo.angram.layers.businessLogic.di.UseCasesModule.appUseCaseQualifier
 import com.anvipo.angram.layers.businessLogic.useCases.app.AppUseCase
-import com.anvipo.angram.coreLayer.ResourceManager
-import com.anvipo.angram.coreLayer.message.SystemMessage
+import com.anvipo.angram.layers.core.ResourceManager
+import com.anvipo.angram.layers.core.message.SystemMessage
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
 import org.drinkless.td.libcore.telegram.TdApi

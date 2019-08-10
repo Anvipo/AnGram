@@ -6,11 +6,11 @@ import android.view.View
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.anvipo.angram.R
-import com.anvipo.angram.coreLayer.IndexPath
-import com.anvipo.angram.coreLayer.base.classes.BaseFragment
-import com.anvipo.angram.coreLayer.dialogFragment.MessageDialogFragment
-import com.anvipo.angram.coreLayer.hideWithAnimate
-import com.anvipo.angram.coreLayer.showWithAnimate
+import com.anvipo.angram.layers.core.IndexPath
+import com.anvipo.angram.layers.core.base.classes.BaseFragment
+import com.anvipo.angram.layers.core.dialogFragment.MessageDialogFragment
+import com.anvipo.angram.layers.core.hideWithAnimate
+import com.anvipo.angram.layers.core.showWithAnimate
 import com.anvipo.angram.presentationLayer.flows.auth.screens.addProxy.di.AddProxyModule.addProxyPresenterQualifier
 import com.anvipo.angram.presentationLayer.flows.auth.screens.addProxy.presenter.AddProxyPresenter
 import com.anvipo.angram.presentationLayer.flows.auth.screens.addProxy.presenter.AddProxyPresenterImp

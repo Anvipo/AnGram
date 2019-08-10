@@ -6,10 +6,10 @@ import android.text.InputFilter
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import com.anvipo.angram.R
-import com.anvipo.angram.coreLayer.base.classes.BaseFragment
-import com.anvipo.angram.coreLayer.hideKeyboard
-import com.anvipo.angram.coreLayer.hideWithAnimate
-import com.anvipo.angram.coreLayer.showWithAnimate
+import com.anvipo.angram.layers.core.base.classes.BaseFragment
+import com.anvipo.angram.layers.core.hideKeyboard
+import com.anvipo.angram.layers.core.hideWithAnimate
+import com.anvipo.angram.layers.core.showWithAnimate
 import com.anvipo.angram.presentationLayer.common.TextWatcherImp
 import com.anvipo.angram.presentationLayer.flows.auth.screens.enterAuthenticationCode.di.EnterAuthenticationCodeModule.enterAuthenticationCodePresenterQualifier
 import com.anvipo.angram.presentationLayer.flows.auth.screens.enterAuthenticationCode.presenter.EnterAuthenticationCodePresenter

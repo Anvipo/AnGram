@@ -5,7 +5,7 @@ import com.anvipo.angram.layers.application.coordinator.di.ApplicationCoordinato
 import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.resourceManagerQualifier
 import com.anvipo.angram.layers.businessLogic.di.UseCasesModule.addProxyUseCaseQualifier
 import com.anvipo.angram.layers.businessLogic.useCases.authFlow.addProxy.AddProxyUseCase
-import com.anvipo.angram.coreLayer.ResourceManager
+import com.anvipo.angram.layers.core.ResourceManager
 import com.anvipo.angram.presentationLayer.flows.auth.coordinator.interfaces.AuthorizationCoordinatorAddProxyRouteEventHandler
 import com.anvipo.angram.presentationLayer.flows.auth.coordinator.screensFactory.addProxy.AddProxyScreenFactory
 import com.anvipo.angram.presentationLayer.flows.auth.coordinator.screensFactory.addProxy.AddProxyScreenFactoryImp

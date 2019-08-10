@@ -4,8 +4,8 @@ import android.content.Context
 import com.anvipo.angram.layers.application.coordinator.coordinatorsFactory.ApplicationCoordinatorsFactory
 import com.anvipo.angram.layers.application.coordinator.types.ApplicationCoordinateResult
 import com.anvipo.angram.layers.application.types.SystemMessageSendChannel
-import com.anvipo.angram.coreLayer.CoreHelpers.debugLog
-import com.anvipo.angram.coreLayer.message.SystemMessage
+import com.anvipo.angram.layers.core.CoreHelpers.debugLog
+import com.anvipo.angram.layers.core.message.SystemMessage
 import com.anvipo.angram.dataLayer.gateways.tdLib.application.ApplicationTDLibGateway
 import com.anvipo.angram.global.GlobalHelpers.createTGSystemMessage
 import com.anvipo.angram.presentationLayer.common.baseClasses.BaseCoordinatorImp

@@ -1,8 +1,8 @@
 package com.anvipo.angram.global
 
 import com.anvipo.angram.BuildConfig
-import com.anvipo.angram.coreLayer.message.SystemMessage
-import com.anvipo.angram.coreLayer.message.SystemMessageType
+import com.anvipo.angram.layers.core.message.SystemMessage
+import com.anvipo.angram.layers.core.message.SystemMessageType
 
 object GlobalHelpers {
 

@@ -1,6 +1,6 @@
 @file:Suppress("unused", "UNUSED_PARAMETER")
 
-package com.anvipo.angram.coreLayer
+package com.anvipo.angram.layers.core
 
 import android.content.Context
 import android.content.Intent

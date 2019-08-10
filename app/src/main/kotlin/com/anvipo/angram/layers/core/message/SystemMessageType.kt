@@ -1,4 +1,4 @@
-package com.anvipo.angram.coreLayer.message
+package com.anvipo.angram.layers.core.message
 
 enum class SystemMessageType {
     ALERT,

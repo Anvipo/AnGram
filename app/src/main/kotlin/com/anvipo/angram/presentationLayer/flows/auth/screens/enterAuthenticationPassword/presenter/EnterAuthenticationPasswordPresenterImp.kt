@@ -3,8 +3,8 @@ package com.anvipo.angram.presentationLayer.flows.auth.screens.enterAuthenticati
 import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.businessLogic.useCases.authFlow.enterAuthenticationPassword.EnterAuthenticationPasswordUseCase
-import com.anvipo.angram.coreLayer.CoreHelpers
-import com.anvipo.angram.coreLayer.ResourceManager
+import com.anvipo.angram.layers.core.CoreHelpers
+import com.anvipo.angram.layers.core.ResourceManager
 import com.anvipo.angram.presentationLayer.common.baseClasses.BasePresenterImp
 import com.anvipo.angram.presentationLayer.flows.auth.coordinator.interfaces.AuthorizationCoordinatorEnterAuthenticationPasswordRouteEventHandler
 import com.anvipo.angram.presentationLayer.flows.auth.screens.enterAuthenticationPassword.types.CorrectAuthenticationPasswordType

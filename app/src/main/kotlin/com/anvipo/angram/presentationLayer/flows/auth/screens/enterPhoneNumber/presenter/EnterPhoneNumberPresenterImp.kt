@@ -4,9 +4,9 @@ import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.application.types.ConnectionStateReceiveChannel
 import com.anvipo.angram.layers.businessLogic.useCases.authFlow.enterPhoneNumber.EnterPhoneNumberUseCase
-import com.anvipo.angram.coreLayer.CoreHelpers.assertionFailure
-import com.anvipo.angram.coreLayer.CoreHelpers.debugLog
-import com.anvipo.angram.coreLayer.ResourceManager
+import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
+import com.anvipo.angram.layers.core.CoreHelpers.debugLog
+import com.anvipo.angram.layers.core.ResourceManager
 import com.anvipo.angram.dataLayer.gateways.tdLib.errors.TdApiError
 import com.anvipo.angram.presentationLayer.common.baseClasses.BasePresenterImp
 import com.anvipo.angram.presentationLayer.flows.auth.coordinator.interfaces.AuthorizationCoordinatorEnterPhoneNumberRouteEventHandler

@@ -10,11 +10,11 @@ import com.anvipo.angram.layers.application.types.ConnectionStateReceiveChannel
 import com.anvipo.angram.layers.application.types.EnabledProxyIdReceiveChannel
 import com.anvipo.angram.layers.application.types.SystemMessageReceiveChannel
 import com.anvipo.angram.layers.businessLogic.useCases.app.AppUseCase
-import com.anvipo.angram.coreLayer.CoreHelpers.assertionFailure
-import com.anvipo.angram.coreLayer.CoreHelpers.debugLog
-import com.anvipo.angram.coreLayer.ResourceManager
-import com.anvipo.angram.coreLayer.message.SystemMessage
-import com.anvipo.angram.coreLayer.message.SystemMessageType
+import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
+import com.anvipo.angram.layers.core.CoreHelpers.debugLog
+import com.anvipo.angram.layers.core.ResourceManager
+import com.anvipo.angram.layers.core.message.SystemMessage
+import com.anvipo.angram.layers.core.message.SystemMessageType
 import com.anvipo.angram.presentationLayer.common.baseClasses.BasePresenterImp
 import com.arellomobile.mvp.InjectViewState
 import com.google.android.material.snackbar.Snackbar

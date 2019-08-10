@@ -2,7 +2,7 @@
 
 package com.anvipo.angram.layers.application.types
 
-import com.anvipo.angram.coreLayer.message.SystemMessage
+import com.anvipo.angram.layers.core.message.SystemMessage
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.SendChannel

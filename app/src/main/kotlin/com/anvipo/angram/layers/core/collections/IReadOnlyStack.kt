@@ -1,4 +1,4 @@
-package com.anvipo.angram.coreLayer.collections
+package com.anvipo.angram.layers.core.collections
 
 interface IReadOnlyStack<out E> : Collection<E> {
 

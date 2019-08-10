@@ -1,6 +1,6 @@
 package com.anvipo.angram.presentationLayer.common.interfaces.view.row
 
-import com.anvipo.angram.coreLayer.IndexPath
+import com.anvipo.angram.layers.core.IndexPath
 
 @Suppress("EXPERIMENTAL_API_USAGE")
 interface BaseRow {

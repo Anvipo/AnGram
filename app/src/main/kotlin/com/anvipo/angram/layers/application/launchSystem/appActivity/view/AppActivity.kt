@@ -11,7 +11,7 @@ import com.anvipo.angram.layers.application.di.LaunchSystemModule.appPresenterQu
 import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.navigatorHolderQualifier
 import com.anvipo.angram.layers.application.launchSystem.appActivity.presenter.AppPresenter
 import com.anvipo.angram.layers.application.launchSystem.appActivity.presenter.AppPresenterImp
-import com.anvipo.angram.coreLayer.base.classes.BaseActivity
+import com.anvipo.angram.layers.core.base.classes.BaseActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import kotlinx.android.synthetic.main.layout_container.*

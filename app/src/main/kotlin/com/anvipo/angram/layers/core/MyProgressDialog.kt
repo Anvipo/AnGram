@@ -1,4 +1,4 @@
-package com.anvipo.angram.coreLayer
+package com.anvipo.angram.layers.core
 
 import android.annotation.SuppressLint
 import android.os.Bundle

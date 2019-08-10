@@ -2,7 +2,7 @@ package com.anvipo.angram.dataLayer.gateways.local.sharedPreferences
 
 import android.annotation.SuppressLint
 import com.anvipo.angram.R
-import com.anvipo.angram.coreLayer.ResourceManager
+import com.anvipo.angram.layers.core.ResourceManager
 
 class SharedPreferencesDAOImp(
     private val resourceManager: ResourceManager

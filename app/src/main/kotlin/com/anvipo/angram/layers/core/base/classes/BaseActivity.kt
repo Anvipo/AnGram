@@ -1,13 +1,13 @@
-package com.anvipo.angram.coreLayer.base.classes
+package com.anvipo.angram.layers.core.base.classes
 
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.LayoutRes
 import com.anvipo.angram.R
-import com.anvipo.angram.coreLayer.base.interfaces.BaseView
-import com.anvipo.angram.coreLayer.dialogFragment.MessageDialogFragment
-import com.anvipo.angram.coreLayer.showSnackbarMessage
+import com.anvipo.angram.layers.core.base.interfaces.BaseView
+import com.anvipo.angram.layers.core.dialogFragment.MessageDialogFragment
+import com.anvipo.angram.layers.core.showSnackbarMessage
 import com.anvipo.angram.presentationLayer.common.interfaces.BasePresenter
 import com.anvipo.angram.presentationLayer.common.mvp.MvpAppCompatActivity
 

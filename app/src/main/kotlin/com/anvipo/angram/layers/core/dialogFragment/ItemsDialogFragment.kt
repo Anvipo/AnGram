@@ -1,11 +1,11 @@
-package com.anvipo.angram.coreLayer.dialogFragment
+package com.anvipo.angram.layers.core.dialogFragment
 
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
-import com.anvipo.angram.coreLayer.argument
+import com.anvipo.angram.layers.core.argument
 import java.util.*
 
 class ItemsDialogFragment : DialogFragment() {

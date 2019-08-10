@@ -1,4 +1,4 @@
-package com.anvipo.angram.coreLayer
+package com.anvipo.angram.layers.core
 
 @Suppress("EXPERIMENTAL_API_USAGE")
 class IndexPath(

@@ -1,4 +1,4 @@
-package com.anvipo.angram.coreLayer.message
+package com.anvipo.angram.layers.core.message
 
 data class SystemMessage(
     val text: String,

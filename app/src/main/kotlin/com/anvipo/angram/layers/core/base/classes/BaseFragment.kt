@@ -1,4 +1,4 @@
-package com.anvipo.angram.coreLayer.base.classes
+package com.anvipo.angram.layers.core.base.classes
 
 import android.content.Intent
 import android.net.Uri
@@ -14,13 +14,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.R
-import com.anvipo.angram.coreLayer.CoreHelpers.debugLog
-import com.anvipo.angram.coreLayer.MyProgressDialog
-import com.anvipo.angram.coreLayer.base.CoreConstants.PROGRESS_TAG
-import com.anvipo.angram.coreLayer.base.interfaces.BaseView
-import com.anvipo.angram.coreLayer.dialogFragment.ItemsDialogFragment
-import com.anvipo.angram.coreLayer.dialogFragment.MessageDialogFragment
-import com.anvipo.angram.coreLayer.showSnackbarMessage
+import com.anvipo.angram.layers.core.CoreHelpers.debugLog
+import com.anvipo.angram.layers.core.MyProgressDialog
+import com.anvipo.angram.layers.core.base.CoreConstants.PROGRESS_TAG
+import com.anvipo.angram.layers.core.base.interfaces.BaseView
+import com.anvipo.angram.layers.core.dialogFragment.ItemsDialogFragment
+import com.anvipo.angram.layers.core.dialogFragment.MessageDialogFragment
+import com.anvipo.angram.layers.core.showSnackbarMessage
 import com.anvipo.angram.presentationLayer.common.interfaces.BasePresenter
 import com.anvipo.angram.presentationLayer.common.mvp.MvpAppCompatFragment
 

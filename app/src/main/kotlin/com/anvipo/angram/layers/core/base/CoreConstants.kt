@@ -1,4 +1,4 @@
-package com.anvipo.angram.coreLayer.base
+package com.anvipo.angram.layers.core.base
 
 object CoreConstants {
 
