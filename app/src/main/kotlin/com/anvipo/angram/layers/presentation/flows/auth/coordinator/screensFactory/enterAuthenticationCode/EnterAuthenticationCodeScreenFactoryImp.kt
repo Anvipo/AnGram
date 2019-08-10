@@ -4,7 +4,6 @@ import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticat
 import org.koin.core.scope.Scope
 import ru.terrakok.cicerone.android.support.SupportAppScreen
 
-@Suppress("RemoveExplicitTypeArguments")
 class EnterAuthenticationCodeScreenFactoryImp(
     private val koinScope: Scope
 ) : EnterAuthenticationCodeScreenFactory {

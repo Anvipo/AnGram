@@ -6,10 +6,7 @@ import com.anvipo.angram.layers.application.types.ConnectionStateBroadcastChanne
 import com.anvipo.angram.layers.application.types.ConnectionStateReceiveChannel
 import com.anvipo.angram.layers.application.types.ConnectionStateSendChannel
 import com.anvipo.angram.layers.businessLogic.di.UseCasesModule.enterPhoneNumberUseCaseQualifier
-import com.anvipo.angram.layers.businessLogic.useCases.authFlow.enterPhoneNumber.EnterPhoneNumberUseCase
-import com.anvipo.angram.layers.core.ResourceManager
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorQualifier
-import com.anvipo.angram.layers.presentation.flows.auth.coordinator.interfaces.AuthorizationCoordinatorEnterPhoneNumberRouteEventHandler
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.screensFactory.enterPhoneNumber.EnterPhoneNumberScreenFactory
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.screensFactory.enterPhoneNumber.EnterPhoneNumberScreenFactoryImp
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumber.presenter.EnterPhoneNumberPresenter
@@ -74,7 +71,7 @@ object EnterPhoneNumberModule {
         }
 
         factory<ConnectionStateSendChannel>(connectionStateEnterPhoneNumberSendChannelQualifier) {
-            get<ConnectionStateBroadcastChannel>(connectionStateEnterPhoneNumberBroadcastChannelQualifier)
+            get(connectionStateEnterPhoneNumberBroadcastChannelQualifier)
         }
         factory<ConnectionStateReceiveChannel>(connectionStateEnterPhoneNumberReceiveChannelQualifier) {
             get<ConnectionStateBroadcastChannel>(connectionStateEnterPhoneNumberBroadcastChannelQualifier)
@@ -86,14 +83,10 @@ object EnterPhoneNumberModule {
 
         factory<EnterPhoneNumberPresenter>(enterPhoneNumberPresenterQualifier) {
             EnterPhoneNumberPresenterImp(
-                routeEventHandler = get<AuthorizationCoordinatorEnterPhoneNumberRouteEventHandler>(
-                    authorizationCoordinatorQualifier
-                ),
-                useCase = get<EnterPhoneNumberUseCase>(enterPhoneNumberUseCaseQualifier),
-                resourceManager = get<ResourceManager>(resourceManagerQualifier),
-                connectionStateReceiveChannel = get<ConnectionStateReceiveChannel>(
-                    connectionStateEnterPhoneNumberReceiveChannelQualifier
-                )
+                routeEventHandler = get(authorizationCoordinatorQualifier),
+                useCase = get(enterPhoneNumberUseCaseQualifier),
+                resourceManager = get(resourceManagerQualifier),
+                connectionStateReceiveChannel = get(connectionStateEnterPhoneNumberReceiveChannelQualifier)
             )
         }
 

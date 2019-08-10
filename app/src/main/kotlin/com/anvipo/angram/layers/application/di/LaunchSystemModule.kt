@@ -1,14 +1,11 @@
 package com.anvipo.angram.layers.application.di
 
-import com.anvipo.angram.layers.application.coordinator.ApplicationCoordinator
 import com.anvipo.angram.layers.application.coordinator.di.ApplicationCoordinatorModule.applicationCoordinatorQualifier
 import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.resourceManagerQualifier
 import com.anvipo.angram.layers.application.launchSystem.appActivity.presenter.AppPresenter
 import com.anvipo.angram.layers.application.launchSystem.appActivity.presenter.AppPresenterImp
 import com.anvipo.angram.layers.application.types.*
 import com.anvipo.angram.layers.businessLogic.di.UseCasesModule.appUseCaseQualifier
-import com.anvipo.angram.layers.businessLogic.useCases.app.AppUseCase
-import com.anvipo.angram.layers.core.ResourceManager
 import com.anvipo.angram.layers.core.message.SystemMessage
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
@@ -41,7 +38,7 @@ object LaunchSystemModule {
     val module: Module = module {
 
         factory<EnabledProxyIdSendChannel>(enabledProxyIdSendChannelQualifier) {
-            get<EnabledProxyIdBroadcastChannel>(enabledProxyIdBroadcastChannelQualifier)
+            get(enabledProxyIdBroadcastChannelQualifier)
         }
         factory<EnabledProxyIdReceiveChannel>(enabledProxyIdReceiveChannelQualifier) {
             get<EnabledProxyIdBroadcastChannel>(enabledProxyIdBroadcastChannelQualifier).openSubscription()
@@ -51,7 +48,7 @@ object LaunchSystemModule {
         }
 
         factory<SystemMessageSendChannel>(systemMessageSendChannelQualifier) {
-            get<SystemMessageBroadcastChannel>(systemMessageBroadcastChannelQualifier)
+            get(systemMessageBroadcastChannelQualifier)
         }
         factory<SystemMessageReceiveChannel>(systemMessageReceiveChannelQualifier) {
             get<SystemMessageBroadcastChannel>(systemMessageBroadcastChannelQualifier).openSubscription()
@@ -61,7 +58,7 @@ object LaunchSystemModule {
         }
 
         factory<ConnectionStateSendChannel>(connectionStateAppSendChannelQualifier) {
-            get<ConnectionStateBroadcastChannel>(connectionStateAppBroadcastChannelQualifier)
+            get(connectionStateAppBroadcastChannelQualifier)
         }
         factory<ConnectionStateReceiveChannel>(connectionStateAppReceiveChannelQualifier) {
             get<ConnectionStateBroadcastChannel>(connectionStateAppBroadcastChannelQualifier).openSubscription()
@@ -72,20 +69,12 @@ object LaunchSystemModule {
 
         factory<AppPresenter>(appPresenterQualifier) {
             AppPresenterImp(
-                useCase = get<AppUseCase>(appUseCaseQualifier),
-                coordinator = get<ApplicationCoordinator>(
-                    applicationCoordinatorQualifier
-                ),
-                enabledProxyIdReceiveChannel = get<EnabledProxyIdReceiveChannel>(
-                    enabledProxyIdReceiveChannelQualifier
-                ),
-                systemMessageReceiveChannel = get<SystemMessageReceiveChannel>(
-                    systemMessageReceiveChannelQualifier
-                ),
-                connectionStateReceiveChannel = get<ConnectionStateReceiveChannel>(
-                    connectionStateAppReceiveChannelQualifier
-                ),
-                resourceManager = get<ResourceManager>(resourceManagerQualifier)
+                useCase = get(appUseCaseQualifier),
+                coordinator = get(applicationCoordinatorQualifier),
+                enabledProxyIdReceiveChannel = get(enabledProxyIdReceiveChannelQualifier),
+                systemMessageReceiveChannel = get(systemMessageReceiveChannelQualifier),
+                connectionStateReceiveChannel = get(connectionStateAppReceiveChannelQualifier),
+                resourceManager = get(resourceManagerQualifier)
             )
         }
 

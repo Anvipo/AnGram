@@ -3,7 +3,6 @@ package com.anvipo.angram.layers.data.di
 import androidx.room.Room
 import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.resourceManagerQualifier
 import com.anvipo.angram.layers.application.launchSystem.App
-import com.anvipo.angram.layers.core.ResourceManager
 import com.anvipo.angram.layers.data.gateways.local.db.room.AppDatabase
 import com.anvipo.angram.layers.data.gateways.local.db.room.proxy.ProxyRoomDAO
 import com.anvipo.angram.layers.data.gateways.local.sharedPreferences.SharedPreferencesDAO
@@ -68,9 +67,9 @@ object GatewaysModule {
 
         single<Client>(tdClientQualifier) {
             Client.create(
-                get<Client.ResultHandler>(updatesHandlerQualifier),
-                get<Client.ExceptionHandler>(updatesExceptionHandlerQualifier),
-                get<Client.ExceptionHandler>(defaultExceptionHandlerQualifier)
+                get(updatesHandlerQualifier),
+                get(updatesExceptionHandlerQualifier),
+                get(defaultExceptionHandlerQualifier)
             )
         }
 
@@ -81,19 +80,19 @@ object GatewaysModule {
 
         factory<ApplicationTDLibGateway>(applicationTDLibGatewayQualifier) {
             ApplicationTDLibGatewayImp(
-                tdClient = get<Client>(tdClientQualifier)
+                tdClient = get(tdClientQualifier)
             )
         }
 
         factory<AuthorizationTDLibGateway>(authorizationTDLibGatewayQualifier) {
             AuthorizationTDLibGatewayImp(
-                tdClient = get<Client>(tdClientQualifier)
+                tdClient = get(tdClientQualifier)
             )
         }
 
         factory<ProxyTDLibGateway>(proxyTDLibGatewayQualifier) {
             ProxyTDLibGatewayImp(
-                tdClient = get<Client>(tdClientQualifier)
+                tdClient = get(tdClientQualifier)
             )
         }
 
@@ -103,9 +102,7 @@ object GatewaysModule {
 
         single<SharedPreferencesDAO>(sharedPreferencesGatewayQualifier) {
             SharedPreferencesDAOImp(
-                resourceManager = get<ResourceManager>(
-                    resourceManagerQualifier
-                )
+                resourceManager = get(resourceManagerQualifier)
             )
         }
 

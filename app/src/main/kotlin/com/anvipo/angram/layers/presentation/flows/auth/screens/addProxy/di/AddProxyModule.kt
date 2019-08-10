@@ -3,10 +3,7 @@ package com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.di
 import androidx.fragment.app.Fragment
 import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.resourceManagerQualifier
 import com.anvipo.angram.layers.businessLogic.di.UseCasesModule.addProxyUseCaseQualifier
-import com.anvipo.angram.layers.businessLogic.useCases.authFlow.addProxy.AddProxyUseCase
-import com.anvipo.angram.layers.core.ResourceManager
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorQualifier
-import com.anvipo.angram.layers.presentation.flows.auth.coordinator.interfaces.AuthorizationCoordinatorAddProxyRouteEventHandler
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.screensFactory.addProxy.AddProxyScreenFactory
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.screensFactory.addProxy.AddProxyScreenFactoryImp
 import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.presenter.AddProxyPresenter
@@ -73,11 +70,9 @@ object AddProxyModule {
 
         factory<AddProxyPresenter>(addProxyPresenterQualifier) {
             AddProxyPresenterImp(
-                routeEventHandler = get<AuthorizationCoordinatorAddProxyRouteEventHandler>(
-                    authorizationCoordinatorQualifier
-                ),
-                useCase = get<AddProxyUseCase>(addProxyUseCaseQualifier),
-                resourceManager = get<ResourceManager>(resourceManagerQualifier)
+                routeEventHandler = get(authorizationCoordinatorQualifier),
+                useCase = get(addProxyUseCaseQualifier),
+                resourceManager = get(resourceManagerQualifier)
             )
         }
 
