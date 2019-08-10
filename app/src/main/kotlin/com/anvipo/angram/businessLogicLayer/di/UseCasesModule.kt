@@ -37,33 +37,33 @@ object UseCasesModule {
     @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
 
-        single<AppUseCase>(appUseCaseQualifier) {
+        factory<AppUseCase>(appUseCaseQualifier) {
             AppUseCaseImp(
                 proxyTDLibGateway = get<ProxyTDLibGateway>(proxyTDLibGatewayQualifier),
                 sharedPreferencesGateway = get<SharedPreferencesDAO>(sharedPreferencesGatewayQualifier)
             )
         }
 
-        single<EnterPhoneNumberUseCase>(enterPhoneNumberUseCaseQualifier) {
+        factory<EnterPhoneNumberUseCase>(enterPhoneNumberUseCaseQualifier) {
             EnterPhoneNumberUseCaseImp(
                 authorizationTDLibGateway =
                 get<AuthorizationTDLibGateway>(authorizationTDLibGatewayQualifier)
             )
         }
 
-        single<EnterAuthenticationCodeUseCase>(enterAuthenticationCodeUseCaseQualifier) {
+        factory<EnterAuthenticationCodeUseCase>(enterAuthenticationCodeUseCaseQualifier) {
             EnterAuthenticationCodeUseCaseImp(
                 tdLibGateway = get<AuthorizationTDLibGateway>(authorizationTDLibGatewayQualifier)
             )
         }
 
-        single<EnterAuthenticationPasswordUseCase>(enterAuthenticationPasswordUseCaseQualifier) {
+        factory<EnterAuthenticationPasswordUseCase>(enterAuthenticationPasswordUseCaseQualifier) {
             EnterAuthenticationPasswordUseCaseImp(
                 tdLibGateway = get<AuthorizationTDLibGateway>(authorizationTDLibGatewayQualifier)
             )
         }
 
-        single<AddProxyUseCase>(addProxyUseCaseQualifier) {
+        factory<AddProxyUseCase>(addProxyUseCaseQualifier) {
             AddProxyUseCaseImp(
                 tdLibGateway = get<ProxyTDLibGateway>(proxyTDLibGatewayQualifier),
                 dbGateway = get<ProxyRoomDAO>(proxyLocalGatewayQualifier)

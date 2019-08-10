@@ -50,7 +50,7 @@ object EnterAuthenticationCodeModule {
     @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
 
-        single<EnterAuthenticationCodeScreenFactory>(
+        factory<EnterAuthenticationCodeScreenFactory>(
             enterAuthenticationCodeScreenFactoryQualifier
         ) {
             EnterAuthenticationCodeScreenFactoryImp(
@@ -58,7 +58,7 @@ object EnterAuthenticationCodeModule {
             )
         }
 
-        single<EnterAuthenticationCodeView>(
+        factory<EnterAuthenticationCodeView>(
             enterAuthenticationCodeViewQualifier
         ) { (parameters: EnterAuthCodeScreenParameters) ->
             EnterAuthenticationCodeFragment.createNewInstance(
@@ -70,13 +70,13 @@ object EnterAuthenticationCodeModule {
             )
         }
 
-        single<SupportAppScreen>(
+        factory<SupportAppScreen>(
             enterAuthenticationCodeScreenQualifier
         ) { (parameters: EnterAuthCodeScreenParameters) ->
             EnterAuthenticationCodeScreen(parameters = parameters)
         }
 
-        single<EnterAuthenticationCodePresenter>(enterAuthenticationCodePresenterQualifier) {
+        factory<EnterAuthenticationCodePresenter>(enterAuthenticationCodePresenterQualifier) {
             EnterAuthenticationCodePresenterImp(
                 routeEventHandler = get<AuthorizationCoordinatorEnterAuthenticationCodeRouteEventHandler>(
                     authorizationCoordinatorQualifier

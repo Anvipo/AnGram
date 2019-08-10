@@ -32,7 +32,7 @@ object ApplicationCoordinatorModule {
     @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
 
-        single<ApplicationCoordinator>(applicationCoordinatorQualifier) {
+        factory<ApplicationCoordinator>(applicationCoordinatorQualifier) {
             ApplicationCoordinatorImp(
                 tdLibGateway = get<ApplicationTDLibGateway>(applicationTDLibGatewayQualifier),
                 systemMessageSendChannel =
@@ -43,7 +43,7 @@ object ApplicationCoordinatorModule {
             )
         }
 
-        single<AuthorizationCoordinator>(authorizationCoordinatorQualifier) {
+        factory<AuthorizationCoordinator>(authorizationCoordinatorQualifier) {
             AuthorizationCoordinatorImp(
                 router = get<Router>(routerQualifier),
                 screensFactory = get<AuthorizationScreensFactory>(authorizationScreensFactoryQualifier),
@@ -53,7 +53,7 @@ object ApplicationCoordinatorModule {
             )
         }
 
-        single<ApplicationCoordinatorsFactory>(applicationCoordinatorsFactoryQualifier) {
+        factory<ApplicationCoordinatorsFactory>(applicationCoordinatorsFactoryQualifier) {
             ApplicationCoordinatorsFactoryImp(
                 koinScope = this
             )

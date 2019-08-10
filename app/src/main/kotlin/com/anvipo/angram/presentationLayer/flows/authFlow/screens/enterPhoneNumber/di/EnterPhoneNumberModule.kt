@@ -55,28 +55,28 @@ object EnterPhoneNumberModule {
     @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
 
-        single<EnterPhoneNumberScreenFactory>(enterPhoneNumberScreenFactoryQualifier) {
+        factory<EnterPhoneNumberScreenFactory>(enterPhoneNumberScreenFactoryQualifier) {
             EnterPhoneNumberScreenFactoryImp(
                 koinScope = this
             )
         }
 
-        single<EnterPhoneNumberView>(
+        factory<EnterPhoneNumberView>(
             enterPhoneNumberViewQualifier
         ) {
             EnterPhoneNumberFragment.createNewInstance()
         }
 
-        single<SupportAppScreen>(
+        factory<SupportAppScreen>(
             enterPhoneNumberScreenQualifier
         ) {
             EnterPhoneNumberScreen()
         }
 
-        single<ConnectionStateSendChannel>(connectionStateEnterPhoneNumberSendChannelQualifier) {
+        factory<ConnectionStateSendChannel>(connectionStateEnterPhoneNumberSendChannelQualifier) {
             get<ConnectionStateBroadcastChannel>(connectionStateEnterPhoneNumberBroadcastChannelQualifier)
         }
-        single<ConnectionStateReceiveChannel>(connectionStateEnterPhoneNumberReceiveChannelQualifier) {
+        factory<ConnectionStateReceiveChannel>(connectionStateEnterPhoneNumberReceiveChannelQualifier) {
             get<ConnectionStateBroadcastChannel>(connectionStateEnterPhoneNumberBroadcastChannelQualifier)
                 .openSubscription()
         }
@@ -84,7 +84,7 @@ object EnterPhoneNumberModule {
             BroadcastChannel<TdApi.ConnectionState>(Channel.CONFLATED)
         }
 
-        single<EnterPhoneNumberPresenter>(enterPhoneNumberPresenterQualifier) {
+        factory<EnterPhoneNumberPresenter>(enterPhoneNumberPresenterQualifier) {
             EnterPhoneNumberPresenterImp(
                 routeEventHandler = get<AuthorizationCoordinatorEnterPhoneNumberRouteEventHandler>(
                     authorizationCoordinatorQualifier

@@ -79,19 +79,19 @@ object GatewaysModule {
 
         // ---------------------------- GATEWAYS ---------------------
 
-        single<ApplicationTDLibGateway>(applicationTDLibGatewayQualifier) {
+        factory<ApplicationTDLibGateway>(applicationTDLibGatewayQualifier) {
             ApplicationTDLibGatewayImp(
                 tdClient = get<Client>(tdClientQualifier)
             )
         }
 
-        single<AuthorizationTDLibGateway>(authorizationTDLibGatewayQualifier) {
+        factory<AuthorizationTDLibGateway>(authorizationTDLibGatewayQualifier) {
             AuthorizationTDLibGatewayImp(
                 tdClient = get<Client>(tdClientQualifier)
             )
         }
 
-        single<ProxyTDLibGateway>(proxyTDLibGatewayQualifier) {
+        factory<ProxyTDLibGateway>(proxyTDLibGatewayQualifier) {
             ProxyTDLibGatewayImp(
                 tdClient = get<Client>(tdClientQualifier)
             )

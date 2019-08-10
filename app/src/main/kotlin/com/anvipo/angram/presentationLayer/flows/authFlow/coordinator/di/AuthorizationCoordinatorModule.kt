@@ -22,7 +22,7 @@ object AuthorizationCoordinatorModule {
     @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
 
-        single<AuthorizationScreensFactory>(authorizationScreensFactoryQualifier) {
+        factory<AuthorizationScreensFactory>(authorizationScreensFactoryQualifier) {
             AuthorizationScreensFactoryImp(
                 enterPhoneNumberScreenFactory = get<EnterPhoneNumberScreenFactory>(
                     enterPhoneNumberScreenFactoryQualifier

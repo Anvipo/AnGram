@@ -40,37 +40,37 @@ object LaunchSystemModule {
     @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
 
-        single<EnabledProxyIdSendChannel>(enabledProxyIdSendChannelQualifier) {
+        factory<EnabledProxyIdSendChannel>(enabledProxyIdSendChannelQualifier) {
             get<EnabledProxyIdBroadcastChannel>(enabledProxyIdBroadcastChannelQualifier)
         }
-        single<EnabledProxyIdReceiveChannel>(enabledProxyIdReceiveChannelQualifier) {
+        factory<EnabledProxyIdReceiveChannel>(enabledProxyIdReceiveChannelQualifier) {
             get<EnabledProxyIdBroadcastChannel>(enabledProxyIdBroadcastChannelQualifier).openSubscription()
         }
         single<EnabledProxyIdBroadcastChannel>(enabledProxyIdBroadcastChannelQualifier) {
             BroadcastChannel<Int?>(Channel.CONFLATED)
         }
 
-        single<SystemMessageSendChannel>(systemMessageSendChannelQualifier) {
+        factory<SystemMessageSendChannel>(systemMessageSendChannelQualifier) {
             get<SystemMessageBroadcastChannel>(systemMessageBroadcastChannelQualifier)
         }
-        single<SystemMessageReceiveChannel>(systemMessageReceiveChannelQualifier) {
+        factory<SystemMessageReceiveChannel>(systemMessageReceiveChannelQualifier) {
             get<SystemMessageBroadcastChannel>(systemMessageBroadcastChannelQualifier).openSubscription()
         }
         single<SystemMessageBroadcastChannel>(systemMessageBroadcastChannelQualifier) {
             BroadcastChannel<SystemMessage>(Channel.CONFLATED)
         }
 
-        single<ConnectionStateSendChannel>(connectionStateAppSendChannelQualifier) {
+        factory<ConnectionStateSendChannel>(connectionStateAppSendChannelQualifier) {
             get<ConnectionStateBroadcastChannel>(connectionStateAppBroadcastChannelQualifier)
         }
-        single<ConnectionStateReceiveChannel>(connectionStateAppReceiveChannelQualifier) {
+        factory<ConnectionStateReceiveChannel>(connectionStateAppReceiveChannelQualifier) {
             get<ConnectionStateBroadcastChannel>(connectionStateAppBroadcastChannelQualifier).openSubscription()
         }
         single<ConnectionStateBroadcastChannel>(connectionStateAppBroadcastChannelQualifier) {
             BroadcastChannel<TdApi.ConnectionState>(Channel.CONFLATED)
         }
 
-        single<AppPresenter>(appPresenterQualifier) {
+        factory<AppPresenter>(appPresenterQualifier) {
             AppPresenterImp(
                 useCase = get<AppUseCase>(appUseCaseQualifier),
                 coordinator = get<ApplicationCoordinator>(

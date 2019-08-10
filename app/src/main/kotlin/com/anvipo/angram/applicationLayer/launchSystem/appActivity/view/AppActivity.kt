@@ -76,9 +76,9 @@ class AppActivity : BaseActivity(), AppView {
         object : SupportAppNavigator(this, supportFragmentManager, R.id.container) {
 
             override fun setupFragmentTransaction(
-                command: Command?,
+                command: Command,
                 currentFragment: Fragment?,
-                nextFragment: Fragment?,
+                nextFragment: Fragment,
                 fragmentTransaction: FragmentTransaction
             ) {
                 @AnimatorRes @AnimRes val enter: Int

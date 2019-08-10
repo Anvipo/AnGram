@@ -40,25 +40,25 @@ object EnterAuthenticationPasswordModule {
     @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
 
-        single<EnterAuthenticationPasswordScreenFactory>(enterAuthenticationPasswordScreenFactoryQualifier) {
+        factory<EnterAuthenticationPasswordScreenFactory>(enterAuthenticationPasswordScreenFactoryQualifier) {
             EnterAuthenticationPasswordScreenFactoryImp(
                 koinScope = this
             )
         }
 
-        single<EnterAuthenticationPasswordView>(
+        factory<EnterAuthenticationPasswordView>(
             enterAuthenticationPasswordViewQualifier
         ) {
             EnterAuthenticationPasswordFragment.createNewInstance()
         }
 
-        single<SupportAppScreen>(
+        factory<SupportAppScreen>(
             enterAuthenticationPasswordScreenQualifier
         ) {
             EnterPasswordScreen()
         }
 
-        single<EnterAuthenticationPasswordPresenter>(enterAuthenticationPasswordPresenterQualifier) {
+        factory<EnterAuthenticationPasswordPresenter>(enterAuthenticationPasswordPresenterQualifier) {
             EnterAuthenticationPasswordPresenterImp(
                 routeEventHandler = get<AuthorizationCoordinatorEnterAuthenticationPasswordRouteEventHandler>(
                     authorizationCoordinatorQualifier

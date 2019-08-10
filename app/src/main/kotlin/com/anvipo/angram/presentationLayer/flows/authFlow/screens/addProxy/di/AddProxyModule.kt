@@ -48,7 +48,7 @@ object AddProxyModule {
     @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
 
-        single<AddProxyScreenFactory>(
+        factory<AddProxyScreenFactory>(
             addProxyScreenFactoryQualifier
         ) {
             AddProxyScreenFactoryImp(
@@ -56,7 +56,7 @@ object AddProxyModule {
             )
         }
 
-        single<AddProxyView>(
+        factory<AddProxyView>(
             addProxyScreenCodeViewQualifier
         ) { (parameters: AddProxyScreenParameters) ->
             AddProxyFragment.createNewInstance(
@@ -65,13 +65,13 @@ object AddProxyModule {
             )
         }
 
-        single<SupportAppScreen>(
+        factory<SupportAppScreen>(
             addProxyScreenCodeScreenQualifier
         ) { (parameters: AddProxyScreenParameters) ->
             AddProxyScreen(parameters = parameters)
         }
 
-        single<AddProxyPresenter>(addProxyPresenterQualifier) {
+        factory<AddProxyPresenter>(addProxyPresenterQualifier) {
             AddProxyPresenterImp(
                 routeEventHandler = get<AuthorizationCoordinatorAddProxyRouteEventHandler>(
                     authorizationCoordinatorQualifier
