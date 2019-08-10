@@ -1,10 +1,10 @@
 package com.anvipo.angram.businessLogicLayer.useCases.authFlow.addProxyUseCase
 
-import com.anvipo.angram.dataLayer.gateways.localGateway.db.room.entities.proxy.TdApiProxyInfoRoomEntity
-import com.anvipo.angram.dataLayer.gateways.localGateway.db.room.entities.proxy.type.base.TdApiProxyTypeRoomEntity
-import com.anvipo.angram.dataLayer.gateways.localGateway.db.room.entities.proxy.type.imp.TdApiMTProtoProxyTypeRoomEntity
-import com.anvipo.angram.dataLayer.gateways.localGateway.db.room.proxy.ProxyRoomDAO
-import com.anvipo.angram.dataLayer.gateways.tdLibGateway.proxy.ProxyTDLibGateway
+import com.anvipo.angram.dataLayer.gateways.local.db.room.entities.proxy.TdApiProxyInfoRoomEntity
+import com.anvipo.angram.dataLayer.gateways.local.db.room.entities.proxy.type.base.TdApiProxyTypeRoomEntity
+import com.anvipo.angram.dataLayer.gateways.local.db.room.entities.proxy.type.imp.TdApiMTProtoProxyTypeRoomEntity
+import com.anvipo.angram.dataLayer.gateways.local.db.room.proxy.ProxyRoomDAO
+import com.anvipo.angram.dataLayer.gateways.tdLib.proxy.ProxyTDLibGateway
 import org.drinkless.td.libcore.telegram.TdApi
 
 class AddProxyUseCaseImp(

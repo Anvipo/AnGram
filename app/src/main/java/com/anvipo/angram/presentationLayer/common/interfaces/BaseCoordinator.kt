@@ -1,10 +1,7 @@
 package com.anvipo.angram.presentationLayer.common.interfaces
 
-interface BaseCoordinator : Coordinatorable {
+interface BaseCoordinator<out CoordinateResultType> : Coordinatorable {
 
-    var finishFlow: (() -> Unit)?
-
-    fun coldStart()
-    fun hotStart(): Unit = Unit
+    suspend fun start(): CoordinateResultType
 
 }

@@ -7,7 +7,7 @@ import com.anvipo.angram.businessLogicLayer.useCases.authFlow.enterPhoneNumberUs
 import com.anvipo.angram.coreLayer.CoreHelpers.assertionFailure
 import com.anvipo.angram.coreLayer.CoreHelpers.debugLog
 import com.anvipo.angram.coreLayer.ResourceManager
-import com.anvipo.angram.dataLayer.gateways.tdLibGateway.errors.TdApiError
+import com.anvipo.angram.dataLayer.gateways.tdLib.errors.TdApiError
 import com.anvipo.angram.presentationLayer.common.baseClasses.BasePresenterImp
 import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.interfaces.AuthorizationCoordinatorEnterPhoneNumberRouteEventHandler
 import com.anvipo.angram.presentationLayer.flows.authFlow.screens.addProxy.types.ProxyType

@@ -1,48 +1,50 @@
 package com.anvipo.angram.presentationLayer.common.baseClasses
 
 import com.anvipo.angram.presentationLayer.common.interfaces.BaseCoordinator
-import com.anvipo.angram.presentationLayer.common.interfaces.Coordinatorable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import java.util.*
 import kotlin.coroutines.CoroutineContext
 
-abstract class BaseCoordinatorImp : BaseCoordinator, CoroutineScope {
+abstract class BaseCoordinatorImp<out CoordinateResultType> :
+    BaseCoordinator<CoordinateResultType>,
+    CoroutineScope {
 
     override val coroutineContext: CoroutineContext = Dispatchers.Default
 
+    suspend fun <T> coordinateTo(
+        coordinator: BaseCoordinatorImp<T>
+    ): T {
+        store(coordinator)
 
-    protected val childCoordinators: MutableList<Coordinatorable> = mutableListOf()
+        val result = coordinator.start()
+
+        free(coordinator)
+        cancelAllJobs()
+
+        return result
+    }
+
 
     protected val jobsThatWillBeCancelledInOnDestroy: MutableList<Job> = mutableListOf()
 
-    protected fun addChildCoordinator(coordinator: Coordinatorable) {
-        for (element in childCoordinators) {
-            if (element === coordinator) {
-                return
-            }
-        }
+    protected val childCoordinators: MutableMap<String, BaseCoordinatorImp<*>?> = mutableMapOf()
 
-        childCoordinators.add(coordinator)
-    }
+    private val uniqueIdentifier = UUID.randomUUID().toString()
 
-    protected fun removeChildCoordinator(coordinator: Coordinatorable) {
-        if (childCoordinators.isEmpty()) {
-            return
-        }
-
-        for ((index, element) in childCoordinators.withIndex()) {
-            if (element === coordinator) {
-                childCoordinators.removeAt(index)
-            }
-        }
-    }
-
-    protected fun onFinishFlowWrapper() {
+    private fun cancelAllJobs() {
         for (job in jobsThatWillBeCancelledInOnDestroy) {
             job.cancel()
         }
-        finishFlow?.invoke()
+    }
+
+    private fun <T> store(coordinator: BaseCoordinatorImp<T>) {
+        childCoordinators[coordinator.uniqueIdentifier] = coordinator
+    }
+
+    private fun <T> free(coordinator: BaseCoordinatorImp<T>) {
+        childCoordinators.remove(coordinator.uniqueIdentifier)
     }
 
 }

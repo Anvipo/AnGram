@@ -5,7 +5,7 @@ import com.anvipo.angram.R
 import com.anvipo.angram.businessLogicLayer.useCases.authFlow.addProxyUseCase.AddProxyUseCase
 import com.anvipo.angram.coreLayer.CoreHelpers.debugLog
 import com.anvipo.angram.coreLayer.ResourceManager
-import com.anvipo.angram.dataLayer.gateways.tdLibGateway.errors.TdApiError
+import com.anvipo.angram.dataLayer.gateways.tdLib.errors.TdApiError
 import com.anvipo.angram.presentationLayer.common.baseClasses.BasePresenterImp
 import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.interfaces.AuthorizationCoordinatorAddProxyRouteEventHandler
 import com.anvipo.angram.presentationLayer.flows.authFlow.screens.addProxy.view.AddProxyView

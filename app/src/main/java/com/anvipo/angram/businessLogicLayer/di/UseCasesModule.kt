@@ -14,10 +14,10 @@ import com.anvipo.angram.dataLayer.di.GatewaysModule.authorizationTDLibGatewayQu
 import com.anvipo.angram.dataLayer.di.GatewaysModule.proxyLocalGatewayQualifier
 import com.anvipo.angram.dataLayer.di.GatewaysModule.proxyTDLibGatewayQualifier
 import com.anvipo.angram.dataLayer.di.GatewaysModule.sharedPreferencesGatewayQualifier
-import com.anvipo.angram.dataLayer.gateways.localGateway.db.room.proxy.ProxyRoomDAO
-import com.anvipo.angram.dataLayer.gateways.localGateway.sharedPreferences.SharedPreferencesDAO
-import com.anvipo.angram.dataLayer.gateways.tdLibGateway.authorization.AuthorizationTDLibGateway
-import com.anvipo.angram.dataLayer.gateways.tdLibGateway.proxy.ProxyTDLibGateway
+import com.anvipo.angram.dataLayer.gateways.local.db.room.proxy.ProxyRoomDAO
+import com.anvipo.angram.dataLayer.gateways.local.sharedPreferences.SharedPreferencesDAO
+import com.anvipo.angram.dataLayer.gateways.tdLib.authorization.AuthorizationTDLibGateway
+import com.anvipo.angram.dataLayer.gateways.tdLib.proxy.ProxyTDLibGateway
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
 import org.koin.dsl.module

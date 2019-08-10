@@ -1,6 +1,6 @@
 package com.anvipo.angram.businessLogicLayer.useCases.authFlow.enterAuthenticationPasswordUseCase
 
-import com.anvipo.angram.dataLayer.gateways.tdLibGateway.authorization.AuthorizationTDLibGateway
+import com.anvipo.angram.dataLayer.gateways.tdLib.authorization.AuthorizationTDLibGateway
 import com.anvipo.angram.presentationLayer.flows.authFlow.screens.enterAuthenticationPassword.types.CorrectAuthenticationPasswordType
 
 class EnterAuthenticationPasswordUseCaseImp(

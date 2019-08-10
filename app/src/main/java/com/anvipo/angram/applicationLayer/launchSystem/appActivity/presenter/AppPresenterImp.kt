@@ -45,11 +45,20 @@ class AppPresenterImp(
     }
 
     override fun coldStart() {
-        coordinator.coldStart()
-    }
+        val startApplicationFlowCEH =
+            CoroutineExceptionHandler { _, error ->
+                if (BuildConfig.DEBUG) {
+                    val text = error.localizedMessage
+                    debugLog(text)
+                    viewState.showErrorAlert(text)
+                }
+            }
 
-    override fun hotStart() {
-        coordinator.hotStart()
+        launch(coroutineContext + startApplicationFlowCEH) {
+            coordinator.start()
+
+            debugLog("Exit")
+        }.also { jobsThatWillBeCancelledInOnDestroy += it }
     }
 
     override fun onResumeFragments() {
