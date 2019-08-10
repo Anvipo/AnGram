@@ -1,4 +1,4 @@
-package com.anvipo.angram.global
+package com.anvipo.angram.layers.global
 
 import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.layers.core.message.SystemMessage

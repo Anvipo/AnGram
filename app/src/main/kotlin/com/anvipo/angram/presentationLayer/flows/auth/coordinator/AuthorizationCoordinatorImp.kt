@@ -5,7 +5,7 @@ import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
 import com.anvipo.angram.layers.core.CoreHelpers.debugLog
 import com.anvipo.angram.layers.core.message.SystemMessage
 import com.anvipo.angram.layers.data.gateways.tdLib.authorization.AuthorizationTDLibGateway
-import com.anvipo.angram.global.GlobalHelpers.createTGSystemMessage
+import com.anvipo.angram.layers.global.GlobalHelpers.createTGSystemMessage
 import com.anvipo.angram.presentationLayer.common.baseClasses.BaseCoordinatorImp
 import com.anvipo.angram.presentationLayer.flows.auth.coordinator.interfaces.*
 import com.anvipo.angram.presentationLayer.flows.auth.coordinator.screensFactory.authorization.AuthorizationScreensFactory
