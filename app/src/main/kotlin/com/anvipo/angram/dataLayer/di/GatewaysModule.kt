@@ -112,7 +112,7 @@ object GatewaysModule {
         single<AppDatabase>(appDatabaseQualifier) {
             Room
                 .databaseBuilder(
-                    get(),
+                    androidApplication().applicationContext,
                     AppDatabase::class.java,
                     "angram-db"
                 )

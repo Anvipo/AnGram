@@ -15,6 +15,7 @@ import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.Authorizat
 import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.di.AuthorizationCoordinatorModule.authorizationScreensFactoryQualifier
 import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.interfaces.AuthorizationCoordinator
 import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.screensFactory.authorizationScreensFactory.AuthorizationScreensFactory
+import org.koin.android.ext.koin.androidApplication
 import org.koin.core.module.Module
 import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier.named
@@ -38,7 +39,7 @@ object ApplicationCoordinatorModule {
                 get<SystemMessageSendChannel>(systemMessageSendChannelQualifier),
                 coordinatorsFactory =
                 get<ApplicationCoordinatorsFactory>(applicationCoordinatorsFactoryQualifier),
-                context = get()
+                context = androidApplication().applicationContext
             )
         }
 

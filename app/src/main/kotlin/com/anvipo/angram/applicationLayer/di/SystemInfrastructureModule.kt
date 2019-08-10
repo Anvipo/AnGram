@@ -1,6 +1,7 @@
 package com.anvipo.angram.applicationLayer.di
 
 import com.anvipo.angram.coreLayer.ResourceManager
+import org.koin.android.ext.koin.androidApplication
 import org.koin.core.module.Module
 import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier.named
@@ -33,7 +34,7 @@ object SystemInfrastructureModule {
 
         single<ResourceManager>(resourceManagerQualifier) {
             ResourceManager(
-                context = get()
+                context = androidApplication().applicationContext
             )
         }
 
