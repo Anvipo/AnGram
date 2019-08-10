@@ -1,4 +1,4 @@
-package com.anvipo.angram.businessLogicLayer.useCases.authFlow.addProxyUseCase
+package com.anvipo.angram.businessLogicLayer.useCases.authFlow.addProxy
 
 import org.drinkless.td.libcore.telegram.TdApi
 

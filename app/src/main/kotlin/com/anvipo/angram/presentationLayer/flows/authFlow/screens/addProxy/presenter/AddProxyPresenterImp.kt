@@ -2,7 +2,7 @@ package com.anvipo.angram.presentationLayer.flows.authFlow.screens.addProxy.pres
 
 import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.R
-import com.anvipo.angram.businessLogicLayer.useCases.authFlow.addProxyUseCase.AddProxyUseCase
+import com.anvipo.angram.businessLogicLayer.useCases.authFlow.addProxy.AddProxyUseCase
 import com.anvipo.angram.coreLayer.CoreHelpers.debugLog
 import com.anvipo.angram.coreLayer.ResourceManager
 import com.anvipo.angram.dataLayer.gateways.tdLib.errors.TdApiError

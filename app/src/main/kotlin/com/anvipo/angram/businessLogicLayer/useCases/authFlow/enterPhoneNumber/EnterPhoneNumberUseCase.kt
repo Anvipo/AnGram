@@ -1,4 +1,4 @@
-package com.anvipo.angram.businessLogicLayer.useCases.authFlow.enterPhoneNumberUseCase
+package com.anvipo.angram.businessLogicLayer.useCases.authFlow.enterPhoneNumber
 
 import com.anvipo.angram.presentationLayer.flows.authFlow.screens.enterPhoneNumber.types.CorrectPhoneNumberType
 

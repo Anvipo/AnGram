@@ -4,7 +4,7 @@ import androidx.fragment.app.Fragment
 import com.anvipo.angram.applicationLayer.coordinator.di.ApplicationCoordinatorModule.authorizationCoordinatorQualifier
 import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule.resourceManagerQualifier
 import com.anvipo.angram.businessLogicLayer.di.UseCasesModule.addProxyUseCaseQualifier
-import com.anvipo.angram.businessLogicLayer.useCases.authFlow.addProxyUseCase.AddProxyUseCase
+import com.anvipo.angram.businessLogicLayer.useCases.authFlow.addProxy.AddProxyUseCase
 import com.anvipo.angram.coreLayer.ResourceManager
 import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.interfaces.AuthorizationCoordinatorAddProxyRouteEventHandler
 import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.screensFactory.addProxyScreenFactory.AddProxyScreenFactory
