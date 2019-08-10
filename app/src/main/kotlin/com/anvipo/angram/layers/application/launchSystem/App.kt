@@ -19,7 +19,7 @@ import com.anvipo.angram.layers.core.collections.IMutableStack
 import com.anvipo.angram.layers.core.collections.MutableStack
 import com.anvipo.angram.layers.core.message.SystemMessage
 import com.anvipo.angram.layers.core.message.SystemMessageType
-import com.anvipo.angram.dataLayer.di.GatewaysModule
+import com.anvipo.angram.layers.data.di.GatewaysModule
 import com.anvipo.angram.global.GlobalHelpers.createTGSystemMessageFromApp
 import com.anvipo.angram.presentationLayer.flows.auth.coordinator.di.AuthorizationCoordinatorModule
 import com.anvipo.angram.presentationLayer.flows.auth.screens.addProxy.di.AddProxyModule

@@ -6,7 +6,7 @@ import com.anvipo.angram.layers.application.coordinator.types.ApplicationCoordin
 import com.anvipo.angram.layers.application.types.SystemMessageSendChannel
 import com.anvipo.angram.layers.core.CoreHelpers.debugLog
 import com.anvipo.angram.layers.core.message.SystemMessage
-import com.anvipo.angram.dataLayer.gateways.tdLib.application.ApplicationTDLibGateway
+import com.anvipo.angram.layers.data.gateways.tdLib.application.ApplicationTDLibGateway
 import com.anvipo.angram.global.GlobalHelpers.createTGSystemMessage
 import com.anvipo.angram.presentationLayer.common.baseClasses.BaseCoordinatorImp
 import kotlinx.coroutines.CoroutineExceptionHandler

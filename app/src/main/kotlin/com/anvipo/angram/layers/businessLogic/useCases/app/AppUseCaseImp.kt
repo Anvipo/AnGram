@@ -1,7 +1,7 @@
 package com.anvipo.angram.layers.businessLogic.useCases.app
 
-import com.anvipo.angram.dataLayer.gateways.local.sharedPreferences.SharedPreferencesDAO
-import com.anvipo.angram.dataLayer.gateways.tdLib.proxy.ProxyTDLibGateway
+import com.anvipo.angram.layers.data.gateways.local.sharedPreferences.SharedPreferencesDAO
+import com.anvipo.angram.layers.data.gateways.tdLib.proxy.ProxyTDLibGateway
 import org.drinkless.td.libcore.telegram.TdApi
 
 class AppUseCaseImp(

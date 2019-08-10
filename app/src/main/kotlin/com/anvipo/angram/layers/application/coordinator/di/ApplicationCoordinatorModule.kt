@@ -7,10 +7,10 @@ import com.anvipo.angram.layers.application.coordinator.coordinatorsFactory.Appl
 import com.anvipo.angram.layers.application.di.LaunchSystemModule.systemMessageSendChannelQualifier
 import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.routerQualifier
 import com.anvipo.angram.layers.application.types.SystemMessageSendChannel
-import com.anvipo.angram.dataLayer.di.GatewaysModule.applicationTDLibGatewayQualifier
-import com.anvipo.angram.dataLayer.di.GatewaysModule.authorizationTDLibGatewayQualifier
-import com.anvipo.angram.dataLayer.gateways.tdLib.application.ApplicationTDLibGateway
-import com.anvipo.angram.dataLayer.gateways.tdLib.authorization.AuthorizationTDLibGateway
+import com.anvipo.angram.layers.data.di.GatewaysModule.applicationTDLibGatewayQualifier
+import com.anvipo.angram.layers.data.di.GatewaysModule.authorizationTDLibGatewayQualifier
+import com.anvipo.angram.layers.data.gateways.tdLib.application.ApplicationTDLibGateway
+import com.anvipo.angram.layers.data.gateways.tdLib.authorization.AuthorizationTDLibGateway
 import com.anvipo.angram.presentationLayer.flows.auth.coordinator.AuthorizationCoordinatorImp
 import com.anvipo.angram.presentationLayer.flows.auth.coordinator.di.AuthorizationCoordinatorModule.authorizationScreensFactoryQualifier
 import com.anvipo.angram.presentationLayer.flows.auth.coordinator.interfaces.AuthorizationCoordinator
