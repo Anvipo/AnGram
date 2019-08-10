@@ -6,8 +6,8 @@ import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.resour
 import com.anvipo.angram.layers.application.launchSystem.appActivity.presenter.AppPresenter
 import com.anvipo.angram.layers.application.launchSystem.appActivity.presenter.AppPresenterImp
 import com.anvipo.angram.layers.application.types.*
-import com.anvipo.angram.businessLogicLayer.di.UseCasesModule.appUseCaseQualifier
-import com.anvipo.angram.businessLogicLayer.useCases.app.AppUseCase
+import com.anvipo.angram.layers.businessLogic.di.UseCasesModule.appUseCaseQualifier
+import com.anvipo.angram.layers.businessLogic.useCases.app.AppUseCase
 import com.anvipo.angram.coreLayer.ResourceManager
 import com.anvipo.angram.coreLayer.message.SystemMessage
 import kotlinx.coroutines.channels.BroadcastChannel

@@ -6,8 +6,8 @@ import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.resour
 import com.anvipo.angram.layers.application.types.ConnectionStateBroadcastChannel
 import com.anvipo.angram.layers.application.types.ConnectionStateReceiveChannel
 import com.anvipo.angram.layers.application.types.ConnectionStateSendChannel
-import com.anvipo.angram.businessLogicLayer.di.UseCasesModule.enterPhoneNumberUseCaseQualifier
-import com.anvipo.angram.businessLogicLayer.useCases.authFlow.enterPhoneNumber.EnterPhoneNumberUseCase
+import com.anvipo.angram.layers.businessLogic.di.UseCasesModule.enterPhoneNumberUseCaseQualifier
+import com.anvipo.angram.layers.businessLogic.useCases.authFlow.enterPhoneNumber.EnterPhoneNumberUseCase
 import com.anvipo.angram.coreLayer.ResourceManager
 import com.anvipo.angram.presentationLayer.flows.auth.coordinator.interfaces.AuthorizationCoordinatorEnterPhoneNumberRouteEventHandler
 import com.anvipo.angram.presentationLayer.flows.auth.coordinator.screensFactory.enterPhoneNumber.EnterPhoneNumberScreenFactory

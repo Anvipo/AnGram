@@ -1,4 +1,4 @@
-package com.anvipo.angram.businessLogicLayer.useCases.app
+package com.anvipo.angram.layers.businessLogic.useCases.app
 
 import org.drinkless.td.libcore.telegram.TdApi
 

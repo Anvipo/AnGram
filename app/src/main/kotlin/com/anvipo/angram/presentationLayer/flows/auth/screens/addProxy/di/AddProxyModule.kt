@@ -3,8 +3,8 @@ package com.anvipo.angram.presentationLayer.flows.auth.screens.addProxy.di
 import androidx.fragment.app.Fragment
 import com.anvipo.angram.layers.application.coordinator.di.ApplicationCoordinatorModule.authorizationCoordinatorQualifier
 import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.resourceManagerQualifier
-import com.anvipo.angram.businessLogicLayer.di.UseCasesModule.addProxyUseCaseQualifier
-import com.anvipo.angram.businessLogicLayer.useCases.authFlow.addProxy.AddProxyUseCase
+import com.anvipo.angram.layers.businessLogic.di.UseCasesModule.addProxyUseCaseQualifier
+import com.anvipo.angram.layers.businessLogic.useCases.authFlow.addProxy.AddProxyUseCase
 import com.anvipo.angram.coreLayer.ResourceManager
 import com.anvipo.angram.presentationLayer.flows.auth.coordinator.interfaces.AuthorizationCoordinatorAddProxyRouteEventHandler
 import com.anvipo.angram.presentationLayer.flows.auth.coordinator.screensFactory.addProxy.AddProxyScreenFactory

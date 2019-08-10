@@ -11,7 +11,7 @@ import com.anvipo.angram.layers.application.di.SystemInfrastructureModule
 import com.anvipo.angram.layers.application.types.ConnectionStateSendChannel
 import com.anvipo.angram.layers.application.types.EnabledProxyIdSendChannel
 import com.anvipo.angram.layers.application.types.SystemMessageSendChannel
-import com.anvipo.angram.businessLogicLayer.di.UseCasesModule
+import com.anvipo.angram.layers.businessLogic.di.UseCasesModule
 import com.anvipo.angram.coreLayer.CoreErrors
 import com.anvipo.angram.coreLayer.CoreHelpers.assertionFailure
 import com.anvipo.angram.coreLayer.CoreHelpers.debugLog

@@ -3,8 +3,8 @@ package com.anvipo.angram.presentationLayer.flows.auth.screens.enterAuthenticati
 import androidx.fragment.app.Fragment
 import com.anvipo.angram.layers.application.coordinator.di.ApplicationCoordinatorModule.authorizationCoordinatorQualifier
 import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.resourceManagerQualifier
-import com.anvipo.angram.businessLogicLayer.di.UseCasesModule.enterAuthenticationCodeUseCaseQualifier
-import com.anvipo.angram.businessLogicLayer.useCases.authFlow.enterAuthenticationCode.EnterAuthenticationCodeUseCase
+import com.anvipo.angram.layers.businessLogic.di.UseCasesModule.enterAuthenticationCodeUseCaseQualifier
+import com.anvipo.angram.layers.businessLogic.useCases.authFlow.enterAuthenticationCode.EnterAuthenticationCodeUseCase
 import com.anvipo.angram.coreLayer.ResourceManager
 import com.anvipo.angram.presentationLayer.flows.auth.coordinator.interfaces.AuthorizationCoordinatorEnterAuthenticationCodeRouteEventHandler
 import com.anvipo.angram.presentationLayer.flows.auth.coordinator.screensFactory.enterAuthenticationCode.EnterAuthenticationCodeScreenFactory

@@ -1,15 +1,15 @@
-package com.anvipo.angram.businessLogicLayer.di
+package com.anvipo.angram.layers.businessLogic.di
 
-import com.anvipo.angram.businessLogicLayer.useCases.app.AppUseCase
-import com.anvipo.angram.businessLogicLayer.useCases.app.AppUseCaseImp
-import com.anvipo.angram.businessLogicLayer.useCases.authFlow.addProxy.AddProxyUseCase
-import com.anvipo.angram.businessLogicLayer.useCases.authFlow.addProxy.AddProxyUseCaseImp
-import com.anvipo.angram.businessLogicLayer.useCases.authFlow.enterAuthenticationCode.EnterAuthenticationCodeUseCase
-import com.anvipo.angram.businessLogicLayer.useCases.authFlow.enterAuthenticationCode.EnterAuthenticationCodeUseCaseImp
-import com.anvipo.angram.businessLogicLayer.useCases.authFlow.enterAuthenticationPassword.EnterAuthenticationPasswordUseCase
-import com.anvipo.angram.businessLogicLayer.useCases.authFlow.enterAuthenticationPassword.EnterAuthenticationPasswordUseCaseImp
-import com.anvipo.angram.businessLogicLayer.useCases.authFlow.enterPhoneNumber.EnterPhoneNumberUseCase
-import com.anvipo.angram.businessLogicLayer.useCases.authFlow.enterPhoneNumber.EnterPhoneNumberUseCaseImp
+import com.anvipo.angram.layers.businessLogic.useCases.app.AppUseCase
+import com.anvipo.angram.layers.businessLogic.useCases.app.AppUseCaseImp
+import com.anvipo.angram.layers.businessLogic.useCases.authFlow.addProxy.AddProxyUseCase
+import com.anvipo.angram.layers.businessLogic.useCases.authFlow.addProxy.AddProxyUseCaseImp
+import com.anvipo.angram.layers.businessLogic.useCases.authFlow.enterAuthenticationCode.EnterAuthenticationCodeUseCase
+import com.anvipo.angram.layers.businessLogic.useCases.authFlow.enterAuthenticationCode.EnterAuthenticationCodeUseCaseImp
+import com.anvipo.angram.layers.businessLogic.useCases.authFlow.enterAuthenticationPassword.EnterAuthenticationPasswordUseCase
+import com.anvipo.angram.layers.businessLogic.useCases.authFlow.enterAuthenticationPassword.EnterAuthenticationPasswordUseCaseImp
+import com.anvipo.angram.layers.businessLogic.useCases.authFlow.enterPhoneNumber.EnterPhoneNumberUseCase
+import com.anvipo.angram.layers.businessLogic.useCases.authFlow.enterPhoneNumber.EnterPhoneNumberUseCaseImp
 import com.anvipo.angram.dataLayer.di.GatewaysModule.authorizationTDLibGatewayQualifier
 import com.anvipo.angram.dataLayer.di.GatewaysModule.proxyLocalGatewayQualifier
 import com.anvipo.angram.dataLayer.di.GatewaysModule.proxyTDLibGatewayQualifier

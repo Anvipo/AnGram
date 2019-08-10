@@ -1,4 +1,4 @@
-package com.anvipo.angram.businessLogicLayer.useCases.authFlow.addProxy
+package com.anvipo.angram.layers.businessLogic.useCases.authFlow.addProxy
 
 import com.anvipo.angram.dataLayer.gateways.local.db.room.entities.proxy.TdApiProxyInfoRoomEntity
 import com.anvipo.angram.dataLayer.gateways.local.db.room.entities.proxy.type.base.TdApiProxyTypeRoomEntity

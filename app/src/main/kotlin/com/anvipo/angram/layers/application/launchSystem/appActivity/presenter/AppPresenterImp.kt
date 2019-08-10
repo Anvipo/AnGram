@@ -9,7 +9,7 @@ import com.anvipo.angram.layers.application.launchSystem.appActivity.view.AppVie
 import com.anvipo.angram.layers.application.types.ConnectionStateReceiveChannel
 import com.anvipo.angram.layers.application.types.EnabledProxyIdReceiveChannel
 import com.anvipo.angram.layers.application.types.SystemMessageReceiveChannel
-import com.anvipo.angram.businessLogicLayer.useCases.app.AppUseCase
+import com.anvipo.angram.layers.businessLogic.useCases.app.AppUseCase
 import com.anvipo.angram.coreLayer.CoreHelpers.assertionFailure
 import com.anvipo.angram.coreLayer.CoreHelpers.debugLog
 import com.anvipo.angram.coreLayer.ResourceManager

@@ -2,7 +2,7 @@ package com.anvipo.angram.presentationLayer.flows.auth.screens.enterAuthenticati
 
 import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.R
-import com.anvipo.angram.businessLogicLayer.useCases.authFlow.enterAuthenticationCode.EnterAuthenticationCodeUseCase
+import com.anvipo.angram.layers.businessLogic.useCases.authFlow.enterAuthenticationCode.EnterAuthenticationCodeUseCase
 import com.anvipo.angram.coreLayer.CoreHelpers.debugLog
 import com.anvipo.angram.coreLayer.ResourceManager
 import com.anvipo.angram.dataLayer.gateways.tdLib.errors.TdApiError

@@ -1,4 +1,4 @@
-package com.anvipo.angram.businessLogicLayer.useCases.app
+package com.anvipo.angram.layers.businessLogic.useCases.app
 
 import com.anvipo.angram.dataLayer.gateways.local.sharedPreferences.SharedPreferencesDAO
 import com.anvipo.angram.dataLayer.gateways.tdLib.proxy.ProxyTDLibGateway

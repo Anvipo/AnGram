@@ -1,4 +1,4 @@
-package com.anvipo.angram.businessLogicLayer.useCases.authFlow.enterAuthenticationCode
+package com.anvipo.angram.layers.businessLogic.useCases.authFlow.enterAuthenticationCode
 
 import com.anvipo.angram.presentationLayer.flows.auth.screens.enterAuthenticationCode.types.CorrectAuthenticationCodeType
 

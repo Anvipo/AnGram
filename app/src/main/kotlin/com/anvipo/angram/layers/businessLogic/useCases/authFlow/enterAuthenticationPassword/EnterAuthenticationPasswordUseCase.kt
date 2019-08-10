@@ -1,4 +1,4 @@
-package com.anvipo.angram.businessLogicLayer.useCases.authFlow.enterAuthenticationPassword
+package com.anvipo.angram.layers.businessLogic.useCases.authFlow.enterAuthenticationPassword
 
 import com.anvipo.angram.presentationLayer.flows.auth.screens.enterAuthenticationPassword.types.CorrectAuthenticationPasswordType
 
