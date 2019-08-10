@@ -1,4 +1,4 @@
-package com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.screensFactory.enterPhoneNumberScreenFactory
+package com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.screensFactory.enterPhoneNumber
 
 import com.anvipo.angram.presentationLayer.flows.authFlow.screens.enterPhoneNumber.di.EnterPhoneNumberModule.enterPhoneNumberScreenQualifier
 import org.koin.core.scope.Scope

@@ -7,8 +7,8 @@ import com.anvipo.angram.businessLogicLayer.di.UseCasesModule.addProxyUseCaseQua
 import com.anvipo.angram.businessLogicLayer.useCases.authFlow.addProxy.AddProxyUseCase
 import com.anvipo.angram.coreLayer.ResourceManager
 import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.interfaces.AuthorizationCoordinatorAddProxyRouteEventHandler
-import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.screensFactory.addProxyScreenFactory.AddProxyScreenFactory
-import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.screensFactory.addProxyScreenFactory.AddProxyScreenFactoryImp
+import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.screensFactory.addProxy.AddProxyScreenFactory
+import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.screensFactory.addProxy.AddProxyScreenFactoryImp
 import com.anvipo.angram.presentationLayer.flows.authFlow.screens.addProxy.presenter.AddProxyPresenter
 import com.anvipo.angram.presentationLayer.flows.authFlow.screens.addProxy.presenter.AddProxyPresenterImp
 import com.anvipo.angram.presentationLayer.flows.authFlow.screens.addProxy.types.ProxyType

@@ -8,7 +8,7 @@ import com.anvipo.angram.dataLayer.gateways.tdLib.authorization.AuthorizationTDL
 import com.anvipo.angram.global.GlobalHelpers.createTGSystemMessage
 import com.anvipo.angram.presentationLayer.common.baseClasses.BaseCoordinatorImp
 import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.interfaces.*
-import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.screensFactory.authorizationScreensFactory.AuthorizationScreensFactory
+import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.screensFactory.authorization.AuthorizationScreensFactory
 import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.types.AuthorizationCoordinateResult
 import com.anvipo.angram.presentationLayer.flows.authFlow.screens.addProxy.types.ProxyType
 import kotlinx.coroutines.CoroutineExceptionHandler

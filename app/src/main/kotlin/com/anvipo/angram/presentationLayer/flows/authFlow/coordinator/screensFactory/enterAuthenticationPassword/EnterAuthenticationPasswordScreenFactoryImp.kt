@@ -1,4 +1,4 @@
-package com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.screensFactory.enterPasswordScreenFactory
+package com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.screensFactory.enterAuthenticationPassword
 
 import com.anvipo.angram.presentationLayer.flows.authFlow.screens.enterAuthenticationPassword.di.EnterAuthenticationPasswordModule.enterAuthenticationPasswordScreenQualifier
 import org.koin.core.scope.Scope

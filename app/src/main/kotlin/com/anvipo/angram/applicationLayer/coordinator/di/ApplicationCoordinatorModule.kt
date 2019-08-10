@@ -14,7 +14,7 @@ import com.anvipo.angram.dataLayer.gateways.tdLib.authorization.AuthorizationTDL
 import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.AuthorizationCoordinatorImp
 import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.di.AuthorizationCoordinatorModule.authorizationScreensFactoryQualifier
 import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.interfaces.AuthorizationCoordinator
-import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.screensFactory.authorizationScreensFactory.AuthorizationScreensFactory
+import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.screensFactory.authorization.AuthorizationScreensFactory
 import org.koin.android.ext.koin.androidApplication
 import org.koin.core.module.Module
 import org.koin.core.qualifier.StringQualifier

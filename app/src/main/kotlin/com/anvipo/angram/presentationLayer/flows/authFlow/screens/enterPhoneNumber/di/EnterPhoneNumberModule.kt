@@ -10,8 +10,8 @@ import com.anvipo.angram.businessLogicLayer.di.UseCasesModule.enterPhoneNumberUs
 import com.anvipo.angram.businessLogicLayer.useCases.authFlow.enterPhoneNumber.EnterPhoneNumberUseCase
 import com.anvipo.angram.coreLayer.ResourceManager
 import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.interfaces.AuthorizationCoordinatorEnterPhoneNumberRouteEventHandler
-import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.screensFactory.enterPhoneNumberScreenFactory.EnterPhoneNumberScreenFactory
-import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.screensFactory.enterPhoneNumberScreenFactory.EnterPhoneNumberScreenFactoryImp
+import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.screensFactory.enterPhoneNumber.EnterPhoneNumberScreenFactory
+import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.screensFactory.enterPhoneNumber.EnterPhoneNumberScreenFactoryImp
 import com.anvipo.angram.presentationLayer.flows.authFlow.screens.enterPhoneNumber.presenter.EnterPhoneNumberPresenter
 import com.anvipo.angram.presentationLayer.flows.authFlow.screens.enterPhoneNumber.presenter.EnterPhoneNumberPresenterImp
 import com.anvipo.angram.presentationLayer.flows.authFlow.screens.enterPhoneNumber.view.EnterPhoneNumberFragment

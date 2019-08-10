@@ -1,4 +1,4 @@
-package com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.screensFactory.addProxyScreenFactory
+package com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.screensFactory.addProxy
 
 import com.anvipo.angram.presentationLayer.flows.authFlow.screens.addProxy.di.AddProxyModule
 import com.anvipo.angram.presentationLayer.flows.authFlow.screens.addProxy.di.AddProxyModule.addProxyScreenCodeScreenQualifier

@@ -1,4 +1,4 @@
-package com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.screensFactory.enterPhoneNumberScreenFactory
+package com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.screensFactory.enterPhoneNumber
 
 import ru.terrakok.cicerone.android.support.SupportAppScreen
 
