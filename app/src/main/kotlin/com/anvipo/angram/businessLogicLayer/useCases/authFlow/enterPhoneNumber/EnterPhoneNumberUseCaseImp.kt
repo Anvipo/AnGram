@@ -1,7 +1,7 @@
 package com.anvipo.angram.businessLogicLayer.useCases.authFlow.enterPhoneNumber
 
 import com.anvipo.angram.dataLayer.gateways.tdLib.authorization.AuthorizationTDLibGateway
-import com.anvipo.angram.presentationLayer.flows.authFlow.screens.enterPhoneNumber.types.CorrectPhoneNumberType
+import com.anvipo.angram.presentationLayer.flows.auth.screens.enterPhoneNumber.types.CorrectPhoneNumberType
 
 class EnterPhoneNumberUseCaseImp(
     private val authorizationTDLibGateway: AuthorizationTDLibGateway

@@ -1,6 +1,6 @@
 package com.anvipo.angram.businessLogicLayer.useCases.authFlow.enterAuthenticationPassword
 
-import com.anvipo.angram.presentationLayer.flows.authFlow.screens.enterAuthenticationPassword.types.CorrectAuthenticationPasswordType
+import com.anvipo.angram.presentationLayer.flows.auth.screens.enterAuthenticationPassword.types.CorrectAuthenticationPasswordType
 
 interface EnterAuthenticationPasswordUseCase {
 

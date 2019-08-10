@@ -1,7 +1,7 @@
 package com.anvipo.angram.businessLogicLayer.useCases.authFlow.enterAuthenticationPassword
 
 import com.anvipo.angram.dataLayer.gateways.tdLib.authorization.AuthorizationTDLibGateway
-import com.anvipo.angram.presentationLayer.flows.authFlow.screens.enterAuthenticationPassword.types.CorrectAuthenticationPasswordType
+import com.anvipo.angram.presentationLayer.flows.auth.screens.enterAuthenticationPassword.types.CorrectAuthenticationPasswordType
 
 class EnterAuthenticationPasswordUseCaseImp(
     private val tdLibGateway: AuthorizationTDLibGateway
