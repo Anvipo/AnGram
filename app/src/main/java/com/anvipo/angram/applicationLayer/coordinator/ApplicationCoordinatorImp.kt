@@ -1,6 +1,7 @@
 package com.anvipo.angram.applicationLayer.coordinator
 
 import android.content.Context
+import com.anvipo.angram.applicationLayer.coordinator.coordinatorsFactory.ApplicationCoordinatorsFactory
 import com.anvipo.angram.applicationLayer.coordinator.types.ApplicationCoordinateResult
 import com.anvipo.angram.applicationLayer.types.SystemMessageSendChannel
 import com.anvipo.angram.coreLayer.CoreHelpers.debugLog
@@ -8,7 +9,6 @@ import com.anvipo.angram.coreLayer.message.SystemMessage
 import com.anvipo.angram.dataLayer.gateways.tdLib.application.ApplicationTDLibGateway
 import com.anvipo.angram.global.GlobalHelpers.createTGSystemMessage
 import com.anvipo.angram.presentationLayer.common.baseClasses.BaseCoordinatorImp
-import com.anvipo.angram.presentationLayer.flows.authFlow.coordinator.interfaces.AuthorizationCoordinator
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -19,7 +19,7 @@ import kotlin.coroutines.suspendCoroutine
 
 @Suppress("RedundantUnitReturnType")
 class ApplicationCoordinatorImp(
-    private val authorizationCoordinator: AuthorizationCoordinator,
+    private val coordinatorsFactory: ApplicationCoordinatorsFactory,
     private val tdLibGateway: ApplicationTDLibGateway,
     private val systemMessageSendChannel: SystemMessageSendChannel,
     private val context: Context
@@ -202,6 +202,8 @@ class ApplicationCoordinatorImp(
             }
 
         launch(coroutineContext + startAuthenticationFlowCEH) {
+            val authorizationCoordinator = coordinatorsFactory.createAuthorizationCoordinator()
+
             if (withEnterAuthorizationCodeAsRootScreen) {
                 authorizationCoordinator.startAuthorizationFlowWithEnterAuthorizationCodeAsRootScreen()
             } else {
