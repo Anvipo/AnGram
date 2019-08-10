@@ -38,8 +38,7 @@ class App : Application() {
     companion object {
         const val TAG: String = "AnGram"
 
-        lateinit var INSTANCE: App
-            private set
+        private lateinit var INSTANCE: App
     }
 
     override fun onCreate() {
@@ -49,32 +48,28 @@ class App : Application() {
     }
 
     internal val updatesHandlerFunction: (TdApi.Object) -> Unit = { tdApiObject ->
-        val tag = "${this::class.java.simpleName} updatesHandler"
-
         tdObjectsStack.push(tdApiObject)
-        tdObjectsAndErrorsStack.push(tdApiObject)
+
+        val tag = "${this::class.java.simpleName} updatesHandler"
+        val text = "$tag = $tdApiObject"
+
+        debugLog(text)
+        systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
 
         when (tdApiObject) {
-            is TdApi.Update -> onUpdate(tag, tdApiObject)
-            else -> {
-                // TODO: handle this case
-                val text = tdApiObject.toString()
-
-                debugLog(text)
-                systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
-
-                assertionFailure("Undefined tdApiObject")
-            }
+            is TdApi.Update -> onUpdate(tdApiObject)
+            else -> debugLog("Unhandled TdApi.Object case")
         }
     }
 
     internal val updatesExceptionHandlerFunction: (Throwable) -> Unit = { error ->
         tdErrorsStack.push(error)
-        tdObjectsAndErrorsStack.push(error)
 
-        val text = error.localizedMessage
+        val tag = "${this::class.java.simpleName} updatesExceptionHandlerFunction"
+        val text = "$tag = ${error.localizedMessage}"
 
         debugLog(text)
+
         when (error) {
             is NoBeanDefFoundException,
             is BadScopeInstanceException,
@@ -103,9 +98,9 @@ class App : Application() {
 
     internal val defaultExceptionHandlerFunction: (Throwable) -> Unit = { error ->
         tdErrorsStack.push(error)
-        tdObjectsAndErrorsStack.push(error)
 
-        val text = error.localizedMessage
+        val tag = "${this::class.java.simpleName} defaultExceptionHandlerFunction"
+        val text = "$tag = ${error.localizedMessage}"
 
         debugLog(text)
         systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
@@ -159,114 +154,40 @@ class App : Application() {
 
     private val tdUpdateStack: IMutableStack<TdApi.Update> = MutableStack()
 
-    private val tdUpdateOptionStack: IMutableStack<TdApi.UpdateOption> = MutableStack()
-    private val enabledProxyIdStack: IMutableStack<Int> = MutableStack()
-
-    private val tdUpdateUserStack: IMutableStack<TdApi.UpdateUser> = MutableStack()
-    private val tdUpdateHavePendingNotificationsStack: IMutableStack<TdApi.UpdateHavePendingNotifications> =
-        MutableStack()
-
-    private val tdUpdateScopeNotificationSettingsStack: IMutableStack<TdApi.UpdateScopeNotificationSettings> =
-        MutableStack()
-    private val tdUpdateTermsOfServiceStack: IMutableStack<TdApi.UpdateTermsOfService> = MutableStack()
-
-    private val tdUpdateAuthorizationStateStack: IMutableStack<TdApi.UpdateAuthorizationState> = MutableStack()
-
-    private val tdUpdateConnectionStateStack: IMutableStack<TdApi.UpdateConnectionState> = MutableStack()
-
     private val tdErrorsStack: IMutableStack<Throwable> = MutableStack()
-    private val tdObjectsAndErrorsStack: IMutableStack<Any> = MutableStack()
 
 
     private fun onUpdate(
-        tag: String,
         tdApiUpdate: TdApi.Update
     ) {
         tdUpdateStack.push(tdApiUpdate)
 
         when (tdApiUpdate) {
-            is TdApi.UpdateConnectionState -> onUpdateConnectionState(tag, tdApiUpdate)
-            is TdApi.UpdateAuthorizationState -> onUpdateAuthorizationState(tag, tdApiUpdate)
-            is TdApi.UpdateOption -> onUpdateOption(tag, tdApiUpdate)
-            is TdApi.UpdateUser -> {
-                tdUpdateUserStack.push(tdApiUpdate)
-                debugLog(tdApiUpdate.toString())
-            }
-            is TdApi.UpdateHavePendingNotifications -> {
-                tdUpdateHavePendingNotificationsStack.push(tdApiUpdate)
-                debugLog(tdApiUpdate.toString())
-            }
-            is TdApi.UpdateScopeNotificationSettings -> {
-                tdUpdateScopeNotificationSettingsStack.push(tdApiUpdate)
-                debugLog(tdApiUpdate.toString())
-            }
-            is TdApi.UpdateTermsOfService -> {
-                tdUpdateTermsOfServiceStack.push(tdApiUpdate)
-                debugLog(tdApiUpdate.toString())
-            }
-            else -> {
-                val text = tdApiUpdate.toString()
-
-                debugLog(text)
-
-                systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
-
-                assertionFailure("Unspecified tdApiUpdate")
-            }
+            is TdApi.UpdateConnectionState -> onUpdateConnectionState(tdApiUpdate)
+            is TdApi.UpdateOption -> onUpdateOption(tdApiUpdate)
         }
     }
 
     private fun onUpdateConnectionState(
-        tag: String,
         tdApiUpdateConnectionState: TdApi.UpdateConnectionState
     ) {
-        tdUpdateConnectionStateStack.push(tdApiUpdateConnectionState)
-
         val connectionState = tdApiUpdateConnectionState.state
         connectionStateAppSendChannel.offer(connectionState)
         connectionStateEnterPhoneNumberSendChannel.offer(connectionState)
-
-        val text = "$tag: connection state updated ($connectionState)"
-
-        debugLog(text)
-        systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
-    }
-
-    private fun onUpdateAuthorizationState(
-        tag: String,
-        updateAuthorizationState: TdApi.UpdateAuthorizationState
-    ) {
-        tdUpdateAuthorizationStateStack.push(updateAuthorizationState)
-
-        val text = "$tag: ${updateAuthorizationState.authorizationState}"
-
-        debugLog(text)
-        systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
     }
 
     private fun onUpdateOption(
-        tag: String,
         updateOption: TdApi.UpdateOption
     ) {
-        tdUpdateOptionStack.push(updateOption)
-
         val optionValue = updateOption.value
 
-        val text = "$tag: ${updateOption.name}: $optionValue"
-
         if (updateOption.name == "enabled_proxy_id") {
-            if (optionValue is TdApi.OptionValueInteger) {
-                val enabledProxyId = optionValue.value
-
-                enabledProxyIdStack.push(enabledProxyId)
-                enabledProxyIdSendChannel.offer(enabledProxyId)
-            } else {
-                assertionFailure()
+            when (optionValue) {
+                is TdApi.OptionValueInteger -> enabledProxyIdSendChannel.offer(optionValue.value)
+                is TdApi.OptionValueEmpty -> enabledProxyIdSendChannel.offer(null)
+                else -> assertionFailure()
             }
         }
-
-        debugLog(text)
-        systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
     }
 
 }

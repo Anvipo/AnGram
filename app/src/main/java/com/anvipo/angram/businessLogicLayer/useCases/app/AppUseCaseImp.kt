@@ -10,7 +10,9 @@ class AppUseCaseImp(
 ) : AppUseCase {
 
     override suspend fun pingEnabledProxy(): Result<Double> {
-        val enabledProxyId: Int = sharedPreferencesGateway.getEnabledProxyId()
+        val enabledProxyId =
+            sharedPreferencesGateway
+                .getEnabledProxyId() ?: return Result.failure(Error("enabledProxyId == null"))
 
         return proxyTDLibGateway
             .pingProxyCatching(enabledProxyId)
@@ -22,7 +24,7 @@ class AppUseCaseImp(
             .setNetworkTypeCatching(networkType)
             .map {}
 
-    override suspend fun saveEnabledProxyId(enabledProxyId: Int) {
+    override suspend fun saveEnabledProxyId(enabledProxyId: Int?) {
         sharedPreferencesGateway.saveEnabledProxyId(enabledProxyId)
     }
 

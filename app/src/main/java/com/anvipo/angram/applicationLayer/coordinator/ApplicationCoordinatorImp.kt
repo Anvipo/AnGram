@@ -66,7 +66,7 @@ class ApplicationCoordinatorImp(
     private fun startAuthorizationFlow(withEnterAuthorizationCodeAsRootScreen: Boolean = false) {
         authorizationCoordinator.finishFlow = {
             removeChildCoordinator(coordinator = authorizationCoordinator)
-            assertionFailure()
+            // TODO: start main flow
         }
 
         addChildCoordinator(coordinator = authorizationCoordinator)
@@ -94,8 +94,6 @@ class ApplicationCoordinatorImp(
                 val text = "$tag: TdApi.AuthorizationState: $authState"
 
                 systemMessageSendChannel.offer(SystemMessage(text = text))
-
-                assertionFailure("Undefined authState")
             }
         }
     }
@@ -185,7 +183,7 @@ class ApplicationCoordinatorImp(
 
         systemMessageSendChannel.offer(SystemMessage(text = tag))
 
-        assertionFailure()
+        // TODO: start main flow
     }
 
     private fun onAuthorizationStateWaitCode() {

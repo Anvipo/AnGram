@@ -46,7 +46,7 @@ object LaunchSystemModule {
             get<EnabledProxyIdBroadcastChannel>(enabledProxyIdBroadcastChannelQualifier).openSubscription()
         }
         single<EnabledProxyIdBroadcastChannel>(enabledProxyIdBroadcastChannelQualifier) {
-            BroadcastChannel<Int>(Channel.CONFLATED)
+            BroadcastChannel<Int?>(Channel.CONFLATED)
         }
 
         single<SystemMessageSendChannel>(systemMessageSendChannelQualifier) {

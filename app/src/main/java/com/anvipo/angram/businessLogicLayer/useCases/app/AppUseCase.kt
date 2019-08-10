@@ -8,6 +8,6 @@ interface AppUseCase {
 
     suspend fun setNetworkType(networkType: TdApi.NetworkType): Result<Unit>
 
-    suspend fun saveEnabledProxyId(enabledProxyId: Int)
+    suspend fun saveEnabledProxyId(enabledProxyId: Int?)
 
 }

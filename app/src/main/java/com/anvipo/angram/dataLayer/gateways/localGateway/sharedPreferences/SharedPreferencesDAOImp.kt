@@ -8,20 +8,21 @@ class SharedPreferencesDAOImp(
     private val resourceManager: ResourceManager
 ) : SharedPreferencesDAO {
 
-    override fun getEnabledProxyId(): Int =
+    override fun getEnabledProxyId(): Int? =
         resourceManager
             .getSharedPreferences()
-            .getInt(
+            .getString(
                 resourceManager.getString(R.string.enabled_proxy_id),
-                -1
+                null
             )
+            ?.toIntOrNull()
 
     @SuppressLint("ApplySharedPref")
-    override fun saveEnabledProxyId(enabledProxyId: Int) {
+    override fun saveEnabledProxyId(enabledProxyId: Int?) {
         val sharedPreferences = resourceManager.getSharedPreferences()
 
         with(sharedPreferences.edit()) {
-            putInt(resourceManager.getString(R.string.enabled_proxy_id), enabledProxyId)
+            putString(resourceManager.getString(R.string.enabled_proxy_id), enabledProxyId?.toString())
             commit()
         }
     }

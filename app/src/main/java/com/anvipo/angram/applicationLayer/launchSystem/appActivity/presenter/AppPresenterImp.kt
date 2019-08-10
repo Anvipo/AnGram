@@ -220,7 +220,7 @@ class AppPresenterImp(
         }.also { jobsThatWillBeCancelledInOnDestroy += it }
     }
 
-    private suspend fun onReceivedEnabledProxyId(receivedEnabledProxyId: Int) {
+    private suspend fun onReceivedEnabledProxyId(receivedEnabledProxyId: Int?) {
         useCase.saveEnabledProxyId(receivedEnabledProxyId)
     }
 

@@ -228,7 +228,8 @@ class AuthorizationCoordinatorImp(
             is TdApi.AuthorizationStateReady -> onAuthorizationStateReady()
             else -> {
                 val tag = "${this::class.java.simpleName} showNeededScreen"
-                assertionFailure("$tag: Undefined authState: currentAuthorizationState.toString()")
+                val text = "$tag: Undefined authState: $authState"
+                systemMessageSendChannel.offer(createTGSystemMessage(text))
             }
         }
     }
