@@ -1,4 +1,4 @@
-package com.anvipo.angram.coreLayer.base.baseClasses
+package com.anvipo.angram.coreLayer.base.classes
 
 import android.content.Intent
 import android.net.Uri
@@ -17,7 +17,7 @@ import com.anvipo.angram.R
 import com.anvipo.angram.coreLayer.CoreHelpers.debugLog
 import com.anvipo.angram.coreLayer.MyProgressDialog
 import com.anvipo.angram.coreLayer.base.CoreConstants.PROGRESS_TAG
-import com.anvipo.angram.coreLayer.base.baseInterfaces.BaseView
+import com.anvipo.angram.coreLayer.base.interfaces.BaseView
 import com.anvipo.angram.coreLayer.dialogFragment.ItemsDialogFragment
 import com.anvipo.angram.coreLayer.dialogFragment.MessageDialogFragment
 import com.anvipo.angram.coreLayer.showSnackbarMessage

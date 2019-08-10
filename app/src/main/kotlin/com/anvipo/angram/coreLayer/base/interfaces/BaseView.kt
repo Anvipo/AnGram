@@ -1,4 +1,4 @@
-package com.anvipo.angram.coreLayer.base.baseInterfaces
+package com.anvipo.angram.coreLayer.base.interfaces
 
 import com.anvipo.angram.presentationLayer.common.interfaces.Presentable
 import com.arellomobile.mvp.MvpView

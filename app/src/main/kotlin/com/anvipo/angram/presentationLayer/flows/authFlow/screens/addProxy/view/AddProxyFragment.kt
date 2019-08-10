@@ -7,7 +7,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.anvipo.angram.R
 import com.anvipo.angram.coreLayer.IndexPath
-import com.anvipo.angram.coreLayer.base.baseClasses.BaseFragment
+import com.anvipo.angram.coreLayer.base.classes.BaseFragment
 import com.anvipo.angram.coreLayer.dialogFragment.MessageDialogFragment
 import com.anvipo.angram.coreLayer.hideWithAnimate
 import com.anvipo.angram.coreLayer.showWithAnimate

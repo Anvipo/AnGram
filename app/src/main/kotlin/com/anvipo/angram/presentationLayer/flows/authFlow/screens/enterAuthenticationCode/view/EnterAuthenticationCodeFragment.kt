@@ -6,7 +6,7 @@ import android.text.InputFilter
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import com.anvipo.angram.R
-import com.anvipo.angram.coreLayer.base.baseClasses.BaseFragment
+import com.anvipo.angram.coreLayer.base.classes.BaseFragment
 import com.anvipo.angram.coreLayer.hideKeyboard
 import com.anvipo.angram.coreLayer.hideWithAnimate
 import com.anvipo.angram.coreLayer.showWithAnimate

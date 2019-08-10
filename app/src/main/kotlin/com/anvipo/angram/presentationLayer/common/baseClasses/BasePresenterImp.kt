@@ -1,6 +1,6 @@
 package com.anvipo.angram.presentationLayer.common.baseClasses
 
-import com.anvipo.angram.coreLayer.base.baseInterfaces.BaseView
+import com.anvipo.angram.coreLayer.base.interfaces.BaseView
 import com.anvipo.angram.presentationLayer.common.interfaces.BasePresenter
 import com.arellomobile.mvp.MvpPresenter
 import kotlinx.coroutines.CancellationException

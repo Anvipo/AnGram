@@ -4,7 +4,7 @@ package com.anvipo.angram.presentationLayer.flows.authFlow.screens.enterPhoneNum
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import com.anvipo.angram.R
-import com.anvipo.angram.coreLayer.base.baseClasses.BaseFragment
+import com.anvipo.angram.coreLayer.base.classes.BaseFragment
 import com.anvipo.angram.coreLayer.dialogFragment.ItemsDialogFragment
 import com.anvipo.angram.coreLayer.dialogFragment.MessageDialogFragment
 import com.anvipo.angram.coreLayer.hideKeyboard

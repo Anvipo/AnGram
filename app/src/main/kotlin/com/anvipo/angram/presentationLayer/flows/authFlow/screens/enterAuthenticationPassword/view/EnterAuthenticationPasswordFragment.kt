@@ -2,7 +2,7 @@ package com.anvipo.angram.presentationLayer.flows.authFlow.screens.enterAuthenti
 
 import androidx.appcompat.widget.Toolbar
 import com.anvipo.angram.R
-import com.anvipo.angram.coreLayer.base.baseClasses.BaseFragment
+import com.anvipo.angram.coreLayer.base.classes.BaseFragment
 import com.anvipo.angram.presentationLayer.flows.authFlow.screens.enterAuthenticationPassword.di.EnterAuthenticationPasswordModule.enterAuthenticationPasswordPresenterQualifier
 import com.anvipo.angram.presentationLayer.flows.authFlow.screens.enterAuthenticationPassword.presenter.EnterAuthenticationPasswordPresenter
 import com.anvipo.angram.presentationLayer.flows.authFlow.screens.enterAuthenticationPassword.presenter.EnterAuthenticationPasswordPresenterImp
