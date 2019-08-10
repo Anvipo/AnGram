@@ -1,4 +1,4 @@
-package com.anvipo.angram.applicationLayer.launchSystem.appActivity.view
+package com.anvipo.angram.layers.application.launchSystem.appActivity.view
 
 import com.anvipo.angram.coreLayer.base.interfaces.BaseView
 

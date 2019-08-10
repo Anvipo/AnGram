@@ -1,6 +1,6 @@
-package com.anvipo.angram.applicationLayer.coordinator.coordinatorsFactory
+package com.anvipo.angram.layers.application.coordinator.coordinatorsFactory
 
-import com.anvipo.angram.applicationLayer.coordinator.di.ApplicationCoordinatorModule.authorizationCoordinatorQualifier
+import com.anvipo.angram.layers.application.coordinator.di.ApplicationCoordinatorModule.authorizationCoordinatorQualifier
 import com.anvipo.angram.presentationLayer.flows.auth.coordinator.interfaces.AuthorizationCoordinator
 import org.koin.core.scope.Scope
 

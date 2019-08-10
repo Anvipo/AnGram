@@ -1,11 +1,11 @@
-package com.anvipo.angram.applicationLayer.di
+package com.anvipo.angram.layers.application.di
 
-import com.anvipo.angram.applicationLayer.coordinator.ApplicationCoordinator
-import com.anvipo.angram.applicationLayer.coordinator.di.ApplicationCoordinatorModule.applicationCoordinatorQualifier
-import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule.resourceManagerQualifier
-import com.anvipo.angram.applicationLayer.launchSystem.appActivity.presenter.AppPresenter
-import com.anvipo.angram.applicationLayer.launchSystem.appActivity.presenter.AppPresenterImp
-import com.anvipo.angram.applicationLayer.types.*
+import com.anvipo.angram.layers.application.coordinator.ApplicationCoordinator
+import com.anvipo.angram.layers.application.coordinator.di.ApplicationCoordinatorModule.applicationCoordinatorQualifier
+import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.resourceManagerQualifier
+import com.anvipo.angram.layers.application.launchSystem.appActivity.presenter.AppPresenter
+import com.anvipo.angram.layers.application.launchSystem.appActivity.presenter.AppPresenterImp
+import com.anvipo.angram.layers.application.types.*
 import com.anvipo.angram.businessLogicLayer.di.UseCasesModule.appUseCaseQualifier
 import com.anvipo.angram.businessLogicLayer.useCases.app.AppUseCase
 import com.anvipo.angram.coreLayer.ResourceManager

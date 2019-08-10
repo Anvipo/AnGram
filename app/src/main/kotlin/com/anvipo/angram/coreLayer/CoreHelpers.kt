@@ -2,7 +2,7 @@ package com.anvipo.angram.coreLayer
 
 import android.util.Log
 import com.anvipo.angram.BuildConfig
-import com.anvipo.angram.applicationLayer.launchSystem.App
+import com.anvipo.angram.layers.application.launchSystem.App
 
 object CoreHelpers {
 

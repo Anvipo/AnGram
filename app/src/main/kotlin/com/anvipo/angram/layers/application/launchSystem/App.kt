@@ -1,16 +1,16 @@
-package com.anvipo.angram.applicationLayer.launchSystem
+package com.anvipo.angram.layers.application.launchSystem
 
 import android.app.Application
 import com.anvipo.angram.BuildConfig
-import com.anvipo.angram.applicationLayer.coordinator.di.ApplicationCoordinatorModule
-import com.anvipo.angram.applicationLayer.di.LaunchSystemModule
-import com.anvipo.angram.applicationLayer.di.LaunchSystemModule.connectionStateAppSendChannelQualifier
-import com.anvipo.angram.applicationLayer.di.LaunchSystemModule.enabledProxyIdSendChannelQualifier
-import com.anvipo.angram.applicationLayer.di.LaunchSystemModule.systemMessageSendChannelQualifier
-import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule
-import com.anvipo.angram.applicationLayer.types.ConnectionStateSendChannel
-import com.anvipo.angram.applicationLayer.types.EnabledProxyIdSendChannel
-import com.anvipo.angram.applicationLayer.types.SystemMessageSendChannel
+import com.anvipo.angram.layers.application.coordinator.di.ApplicationCoordinatorModule
+import com.anvipo.angram.layers.application.di.LaunchSystemModule
+import com.anvipo.angram.layers.application.di.LaunchSystemModule.connectionStateAppSendChannelQualifier
+import com.anvipo.angram.layers.application.di.LaunchSystemModule.enabledProxyIdSendChannelQualifier
+import com.anvipo.angram.layers.application.di.LaunchSystemModule.systemMessageSendChannelQualifier
+import com.anvipo.angram.layers.application.di.SystemInfrastructureModule
+import com.anvipo.angram.layers.application.types.ConnectionStateSendChannel
+import com.anvipo.angram.layers.application.types.EnabledProxyIdSendChannel
+import com.anvipo.angram.layers.application.types.SystemMessageSendChannel
 import com.anvipo.angram.businessLogicLayer.di.UseCasesModule
 import com.anvipo.angram.coreLayer.CoreErrors
 import com.anvipo.angram.coreLayer.CoreHelpers.assertionFailure

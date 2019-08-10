@@ -1,4 +1,4 @@
-package com.anvipo.angram.applicationLayer.launchSystem.appActivity.view
+package com.anvipo.angram.layers.application.launchSystem.appActivity.view
 
 import android.os.Bundle
 import android.view.View
@@ -7,10 +7,10 @@ import androidx.annotation.AnimatorRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.anvipo.angram.R
-import com.anvipo.angram.applicationLayer.di.LaunchSystemModule.appPresenterQualifier
-import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule.navigatorHolderQualifier
-import com.anvipo.angram.applicationLayer.launchSystem.appActivity.presenter.AppPresenter
-import com.anvipo.angram.applicationLayer.launchSystem.appActivity.presenter.AppPresenterImp
+import com.anvipo.angram.layers.application.di.LaunchSystemModule.appPresenterQualifier
+import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.navigatorHolderQualifier
+import com.anvipo.angram.layers.application.launchSystem.appActivity.presenter.AppPresenter
+import com.anvipo.angram.layers.application.launchSystem.appActivity.presenter.AppPresenterImp
 import com.anvipo.angram.coreLayer.base.classes.BaseActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter

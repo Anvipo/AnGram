@@ -1,14 +1,14 @@
-package com.anvipo.angram.applicationLayer.launchSystem.appActivity.presenter
+package com.anvipo.angram.layers.application.launchSystem.appActivity.presenter
 
 import android.util.Log
 import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.R
-import com.anvipo.angram.applicationLayer.coordinator.ApplicationCoordinator
-import com.anvipo.angram.applicationLayer.launchSystem.App
-import com.anvipo.angram.applicationLayer.launchSystem.appActivity.view.AppView
-import com.anvipo.angram.applicationLayer.types.ConnectionStateReceiveChannel
-import com.anvipo.angram.applicationLayer.types.EnabledProxyIdReceiveChannel
-import com.anvipo.angram.applicationLayer.types.SystemMessageReceiveChannel
+import com.anvipo.angram.layers.application.coordinator.ApplicationCoordinator
+import com.anvipo.angram.layers.application.launchSystem.App
+import com.anvipo.angram.layers.application.launchSystem.appActivity.view.AppView
+import com.anvipo.angram.layers.application.types.ConnectionStateReceiveChannel
+import com.anvipo.angram.layers.application.types.EnabledProxyIdReceiveChannel
+import com.anvipo.angram.layers.application.types.SystemMessageReceiveChannel
 import com.anvipo.angram.businessLogicLayer.useCases.app.AppUseCase
 import com.anvipo.angram.coreLayer.CoreHelpers.assertionFailure
 import com.anvipo.angram.coreLayer.CoreHelpers.debugLog

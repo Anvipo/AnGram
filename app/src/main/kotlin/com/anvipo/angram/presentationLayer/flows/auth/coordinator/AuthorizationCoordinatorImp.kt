@@ -1,6 +1,6 @@
 package com.anvipo.angram.presentationLayer.flows.auth.coordinator
 
-import com.anvipo.angram.applicationLayer.types.SystemMessageSendChannel
+import com.anvipo.angram.layers.application.types.SystemMessageSendChannel
 import com.anvipo.angram.coreLayer.CoreHelpers.assertionFailure
 import com.anvipo.angram.coreLayer.CoreHelpers.debugLog
 import com.anvipo.angram.coreLayer.message.SystemMessage

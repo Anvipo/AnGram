@@ -1,4 +1,4 @@
-package com.anvipo.angram.applicationLayer.launchSystem.appActivity.presenter
+package com.anvipo.angram.layers.application.launchSystem.appActivity.presenter
 
 import com.anvipo.angram.presentationLayer.common.interfaces.BasePresenter
 

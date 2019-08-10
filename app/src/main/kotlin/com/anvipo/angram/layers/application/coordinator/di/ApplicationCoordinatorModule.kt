@@ -1,12 +1,12 @@
-package com.anvipo.angram.applicationLayer.coordinator.di
+package com.anvipo.angram.layers.application.coordinator.di
 
-import com.anvipo.angram.applicationLayer.coordinator.ApplicationCoordinator
-import com.anvipo.angram.applicationLayer.coordinator.ApplicationCoordinatorImp
-import com.anvipo.angram.applicationLayer.coordinator.coordinatorsFactory.ApplicationCoordinatorsFactory
-import com.anvipo.angram.applicationLayer.coordinator.coordinatorsFactory.ApplicationCoordinatorsFactoryImp
-import com.anvipo.angram.applicationLayer.di.LaunchSystemModule.systemMessageSendChannelQualifier
-import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule.routerQualifier
-import com.anvipo.angram.applicationLayer.types.SystemMessageSendChannel
+import com.anvipo.angram.layers.application.coordinator.ApplicationCoordinator
+import com.anvipo.angram.layers.application.coordinator.ApplicationCoordinatorImp
+import com.anvipo.angram.layers.application.coordinator.coordinatorsFactory.ApplicationCoordinatorsFactory
+import com.anvipo.angram.layers.application.coordinator.coordinatorsFactory.ApplicationCoordinatorsFactoryImp
+import com.anvipo.angram.layers.application.di.LaunchSystemModule.systemMessageSendChannelQualifier
+import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.routerQualifier
+import com.anvipo.angram.layers.application.types.SystemMessageSendChannel
 import com.anvipo.angram.dataLayer.di.GatewaysModule.applicationTDLibGatewayQualifier
 import com.anvipo.angram.dataLayer.di.GatewaysModule.authorizationTDLibGatewayQualifier
 import com.anvipo.angram.dataLayer.gateways.tdLib.application.ApplicationTDLibGateway

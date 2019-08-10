@@ -1,6 +1,6 @@
 @file:Suppress("EXPERIMENTAL_API_USAGE")
 
-package com.anvipo.angram.applicationLayer.types
+package com.anvipo.angram.layers.application.types
 
 import com.anvipo.angram.coreLayer.message.SystemMessage
 import kotlinx.coroutines.channels.BroadcastChannel

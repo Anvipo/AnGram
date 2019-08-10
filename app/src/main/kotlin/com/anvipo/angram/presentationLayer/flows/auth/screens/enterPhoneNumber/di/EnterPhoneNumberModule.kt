@@ -1,11 +1,11 @@
 package com.anvipo.angram.presentationLayer.flows.auth.screens.enterPhoneNumber.di
 
 import androidx.fragment.app.Fragment
-import com.anvipo.angram.applicationLayer.coordinator.di.ApplicationCoordinatorModule.authorizationCoordinatorQualifier
-import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule.resourceManagerQualifier
-import com.anvipo.angram.applicationLayer.types.ConnectionStateBroadcastChannel
-import com.anvipo.angram.applicationLayer.types.ConnectionStateReceiveChannel
-import com.anvipo.angram.applicationLayer.types.ConnectionStateSendChannel
+import com.anvipo.angram.layers.application.coordinator.di.ApplicationCoordinatorModule.authorizationCoordinatorQualifier
+import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.resourceManagerQualifier
+import com.anvipo.angram.layers.application.types.ConnectionStateBroadcastChannel
+import com.anvipo.angram.layers.application.types.ConnectionStateReceiveChannel
+import com.anvipo.angram.layers.application.types.ConnectionStateSendChannel
 import com.anvipo.angram.businessLogicLayer.di.UseCasesModule.enterPhoneNumberUseCaseQualifier
 import com.anvipo.angram.businessLogicLayer.useCases.authFlow.enterPhoneNumber.EnterPhoneNumberUseCase
 import com.anvipo.angram.coreLayer.ResourceManager

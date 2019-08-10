@@ -1,8 +1,8 @@
 package com.anvipo.angram.dataLayer.di
 
 import androidx.room.Room
-import com.anvipo.angram.applicationLayer.di.SystemInfrastructureModule.resourceManagerQualifier
-import com.anvipo.angram.applicationLayer.launchSystem.App
+import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.resourceManagerQualifier
+import com.anvipo.angram.layers.application.launchSystem.App
 import com.anvipo.angram.coreLayer.ResourceManager
 import com.anvipo.angram.dataLayer.gateways.local.db.room.AppDatabase
 import com.anvipo.angram.dataLayer.gateways.local.db.room.proxy.ProxyRoomDAO

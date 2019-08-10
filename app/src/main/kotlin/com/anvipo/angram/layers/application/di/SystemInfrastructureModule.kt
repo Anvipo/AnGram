@@ -1,4 +1,4 @@
-package com.anvipo.angram.applicationLayer.di
+package com.anvipo.angram.layers.application.di
 
 import com.anvipo.angram.coreLayer.ResourceManager
 import org.koin.android.ext.koin.androidApplication
