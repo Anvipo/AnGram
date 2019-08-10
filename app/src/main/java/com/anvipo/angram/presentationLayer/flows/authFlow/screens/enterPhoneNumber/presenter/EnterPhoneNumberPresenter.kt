@@ -8,6 +8,6 @@ interface EnterPhoneNumberPresenter : BasePresenter {
     fun onItemClicked(index: Int)
 
     fun onNextButtonPressed(enteredPhoneNumber: String)
-    fun onPhoneNumberTextChanged(text: CharSequence?)
+    fun onPhoneNumberTextChanged(text: String)
 
 }

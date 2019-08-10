@@ -56,8 +56,7 @@
                 android:id="@+id/enter_phone_number_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:inputType="phone"
-                android:maxLength="12" />
+                android:inputType="phone" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton

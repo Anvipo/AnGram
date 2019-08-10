@@ -1,9 +1,6 @@
 package com.anvipo.angram.presentationLayer.flows.authFlow.screens.enterPhoneNumber.view
 
 
-import android.text.Editable
-import android.text.InputFilter
-import android.text.TextWatcher
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import com.anvipo.angram.R
@@ -13,6 +10,7 @@ import com.anvipo.angram.coreLayer.dialogFragment.MessageDialogFragment
 import com.anvipo.angram.coreLayer.hideKeyboard
 import com.anvipo.angram.coreLayer.hideWithAnimate
 import com.anvipo.angram.coreLayer.showWithAnimate
+import com.anvipo.angram.presentationLayer.common.PhoneNumberTextWatcher
 import com.anvipo.angram.presentationLayer.flows.authFlow.screens.enterPhoneNumber.di.EnterPhoneNumberModule.enterPhoneNumberPresenterQualifier
 import com.anvipo.angram.presentationLayer.flows.authFlow.screens.enterPhoneNumber.presenter.EnterPhoneNumberPresenter
 import com.anvipo.angram.presentationLayer.flows.authFlow.screens.enterPhoneNumber.presenter.EnterPhoneNumberPresenterImp
@@ -48,10 +46,6 @@ class EnterPhoneNumberFragment :
         enter_phone_number_next_button.hideWithAnimate()
     }
 
-    override fun setMaxLengthOfPhoneNumber(maxLength: Int) {
-        enter_phone_number_edit_text.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(maxLength))
-    }
-
     override val presenter: EnterPhoneNumberPresenter by lazy { mPresenter }
     override val layoutRes: Int by lazy { R.layout.fragment_enter_phone_number }
 
@@ -70,7 +64,7 @@ class EnterPhoneNumberFragment :
     }
 
     override fun setupUI() {
-        enter_phone_number_edit_text.setText("+7")
+        enter_phone_number_edit_text.setText("+")
     }
 
     override fun itemClicked(
@@ -88,25 +82,9 @@ class EnterPhoneNumberFragment :
     internal lateinit var mPresenter: EnterPhoneNumberPresenterImp
 
     private val phoneNumberTextWatcher by lazy {
-        object : TextWatcher {
-            override fun afterTextChanged(editText: Editable?): Unit = Unit
-
-            override fun beforeTextChanged(
-                text: CharSequence?,
-                start: Int,
-                count: Int,
-                after: Int
-            ): Unit = Unit
-
-            override fun onTextChanged(
-                text: CharSequence?,
-                start: Int,
-                before: Int,
-                count: Int
-            ) {
-                presenter.onPhoneNumberTextChanged(text)
-            }
-        }
+        PhoneNumberTextWatcher(
+            onEnteredCleanedPhoneNumber = { presenter.onPhoneNumberTextChanged(it) }
+        )
     }
 
     private fun onChangedFocusInPhoneNumberEditText(

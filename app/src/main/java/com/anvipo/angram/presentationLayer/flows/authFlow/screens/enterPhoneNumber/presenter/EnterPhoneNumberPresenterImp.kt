@@ -1,7 +1,5 @@
 package com.anvipo.angram.presentationLayer.flows.authFlow.screens.enterPhoneNumber.presenter
 
-import android.content.Context
-import android.telephony.TelephonyManager
 import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.R
 import com.anvipo.angram.applicationLayer.types.ConnectionStateReceiveChannel
@@ -38,8 +36,6 @@ class EnterPhoneNumberPresenterImp(
 
     override fun coldStart() {
         viewState.hideNextButton()
-
-        viewState.setMaxLengthOfPhoneNumber(phoneNumberLength.toInt())
     }
 
     override fun onResumeTriggered() {
@@ -103,13 +99,8 @@ class EnterPhoneNumberPresenterImp(
         }
     }
 
-    override fun onPhoneNumberTextChanged(text: CharSequence?) {
-        if (text == null) {
-            viewState.hideNextButton()
-            return
-        }
-
-        if (text.length.toUInt() < phoneNumberLength) {
+    override fun onPhoneNumberTextChanged(text: String) {
+        if (text.length <= 1) {
             viewState.hideNextButton()
             return
         }
@@ -129,18 +120,6 @@ class EnterPhoneNumberPresenterImp(
     override val coroutineContext: CoroutineContext = Dispatchers.IO
 
     private var onNextButtonPressedJob: Job? = null
-
-    private val phoneNumberLength: UInt
-        get() {
-            val telephonyManager =
-                resourceManager.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-
-            return when (telephonyManager.simCountryIso) {
-                "ru" -> 12u
-                // TODO: other countries
-                else -> 12u
-            }
-        }
 
     private fun subscribeOnConnectionStates() {
         val receiveConnectionStatesCEH = CoroutineExceptionHandler { _, error ->

@@ -18,6 +18,4 @@ interface EnterPhoneNumberView : BaseView {
     @StateStrategyType(OneExecutionStateStrategy::class)
     fun hideNextButton()
 
-    fun setMaxLengthOfPhoneNumber(maxLength: Int)
-
 }
