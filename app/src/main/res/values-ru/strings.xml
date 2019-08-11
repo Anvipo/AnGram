@@ -1,32 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="share_to">Поделиться с</string>
-
     <string name="loading">Загрузка</string>
-
-    <!--Authorization flow-->
-
-    <string name="phone_number_invalid">Неверный номер телефона</string>
-    <string name="enter_your_phone_number_title">Введите Ваш номер телефона</string>
     <string name="unknown_error">Неизвестная ошибка</string>
-    <string name="phone_number_text_input_hint">Номер телефона</string>
     <string name="next_button_text">Далее</string>
     <string name="error_title">Ошибка</string>
-    <string name="phone_number_cant_be_empty">Номер телефона не может быть пустым</string>
     <string name="query_canceled">Запрос отменён</string>
+    <string name="first_name_hint">Имя</string>
+    <string name="last_name_hint">Фамилия</string>
+    <string name="code_is_invalid">Код неверен</string>
+    <string name="too_many_requests_try_later">Слишком много запросов. Попробуйте позже.</string>
+    <string name="connection_state">Состояние соединения</string>
+
+    <!--Authorization flow-->
+    <string name="phone_number_invalid">Неверный номер телефона</string>
+    <string name="enter_your_phone_number_title">Введите Ваш номер телефона</string>
+    <string name="phone_number_text_input_hint">Номер телефона</string>
+    <string name="phone_number_cant_be_empty">Номер телефона не может быть пустым</string>
     <string name="invalid_phone_number_length">Некорректная длина номера телефона</string>
     <string name="enter_auth_code_title">Введите код аутентификации</string>
     <string name="authentication_code_cant_be_empty">Код аутентификации не может быть пустым</string>
     <string name="authentication_code">Код аутентификации</string>
-    <string name="first_name_hint">Имя</string>
-    <string name="last_name_hint">Фамилия</string>
-    <string name="code_is_invalid">Код неверен</string>
     <string name="enter_password">Введите пароль</string>
     <string name="password_type_input_hint">Пароль</string>
-    <string name="too_many_requests_try_later">Слишком много запросов. Попробуйте позже.</string>
     <string name="resend_code_button_text">Выслать код заново</string>
-    <string name="connection_state">Состояние соединения</string>
+    <!--\\Authorization flow-->
 
+    <!--Proxy-->
     <string name="add_proxy">Добавить прокси</string>
     <string name="server_add_mt_proto_proxy_label">Сервер</string>
     <string name="port_add_mt_proto_proxy_label">Порт</string>
@@ -34,9 +35,8 @@
     <string name="enter_proxy_server_data">Введите данные прокси сервера</string>
     <string name="key_add_mtproto_proxy_label">Ключ</string>
     <string name="credentials_add_mtproto_proxy_label">Учётные данные</string>
-    <string name="proxy_successfully_has_been_added">Proxy successfullty has been added</string>
+    <string name="proxy_successfully_has_been_added">Прокси был успешно добавлен</string>
     <string name="choose_proxy_server_type">Выберите нужный тип прокси сервера</string>
-
-    <!--\\Authorization flow-->
+    <!--\\Proxy-->
 
 </resources>
