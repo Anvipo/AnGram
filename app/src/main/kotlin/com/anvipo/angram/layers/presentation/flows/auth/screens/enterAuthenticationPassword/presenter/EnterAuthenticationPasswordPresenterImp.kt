@@ -2,7 +2,6 @@ package com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthentica
 
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.businessLogic.useCases.authFlow.enterAuthenticationPassword.EnterAuthenticationPasswordUseCase
-import com.anvipo.angram.layers.core.CoroutineExceptionHandlerWithLogger
 import com.anvipo.angram.layers.core.ResourceManager
 import com.anvipo.angram.layers.presentation.common.baseClasses.BasePresenterImp
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.interfaces.AuthorizationCoordinatorEnterAuthenticationPasswordRouteEventHandler
@@ -10,9 +9,6 @@ import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticat
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationPassword.view.EnterAuthenticationPasswordView
 import com.arellomobile.mvp.InjectViewState
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlin.coroutines.CoroutineContext
 
 @InjectViewState
 class EnterAuthenticationPasswordPresenterImp(
@@ -26,15 +22,9 @@ class EnterAuthenticationPasswordPresenterImp(
     }
 
     override fun onNextButtonPressed(enteredAuthenticationPassword: CorrectAuthenticationPasswordType) {
-        val onNextButtonPressedCEH = CoroutineExceptionHandlerWithLogger { _, error ->
-            viewState.showErrorAlert(error.localizedMessage)
-        }
-
         viewState.showProgress()
 
-        launch(
-            context = coroutineContext + onNextButtonPressedCEH
-        ) {
+        myLaunch {
             useCase.checkAuthenticationPasswordCatching(enteredAuthenticationPassword)
                 .onSuccess {
                     routeEventHandler.onEnterCorrectAuthenticationPassword()
@@ -44,18 +34,16 @@ class EnterAuthenticationPasswordPresenterImp(
                         getString(R.string.unknown_error)
                     }
 
-                    withContext(Dispatchers.Main) {
+                    myLaunch(Dispatchers.Main) {
                         viewState.hideProgress()
                         viewState.showErrorAlert(errorMessage)
                     }
                 }
-        }.also { jobsThatWillBeCancelledInOnDestroy += it }
+        }
     }
 
     override fun onBackPressed() {
         routeEventHandler.onPressedBackButtonInEnterAuthenticationPasswordScreen()
     }
-
-    override val coroutineContext: CoroutineContext = Dispatchers.IO
 
 }

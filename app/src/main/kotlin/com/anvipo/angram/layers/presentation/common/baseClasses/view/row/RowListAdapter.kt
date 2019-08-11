@@ -34,7 +34,7 @@ abstract class RowListAdapter<BR : BaseRow, RVH : RowViewHolder<BR>> :
         return viewData.createRowViewHolder(itemView)
     }
 
-    override fun onBindViewHolder(
+    final override fun onBindViewHolder(
         holder: RVH,
         position: Int
     ): Unit = holder.bind(row = getItem(position))

@@ -4,6 +4,7 @@ import com.anvipo.angram.layers.core.CoreHelpers.IS_IN_DEBUG_MODE
 import com.anvipo.angram.layers.core.message.SystemMessage
 import com.anvipo.angram.layers.core.message.SystemMessageType
 
+@Suppress("unused")
 object GlobalHelpers {
 
     const val USE_TEST_ENVIRONMENT: Boolean = false

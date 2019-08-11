@@ -6,7 +6,7 @@ import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.view.re
 
 abstract class AddProxySection : BaseSection {
 
-    override val viewsData: List<SectionViewData> =
+    final override val viewsData: List<SectionViewData> =
         listOf(AddMTProtoProxySectionViewData)
 
 }

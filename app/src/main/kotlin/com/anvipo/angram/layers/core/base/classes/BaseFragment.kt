@@ -30,15 +30,15 @@ abstract class BaseFragment :
     BaseView,
     HasLogger {
 
-    override val className: String = this::class.java.name
+    final override val className: String = this::class.java.name
 
-    override fun onCreateView(
+    final override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? = inflater.inflate(layoutRes, container, false)
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
+    final override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
         extractDataFromBundle()
@@ -53,23 +53,23 @@ abstract class BaseFragment :
         }
     }
 
-    override fun onStart() {
+    final override fun onStart() {
         super.onStart()
         presenter.onStartTriggered()
     }
 
-    override fun onResume() {
+    final override fun onResume() {
         super.onResume()
         instanceStateSaved = false
         presenter.onResumeTriggered()
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
+    final override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         instanceStateSaved = true
     }
 
-    override fun onActivityResult(
+    final override fun onActivityResult(
         requestCode: Int,
         resultCode: Int,
         data: Intent?
@@ -79,7 +79,7 @@ abstract class BaseFragment :
     }
 
 
-    override fun showItemsDialog(
+    final override fun showItemsDialog(
         title: String?,
         items: List<String>,
         tag: String?,
@@ -95,7 +95,7 @@ abstract class BaseFragment :
             .show(childFragmentManager, null)
     }
 
-    override fun showAlertMessage(
+    final override fun showAlertMessage(
         text: String,
         title: String?,
         cancelable: Boolean,
@@ -112,15 +112,15 @@ abstract class BaseFragment :
             .show(childFragmentManager, null)
     }
 
-    override fun showErrorAlert(text: String) {
+    final override fun showErrorAlert(text: String) {
         showAlertMessage(title = getString(R.string.error_title), text = text)
     }
 
-    override fun showToastMessage(text: String) {
+    final override fun showToastMessage(text: String) {
         Toast.makeText(this.context, text, Toast.LENGTH_LONG).show()
     }
 
-    override fun showSnackMessage(
+    final override fun showSnackMessage(
         text: String,
         duration: Int
     ) {
@@ -130,7 +130,7 @@ abstract class BaseFragment :
         )
     }
 
-    override fun showProgress() {
+    final override fun showProgress() {
         if (!isAdded || instanceStateSaved) return
 
         val fragment = childFragmentManager.findFragmentByTag(PROGRESS_TAG)
@@ -151,7 +151,7 @@ abstract class BaseFragment :
         }
     }
 
-    override fun hideProgress() {
+    final override fun hideProgress() {
         if (!isAdded || instanceStateSaved) return
 
         val myProgressDialog = childFragmentManager.findFragmentByTag(PROGRESS_TAG) ?: return

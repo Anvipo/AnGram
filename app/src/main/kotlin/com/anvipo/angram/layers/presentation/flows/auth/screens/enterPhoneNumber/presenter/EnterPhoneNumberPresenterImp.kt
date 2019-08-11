@@ -4,7 +4,6 @@ import com.anvipo.angram.R
 import com.anvipo.angram.layers.application.types.ConnectionStateReceiveChannel
 import com.anvipo.angram.layers.businessLogic.useCases.authFlow.enterPhoneNumber.EnterPhoneNumberUseCase
 import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
-import com.anvipo.angram.layers.core.CoroutineExceptionHandlerWithLogger
 import com.anvipo.angram.layers.core.ResourceManager
 import com.anvipo.angram.layers.data.gateways.tdLib.errors.TdApiError
 import com.anvipo.angram.layers.presentation.common.baseClasses.BasePresenterImp
@@ -12,9 +11,10 @@ import com.anvipo.angram.layers.presentation.flows.auth.coordinator.interfaces.A
 import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.types.ProxyType
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumber.view.EnterPhoneNumberView
 import com.arellomobile.mvp.InjectViewState
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import org.drinkless.td.libcore.telegram.TdApi
-import kotlin.coroutines.CoroutineContext
 
 @Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS")
 @InjectViewState
@@ -52,26 +52,16 @@ class EnterPhoneNumberPresenterImp(
 
     override fun onItemClicked(index: Int) {
         when (proxys[index]) {
-            mtprotoPair.second -> {
-                routeEventHandler.onAddProxyButtonTapped(ProxyType.MTPROTO)
-            }
+            mtprotoPair.second -> routeEventHandler.onAddProxyButtonTapped(ProxyType.MTPROTO)
         }
     }
 
     override fun onNextButtonPressed(enteredPhoneNumber: String) {
-        val onNextButtonPressedCEH = CoroutineExceptionHandlerWithLogger { _, error ->
-            viewState.showErrorAlert(error.localizedMessage)
-        }
-
         viewState.showProgress()
 
-        onNextButtonPressedJob = launch(
-            context = coroutineContext + onNextButtonPressedCEH
-        ) {
+        myLaunch {
             useCase.setAuthenticationPhoneNumberCatching(enteredPhoneNumber)
-                .onSuccess {
-                    routeEventHandler.onEnterCorrectPhoneNumber()
-                }
+                .onSuccess { routeEventHandler.onEnterCorrectPhoneNumber() }
                 .onFailure { error ->
                     val errorMessage: String = resourceManager.run {
                         if (error is TdApiError) {
@@ -86,7 +76,7 @@ class EnterPhoneNumberPresenterImp(
                         }
                     }
 
-                    withContext(Dispatchers.Main) {
+                    myLaunch(Dispatchers.Main) {
                         viewState.hideProgress()
                         viewState.showErrorAlert(errorMessage)
                     }
@@ -115,32 +105,19 @@ class EnterPhoneNumberPresenterImp(
         viewState.showSnackMessage(resourceManager.getString(R.string.query_canceled))
     }
 
-    override val coroutineContext: CoroutineContext = Dispatchers.IO
 
     private var onNextButtonPressedJob: Job? = null
 
     private fun subscribeOnConnectionStates() {
-        val receiveConnectionStatesCEH = CoroutineExceptionHandlerWithLogger { _, error ->
-            viewState.showErrorAlert(error.localizedMessage)
-        }
-
-        launch(
-            context = coroutineContext + receiveConnectionStatesCEH
-        ) {
+        myLaunch {
             for (receivedConnectionState in connectionStateReceiveChannel) {
                 onReceivedConnectionState(receivedConnectionState)
             }
-        }.also { jobsThatWillBeCancelledInOnDestroy += it }
+        }
     }
 
     private fun onReceivedConnectionState(receivedConnectionState: TdApi.ConnectionState) {
-        val doOnNewConnectionStateCEH = CoroutineExceptionHandlerWithLogger { _, error ->
-            viewState.showErrorAlert(error.localizedMessage)
-        }
-
-        launch(
-            context = Dispatchers.Main + doOnNewConnectionStateCEH
-        ) {
+        myLaunch(Dispatchers.Main) {
             when (receivedConnectionState) {
                 is TdApi.ConnectionStateWaitingForNetwork -> viewState.disableNextButton()
                 is TdApi.ConnectionStateConnectingToProxy -> viewState.disableNextButton()
@@ -149,7 +126,7 @@ class EnterPhoneNumberPresenterImp(
                 is TdApi.ConnectionStateReady -> viewState.enableNextButton()
                 else -> assertionFailure("Undefined received connection state $receivedConnectionState")
             }
-        }.also { jobsThatWillBeCancelledInOnDestroy += it }
+        }
     }
 
     private val mtprotoPair = 0 to "MTPROTO"

@@ -13,7 +13,6 @@ import com.anvipo.angram.layers.application.types.SystemMessageSendChannel
 import com.anvipo.angram.layers.businessLogic.di.UseCasesModule
 import com.anvipo.angram.layers.core.CoreHelpers.IS_IN_DEBUG_MODE
 import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
-import com.anvipo.angram.layers.core.CoroutineExceptionHandlerWithLogger
 import com.anvipo.angram.layers.core.HasLogger
 import com.anvipo.angram.layers.core.collections.IMutableStack
 import com.anvipo.angram.layers.core.collections.MutableStack
@@ -21,13 +20,16 @@ import com.anvipo.angram.layers.core.message.SystemMessage
 import com.anvipo.angram.layers.core.message.SystemMessageType
 import com.anvipo.angram.layers.data.di.GatewaysModule
 import com.anvipo.angram.layers.global.GlobalHelpers.createTGSystemMessage
+import com.anvipo.angram.layers.presentation.common.interfaces.HasMyCoroutineBuilders
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.di.AuthorizationCoordinatorModule
 import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.di.AddProxyModule
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationCode.di.EnterAuthenticationCodeModule
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationPassword.di.EnterAuthenticationPasswordModule
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumber.di.EnterPhoneNumberModule
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumber.di.EnterPhoneNumberModule.connectionStateEnterPhoneNumberSendChannelQualifier
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import org.drinkless.td.libcore.telegram.TdApi
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
@@ -39,11 +41,17 @@ import kotlin.coroutines.CoroutineContext
 class App :
     Application(),
     HasLogger,
-    CoroutineScope {
+    HasMyCoroutineBuilders {
 
     companion object {
         private lateinit var INSTANCE: App
     }
+
+    override val jobsThatMustBeCancelledInLifecycleEnd: MutableList<Job> = mutableListOf()
+
+    override val coroutineContext: CoroutineContext = Dispatchers.IO
+
+    override val className: String = this::class.java.name
 
     override fun onCreate() {
         super.onCreate()
@@ -57,20 +65,16 @@ class App :
         val methodName = object {}.javaClass.enclosingMethod!!.name
         val cancellationException = CancellationException("$className::$methodName")
 
-        jobsThatWillBeCancelledInOnTerminate.forEach { it.cancel(cancellationException) }
+        jobsThatMustBeCancelledInLifecycleEnd.forEach { it.cancel(cancellationException) }
     }
 
 
-    override val coroutineContext: CoroutineContext = Dispatchers.IO
-
-    override val className: String = this::class.java.name
-
     override fun <T : Any> additionalLogging(logObj: T) {
-        launch(coroutineContext + CoroutineExceptionHandlerWithLogger()) {
+        myLaunch {
             val systemMessage: SystemMessage = when (logObj) {
                 is String -> createTGSystemMessage(logObj)
                 is SystemMessage -> logObj
-                is Unit -> return@launch
+                is Unit -> return@myLaunch
                 else -> {
                     val message = "Undefined logObj type = $logObj"
                     assertionFailure(message)
@@ -81,6 +85,11 @@ class App :
             systemMessageSendChannel.send(systemMessage)
         }
     }
+
+    override fun myLaunchExceptionHandler(throwable: Throwable) {
+        additionalLogging(throwable.localizedMessage)
+    }
+
 
     fun handleUpdates(tdApiObject: TdApi.Object) {
         val invokationPlace = object {}.javaClass.enclosingMethod!!.name
@@ -149,6 +158,28 @@ class App :
     }
 
 
+    private val systemMessageSendChannel: SystemMessageSendChannel
+            by inject(systemMessageSendChannelQualifier)
+
+    private val enabledProxyIdSendChannel: EnabledProxyIdSendChannel
+            by inject(enabledProxyIdSendChannelQualifier)
+
+    private val connectionStateAppSendChannel: ConnectionStateSendChannel
+            by inject(connectionStateAppSendChannelQualifier)
+
+    private val connectionStateEnterPhoneNumberSendChannel: ConnectionStateSendChannel
+            by inject(connectionStateEnterPhoneNumberSendChannelQualifier)
+
+
+    // ------- TG Client properties and methods
+
+
+    private val tdObjectsStack: IMutableStack<TdApi.Object> = MutableStack()
+
+    private val tdUpdateStack: IMutableStack<TdApi.Update> = MutableStack()
+
+    private val tdErrorsStack: IMutableStack<Throwable> = MutableStack()
+
     private fun initDI() {
         val invokationPlace = object {}.javaClass.enclosingMethod!!.name
 
@@ -183,30 +214,6 @@ class App :
 
         myLog(invokationPlace = invokationPlace)
     }
-
-    private val jobsThatWillBeCancelledInOnTerminate: MutableList<Job> = mutableListOf()
-
-    private val systemMessageSendChannel: SystemMessageSendChannel
-            by inject(systemMessageSendChannelQualifier)
-
-    private val enabledProxyIdSendChannel: EnabledProxyIdSendChannel
-            by inject(enabledProxyIdSendChannelQualifier)
-
-    private val connectionStateAppSendChannel: ConnectionStateSendChannel
-            by inject(connectionStateAppSendChannelQualifier)
-
-    private val connectionStateEnterPhoneNumberSendChannel: ConnectionStateSendChannel
-            by inject(connectionStateEnterPhoneNumberSendChannelQualifier)
-
-
-    // ------- TG Client properties and methods
-
-
-    private val tdObjectsStack: IMutableStack<TdApi.Object> = MutableStack()
-
-    private val tdUpdateStack: IMutableStack<TdApi.Update> = MutableStack()
-
-    private val tdErrorsStack: IMutableStack<Throwable> = MutableStack()
 
 
     private fun onUpdate(

@@ -6,7 +6,7 @@ import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.view.re
 
 abstract class AddProxyRow : BaseRow {
 
-    override val viewsData: List<RowViewData> =
+    final override val viewsData: List<RowViewData> =
         listOf(AddMTProtoProxyRowViewData)
 
 }

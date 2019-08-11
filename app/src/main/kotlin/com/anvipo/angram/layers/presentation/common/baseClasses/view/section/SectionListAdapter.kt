@@ -34,7 +34,7 @@ abstract class SectionListAdapter<BS : BaseSection, SVH : SectionViewHolder<BS>>
         return viewData.createSectionViewHolder(itemView)
     }
 
-    override fun onBindViewHolder(
+    final override fun onBindViewHolder(
         holder: SVH,
         position: Int
     ): Unit = holder.bind(section = getItem(position))

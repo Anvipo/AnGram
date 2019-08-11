@@ -9,6 +9,7 @@ import com.anvipo.angram.layers.presentation.flows.auth.coordinator.screensFacto
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.types.AuthorizationCoordinateResult
 import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.types.ProxyType
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationCode.di.EnterAuthenticationCodeModule
+import kotlinx.coroutines.Dispatchers
 import org.drinkless.td.libcore.telegram.TdApi
 import ru.terrakok.cicerone.Router
 import ru.terrakok.cicerone.android.support.SupportAppScreen
@@ -173,7 +174,7 @@ class AuthorizationCoordinatorImp(
 
 
     private fun onAuthStateWaitsPhoneNumber() {
-        showScreenHelper {
+        myLaunch(Dispatchers.Main) {
             showEnterPhoneNumberScreen()
         }
     }
@@ -182,7 +183,7 @@ class AuthorizationCoordinatorImp(
         currentAuthorizationState: TdApi.AuthorizationStateWaitCode,
         withEnterAuthCodeAsRootScreen: Boolean = false
     ) {
-        showScreenHelper {
+        myLaunch(Dispatchers.Main) {
             val (
                 expectedCodeLength,
                 enteredPhoneNumber,
@@ -203,7 +204,7 @@ class AuthorizationCoordinatorImp(
     private fun onAuthorizationStateWaitPassword(
         withEnterAuthenticationPasswordAsRootScreen: Boolean = false
     ) {
-        showScreenHelper {
+        myLaunch(Dispatchers.Main) {
             showEnterAuthenticationPasswordScreen(withEnterAuthenticationPasswordAsRootScreen)
         }
     }

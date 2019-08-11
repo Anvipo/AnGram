@@ -2,7 +2,6 @@ package com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.presen
 
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.businessLogic.useCases.authFlow.addProxy.AddProxyUseCase
-import com.anvipo.angram.layers.core.CoroutineExceptionHandlerWithLogger
 import com.anvipo.angram.layers.core.ResourceManager
 import com.anvipo.angram.layers.data.gateways.tdLib.errors.TdApiError
 import com.anvipo.angram.layers.presentation.common.baseClasses.BasePresenterImp
@@ -10,10 +9,7 @@ import com.anvipo.angram.layers.presentation.flows.auth.coordinator.interfaces.A
 import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.view.AddProxyView
 import com.arellomobile.mvp.InjectViewState
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.drinkless.td.libcore.telegram.TdApi
-import kotlin.coroutines.CoroutineContext
 
 @Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS")
 @InjectViewState
@@ -29,15 +25,9 @@ class AddProxyPresenterImp(
     }
 
     override fun addProxyButtonTapped() {
-        val addProxyButtonTappedCEH = CoroutineExceptionHandlerWithLogger { _, error ->
-            viewState.showErrorAlert(error.localizedMessage)
-        }
-
         viewState.showProgress()
 
-        launch(
-            context = coroutineContext + addProxyButtonTappedCEH
-        ) {
+        myLaunch {
             useCase
                 .addProxyCatching(
                     server = "tg-2.rknsosatb.pw",
@@ -45,7 +35,7 @@ class AddProxyPresenterImp(
                     type = TdApi.ProxyTypeMtproto("dde99993ad3d7146fcf8f3baa789cc62ac")
                 )
                 .onSuccess {
-                    withContext(Dispatchers.Main) {
+                    myLaunch(Dispatchers.Main) {
                         viewState.hideProgress()
                         viewState.showAlertMessage(
                             resourceManager.getString(R.string.proxy_successfully_has_been_added),
@@ -63,12 +53,12 @@ class AddProxyPresenterImp(
                         }
                     }
 
-                    withContext(Dispatchers.Main) {
+                    myLaunch(Dispatchers.Main) {
                         viewState.hideProgress()
                         viewState.showErrorAlert(errorMessage)
                     }
                 }
-        }.also { jobsThatWillBeCancelledInOnDestroy += it }
+        }
     }
 
     override fun messageDialogPositiveClicked(tag: String) {
@@ -83,11 +73,11 @@ class AddProxyPresenterImp(
 
 
     override fun onServerTextChanged(serverText: CharSequence?) {
-        this.serverText = serverText?.toString() ?: ""
+        this.serverAddress = serverText?.toString() ?: ""
     }
 
     override fun onPortTextChanged(portText: CharSequence?) {
-        this.portText = portText?.toString()?.toIntOrNull() ?: 0
+        this.port = portText?.toString()?.toIntOrNull() ?: 0
     }
 
     override fun onSecretTextChanged(secretText: CharSequence?) {
@@ -99,25 +89,22 @@ class AddProxyPresenterImp(
     }
 
 
-    override val coroutineContext: CoroutineContext = Dispatchers.IO
-
-
     private val addProxySuccessTag = "addProxySuccessTag"
 
     private var proxyType: TdApi.ProxyType? = null
-    private var serverText: String = ""
+    private var serverAddress: String = ""
         set(value) {
             field = value
-            if (field.isNotEmpty() && portText != 0) {
+            if (field.isNotEmpty() && port != 0) {
                 viewState.showAddProxyButton()
             } else {
                 viewState.hideAddProxyButton()
             }
         }
-    private var portText: Int = 0
+    private var port: Int = 0
         set(value) {
             field = value
-            if (serverText.isNotEmpty() && field != 0) {
+            if (serverAddress.isNotEmpty() && field != 0) {
                 viewState.showAddProxyButton()
             } else {
                 viewState.hideAddProxyButton()

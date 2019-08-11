@@ -10,7 +10,7 @@ abstract class BaseTdLibGatewayImp(
     protected val tdClient: Client
 ) : BaseTdLibGateway {
 
-    override suspend fun setNetworkTypeCatching(type: TdApi.NetworkType): Result<TdApi.Ok> =
+    final override suspend fun setNetworkTypeCatching(type: TdApi.NetworkType): Result<TdApi.Ok> =
         doRequestCatching(
             TdApi.SetNetworkType(
                 type

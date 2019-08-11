@@ -28,12 +28,12 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseView {
         }
     }
 
-    override fun onPause() {
+    final override fun onPause() {
         presenter.onPauseTriggered()
         super.onPause()
     }
 
-    override fun showAlertMessage(
+    final override fun showAlertMessage(
         text: String,
         title: String?,
         cancelable: Boolean,
@@ -51,15 +51,15 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseView {
 
     }
 
-    override fun showErrorAlert(text: String) {
+    final override fun showErrorAlert(text: String) {
         showAlertMessage(title = getString(R.string.error_title), text = text)
     }
 
-    override fun showToastMessage(text: String) {
+    final override fun showToastMessage(text: String) {
         Toast.makeText(this, text, Toast.LENGTH_LONG).show()
     }
 
-    override fun showSnackMessage(
+    final override fun showSnackMessage(
         text: String,
         duration: Int
     ) {
@@ -69,7 +69,7 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseView {
         )
     }
 
-    override fun showConnectionStateSnackMessage(
+    final override fun showConnectionStateSnackMessage(
         text: String,
         duration: Int
     ) {
