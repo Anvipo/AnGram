@@ -14,7 +14,6 @@ import org.koin.android.ext.android.get
 class EnterAuthenticationPasswordFragment : BaseFragment(), EnterAuthenticationPasswordView {
 
     companion object {
-        @JvmStatic
         fun createNewInstance(): EnterAuthenticationPasswordView = EnterAuthenticationPasswordFragment()
     }
 

@@ -33,7 +33,6 @@ class AddProxyFragment :
     companion object {
         private const val ARG_PROXY_TYPE = "arg_proxy_type"
 
-        @JvmStatic
         fun createNewInstance(
             proxyType: ProxyType,
             shouldShowBackButton: Boolean

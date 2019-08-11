@@ -29,7 +29,6 @@ class EnterAuthenticationCodeFragment : BaseFragment(), EnterAuthenticationCodeV
         private const val ARG_REGISTRATION_REQUIRED = "arg_registration_required"
         private const val ARG_TERMS_OF_SERVICE_TEXT = "arg_terms_of_service_text"
 
-        @JvmStatic
         fun createNewInstance(
             shouldShowBackButton: Boolean,
             expectedCodeLength: Int,

@@ -26,7 +26,6 @@ class EnterPhoneNumberFragment :
     ItemsDialogFragment.OnClickListener {
 
     companion object {
-        @JvmStatic
         fun createNewInstance(): EnterPhoneNumberView = EnterPhoneNumberFragment()
     }
 
