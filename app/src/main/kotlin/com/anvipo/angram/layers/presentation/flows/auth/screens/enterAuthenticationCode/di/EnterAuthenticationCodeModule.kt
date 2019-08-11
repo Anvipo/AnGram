@@ -21,7 +21,7 @@ import ru.terrakok.cicerone.android.support.SupportAppScreen
 object EnterAuthenticationCodeModule {
 
     class EnterAuthenticationCodeScreen(
-        private val parameters: EnterAuthCodeScreenParameters
+        private val parameters: EnterAuthenticationCodeScreenParameters
     ) : SupportAppScreen() {
         override fun getFragment(): Fragment =
             GlobalContext.get().koin.get(enterAuthenticationCodeViewQualifier) {
@@ -36,7 +36,7 @@ object EnterAuthenticationCodeModule {
 
     val enterAuthenticationCodePresenterQualifier: StringQualifier = named("enterAuthenticationCodePresenter")
 
-    class EnterAuthCodeScreenParameters(
+    class EnterAuthenticationCodeScreenParameters(
         val shouldShowBackButton: Boolean,
         val expectedCodeLength: Int,
         val enteredPhoneNumber: String,
@@ -57,7 +57,7 @@ object EnterAuthenticationCodeModule {
 
         factory<EnterAuthenticationCodeView>(
             enterAuthenticationCodeViewQualifier
-        ) { (parameters: EnterAuthCodeScreenParameters) ->
+        ) { (parameters: EnterAuthenticationCodeScreenParameters) ->
             EnterAuthenticationCodeFragment.createNewInstance(
                 shouldShowBackButton = parameters.shouldShowBackButton,
                 expectedCodeLength = parameters.expectedCodeLength,
@@ -69,7 +69,7 @@ object EnterAuthenticationCodeModule {
 
         factory<SupportAppScreen>(
             enterAuthenticationCodeScreenQualifier
-        ) { (parameters: EnterAuthCodeScreenParameters) ->
+        ) { (parameters: EnterAuthenticationCodeScreenParameters) ->
             EnterAuthenticationCodeScreen(parameters = parameters)
         }
 

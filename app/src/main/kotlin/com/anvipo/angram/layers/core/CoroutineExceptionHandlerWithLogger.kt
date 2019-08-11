@@ -14,6 +14,7 @@ class CoroutineExceptionHandlerWithLogger(
         context: CoroutineContext,
         exception: Throwable
     ) {
+        // TODO: rename error to throwable
         logIfShould(exception.localizedMessage)
         handler?.invoke(context, exception)
     }

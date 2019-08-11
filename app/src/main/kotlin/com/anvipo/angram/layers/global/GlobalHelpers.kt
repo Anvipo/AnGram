@@ -1,18 +1,12 @@
 package com.anvipo.angram.layers.global
 
-import com.anvipo.angram.BuildConfig
+import com.anvipo.angram.layers.core.CoreHelpers.IS_IN_DEBUG_MODE
 import com.anvipo.angram.layers.core.message.SystemMessage
 import com.anvipo.angram.layers.core.message.SystemMessageType
 
 object GlobalHelpers {
 
-    const val SHOULD_LOG: Boolean = true
-
-    const val USE_TEST_ENVIRONMENT: Boolean = true
-
-    const val APP_TAG: String = "AnGram"
-
-    val IS_IN_DEBUG_MODE: Boolean = BuildConfig.DEBUG
+    const val USE_TEST_ENVIRONMENT: Boolean = false
 
     fun createTGSystemMessageWithLogging(text: String): SystemMessage = SystemMessage(
         text = text,

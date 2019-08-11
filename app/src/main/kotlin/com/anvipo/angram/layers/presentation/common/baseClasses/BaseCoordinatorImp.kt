@@ -1,17 +1,35 @@
 package com.anvipo.angram.layers.presentation.common.baseClasses
 
+import com.anvipo.angram.layers.application.types.SystemMessageSendChannel
+import com.anvipo.angram.layers.core.CoroutineExceptionHandlerWithLogger
+import com.anvipo.angram.layers.core.HasLogger
+import com.anvipo.angram.layers.core.message.SystemMessage
+import com.anvipo.angram.layers.global.GlobalHelpers
 import com.anvipo.angram.layers.presentation.common.interfaces.BaseCoordinator
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.*
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 
-abstract class BaseCoordinatorImp<out CoordinateResultType> :
+abstract class BaseCoordinatorImp<out CoordinateResultType>(
+    private val systemMessageSendChannel: SystemMessageSendChannel
+) :
     BaseCoordinator<CoordinateResultType>,
-    CoroutineScope {
+    CoroutineScope,
+    HasLogger {
 
-    override val coroutineContext: CoroutineContext = Dispatchers.Default
+    final override val coroutineContext: CoroutineContext = Dispatchers.IO
+
+    final override val className: String = this::class.java.name
+
+    final override fun <T> additionalLogging(logObj: T) {
+        val coroutineExceptionHandlerWithLogger = CoroutineExceptionHandlerWithLogger { _, throwable ->
+            onLogException(throwable)
+        }
+
+        launch(coroutineContext + coroutineExceptionHandlerWithLogger) {
+            additionalLoggingHelper(logObj)
+        }.also { jobsThatWillBeCancelledInOnDestroy += it }
+    }
 
     suspend fun <T> coordinateTo(
         coordinator: BaseCoordinatorImp<T>
@@ -27,16 +45,59 @@ abstract class BaseCoordinatorImp<out CoordinateResultType> :
     }
 
 
-    protected val jobsThatWillBeCancelledInOnDestroy: MutableList<Job> = mutableListOf()
-
     protected val childCoordinators: MutableMap<String, BaseCoordinatorImp<*>?> = mutableMapOf()
+
+    protected open fun onLogException(throwable: Throwable): Unit = Unit
+
+    protected open suspend fun <T> additionalLoggingHelper(logObj: T) {
+        val systemMessage: SystemMessage = when (logObj) {
+            null -> return
+            is String -> GlobalHelpers.createTGSystemMessage(logObj)
+            is SystemMessage -> logObj
+            else -> TODO()
+        }
+
+        systemMessageSendChannel.send(systemMessage)
+    }
+
+    protected fun showScreenHelper(
+        exceptionHandler: (Throwable) -> Unit = { additionalLogging(it.localizedMessage) },
+        showScreenBlock: suspend CoroutineScope.() -> Unit
+    ) {
+        myLaunch(
+            context = Dispatchers.Main,
+            block = showScreenBlock,
+            exceptionHandler = exceptionHandler
+        )
+    }
+
+    protected fun myLaunch(
+        context: CoroutineContext = coroutineContext,
+        start: CoroutineStart = CoroutineStart.DEFAULT,
+        exceptionHandler: (Throwable) -> Unit = { additionalLogging(it.localizedMessage) },
+        block: suspend CoroutineScope.() -> Unit
+    ) {
+        val coroutineExceptionHandlerWithLogger =
+            CoroutineExceptionHandlerWithLogger { _, throwable ->
+                exceptionHandler(throwable)
+            }
+
+        launch(
+            context = context + coroutineExceptionHandlerWithLogger,
+            start = start,
+            block = block
+        ).also { jobsThatWillBeCancelledInOnDestroy += it }
+    }
+
+    private val jobsThatWillBeCancelledInOnDestroy: MutableList<Job> = mutableListOf()
 
     private val uniqueIdentifier = UUID.randomUUID().toString()
 
     private fun cancelAllJobs() {
-        for (job in jobsThatWillBeCancelledInOnDestroy) {
-            job.cancel()
-        }
+        val methodName = object {}.javaClass.enclosingMethod!!.name
+        val cancellationException = CancellationException("$className::$methodName")
+
+        jobsThatWillBeCancelledInOnDestroy.forEach { it.cancel(cancellationException) }
     }
 
     private fun <T> store(coordinator: BaseCoordinatorImp<T>) {

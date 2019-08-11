@@ -1,5 +1,6 @@
 package com.anvipo.angram.layers.presentation.common.baseClasses
 
+import com.anvipo.angram.layers.core.HasLogger
 import com.anvipo.angram.layers.core.base.interfaces.BaseView
 import com.anvipo.angram.layers.presentation.common.interfaces.BasePresenter
 import com.arellomobile.mvp.MvpPresenter
@@ -13,20 +14,25 @@ import kotlin.coroutines.CoroutineContext
 abstract class BasePresenterImp<V : BaseView> :
     MvpPresenter<V>(),
     BasePresenter,
-    CoroutineScope {
+    CoroutineScope,
+    HasLogger {
 
     override val coroutineContext: CoroutineContext = Dispatchers.Default
 
+    override val className: String = this::class.java.name
+
     override fun onPauseTriggered() {
-        for (channel in channelsThatWillBeUnsubscribedInOnPause) {
-            channel.cancel(CancellationException("BasePresenterImp onPauseTriggered"))
-        }
+        val methodName = object {}.javaClass.enclosingMethod!!.name
+        val cancellationException = CancellationException("$className::$methodName")
+
+        channelsThatWillBeUnsubscribedInOnPause.forEach { it.cancel(cancellationException) }
     }
 
     override fun onDestroy() {
-        for (job in jobsThatWillBeCancelledInOnDestroy) {
-            job.cancel()
-        }
+        val methodName = object {}.javaClass.enclosingMethod!!.name
+        val cancellationException = CancellationException("$className::$methodName")
+
+        jobsThatWillBeCancelledInOnDestroy.forEach { it.cancel(cancellationException) }
         super.onDestroy()
     }
 

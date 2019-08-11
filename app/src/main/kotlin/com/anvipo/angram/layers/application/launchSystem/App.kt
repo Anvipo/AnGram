@@ -11,6 +11,7 @@ import com.anvipo.angram.layers.application.types.ConnectionStateSendChannel
 import com.anvipo.angram.layers.application.types.EnabledProxyIdSendChannel
 import com.anvipo.angram.layers.application.types.SystemMessageSendChannel
 import com.anvipo.angram.layers.businessLogic.di.UseCasesModule
+import com.anvipo.angram.layers.core.CoreHelpers.IS_IN_DEBUG_MODE
 import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
 import com.anvipo.angram.layers.core.CoreHelpers.debugLog
 import com.anvipo.angram.layers.core.CoroutineExceptionHandlerWithLogger
@@ -20,7 +21,6 @@ import com.anvipo.angram.layers.core.collections.MutableStack
 import com.anvipo.angram.layers.core.message.SystemMessage
 import com.anvipo.angram.layers.core.message.SystemMessageType
 import com.anvipo.angram.layers.data.di.GatewaysModule
-import com.anvipo.angram.layers.global.GlobalHelpers.IS_IN_DEBUG_MODE
 import com.anvipo.angram.layers.global.GlobalHelpers.createTGSystemMessage
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.di.AuthorizationCoordinatorModule
 import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.di.AddProxyModule
@@ -28,9 +28,7 @@ import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticat
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationPassword.di.EnterAuthenticationPasswordModule
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumber.di.EnterPhoneNumberModule
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumber.di.EnterPhoneNumberModule.connectionStateEnterPhoneNumberSendChannelQualifier
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.drinkless.td.libcore.telegram.TdApi
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
@@ -48,6 +46,22 @@ class App :
         private lateinit var INSTANCE: App
     }
 
+    override fun onCreate() {
+        super.onCreate()
+        initDI()
+        INSTANCE = this
+    }
+
+    override fun onTerminate() {
+        super.onTerminate()
+
+        val methodName = object {}.javaClass.enclosingMethod!!.name
+        val cancellationException = CancellationException("$className::$methodName")
+
+        jobsThatWillBeCancelledInOnTerminate.forEach { it.cancel(cancellationException) }
+    }
+
+
     override val coroutineContext: CoroutineContext = Dispatchers.IO
 
     override val className: String = this::class.java.name
@@ -62,12 +76,6 @@ class App :
 
             systemMessageSendChannel.send(systemMessage)
         }
-    }
-
-    override fun onCreate() {
-        super.onCreate()
-        initDI()
-        INSTANCE = this
     }
 
     fun handleUpdates(tdApiObject: TdApi.Object) {
@@ -164,6 +172,8 @@ class App :
             invokationPlace = object {}.javaClass.enclosingMethod!!.name
         )
     }
+
+    private val jobsThatWillBeCancelledInOnTerminate: MutableList<Job> = mutableListOf()
 
     private val systemMessageSendChannel: SystemMessageSendChannel
             by inject(systemMessageSendChannelQualifier)

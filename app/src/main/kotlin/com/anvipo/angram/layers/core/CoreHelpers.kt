@@ -1,11 +1,15 @@
 package com.anvipo.angram.layers.core
 
 import android.util.Log
-import com.anvipo.angram.layers.global.GlobalHelpers.APP_TAG
-import com.anvipo.angram.layers.global.GlobalHelpers.IS_IN_DEBUG_MODE
-import com.anvipo.angram.layers.global.GlobalHelpers.SHOULD_LOG
+import com.anvipo.angram.BuildConfig
 
 object CoreHelpers {
+
+    val IS_IN_DEBUG_MODE: Boolean = BuildConfig.DEBUG
+
+    const val SHOULD_LOG: Boolean = true
+
+    private const val APP_TAG: String = "AnGram"
 
     fun debugLog(message: String) {
         if (IS_IN_DEBUG_MODE) {
@@ -15,11 +19,11 @@ object CoreHelpers {
 
     fun logIfShould(
         invokationPlace: String,
-        text: String = ""
+        text: String? = null
     ) {
         @Suppress("ConstantConditionIf")
         if (SHOULD_LOG) {
-            val mAdditionalText = if (text.isNotEmpty()) ": $text" else ""
+            val mAdditionalText = if (text == null || text.isEmpty()) "" else ": $text"
             val mText = "$invokationPlace is logging$mAdditionalText"
             Log.d(APP_TAG, mText)
         }

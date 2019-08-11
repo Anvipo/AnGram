@@ -10,9 +10,6 @@ abstract class BaseTdLibGatewayImp(
     protected val tdClient: Client
 ) : BaseTdLibGateway {
 
-    override suspend fun getAuthorizationStateRequestCatching(): Result<TdApi.AuthorizationState> =
-        doRequestCatching(TdApi.GetAuthorizationState())
-
     override suspend fun setNetworkTypeCatching(type: TdApi.NetworkType): Result<TdApi.Ok> =
         doRequestCatching(
             TdApi.SetNetworkType(

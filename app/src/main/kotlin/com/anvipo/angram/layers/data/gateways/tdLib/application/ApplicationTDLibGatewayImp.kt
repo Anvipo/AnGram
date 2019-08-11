@@ -3,7 +3,7 @@ package com.anvipo.angram.layers.data.gateways.tdLib.application
 import android.os.Build
 import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.layers.core.ResourceManager
-import com.anvipo.angram.layers.data.gateways.tdLib.base.BaseTdLibGatewayImp
+import com.anvipo.angram.layers.data.gateways.tdLib.base.BaseTdLibGatewayWithGetAuthorizationStateImp
 import com.anvipo.angram.layers.global.GlobalHelpers.USE_TEST_ENVIRONMENT
 import org.drinkless.td.libcore.telegram.Client
 import org.drinkless.td.libcore.telegram.TdApi
@@ -13,7 +13,7 @@ class ApplicationTDLibGatewayImp(
     tdClient: Client,
     private val resourceManager: ResourceManager
 ) :
-    BaseTdLibGatewayImp(tdClient),
+    BaseTdLibGatewayWithGetAuthorizationStateImp(tdClient),
     ApplicationTDLibGateway {
 
     override suspend fun setTdLibParametersCatching(): Result<TdApi.Ok> =

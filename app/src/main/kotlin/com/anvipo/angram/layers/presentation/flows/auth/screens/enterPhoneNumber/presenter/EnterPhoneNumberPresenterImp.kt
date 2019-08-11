@@ -12,10 +12,7 @@ import com.anvipo.angram.layers.presentation.flows.auth.coordinator.interfaces.A
 import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.types.ProxyType
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumber.view.EnterPhoneNumberView
 import com.arellomobile.mvp.InjectViewState
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import org.drinkless.td.libcore.telegram.TdApi
 import kotlin.coroutines.CoroutineContext
 
@@ -111,7 +108,10 @@ class EnterPhoneNumberPresenterImp(
     }
 
     override fun onCanceledProgressDialog() {
-        onNextButtonPressedJob?.cancel()
+        val methodName = object {}.javaClass.enclosingMethod!!.name
+        val cancellationException = CancellationException("$className::$methodName")
+
+        onNextButtonPressedJob?.cancel(cancellationException)
         viewState.showSnackMessage(resourceManager.getString(R.string.query_canceled))
     }
 

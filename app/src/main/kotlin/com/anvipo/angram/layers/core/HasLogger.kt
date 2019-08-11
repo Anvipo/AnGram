@@ -1,7 +1,7 @@
 package com.anvipo.angram.layers.core
 
+import com.anvipo.angram.layers.core.CoreHelpers.SHOULD_LOG
 import com.anvipo.angram.layers.core.CoreHelpers.logIfShould
-import com.anvipo.angram.layers.global.GlobalHelpers.SHOULD_LOG
 
 interface HasLogger {
 
@@ -9,10 +9,11 @@ interface HasLogger {
 
     fun log(
         invokationPlace: String,
-        text: String = "",
+        text: String? = null,
         customLogging: (() -> Unit)? = null
     ) {
         val mInvokationPlace = "$className::$invokationPlace"
+
         logIfShould(
             invokationPlace = mInvokationPlace,
             text = text
