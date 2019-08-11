@@ -2,7 +2,7 @@ package com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthentica
 
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.businessLogic.useCases.authFlow.enterAuthenticationCode.EnterAuthenticationCodeUseCase
-import com.anvipo.angram.layers.core.CoreHelpers.debugLog
+import com.anvipo.angram.layers.core.CoroutineExceptionHandlerWithLogger
 import com.anvipo.angram.layers.core.ResourceManager
 import com.anvipo.angram.layers.data.gateways.tdLib.errors.TdApiError
 import com.anvipo.angram.layers.presentation.common.baseClasses.BasePresenterImp
@@ -10,7 +10,6 @@ import com.anvipo.angram.layers.presentation.flows.auth.coordinator.interfaces.A
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationCode.types.CorrectAuthenticationCodeType
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationCode.view.EnterAuthenticationCodeView
 import com.arellomobile.mvp.InjectViewState
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -44,10 +43,8 @@ class EnterAuthenticationCodePresenterImp(
         lastName: String,
         firstName: String
     ) {
-        val onNextButtonPressedCEH = CoroutineExceptionHandler { _, error ->
-            val errorText = error.localizedMessage
-            debugLog(errorText)
-            viewState.showErrorAlert(errorText)
+        val onNextButtonPressedCEH = CoroutineExceptionHandlerWithLogger { _, error ->
+            viewState.showErrorAlert(error.localizedMessage)
         }
 
         viewState.showProgress()
@@ -67,10 +64,8 @@ class EnterAuthenticationCodePresenterImp(
     }
 
     override fun onResendAuthenticationCodeButtonPressed() {
-        val onResendAuthenticationCodeButtonPressedCEH = CoroutineExceptionHandler { _, error ->
-            val errorText = error.localizedMessage
-            debugLog(errorText)
-            viewState.showErrorAlert(errorText)
+        val onResendAuthenticationCodeButtonPressedCEH = CoroutineExceptionHandlerWithLogger { _, error ->
+            viewState.showErrorAlert(error.localizedMessage)
         }
 
         viewState.showProgress()

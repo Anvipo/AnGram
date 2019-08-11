@@ -2,14 +2,13 @@ package com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.presen
 
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.businessLogic.useCases.authFlow.addProxy.AddProxyUseCase
-import com.anvipo.angram.layers.core.CoreHelpers.debugLog
+import com.anvipo.angram.layers.core.CoroutineExceptionHandlerWithLogger
 import com.anvipo.angram.layers.core.ResourceManager
 import com.anvipo.angram.layers.data.gateways.tdLib.errors.TdApiError
 import com.anvipo.angram.layers.presentation.common.baseClasses.BasePresenterImp
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.interfaces.AuthorizationCoordinatorAddProxyRouteEventHandler
 import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.view.AddProxyView
 import com.arellomobile.mvp.InjectViewState
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -30,10 +29,8 @@ class AddProxyPresenterImp(
     }
 
     override fun addProxyButtonTapped() {
-        val addProxyButtonTappedCEH = CoroutineExceptionHandler { _, error ->
-            val errorText = error.localizedMessage
-            debugLog(errorText)
-            viewState.showErrorAlert(errorText)
+        val addProxyButtonTappedCEH = CoroutineExceptionHandlerWithLogger { _, error ->
+            viewState.showErrorAlert(error.localizedMessage)
         }
 
         viewState.showProgress()

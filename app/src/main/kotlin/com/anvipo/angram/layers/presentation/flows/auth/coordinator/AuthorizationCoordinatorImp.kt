@@ -3,6 +3,7 @@ package com.anvipo.angram.layers.presentation.flows.auth.coordinator
 import com.anvipo.angram.layers.application.types.SystemMessageSendChannel
 import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
 import com.anvipo.angram.layers.core.CoreHelpers.debugLog
+import com.anvipo.angram.layers.core.CoroutineExceptionHandlerWithLogger
 import com.anvipo.angram.layers.core.message.SystemMessage
 import com.anvipo.angram.layers.data.gateways.tdLib.authorization.AuthorizationTDLibGateway
 import com.anvipo.angram.layers.global.GlobalHelpers.createTGSystemMessageWithLogging
@@ -11,7 +12,6 @@ import com.anvipo.angram.layers.presentation.flows.auth.coordinator.interfaces.*
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.screensFactory.authorization.AuthorizationScreensFactory
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.types.AuthorizationCoordinateResult
 import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.types.ProxyType
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.drinkless.td.libcore.telegram.TdApi
@@ -149,7 +149,7 @@ class AuthorizationCoordinatorImp(
 
     private fun startAuthorizationFlowWithEnterAuthorizationCodeAsRootScreenHelper() {
         val getAuthorizationStateRequestCatchingCEH =
-            CoroutineExceptionHandler { _, error ->
+            CoroutineExceptionHandlerWithLogger { _, error ->
                 val errorText = error.localizedMessage
 
                 systemMessageSendChannel.offer(createTGSystemMessageWithLogging(errorText))
@@ -177,7 +177,7 @@ class AuthorizationCoordinatorImp(
 
     private fun startAuthorizationFlowWithEnterAuthorizationPasswordAsRootScreenHelper() {
         val getAuthorizationStateRequestCatchingCEH =
-            CoroutineExceptionHandler { _, error ->
+            CoroutineExceptionHandlerWithLogger { _, error ->
                 val errorText = error.localizedMessage
 
                 systemMessageSendChannel.offer(createTGSystemMessageWithLogging(errorText))
@@ -209,7 +209,7 @@ class AuthorizationCoordinatorImp(
 
     private fun checkAuthStateHelper() {
         val getAuthorizationStateRequestCatchingCEH =
-            CoroutineExceptionHandler { _, error ->
+            CoroutineExceptionHandlerWithLogger { _, error ->
                 val errorText = error.localizedMessage
 
                 systemMessageSendChannel.offer(createTGSystemMessageWithLogging(errorText))
@@ -257,7 +257,7 @@ class AuthorizationCoordinatorImp(
 
     private fun onAuthStateWaitsPhoneNumber() {
         val showEnterPhoneNumberScreenCoroutineExceptionHandler =
-            CoroutineExceptionHandler { _, error ->
+            CoroutineExceptionHandlerWithLogger { _, error ->
                 val errorText = error.localizedMessage
 
                 systemMessageSendChannel.offer(createTGSystemMessageWithLogging(errorText))
@@ -273,7 +273,7 @@ class AuthorizationCoordinatorImp(
         withEnterAuthCodeAsRootScreen: Boolean = false
     ) {
         val showEnterAuthCodeScreenCEH =
-            CoroutineExceptionHandler { _, error ->
+            CoroutineExceptionHandlerWithLogger { _, error ->
                 val errorText = error.localizedMessage
 
                 systemMessageSendChannel.offer(createTGSystemMessageWithLogging(errorText))
@@ -303,7 +303,7 @@ class AuthorizationCoordinatorImp(
         withEnterAuthenticationPasswordAsRootScreen: Boolean = false
     ) {
         val showEnterPasswordScreenCEH =
-            CoroutineExceptionHandler { _, error ->
+            CoroutineExceptionHandlerWithLogger { _, error ->
                 val errorText = error.localizedMessage
 
                 systemMessageSendChannel.offer(createTGSystemMessageWithLogging(errorText))

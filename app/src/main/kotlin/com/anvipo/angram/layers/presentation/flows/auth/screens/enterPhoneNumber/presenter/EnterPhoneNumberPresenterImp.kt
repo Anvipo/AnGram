@@ -4,7 +4,7 @@ import com.anvipo.angram.R
 import com.anvipo.angram.layers.application.types.ConnectionStateReceiveChannel
 import com.anvipo.angram.layers.businessLogic.useCases.authFlow.enterPhoneNumber.EnterPhoneNumberUseCase
 import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
-import com.anvipo.angram.layers.core.CoreHelpers.debugLog
+import com.anvipo.angram.layers.core.CoroutineExceptionHandlerWithLogger
 import com.anvipo.angram.layers.core.ResourceManager
 import com.anvipo.angram.layers.data.gateways.tdLib.errors.TdApiError
 import com.anvipo.angram.layers.presentation.common.baseClasses.BasePresenterImp
@@ -12,7 +12,10 @@ import com.anvipo.angram.layers.presentation.flows.auth.coordinator.interfaces.A
 import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.types.ProxyType
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumber.view.EnterPhoneNumberView
 import com.arellomobile.mvp.InjectViewState
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.drinkless.td.libcore.telegram.TdApi
 import kotlin.coroutines.CoroutineContext
 
@@ -59,10 +62,8 @@ class EnterPhoneNumberPresenterImp(
     }
 
     override fun onNextButtonPressed(enteredPhoneNumber: String) {
-        val onNextButtonPressedCEH = CoroutineExceptionHandler { _, error ->
-            val errorText = error.localizedMessage
-            debugLog(errorText)
-            viewState.showErrorAlert(errorText)
+        val onNextButtonPressedCEH = CoroutineExceptionHandlerWithLogger { _, error ->
+            viewState.showErrorAlert(error.localizedMessage)
         }
 
         viewState.showProgress()
@@ -119,10 +120,8 @@ class EnterPhoneNumberPresenterImp(
     private var onNextButtonPressedJob: Job? = null
 
     private fun subscribeOnConnectionStates() {
-        val receiveConnectionStatesCEH = CoroutineExceptionHandler { _, error ->
-            val text = error.localizedMessage
-            debugLog(text)
-            viewState.showErrorAlert(text)
+        val receiveConnectionStatesCEH = CoroutineExceptionHandlerWithLogger { _, error ->
+            viewState.showErrorAlert(error.localizedMessage)
         }
 
         launch(
@@ -135,10 +134,8 @@ class EnterPhoneNumberPresenterImp(
     }
 
     private fun onReceivedConnectionState(receivedConnectionState: TdApi.ConnectionState) {
-        val doOnNewConnectionStateCEH = CoroutineExceptionHandler { _, error ->
-            val errorText = error.localizedMessage
-            debugLog(errorText)
-            viewState.showErrorAlert(errorText)
+        val doOnNewConnectionStateCEH = CoroutineExceptionHandlerWithLogger { _, error ->
+            viewState.showErrorAlert(error.localizedMessage)
         }
 
         launch(

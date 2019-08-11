@@ -2,14 +2,13 @@ package com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthentica
 
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.businessLogic.useCases.authFlow.enterAuthenticationPassword.EnterAuthenticationPasswordUseCase
-import com.anvipo.angram.layers.core.CoreHelpers.debugLog
+import com.anvipo.angram.layers.core.CoroutineExceptionHandlerWithLogger
 import com.anvipo.angram.layers.core.ResourceManager
 import com.anvipo.angram.layers.presentation.common.baseClasses.BasePresenterImp
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.interfaces.AuthorizationCoordinatorEnterAuthenticationPasswordRouteEventHandler
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationPassword.types.CorrectAuthenticationPasswordType
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationPassword.view.EnterAuthenticationPasswordView
 import com.arellomobile.mvp.InjectViewState
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -27,10 +26,8 @@ class EnterAuthenticationPasswordPresenterImp(
     }
 
     override fun onNextButtonPressed(enteredAuthenticationPassword: CorrectAuthenticationPasswordType) {
-        val onNextButtonPressedCEH = CoroutineExceptionHandler { _, error ->
-            val errorText = error.localizedMessage
-            debugLog(errorText)
-            viewState.showErrorAlert(errorText)
+        val onNextButtonPressedCEH = CoroutineExceptionHandlerWithLogger { _, error ->
+            viewState.showErrorAlert(error.localizedMessage)
         }
 
         viewState.showProgress()

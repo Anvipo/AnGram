@@ -4,11 +4,11 @@ import com.anvipo.angram.layers.application.coordinator.coordinatorsFactory.Appl
 import com.anvipo.angram.layers.application.coordinator.types.ApplicationCoordinateResult
 import com.anvipo.angram.layers.application.types.SystemMessageSendChannel
 import com.anvipo.angram.layers.core.CoreHelpers.debugLog
+import com.anvipo.angram.layers.core.CoroutineExceptionHandlerWithLogger
 import com.anvipo.angram.layers.core.message.SystemMessage
 import com.anvipo.angram.layers.data.gateways.tdLib.application.ApplicationTDLibGateway
 import com.anvipo.angram.layers.global.GlobalHelpers.createTGSystemMessageWithLogging
 import com.anvipo.angram.layers.presentation.common.baseClasses.BaseCoordinatorImp
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.drinkless.td.libcore.telegram.TdApi
@@ -47,7 +47,7 @@ class ApplicationCoordinatorImp(
         val tag = "${this::class.java.simpleName} checkAuthorizationStateHelper"
 
         val getAuthorizationStateRequestCatchingCEH =
-            CoroutineExceptionHandler { _, error ->
+            CoroutineExceptionHandlerWithLogger { _, error ->
                 val errorText = error.localizedMessage
 
                 val text = "$tag $errorText"
@@ -126,7 +126,7 @@ class ApplicationCoordinatorImp(
         systemMessageSendChannel.offer(SystemMessage(text = text))
 
         val setTdLibParametersCatchingCEH =
-            CoroutineExceptionHandler { _, error ->
+            CoroutineExceptionHandlerWithLogger { _, error ->
                 val errorText = "$tag ${error.localizedMessage}"
 
                 systemMessageSendChannel.offer(createTGSystemMessageWithLogging(errorText))
@@ -149,7 +149,7 @@ class ApplicationCoordinatorImp(
         systemMessageSendChannel.offer(SystemMessage(text = text))
 
         val checkDatabaseEncryptionKeyCatchingCEH =
-            CoroutineExceptionHandler { _, error ->
+            CoroutineExceptionHandlerWithLogger { _, error ->
                 val errorText = error.localizedMessage
 
                 systemMessageSendChannel.offer(createTGSystemMessageWithLogging(errorText))
@@ -193,7 +193,7 @@ class ApplicationCoordinatorImp(
 
     private fun startAuthorizationFlow(withEnterAuthorizationCodeAsRootScreen: Boolean = false) {
         val startAuthenticationFlowCEH =
-            CoroutineExceptionHandler { _, error ->
+            CoroutineExceptionHandlerWithLogger { _, error ->
                 val errorText = error.localizedMessage
 
                 systemMessageSendChannel.offer(createTGSystemMessageWithLogging(errorText))

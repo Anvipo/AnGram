@@ -13,7 +13,7 @@ import com.anvipo.angram.layers.application.types.SystemMessageSendChannel
 import com.anvipo.angram.layers.businessLogic.di.UseCasesModule
 import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
 import com.anvipo.angram.layers.core.CoreHelpers.debugLog
-import com.anvipo.angram.layers.core.CoreHelpers.logIfShould
+import com.anvipo.angram.layers.core.CoroutineExceptionHandlerWithLogger
 import com.anvipo.angram.layers.core.HasLogger
 import com.anvipo.angram.layers.core.collections.IMutableStack
 import com.anvipo.angram.layers.core.collections.MutableStack
@@ -28,7 +28,6 @@ import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticat
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationPassword.di.EnterAuthenticationPasswordModule
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumber.di.EnterPhoneNumberModule
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumber.di.EnterPhoneNumberModule.connectionStateEnterPhoneNumberSendChannelQualifier
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -54,12 +53,7 @@ class App :
     override val className: String = this::class.java.name
 
     override fun <T> additionalLogging(logObj: T) {
-        val sendSystemMessageCEH =
-            CoroutineExceptionHandler { _, error ->
-                logIfShould(error.localizedMessage)
-            }
-
-        launch(coroutineContext + sendSystemMessageCEH) {
+        launch(coroutineContext + CoroutineExceptionHandlerWithLogger()) {
             val systemMessage: SystemMessage = when (logObj) {
                 is String -> createTGSystemMessage(logObj)
                 is SystemMessage -> logObj

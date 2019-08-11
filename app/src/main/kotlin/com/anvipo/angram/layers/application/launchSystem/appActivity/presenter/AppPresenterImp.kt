@@ -9,13 +9,13 @@ import com.anvipo.angram.layers.application.types.SystemMessageReceiveChannel
 import com.anvipo.angram.layers.businessLogic.useCases.app.AppUseCase
 import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
 import com.anvipo.angram.layers.core.CoreHelpers.debugLog
+import com.anvipo.angram.layers.core.CoroutineExceptionHandlerWithLogger
 import com.anvipo.angram.layers.core.ResourceManager
 import com.anvipo.angram.layers.core.message.SystemMessage
 import com.anvipo.angram.layers.core.message.SystemMessageType
 import com.anvipo.angram.layers.presentation.common.baseClasses.BasePresenterImp
 import com.arellomobile.mvp.InjectViewState
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.drinkless.td.libcore.telegram.TdApi
@@ -43,10 +43,8 @@ class AppPresenterImp(
 
     override fun coldStart() {
         val startApplicationFlowCEH =
-            CoroutineExceptionHandler { _, error ->
-                val text = error.localizedMessage
-                debugLog(text)
-                viewState.showErrorAlert(text)
+            CoroutineExceptionHandlerWithLogger { _, error ->
+                viewState.showErrorAlert(error.localizedMessage)
             }
 
         launch(coroutineContext + startApplicationFlowCEH) {
@@ -77,10 +75,8 @@ class AppPresenterImp(
     }
 
     private fun subscribeOnSystemMessages() {
-        val receiveSystemMessagesCEH = CoroutineExceptionHandler { _, error ->
-            val text = error.localizedMessage
-            debugLog(text)
-            viewState.showErrorAlert(text)
+        val receiveSystemMessagesCEH = CoroutineExceptionHandlerWithLogger { _, error ->
+            viewState.showErrorAlert(error.localizedMessage)
         }
 
         launch(
@@ -93,10 +89,8 @@ class AppPresenterImp(
     }
 
     private fun subscribeOnConnectionStates() {
-        val receiveConnectionStatesCEH = CoroutineExceptionHandler { _, error ->
-            val text = error.localizedMessage
-            debugLog(text)
-            viewState.showErrorAlert(text)
+        val receiveConnectionStatesCEH = CoroutineExceptionHandlerWithLogger { _, error ->
+            viewState.showErrorAlert(error.localizedMessage)
         }
 
         launch(
@@ -109,10 +103,8 @@ class AppPresenterImp(
     }
 
     private fun subscribeOnEnabledProxyId() {
-        val receiveEnabledProxyIdCEH = CoroutineExceptionHandler { _, error ->
-            val text = error.localizedMessage
-            debugLog(text)
-            viewState.showErrorAlert(text)
+        val receiveEnabledProxyIdCEH = CoroutineExceptionHandlerWithLogger { _, error ->
+            viewState.showErrorAlert(error.localizedMessage)
         }
 
         launch(
@@ -130,10 +122,8 @@ class AppPresenterImp(
         if (shouldBeShownToUser) {
             when (type) {
                 SystemMessageType.TOAST -> {
-                    val showToastCEH = CoroutineExceptionHandler { _, error ->
-                        val errorText = error.localizedMessage
-                        debugLog(errorText)
-                        viewState.showErrorAlert(errorText)
+                    val showToastCEH = CoroutineExceptionHandlerWithLogger { _, error ->
+                        viewState.showErrorAlert(error.localizedMessage)
                     }
 
                     launch(
@@ -143,10 +133,8 @@ class AppPresenterImp(
                     }.also { jobsThatWillBeCancelledInOnDestroy += it }
                 }
                 SystemMessageType.ALERT -> {
-                    val showAlertCEH = CoroutineExceptionHandler { _, error ->
-                        val errorText = error.localizedMessage
-                        debugLog(errorText)
-                        viewState.showErrorAlert(errorText)
+                    val showAlertCEH = CoroutineExceptionHandlerWithLogger { _, error ->
+                        viewState.showErrorAlert(error.localizedMessage)
                     }
 
                     launch(
@@ -196,10 +184,8 @@ class AppPresenterImp(
             }
         }
 
-        val showSnackbarCEH = CoroutineExceptionHandler { _, error ->
-            val errorText = error.localizedMessage
-            debugLog(errorText)
-            viewState.showErrorAlert(errorText)
+        val showSnackbarCEH = CoroutineExceptionHandlerWithLogger { _, error ->
+            viewState.showErrorAlert(error.localizedMessage)
         }
 
         launch(
