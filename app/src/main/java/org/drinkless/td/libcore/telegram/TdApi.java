@@ -3555,7 +3555,7 @@ public class TdApi {
     }
 
     /**
-     * Represents a set of filters used to obtain a chat event log.
+     * Represents a set of filters used to obtain a chat event myLog.
      */
     public static class ChatEventLogFilters extends Object {
         /**
@@ -3600,13 +3600,13 @@ public class TdApi {
         public boolean settingChanges;
 
         /**
-         * Represents a set of filters used to obtain a chat event log.
+         * Represents a set of filters used to obtain a chat event myLog.
          */
         public ChatEventLogFilters() {
         }
 
         /**
-         * Represents a set of filters used to obtain a chat event log.
+         * Represents a set of filters used to obtain a chat event myLog.
          *
          * @param messageEdits True, if message edits should be returned.
          * @param messageDeletions True, if message deletions should be returned.
@@ -5104,7 +5104,7 @@ public class TdApi {
          */
         public int botUserId;
         /**
-         * The version of a browser used to log in.
+         * The version of a browser used to myLog in.
          */
         public String browser;
         /**
@@ -5140,7 +5140,7 @@ public class TdApi {
          * @param id Website identifier.
          * @param domainName The domain name of the website.
          * @param botUserId User identifier of a bot linked with the website.
-         * @param browser The version of a browser used to log in.
+         * @param browser The version of a browser used to myLog in.
          * @param platform Operating system the browser is running on.
          * @param logInDate Point in time (Unix timestamp) when the user was logged in.
          * @param lastActiveDate Point in time (Unix timestamp) when obtained authorization was last used.
@@ -13121,7 +13121,7 @@ public class TdApi {
 
     /**
      * This class is an abstract base class.
-     * Describes a stream to which TDLib internal log is written.
+     * Describes a stream to which TDLib internal myLog is written.
      */
     public abstract static class LogStream extends Object {
         @Retention(RetentionPolicy.SOURCE)
@@ -13141,12 +13141,12 @@ public class TdApi {
     }
 
     /**
-     * The log is written to stderr or an OS specific log.
+     * The myLog is written to stderr or an OS specific myLog.
      */
     public static class LogStreamDefault extends LogStream {
 
         /**
-         * The log is written to stderr or an OS specific log.
+         * The myLog is written to stderr or an OS specific myLog.
          */
         public LogStreamDefault() {
         }
@@ -13166,29 +13166,29 @@ public class TdApi {
     }
 
     /**
-     * The log is written to a file.
+     * The myLog is written to a file.
      */
     public static class LogStreamFile extends LogStream {
         /**
-         * Path to the file to where the internal TDLib log will be written.
+         * Path to the file to where the internal TDLib myLog will be written.
          */
         public String path;
         /**
-         * Maximum size of the file to where the internal TDLib log is written before the file will be auto-rotated.
+         * Maximum size of the file to where the internal TDLib myLog is written before the file will be auto-rotated.
          */
         public long maxFileSize;
 
         /**
-         * The log is written to a file.
+         * The myLog is written to a file.
          */
         public LogStreamFile() {
         }
 
         /**
-         * The log is written to a file.
+         * The myLog is written to a file.
          *
-         * @param path Path to the file to where the internal TDLib log will be written.
-         * @param maxFileSize Maximum size of the file to where the internal TDLib log is written before the file will be auto-rotated.
+         * @param path Path to the file to where the internal TDLib myLog will be written.
+         * @param maxFileSize Maximum size of the file to where the internal TDLib myLog is written before the file will be auto-rotated.
          */
         public LogStreamFile(String path, long maxFileSize) {
             this.path = path;
@@ -13210,12 +13210,12 @@ public class TdApi {
     }
 
     /**
-     * The log is written nowhere.
+     * The myLog is written nowhere.
      */
     public static class LogStreamEmpty extends LogStream {
 
         /**
-         * The log is written nowhere.
+         * The myLog is written nowhere.
          */
         public LogStreamEmpty() {
         }
@@ -13235,24 +13235,24 @@ public class TdApi {
     }
 
     /**
-     * Contains a list of available TDLib internal log tags.
+     * Contains a list of available TDLib internal myLog tags.
      */
     public static class LogTags extends Object {
         /**
-         * List of log tags.
+         * List of myLog tags.
          */
         public String[] tags;
 
         /**
-         * Contains a list of available TDLib internal log tags.
+         * Contains a list of available TDLib internal myLog tags.
          */
         public LogTags() {
         }
 
         /**
-         * Contains a list of available TDLib internal log tags.
+         * Contains a list of available TDLib internal myLog tags.
          *
-         * @param tags List of log tags.
+         * @param tags List of myLog tags.
          */
         public LogTags(String[] tags) {
             this.tags = tags;
@@ -13273,7 +13273,7 @@ public class TdApi {
     }
 
     /**
-     * Contains a TDLib internal log verbosity level.
+     * Contains a TDLib internal myLog verbosity level.
      */
     public static class LogVerbosityLevel extends Object {
         /**
@@ -13282,13 +13282,13 @@ public class TdApi {
         public int verbosityLevel;
 
         /**
-         * Contains a TDLib internal log verbosity level.
+         * Contains a TDLib internal myLog verbosity level.
          */
         public LogVerbosityLevel() {
         }
 
         /**
-         * Contains a TDLib internal log verbosity level.
+         * Contains a TDLib internal myLog verbosity level.
          *
          * @param verbosityLevel Log verbosity level.
          */
@@ -24582,7 +24582,7 @@ public class TdApi {
          */
         public long languagePackDatabaseSize;
         /**
-         * Size of the TDLib internal log.
+         * Size of the TDLib internal myLog.
          */
         public long logSize;
 
@@ -24599,7 +24599,7 @@ public class TdApi {
          * @param fileCount Approximate number of files.
          * @param databaseSize Size of the database.
          * @param languagePackDatabaseSize Size of the language pack database.
-         * @param logSize Size of the TDLib internal log.
+         * @param logSize Size of the TDLib internal myLog.
          */
         public StorageStatisticsFast(long filesSize, int fileCount, long databaseSize, long languagePackDatabaseSize, long logSize) {
             this.filesSize = filesSize;
@@ -31897,7 +31897,7 @@ public class TdApi {
     }
 
     /**
-     * Adds a message to TDLib internal log. This is an offline method. Can be called before authorization. Can be called synchronously.
+     * Adds a message to TDLib internal myLog. This is an offline method. Can be called before authorization. Can be called synchronously.
      *
      * <p> Returns {@link Ok Ok} </p>
      */
@@ -31907,12 +31907,12 @@ public class TdApi {
          */
         public int verbosityLevel;
         /**
-         * Text of a message to log.
+         * Text of a message to myLog.
          */
         public String text;
 
         /**
-         * Default constructor for a function, which adds a message to TDLib internal log. This is an offline method. Can be called before authorization. Can be called synchronously.
+         * Default constructor for a function, which adds a message to TDLib internal myLog. This is an offline method. Can be called before authorization. Can be called synchronously.
          *
          * <p> Returns {@link Ok Ok} </p>
          */
@@ -31920,12 +31920,12 @@ public class TdApi {
         }
 
         /**
-         * Creates a function, which adds a message to TDLib internal log. This is an offline method. Can be called before authorization. Can be called synchronously.
+         * Creates a function, which adds a message to TDLib internal myLog. This is an offline method. Can be called before authorization. Can be called synchronously.
          *
          * <p> Returns {@link Ok Ok} </p>
          *
          * @param verbosityLevel Minimum verbosity level needed for the message to be logged, 0-1023.
-         * @param text Text of a message to log.
+         * @param text Text of a message to myLog.
          */
         public AddLogMessage(int verbosityLevel, String text) {
             this.verbosityLevel = verbosityLevel;
@@ -32895,7 +32895,7 @@ public class TdApi {
     }
 
     /**
-     * Checks the authentication token of a bot; to log in as a bot. Works only when the current authorization state is authorizationStateWaitPhoneNumber. Can be used instead of setAuthenticationPhoneNumber and checkAuthenticationCode to log in.
+     * Checks the authentication token of a bot; to myLog in as a bot. Works only when the current authorization state is authorizationStateWaitPhoneNumber. Can be used instead of setAuthenticationPhoneNumber and checkAuthenticationCode to myLog in.
      *
      * <p> Returns {@link Ok Ok} </p>
      */
@@ -32906,7 +32906,7 @@ public class TdApi {
         public String token;
 
         /**
-         * Default constructor for a function, which checks the authentication token of a bot; to log in as a bot. Works only when the current authorization state is authorizationStateWaitPhoneNumber. Can be used instead of setAuthenticationPhoneNumber and checkAuthenticationCode to log in.
+         * Default constructor for a function, which checks the authentication token of a bot; to myLog in as a bot. Works only when the current authorization state is authorizationStateWaitPhoneNumber. Can be used instead of setAuthenticationPhoneNumber and checkAuthenticationCode to myLog in.
          *
          * <p> Returns {@link Ok Ok} </p>
          */
@@ -32914,7 +32914,7 @@ public class TdApi {
         }
 
         /**
-         * Creates a function, which checks the authentication token of a bot; to log in as a bot. Works only when the current authorization state is authorizationStateWaitPhoneNumber. Can be used instead of setAuthenticationPhoneNumber and checkAuthenticationCode to log in.
+         * Creates a function, which checks the authentication token of a bot; to myLog in as a bot. Works only when the current authorization state is authorizationStateWaitPhoneNumber. Can be used instead of setAuthenticationPhoneNumber and checkAuthenticationCode to myLog in.
          *
          * <p> Returns {@link Ok Ok} </p>
          *
@@ -37032,14 +37032,14 @@ public class TdApi {
     }
 
     /**
-     * Returns all website where the current user used Telegram to log in.
+     * Returns all website where the current user used Telegram to myLog in.
      *
      * <p> Returns {@link ConnectedWebsites ConnectedWebsites} </p>
      */
     public static class GetConnectedWebsites extends Function {
 
         /**
-         * Default constructor for a function, which returns all website where the current user used Telegram to log in.
+         * Default constructor for a function, which returns all website where the current user used Telegram to myLog in.
          *
          * <p> Returns {@link ConnectedWebsites ConnectedWebsites} </p>
          */
@@ -38081,14 +38081,14 @@ public class TdApi {
     }
 
     /**
-     * Returns information about currently used log stream for internal logging of TDLib. This is an offline method. Can be called before authorization. Can be called synchronously.
+     * Returns information about currently used myLog stream for internal logging of TDLib. This is an offline method. Can be called before authorization. Can be called synchronously.
      *
      * <p> Returns {@link LogStream LogStream} </p>
      */
     public static class GetLogStream extends Function {
 
         /**
-         * Default constructor for a function, which returns information about currently used log stream for internal logging of TDLib. This is an offline method. Can be called before authorization. Can be called synchronously.
+         * Default constructor for a function, which returns information about currently used myLog stream for internal logging of TDLib. This is an offline method. Can be called before authorization. Can be called synchronously.
          *
          * <p> Returns {@link LogStream LogStream} </p>
          */
@@ -38110,7 +38110,7 @@ public class TdApi {
     }
 
     /**
-     * Returns current verbosity level for a specified TDLib internal log tag. This is an offline method. Can be called before authorization. Can be called synchronously.
+     * Returns current verbosity level for a specified TDLib internal myLog tag. This is an offline method. Can be called before authorization. Can be called synchronously.
      *
      * <p> Returns {@link LogVerbosityLevel LogVerbosityLevel} </p>
      */
@@ -38121,7 +38121,7 @@ public class TdApi {
         public String tag;
 
         /**
-         * Default constructor for a function, which returns current verbosity level for a specified TDLib internal log tag. This is an offline method. Can be called before authorization. Can be called synchronously.
+         * Default constructor for a function, which returns current verbosity level for a specified TDLib internal myLog tag. This is an offline method. Can be called before authorization. Can be called synchronously.
          *
          * <p> Returns {@link LogVerbosityLevel LogVerbosityLevel} </p>
          */
@@ -38129,7 +38129,7 @@ public class TdApi {
         }
 
         /**
-         * Creates a function, which returns current verbosity level for a specified TDLib internal log tag. This is an offline method. Can be called before authorization. Can be called synchronously.
+         * Creates a function, which returns current verbosity level for a specified TDLib internal myLog tag. This is an offline method. Can be called before authorization. Can be called synchronously.
          *
          * <p> Returns {@link LogVerbosityLevel LogVerbosityLevel} </p>
          *
@@ -38154,14 +38154,14 @@ public class TdApi {
     }
 
     /**
-     * Returns list of available TDLib internal log tags, for example, [&quot;actor&quot;, &quot;binlog&quot;, &quot;connections&quot;, &quot;notifications&quot;, &quot;proxy&quot;]. This is an offline method. Can be called before authorization. Can be called synchronously.
+     * Returns list of available TDLib internal myLog tags, for example, [&quot;actor&quot;, &quot;binlog&quot;, &quot;connections&quot;, &quot;notifications&quot;, &quot;proxy&quot;]. This is an offline method. Can be called before authorization. Can be called synchronously.
      *
      * <p> Returns {@link LogTags LogTags} </p>
      */
     public static class GetLogTags extends Function {
 
         /**
-         * Default constructor for a function, which returns list of available TDLib internal log tags, for example, [&quot;actor&quot;, &quot;binlog&quot;, &quot;connections&quot;, &quot;notifications&quot;, &quot;proxy&quot;]. This is an offline method. Can be called before authorization. Can be called synchronously.
+         * Default constructor for a function, which returns list of available TDLib internal myLog tags, for example, [&quot;actor&quot;, &quot;binlog&quot;, &quot;connections&quot;, &quot;notifications&quot;, &quot;proxy&quot;]. This is an offline method. Can be called before authorization. Can be called synchronously.
          *
          * <p> Returns {@link LogTags LogTags} </p>
          */
@@ -42148,7 +42148,7 @@ public class TdApi {
     }
 
     /**
-     * Saves application log event on the server. Can be called before authorization.
+     * Saves application myLog event on the server. Can be called before authorization.
      *
      * <p> Returns {@link Ok Ok} </p>
      */
@@ -42162,12 +42162,12 @@ public class TdApi {
          */
         public long chatId;
         /**
-         * The log event data.
+         * The myLog event data.
          */
         public JsonValue data;
 
         /**
-         * Default constructor for a function, which saves application log event on the server. Can be called before authorization.
+         * Default constructor for a function, which saves application myLog event on the server. Can be called before authorization.
          *
          * <p> Returns {@link Ok Ok} </p>
          */
@@ -42175,13 +42175,13 @@ public class TdApi {
         }
 
         /**
-         * Creates a function, which saves application log event on the server. Can be called before authorization.
+         * Creates a function, which saves application myLog event on the server. Can be called before authorization.
          *
          * <p> Returns {@link Ok Ok} </p>
          *
          * @param type Event type.
          * @param chatId Optional chat identifier, associated with the event.
-         * @param data The log event data.
+         * @param data The myLog event data.
          */
         public SaveApplicationLogEvent(String type, long chatId, JsonValue data) {
             this.type = type;
@@ -44814,18 +44814,18 @@ public class TdApi {
     }
 
     /**
-     * Sets new log stream for internal logging of TDLib. This is an offline method. Can be called before authorization. Can be called synchronously.
+     * Sets new myLog stream for internal logging of TDLib. This is an offline method. Can be called before authorization. Can be called synchronously.
      *
      * <p> Returns {@link Ok Ok} </p>
      */
     public static class SetLogStream extends Function {
         /**
-         * New log stream.
+         * New myLog stream.
          */
         public LogStream logStream;
 
         /**
-         * Default constructor for a function, which sets new log stream for internal logging of TDLib. This is an offline method. Can be called before authorization. Can be called synchronously.
+         * Default constructor for a function, which sets new myLog stream for internal logging of TDLib. This is an offline method. Can be called before authorization. Can be called synchronously.
          *
          * <p> Returns {@link Ok Ok} </p>
          */
@@ -44833,11 +44833,11 @@ public class TdApi {
         }
 
         /**
-         * Creates a function, which sets new log stream for internal logging of TDLib. This is an offline method. Can be called before authorization. Can be called synchronously.
+         * Creates a function, which sets new myLog stream for internal logging of TDLib. This is an offline method. Can be called before authorization. Can be called synchronously.
          *
          * <p> Returns {@link Ok Ok} </p>
          *
-         * @param logStream New log stream.
+         * @param logStream New myLog stream.
          */
         public SetLogStream(LogStream logStream) {
             this.logStream = logStream;
@@ -44858,7 +44858,7 @@ public class TdApi {
     }
 
     /**
-     * Sets the verbosity level for a specified TDLib internal log tag. This is an offline method. Can be called before authorization. Can be called synchronously.
+     * Sets the verbosity level for a specified TDLib internal myLog tag. This is an offline method. Can be called before authorization. Can be called synchronously.
      *
      * <p> Returns {@link Ok Ok} </p>
      */
@@ -44873,7 +44873,7 @@ public class TdApi {
         public int newVerbosityLevel;
 
         /**
-         * Default constructor for a function, which sets the verbosity level for a specified TDLib internal log tag. This is an offline method. Can be called before authorization. Can be called synchronously.
+         * Default constructor for a function, which sets the verbosity level for a specified TDLib internal myLog tag. This is an offline method. Can be called before authorization. Can be called synchronously.
          *
          * <p> Returns {@link Ok Ok} </p>
          */
@@ -44881,7 +44881,7 @@ public class TdApi {
         }
 
         /**
-         * Creates a function, which sets the verbosity level for a specified TDLib internal log tag. This is an offline method. Can be called before authorization. Can be called synchronously.
+         * Creates a function, which sets the verbosity level for a specified TDLib internal myLog tag. This is an offline method. Can be called before authorization. Can be called synchronously.
          *
          * <p> Returns {@link Ok Ok} </p>
          *

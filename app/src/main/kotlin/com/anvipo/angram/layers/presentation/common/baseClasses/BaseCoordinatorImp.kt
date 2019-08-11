@@ -1,6 +1,7 @@
 package com.anvipo.angram.layers.presentation.common.baseClasses
 
 import com.anvipo.angram.layers.application.types.SystemMessageSendChannel
+import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
 import com.anvipo.angram.layers.core.CoroutineExceptionHandlerWithLogger
 import com.anvipo.angram.layers.core.HasLogger
 import com.anvipo.angram.layers.core.message.SystemMessage
@@ -21,7 +22,7 @@ abstract class BaseCoordinatorImp<out CoordinateResultType>(
 
     final override val className: String = this::class.java.name
 
-    final override fun <T> additionalLogging(logObj: T) {
+    final override fun <T : Any> additionalLogging(logObj: T) {
         val coroutineExceptionHandlerWithLogger = CoroutineExceptionHandlerWithLogger { _, throwable ->
             onLogException(throwable)
         }
@@ -54,7 +55,11 @@ abstract class BaseCoordinatorImp<out CoordinateResultType>(
             null -> return
             is String -> GlobalHelpers.createTGSystemMessage(logObj)
             is SystemMessage -> logObj
-            else -> TODO()
+            else -> {
+                val text = "Undefined logObj type = $logObj"
+                assertionFailure(text)
+                TODO(text)
+            }
         }
 
         systemMessageSendChannel.send(systemMessage)

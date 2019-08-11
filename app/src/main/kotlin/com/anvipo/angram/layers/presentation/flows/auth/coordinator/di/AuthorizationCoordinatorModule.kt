@@ -23,7 +23,7 @@ object AuthorizationCoordinatorModule {
 
     val module: Module = module {
 
-        factory<AuthorizationCoordinator>(authorizationCoordinatorQualifier) {
+        single<AuthorizationCoordinator>(authorizationCoordinatorQualifier) {
             AuthorizationCoordinatorImp(
                 router = get(routerQualifier),
                 screensFactory = get(authorizationScreensFactoryQualifier),
@@ -32,7 +32,7 @@ object AuthorizationCoordinatorModule {
             )
         }
 
-        factory<AuthorizationScreensFactory>(authorizationScreensFactoryQualifier) {
+        single<AuthorizationScreensFactory>(authorizationScreensFactoryQualifier) {
             AuthorizationScreensFactoryImp(
                 enterPhoneNumberScreenFactory = get(enterPhoneNumberScreenFactoryQualifier),
                 enterAuthenticationPasswordScreenFactory = get(enterAuthenticationPasswordScreenFactoryQualifier),

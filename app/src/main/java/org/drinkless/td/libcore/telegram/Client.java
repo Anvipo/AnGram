@@ -195,10 +195,10 @@ public final class Client implements Runnable {
     }
 
     /**
-     * Changes TDLib log verbosity.
+     * Changes TDLib myLog verbosity.
      *
      * @deprecated As of TDLib 1.4.0 in favor of {@link TdApi.SetLogVerbosityLevel}, to be removed in the future.
-     * @param newLogVerbosity New value of log verbosity. Must be non-negative.
+     * @param newLogVerbosity New value of myLog verbosity. Must be non-negative.
      *                        Value 0 corresponds to android.util.Log.ASSERT,
      *                        value 1 corresponds to android.util.Log.ERROR,
      *                        value 2 corresponds to android.util.Log.WARNING,
@@ -206,7 +206,7 @@ public final class Client implements Runnable {
      *                        value 4 corresponds to android.util.Log.DEBUG,
      *                        value 5 corresponds to android.util.Log.VERBOSE,
      *                        value greater than 5 can be used to enable even more logging.
-     *                        Default value of the log verbosity is 5.
+     *                        Default value of the myLog verbosity is 5.
      * @throws IllegalArgumentException if newLogVerbosity is negative.
      */
     @Deprecated
@@ -218,14 +218,14 @@ public final class Client implements Runnable {
     }
 
     /**
-     * Sets file path for writing TDLib internal log.
+     * Sets file path for writing TDLib internal myLog.
      * By default TDLib writes logs to the Android Log.
-     * Use this method to write the log to a file instead.
+     * Use this method to write the myLog to a file instead.
      *
      * @deprecated As of TDLib 1.4.0 in favor of {@link TdApi.SetLogStream}, to be removed in the future.
-     * @param filePath Path to a file for writing TDLib internal log. Use an empty path to
+     * @param filePath Path to a file for writing TDLib internal myLog. Use an empty path to
      *                 switch back to logging to the Android Log.
-     * @return whether opening the log file succeeded
+     * @return whether opening the myLog file succeeded
      */
     @Deprecated
     public static boolean setLogFilePath(String filePath) {
@@ -233,10 +233,10 @@ public final class Client implements Runnable {
     }
 
     /**
-     * Changes maximum size of TDLib log file.
+     * Changes maximum size of TDLib myLog file.
      *
      * @deprecated As of TDLib 1.4.0 in favor of {@link TdApi.SetLogStream}, to be removed in the future.
-     * @param maxFileSize Maximum size of the file to where the internal TDLib log is written
+     * @param maxFileSize Maximum size of the file to where the internal TDLib myLog is written
      *                    before the file will be auto-rotated. Must be positive. Defaults to 10 MB.
      * @throws IllegalArgumentException if max_file_size is non-positive.
      */

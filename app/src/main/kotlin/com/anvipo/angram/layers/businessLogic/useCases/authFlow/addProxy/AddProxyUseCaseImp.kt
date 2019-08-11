@@ -1,5 +1,6 @@
 package com.anvipo.angram.layers.businessLogic.useCases.authFlow.addProxy
 
+import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
 import com.anvipo.angram.layers.data.gateways.local.db.room.entities.proxy.TdApiProxyInfoRoomEntity
 import com.anvipo.angram.layers.data.gateways.local.db.room.entities.proxy.type.base.TdApiProxyTypeRoomEntity
 import com.anvipo.angram.layers.data.gateways.local.db.room.entities.proxy.type.imp.TdApiMTProtoProxyTypeRoomEntity
@@ -38,7 +39,11 @@ class AddProxyUseCaseImp(
                         secret = type.secret
                     )
                 }
-                else -> TODO()
+                else -> {
+                    val text = "Undefined proxy type = $type"
+                    assertionFailure(text)
+                    TODO(text)
+                }
             }
 
         val proxyInfoRoomEntity = TdApiProxyInfoRoomEntity(

@@ -8,6 +8,7 @@ import com.anvipo.angram.layers.presentation.flows.auth.coordinator.interfaces.*
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.screensFactory.authorization.AuthorizationScreensFactory
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.types.AuthorizationCoordinateResult
 import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.types.ProxyType
+import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationCode.di.EnterAuthenticationCodeModule
 import org.drinkless.td.libcore.telegram.TdApi
 import ru.terrakok.cicerone.Router
 import ru.terrakok.cicerone.android.support.SupportAppScreen
@@ -46,21 +47,21 @@ class AuthorizationCoordinatorImp(
         }
 
     override fun onEnterCorrectPhoneNumber() {
-        log(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
+        myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
 
         checkAuthorizationStateHelper()
     }
 
     override fun onPressedBackButtonInEnterPhoneNumberScreen() {
-        log(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
+        myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
 
         router.exit()
     }
 
     override fun onAddProxyButtonTapped(proxyType: ProxyType) {
-        log(
+        myLog(
             invokationPlace = object {}.javaClass.enclosingMethod!!.name,
-            text = "proxyType = $proxyType"
+            currentParameters = "proxyType = $proxyType"
         )
 
         val addProxyScreen = screensFactory
@@ -74,54 +75,54 @@ class AuthorizationCoordinatorImp(
     }
 
     override fun onPressedBackButtonInEnterAuthenticationCodeScreen() {
-        log(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
+        myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
 
         router.exit()
     }
 
     override fun onEnterCorrectAuthenticationCode() {
-        log(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
+        myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
 
         checkAuthorizationStateHelper()
     }
 
     override fun onPressedBackButtonInEnterAuthenticationPasswordScreen() {
-        log(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
+        myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
 
         router.backTo(enterPhoneNumberScreen)
     }
 
     override fun onEnterCorrectAuthenticationPassword() {
-        log(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
+        myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
 
         checkAuthorizationStateHelper()
     }
 
     override fun onPressedBackButtonInAddProxyScreen() {
-        log(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
+        myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
 
         router.exit()
     }
 
     override fun onSuccessAddProxy() {
-        log(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
+        myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
 
         router.exit()
     }
 
     override fun onSuccessGetAuthorizationStateResult(authState: TdApi.AuthorizationState) {
-        log(
+        myLog(
             invokationPlace = object {}.javaClass.enclosingMethod!!.name,
-            text = "authState = $authState"
+            currentParameters = "authState = $authState"
         )
 
         showNeededScreen(authState)
     }
 
     override fun onFailureGetAuthorizationStateResult(error: Throwable) {
-        log(
+        myLog(
             invokationPlace = object {}.javaClass.enclosingMethod!!.name,
-            text = "error.localizedMessage = ${error.localizedMessage}"
+            currentParameters = "error.localizedMessage = ${error.localizedMessage}"
         )
 
         checkAuthorizationStateHelper()
@@ -162,9 +163,9 @@ class AuthorizationCoordinatorImp(
             is TdApi.AuthorizationStateWaitPassword -> onAuthorizationStateWaitPassword()
             is TdApi.AuthorizationStateReady -> onAuthorizationStateReady()
             else -> {
-                log(
+                myLog(
                     invokationPlace = object {}.javaClass.enclosingMethod!!.name,
-                    text = "Undefined authState: $authState"
+                    currentParameters = "Undefined authState: $authState"
                 )
             }
         }
@@ -210,9 +211,9 @@ class AuthorizationCoordinatorImp(
     private fun showEnterAuthenticationPasswordScreen(withEnterAuthenticationPasswordAsRootScreen: Boolean) {
         val text = "withEnterAuthenticationPasswordAsRootScreen = $withEnterAuthenticationPasswordAsRootScreen"
 
-        log(
+        myLog(
             invokationPlace = object {}.javaClass.enclosingMethod!!.name,
-            text = text
+            currentParameters = text
         )
 
         if (withEnterAuthenticationPasswordAsRootScreen) {
@@ -238,14 +239,14 @@ class AuthorizationCoordinatorImp(
     }
 
     private fun onAuthorizationStateReady() {
-        log(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
+        myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
 
         finishAuthorizationFlow.resume(AuthorizationCoordinateResult)
     }
 
 
     private fun showEnterPhoneNumberScreen() {
-        log(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
+        myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
 
         enterPhoneNumberScreen =
             screensFactory
@@ -262,22 +263,25 @@ class AuthorizationCoordinatorImp(
         registrationRequired: Boolean,
         termsOfServiceText: String
     ) {
-        log(
+        myLog(
             invokationPlace = object {}.javaClass.enclosingMethod!!.name,
-            text = "withEnterAuthCodeAsRootScreen = $withEnterAuthCodeAsRootScreen"
+            currentParameters = "withEnterAuthCodeAsRootScreen = $withEnterAuthCodeAsRootScreen"
         )
+
+        val enterAuthenticationCodeScreenParameters =
+            EnterAuthenticationCodeModule.EnterAuthenticationCodeScreenParameters(
+                expectedCodeLength = expectedCodeLength,
+                enteredPhoneNumber = enteredPhoneNumber,
+                registrationRequired = registrationRequired,
+                termsOfServiceText = termsOfServiceText,
+                shouldShowBackButton = true
+            )
 
         if (withEnterAuthCodeAsRootScreen) {
             val enterAuthCodeScreen =
                 screensFactory
                     .enterAuthenticationCodeScreenFactory
-                    .createEnterAuthenticationCodeScreen(
-                        expectedCodeLength = expectedCodeLength,
-                        enteredPhoneNumber = enteredPhoneNumber,
-                        registrationRequired = registrationRequired,
-                        termsOfServiceText = termsOfServiceText,
-                        shouldShowBackButton = true
-                    )
+                    .createEnterAuthenticationCodeScreen(enterAuthenticationCodeScreenParameters)
 
             val enterPhoneNumberScreen =
                 screensFactory
@@ -289,13 +293,7 @@ class AuthorizationCoordinatorImp(
             val enterAuthCodeScreen =
                 screensFactory
                     .enterAuthenticationCodeScreenFactory
-                    .createEnterAuthenticationCodeScreen(
-                        expectedCodeLength = expectedCodeLength,
-                        enteredPhoneNumber = enteredPhoneNumber,
-                        registrationRequired = registrationRequired,
-                        termsOfServiceText = termsOfServiceText,
-                        shouldShowBackButton = true
-                    )
+                    .createEnterAuthenticationCodeScreen(enterAuthenticationCodeScreenParameters)
 
             router.navigateTo(enterAuthCodeScreen)
         }

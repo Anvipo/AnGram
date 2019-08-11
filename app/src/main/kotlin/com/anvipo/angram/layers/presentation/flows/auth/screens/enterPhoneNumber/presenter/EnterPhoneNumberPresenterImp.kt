@@ -147,7 +147,7 @@ class EnterPhoneNumberPresenterImp(
                 is TdApi.ConnectionStateConnecting -> viewState.disableNextButton()
                 is TdApi.ConnectionStateUpdating -> viewState.disableNextButton()
                 is TdApi.ConnectionStateReady -> viewState.enableNextButton()
-                else -> assertionFailure()
+                else -> assertionFailure("Undefined received connection state $receivedConnectionState")
             }
         }.also { jobsThatWillBeCancelledInOnDestroy += it }
     }

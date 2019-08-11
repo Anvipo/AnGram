@@ -13,7 +13,6 @@ import com.anvipo.angram.layers.application.types.SystemMessageSendChannel
 import com.anvipo.angram.layers.businessLogic.di.UseCasesModule
 import com.anvipo.angram.layers.core.CoreHelpers.IS_IN_DEBUG_MODE
 import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
-import com.anvipo.angram.layers.core.CoreHelpers.debugLog
 import com.anvipo.angram.layers.core.CoroutineExceptionHandlerWithLogger
 import com.anvipo.angram.layers.core.HasLogger
 import com.anvipo.angram.layers.core.collections.IMutableStack
@@ -66,12 +65,17 @@ class App :
 
     override val className: String = this::class.java.name
 
-    override fun <T> additionalLogging(logObj: T) {
+    override fun <T : Any> additionalLogging(logObj: T) {
         launch(coroutineContext + CoroutineExceptionHandlerWithLogger()) {
             val systemMessage: SystemMessage = when (logObj) {
                 is String -> createTGSystemMessage(logObj)
                 is SystemMessage -> logObj
-                else -> TODO()
+                is Unit -> return@launch
+                else -> {
+                    val message = "Undefined logObj type = $logObj"
+                    assertionFailure(message)
+                    TODO(message)
+                }
             }
 
             systemMessageSendChannel.send(systemMessage)
@@ -79,21 +83,25 @@ class App :
     }
 
     fun handleUpdates(tdApiObject: TdApi.Object) {
-        log(
-            invokationPlace = object {}.javaClass.enclosingMethod!!.name,
-            text = tdApiObject.toString()
+        val invokationPlace = object {}.javaClass.enclosingMethod!!.name
+        myLog(
+            invokationPlace = invokationPlace,
+            currentParameters = "tdApiObject = $tdApiObject"
         )
 
         tdObjectsStack.push(tdApiObject)
 
         when (tdApiObject) {
             is TdApi.Update -> onUpdate(tdApiObject)
-            else -> debugLog("Unhandled TdApi.Object case")
+            else -> myLog(
+                currentParameters = "Undefined td api object = $tdApiObject",
+                invokationPlace = invokationPlace
+            )
         }
     }
 
     fun handleUpdatesException(error: Throwable) {
-        val text = error.localizedMessage
+        val text = "error.localizedMessage = ${error.localizedMessage}"
 
         val systemMessage: SystemMessage =
             when (error) {
@@ -122,26 +130,28 @@ class App :
             additionalLogging(systemMessage)
         }
 
-        log(
+        myLog(
             invokationPlace = object {}.javaClass.enclosingMethod!!.name,
-            text = text,
+            currentParameters = text,
             customLogging = customLogging
         )
 
         tdErrorsStack.push(error)
     }
 
-    fun handleDefaultException(error: Throwable) {
-        log(
+    fun handleDefaultException(throwable: Throwable) {
+        myLog(
             invokationPlace = object {}.javaClass.enclosingMethod!!.name,
-            text = error.localizedMessage
+            currentParameters = "error.localizedMessage = ${throwable.localizedMessage}"
         )
 
-        tdErrorsStack.push(error)
+        tdErrorsStack.push(throwable)
     }
 
 
     private fun initDI() {
+        val invokationPlace = object {}.javaClass.enclosingMethod!!.name
+
         val debugModules = listOf(
             LaunchSystemModule.module,
             SystemInfrastructureModule.module,
@@ -165,12 +175,13 @@ class App :
             }
         } else {
             // TODO: release config
-            debugLog("TODO")
+            myLog(
+                invokationPlace = invokationPlace,
+                currentParameters = "TODO"
+            )
         }
 
-        log(
-            invokationPlace = object {}.javaClass.enclosingMethod!!.name
-        )
+        myLog(invokationPlace = invokationPlace)
     }
 
     private val jobsThatWillBeCancelledInOnTerminate: MutableList<Job> = mutableListOf()
@@ -226,7 +237,7 @@ class App :
             when (optionValue) {
                 is TdApi.OptionValueInteger -> enabledProxyIdSendChannel.offer(optionValue.value)
                 is TdApi.OptionValueEmpty -> enabledProxyIdSendChannel.offer(null)
-                else -> assertionFailure()
+                else -> assertionFailure("Undefined enabled_proxy_id value = ${optionValue}")
             }
         }
     }

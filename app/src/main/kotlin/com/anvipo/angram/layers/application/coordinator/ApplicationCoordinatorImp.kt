@@ -3,7 +3,6 @@ package com.anvipo.angram.layers.application.coordinator
 import com.anvipo.angram.layers.application.coordinator.coordinatorsFactory.ApplicationCoordinatorsFactory
 import com.anvipo.angram.layers.application.coordinator.types.ApplicationCoordinateResult
 import com.anvipo.angram.layers.application.types.SystemMessageSendChannel
-import com.anvipo.angram.layers.core.CoreHelpers.debugLog
 import com.anvipo.angram.layers.data.gateways.tdLib.application.ApplicationTDLibGateway
 import com.anvipo.angram.layers.presentation.common.baseClasses.BaseCoordinatorWithCheckAuthorizationStateHelpers
 import org.drinkless.td.libcore.telegram.TdApi
@@ -39,18 +38,18 @@ class ApplicationCoordinatorImp(
             is TdApi.AuthorizationStateLoggingOut -> onAuthorizationStateLoggingOut()
             is TdApi.AuthorizationStateClosed -> onAuthorizationStateClosed()
             else -> {
-                log(
+                myLog(
                     invokationPlace = object {}.javaClass.enclosingMethod!!.name,
-                    text = "authState = $authState"
+                    currentParameters = "authState = $authState"
                 )
             }
         }
     }
 
     override fun onFailureGetAuthorizationStateResult(error: Throwable) {
-        log(
+        myLog(
             invokationPlace = object {}.javaClass.enclosingMethod!!.name,
-            text = "error.localizedMessage = ${error.localizedMessage}"
+            currentParameters = "error.localizedMessage = ${error.localizedMessage}"
         )
 
         checkAuthorizationStateHelper()
@@ -70,13 +69,13 @@ class ApplicationCoordinatorImp(
 
 
     private fun onAuthorizationStateWaitPassword() {
-        log(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
+        myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
 
         startAuthorizationFlow()
     }
 
     private fun onAuthorizationStateClosed() {
-        log(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
+        myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
 
         // TODO: recreate client
 
@@ -84,14 +83,14 @@ class ApplicationCoordinatorImp(
     }
 
     private fun onAuthorizationStateLoggingOut() {
-        log(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
+        myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
 
         checkAuthorizationStateHelper()
     }
 
 
     private fun onAuthorizationStateWaitTdlibParameters() {
-        log(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
+        myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
 
         myLaunch {
             val setTdLibParametersResult = tdLibGateway.setTdLibParametersCatching()
@@ -103,7 +102,7 @@ class ApplicationCoordinatorImp(
     }
 
     private fun onAuthorizationStateWaitEncryptionKey() {
-        log(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
+        myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
 
         myLaunch {
             val checkDatabaseEncryptionKeyResult = tdLibGateway.checkDatabaseEncryptionKeyCatching()
@@ -115,25 +114,31 @@ class ApplicationCoordinatorImp(
     }
 
     private fun onAuthorizationStateReady() {
-        log(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
+        val invokationPlace = object {}.javaClass.enclosingMethod!!.name
+        myLog(invokationPlace = invokationPlace)
 
         // TODO: start main flow
-        debugLog("start main flow")
+        myLog(
+            currentParameters = "START MAIN FLOW",
+            invokationPlace = invokationPlace
+        )
     }
 
     private fun onAuthorizationStateWaitCode() {
-        log(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
+        myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
 
         startAuthorizationFlow(withEnterAuthorizationCodeAsRootScreen = true)
     }
 
     private fun onAuthorizationStateWaitPhoneNumber() {
-        log(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
+        myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
 
         startAuthorizationFlow()
     }
 
     private fun startAuthorizationFlow(withEnterAuthorizationCodeAsRootScreen: Boolean = false) {
+        val invokationPlace = object {}.javaClass.enclosingMethod!!.name
+
         myLaunch {
             val authorizationCoordinator = coordinatorsFactory.createAuthorizationCoordinator()
 
@@ -144,7 +149,10 @@ class ApplicationCoordinatorImp(
             }
 
             // TODO: start main flow
-            debugLog("start main flow")
+            myLog(
+                currentParameters = "START MAIN FLOW",
+                invokationPlace = invokationPlace
+            )
         }
     }
 

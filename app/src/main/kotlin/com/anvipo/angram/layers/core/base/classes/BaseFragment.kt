@@ -14,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.R
-import com.anvipo.angram.layers.core.CoreHelpers.debugLog
+import com.anvipo.angram.layers.core.HasLogger
 import com.anvipo.angram.layers.core.MyProgressDialog
 import com.anvipo.angram.layers.core.base.CoreConstants.PROGRESS_TAG
 import com.anvipo.angram.layers.core.base.interfaces.BaseView
@@ -25,7 +25,12 @@ import com.anvipo.angram.layers.presentation.common.interfaces.BasePresenter
 import com.anvipo.angram.layers.presentation.common.mvp.MvpAppCompatFragment
 
 @Suppress("unused")
-abstract class BaseFragment : MvpAppCompatFragment(), BaseView {
+abstract class BaseFragment :
+    MvpAppCompatFragment(),
+    BaseView,
+    HasLogger {
+
+    override val className: String = this::class.java.name
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -200,10 +205,14 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseView {
     private var instanceStateSaved: Boolean = false
 
     private fun showBackButtonHelper() {
+        val invokationPlace = object {}.javaClass.enclosingMethod!!.name
         val supportActionBar = this.supportActionBar
 
         if (supportActionBar == null) {
-            debugLog("supportActionBar == null")
+            myLog(
+                invokationPlace = invokationPlace,
+                currentParameters = "supportActionBar == null"
+            )
             return
         }
 
@@ -212,10 +221,14 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseView {
     }
 
     private fun setupToolbar() {
+        val invokationPlace = object {}.javaClass.enclosingMethod!!.name
         val appCompatActivity = this.appCompatActivity
 
         if (appCompatActivity == null) {
-            debugLog("appCompatActivity == null")
+            myLog(
+                invokationPlace = invokationPlace,
+                currentParameters = "appCompatActivity == null"
+            )
             return
         }
 
@@ -224,7 +237,10 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseView {
         val supportActionBar = this.supportActionBar
 
         if (supportActionBar == null) {
-            debugLog("supportActionBar == null")
+            myLog(
+                invokationPlace = invokationPlace,
+                currentParameters = "supportActionBar == null"
+            )
             return
         }
 

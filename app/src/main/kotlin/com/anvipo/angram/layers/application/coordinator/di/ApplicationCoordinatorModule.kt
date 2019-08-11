@@ -20,7 +20,7 @@ object ApplicationCoordinatorModule {
     @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
 
-        factory<ApplicationCoordinator>(applicationCoordinatorQualifier) {
+        single<ApplicationCoordinator>(applicationCoordinatorQualifier) {
             ApplicationCoordinatorImp(
                 coordinatorsFactory = get(applicationCoordinatorsFactoryQualifier),
                 tdLibGateway = get(applicationTDLibGatewayQualifier),
@@ -28,7 +28,7 @@ object ApplicationCoordinatorModule {
             )
         }
 
-        factory<ApplicationCoordinatorsFactory>(applicationCoordinatorsFactoryQualifier) {
+        single<ApplicationCoordinatorsFactory>(applicationCoordinatorsFactoryQualifier) {
             ApplicationCoordinatorsFactoryImp(
                 koinScope = this
             )

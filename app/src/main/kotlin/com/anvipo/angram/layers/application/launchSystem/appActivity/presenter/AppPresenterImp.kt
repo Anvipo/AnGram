@@ -8,7 +8,6 @@ import com.anvipo.angram.layers.application.types.EnabledProxyIdReceiveChannel
 import com.anvipo.angram.layers.application.types.SystemMessageReceiveChannel
 import com.anvipo.angram.layers.businessLogic.useCases.app.AppUseCase
 import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
-import com.anvipo.angram.layers.core.CoreHelpers.debugLog
 import com.anvipo.angram.layers.core.CoroutineExceptionHandlerWithLogger
 import com.anvipo.angram.layers.core.ResourceManager
 import com.anvipo.angram.layers.core.message.SystemMessage
@@ -42,15 +41,20 @@ class AppPresenterImp(
     }
 
     override fun coldStart() {
+        val invokationPlace = object {}.javaClass.enclosingMethod!!.name
+
         val startApplicationFlowCEH =
             CoroutineExceptionHandlerWithLogger { _, error ->
                 viewState.showErrorAlert(error.localizedMessage)
             }
 
         launch(coroutineContext + startApplicationFlowCEH) {
-            coordinator.start()
+            val applicationFlowCoordinateResult = coordinator.start()
 
-            debugLog("Exit")
+            myLog(
+                invokationPlace = invokationPlace,
+                currentParameters = "applicationFlowCoordinateResult = $applicationFlowCoordinateResult"
+            )
         }.also { jobsThatWillBeCancelledInOnDestroy += it }
     }
 
@@ -117,6 +121,7 @@ class AppPresenterImp(
     }
 
     private fun onReceivedSystemMessage(receivedSystemMessage: SystemMessage) {
+        val invokationPlace = object {}.javaClass.enclosingMethod!!.name
         val (text, type, shouldBeShownToUser, shouldBeShownInLogs) = receivedSystemMessage
 
         if (shouldBeShownToUser) {
@@ -147,7 +152,10 @@ class AppPresenterImp(
         }
 
         if (shouldBeShownInLogs) {
-            debugLog(text)
+            myLog(
+                invokationPlace = invokationPlace,
+                currentParameters = text
+            )
         }
     }
 
@@ -178,7 +186,7 @@ class AppPresenterImp(
                 duration = Snackbar.LENGTH_SHORT
             }
             else -> {
-                assertionFailure()
+                assertionFailure("Undefined received connection state = $receivedConnectionState")
                 text = "$connectionState: ERROR"
                 duration = Snackbar.LENGTH_INDEFINITE
             }

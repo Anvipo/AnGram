@@ -11,9 +11,15 @@ object CoreHelpers {
 
     private const val APP_TAG: String = "AnGram"
 
-    fun debugLog(message: String) {
+    fun debugLog(
+        text: String? = null,
+        invokationPlace: String
+    ) {
         if (IS_IN_DEBUG_MODE) {
-            logIfShould(message)
+            logIfShould(
+                invokationPlace = invokationPlace,
+                text = text
+            )
         }
     }
 
@@ -29,7 +35,7 @@ object CoreHelpers {
         }
     }
 
-    fun assertionFailure(message: String = "Debug error") {
+    fun assertionFailure(message: String) {
         if (IS_IN_DEBUG_MODE) {
             throw CoreErrors.DebugError(message)
         }
