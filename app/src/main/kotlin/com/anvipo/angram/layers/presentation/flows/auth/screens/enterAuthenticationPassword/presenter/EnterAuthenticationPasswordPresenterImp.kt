@@ -1,9 +1,8 @@
 package com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationPassword.presenter
 
-import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.businessLogic.useCases.authFlow.enterAuthenticationPassword.EnterAuthenticationPasswordUseCase
-import com.anvipo.angram.layers.core.CoreHelpers
+import com.anvipo.angram.layers.core.CoreHelpers.debugLog
 import com.anvipo.angram.layers.core.ResourceManager
 import com.anvipo.angram.layers.presentation.common.baseClasses.BasePresenterImp
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.interfaces.AuthorizationCoordinatorEnterAuthenticationPasswordRouteEventHandler
@@ -29,11 +28,9 @@ class EnterAuthenticationPasswordPresenterImp(
 
     override fun onNextButtonPressed(enteredAuthenticationPassword: CorrectAuthenticationPasswordType) {
         val onNextButtonPressedCEH = CoroutineExceptionHandler { _, error ->
-            if (BuildConfig.DEBUG) {
-                val errorText = error.localizedMessage
-                CoreHelpers.debugLog(errorText)
-                viewState.showErrorAlert(errorText)
-            }
+            val errorText = error.localizedMessage
+            debugLog(errorText)
+            viewState.showErrorAlert(errorText)
         }
 
         viewState.showProgress()

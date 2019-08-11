@@ -1,20 +1,23 @@
 package com.anvipo.angram.layers.data.gateways.tdLib.application
 
-import android.content.Context
 import android.os.Build
 import com.anvipo.angram.BuildConfig
-import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.USE_TEST_ENVIRONMENT
+import com.anvipo.angram.layers.core.ResourceManager
 import com.anvipo.angram.layers.data.gateways.tdLib.base.BaseTdLibGatewayImp
+import com.anvipo.angram.layers.global.GlobalHelpers.USE_TEST_ENVIRONMENT
 import org.drinkless.td.libcore.telegram.Client
 import org.drinkless.td.libcore.telegram.TdApi
 import java.util.*
 
-class ApplicationTDLibGatewayImp(tdClient: Client) :
+class ApplicationTDLibGatewayImp(
+    tdClient: Client,
+    private val resourceManager: ResourceManager
+) :
     BaseTdLibGatewayImp(tdClient),
     ApplicationTDLibGateway {
 
-    override suspend fun setTdLibParametersCatching(context: Context): Result<TdApi.Ok> =
-        doRequestCatching(TdApi.SetTdlibParameters(createTDLibParameters(context)))
+    override suspend fun setTdLibParametersCatching(): Result<TdApi.Ok> =
+        doRequestCatching(TdApi.SetTdlibParameters(createTDLibParameters()))
 
     override suspend fun checkDatabaseEncryptionKeyCatching(): Result<TdApi.Ok> =
         doRequestCatching(TdApi.CheckDatabaseEncryptionKey())
@@ -23,10 +26,9 @@ class ApplicationTDLibGatewayImp(tdClient: Client) :
         doRequestCatching(TdApi.LogOut())
 
 
-    private fun createTDLibParameters(context: Context): TdApi.TdlibParameters {
+    private fun createTDLibParameters(): TdApi.TdlibParameters {
         val parameters = TdApi.TdlibParameters()
-
-        val dbDirectory = context.filesDir?.absolutePath
+        val dbDirectory = resourceManager.context.filesDir?.absolutePath
 
         parameters.apiHash = "dca2591dafcacf1a23908a256f1b6711"
         parameters.apiId = 848516

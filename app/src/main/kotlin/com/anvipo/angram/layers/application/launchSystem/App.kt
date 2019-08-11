@@ -1,7 +1,6 @@
 package com.anvipo.angram.layers.application.launchSystem
 
 import android.app.Application
-import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.layers.application.coordinator.di.ApplicationCoordinatorModule
 import com.anvipo.angram.layers.application.di.LaunchSystemModule
 import com.anvipo.angram.layers.application.di.LaunchSystemModule.connectionStateAppSendChannelQualifier
@@ -21,6 +20,7 @@ import com.anvipo.angram.layers.core.collections.MutableStack
 import com.anvipo.angram.layers.core.message.SystemMessage
 import com.anvipo.angram.layers.core.message.SystemMessageType
 import com.anvipo.angram.layers.data.di.GatewaysModule
+import com.anvipo.angram.layers.global.GlobalHelpers.IS_IN_DEBUG_MODE
 import com.anvipo.angram.layers.global.GlobalHelpers.createTGSystemMessage
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.di.AuthorizationCoordinatorModule
 import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.di.AddProxyModule
@@ -109,7 +109,7 @@ class App :
                     SystemMessage(
                         text = text,
                         type = SystemMessageType.ALERT,
-                        shouldBeShownToUser = BuildConfig.DEBUG,
+                        shouldBeShownToUser = IS_IN_DEBUG_MODE,
                         shouldBeShownInLogs = false
                     )
                 }
@@ -153,7 +153,7 @@ class App :
             AddProxyModule.module
         )
 
-        if (BuildConfig.DEBUG) {
+        if (IS_IN_DEBUG_MODE) {
             startKoin {
                 androidLogger()
 

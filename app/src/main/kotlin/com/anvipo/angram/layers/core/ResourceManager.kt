@@ -6,7 +6,7 @@ import androidx.annotation.StringRes
 import com.anvipo.angram.R
 
 @Suppress("unused")
-class ResourceManager(private val context: Context) {
+class ResourceManager(val context: Context) {
 
     fun getString(@StringRes id: Int): String = context.getString(id)
 

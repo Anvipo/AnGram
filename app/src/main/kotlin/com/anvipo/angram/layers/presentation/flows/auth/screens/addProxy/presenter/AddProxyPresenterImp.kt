@@ -1,6 +1,5 @@
 package com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.presenter
 
-import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.businessLogic.useCases.authFlow.addProxy.AddProxyUseCase
 import com.anvipo.angram.layers.core.CoreHelpers.debugLog
@@ -32,11 +31,9 @@ class AddProxyPresenterImp(
 
     override fun addProxyButtonTapped() {
         val addProxyButtonTappedCEH = CoroutineExceptionHandler { _, error ->
-            if (BuildConfig.DEBUG) {
-                val errorText = error.localizedMessage
-                debugLog(errorText)
-                viewState.showErrorAlert(errorText)
-            }
+            val errorText = error.localizedMessage
+            debugLog(errorText)
+            viewState.showErrorAlert(errorText)
         }
 
         viewState.showProgress()

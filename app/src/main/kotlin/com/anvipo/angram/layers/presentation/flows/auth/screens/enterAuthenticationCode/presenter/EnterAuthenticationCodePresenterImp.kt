@@ -1,6 +1,5 @@
 package com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationCode.presenter
 
-import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.businessLogic.useCases.authFlow.enterAuthenticationCode.EnterAuthenticationCodeUseCase
 import com.anvipo.angram.layers.core.CoreHelpers.debugLog
@@ -46,11 +45,9 @@ class EnterAuthenticationCodePresenterImp(
         firstName: String
     ) {
         val onNextButtonPressedCEH = CoroutineExceptionHandler { _, error ->
-            if (BuildConfig.DEBUG) {
-                val errorText = error.localizedMessage
-                debugLog(errorText)
-                viewState.showErrorAlert(errorText)
-            }
+            val errorText = error.localizedMessage
+            debugLog(errorText)
+            viewState.showErrorAlert(errorText)
         }
 
         viewState.showProgress()
@@ -71,11 +68,9 @@ class EnterAuthenticationCodePresenterImp(
 
     override fun onResendAuthenticationCodeButtonPressed() {
         val onResendAuthenticationCodeButtonPressedCEH = CoroutineExceptionHandler { _, error ->
-            if (BuildConfig.DEBUG) {
-                val errorText = error.localizedMessage
-                debugLog(errorText)
-                viewState.showErrorAlert(errorText)
-            }
+            val errorText = error.localizedMessage
+            debugLog(errorText)
+            viewState.showErrorAlert(errorText)
         }
 
         viewState.showProgress()

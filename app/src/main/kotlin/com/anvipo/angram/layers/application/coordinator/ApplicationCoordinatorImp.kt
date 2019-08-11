@@ -1,6 +1,5 @@
 package com.anvipo.angram.layers.application.coordinator
 
-import android.content.Context
 import com.anvipo.angram.layers.application.coordinator.coordinatorsFactory.ApplicationCoordinatorsFactory
 import com.anvipo.angram.layers.application.coordinator.types.ApplicationCoordinateResult
 import com.anvipo.angram.layers.application.types.SystemMessageSendChannel
@@ -21,8 +20,7 @@ import kotlin.coroutines.suspendCoroutine
 class ApplicationCoordinatorImp(
     private val coordinatorsFactory: ApplicationCoordinatorsFactory,
     private val tdLibGateway: ApplicationTDLibGateway,
-    private val systemMessageSendChannel: SystemMessageSendChannel,
-    private val context: Context
+    private val systemMessageSendChannel: SystemMessageSendChannel
 ) : BaseCoordinatorImp<ApplicationCoordinateResult>(),
     ApplicationCoordinator {
 
@@ -137,7 +135,7 @@ class ApplicationCoordinatorImp(
         launch(
             context = coroutineContext + setTdLibParametersCatchingCEH
         ) {
-            val setTdLibParametersResult = tdLibGateway.setTdLibParametersCatching(context)
+            val setTdLibParametersResult = tdLibGateway.setTdLibParametersCatching()
 
             setTdLibParametersResult
                 .onSuccess { checkAuthorizationStateHelper() }

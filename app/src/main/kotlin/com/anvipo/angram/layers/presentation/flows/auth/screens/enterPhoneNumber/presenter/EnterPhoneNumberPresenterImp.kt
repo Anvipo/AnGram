@@ -1,6 +1,5 @@
 package com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumber.presenter
 
-import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.application.types.ConnectionStateReceiveChannel
 import com.anvipo.angram.layers.businessLogic.useCases.authFlow.enterPhoneNumber.EnterPhoneNumberUseCase
@@ -61,11 +60,9 @@ class EnterPhoneNumberPresenterImp(
 
     override fun onNextButtonPressed(enteredPhoneNumber: String) {
         val onNextButtonPressedCEH = CoroutineExceptionHandler { _, error ->
-            if (BuildConfig.DEBUG) {
-                val errorText = error.localizedMessage
-                debugLog(errorText)
-                viewState.showErrorAlert(errorText)
-            }
+            val errorText = error.localizedMessage
+            debugLog(errorText)
+            viewState.showErrorAlert(errorText)
         }
 
         viewState.showProgress()
@@ -123,11 +120,9 @@ class EnterPhoneNumberPresenterImp(
 
     private fun subscribeOnConnectionStates() {
         val receiveConnectionStatesCEH = CoroutineExceptionHandler { _, error ->
-            if (BuildConfig.DEBUG) {
-                val text = error.localizedMessage
-                debugLog(text)
-                viewState.showErrorAlert(text)
-            }
+            val text = error.localizedMessage
+            debugLog(text)
+            viewState.showErrorAlert(text)
         }
 
         launch(
@@ -141,11 +136,9 @@ class EnterPhoneNumberPresenterImp(
 
     private fun onReceivedConnectionState(receivedConnectionState: TdApi.ConnectionState) {
         val doOnNewConnectionStateCEH = CoroutineExceptionHandler { _, error ->
-            if (BuildConfig.DEBUG) {
-                val errorText = error.localizedMessage
-                debugLog(errorText)
-                viewState.showErrorAlert(errorText)
-            }
+            val errorText = error.localizedMessage
+            debugLog(errorText)
+            viewState.showErrorAlert(errorText)
         }
 
         launch(

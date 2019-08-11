@@ -77,7 +77,8 @@ object GatewaysModule {
 
         factory<ApplicationTDLibGateway>(applicationTDLibGatewayQualifier) {
             ApplicationTDLibGatewayImp(
-                tdClient = get(tdClientQualifier)
+                tdClient = get(tdClientQualifier),
+                resourceManager = get(resourceManagerQualifier)
             )
         }
 

@@ -6,7 +6,6 @@ import com.anvipo.angram.layers.application.coordinator.coordinatorsFactory.Appl
 import com.anvipo.angram.layers.application.coordinator.coordinatorsFactory.ApplicationCoordinatorsFactoryImp
 import com.anvipo.angram.layers.application.di.LaunchSystemModule.systemMessageSendChannelQualifier
 import com.anvipo.angram.layers.data.di.GatewaysModule.applicationTDLibGatewayQualifier
-import org.koin.android.ext.koin.androidApplication
 import org.koin.core.module.Module
 import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier.named
@@ -23,10 +22,9 @@ object ApplicationCoordinatorModule {
 
         factory<ApplicationCoordinator>(applicationCoordinatorQualifier) {
             ApplicationCoordinatorImp(
-                tdLibGateway = get(applicationTDLibGatewayQualifier),
-                systemMessageSendChannel = get(systemMessageSendChannelQualifier),
                 coordinatorsFactory = get(applicationCoordinatorsFactoryQualifier),
-                context = androidApplication().applicationContext
+                tdLibGateway = get(applicationTDLibGatewayQualifier),
+                systemMessageSendChannel = get(systemMessageSendChannelQualifier)
             )
         }
 
