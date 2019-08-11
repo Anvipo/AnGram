@@ -37,8 +37,6 @@ import org.koin.core.error.*
 class App : Application() {
 
     companion object {
-        const val TAG: String = "AnGram"
-
         private lateinit var INSTANCE: App
     }
 

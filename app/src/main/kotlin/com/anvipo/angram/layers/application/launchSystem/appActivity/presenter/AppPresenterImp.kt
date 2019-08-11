@@ -1,10 +1,8 @@
 package com.anvipo.angram.layers.application.launchSystem.appActivity.presenter
 
-import android.util.Log
 import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.application.coordinator.ApplicationCoordinator
-import com.anvipo.angram.layers.application.launchSystem.App
 import com.anvipo.angram.layers.application.launchSystem.appActivity.view.AppView
 import com.anvipo.angram.layers.application.types.ConnectionStateReceiveChannel
 import com.anvipo.angram.layers.application.types.EnabledProxyIdReceiveChannel
@@ -174,7 +172,7 @@ class AppPresenterImp(
         }
 
         if (shouldBeShownInLogs) {
-            Log.d(App.TAG, text)
+            debugLog(text)
         }
     }
 

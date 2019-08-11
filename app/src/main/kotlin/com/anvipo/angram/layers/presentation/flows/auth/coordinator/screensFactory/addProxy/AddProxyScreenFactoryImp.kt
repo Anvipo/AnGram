@@ -1,7 +1,7 @@
 package com.anvipo.angram.layers.presentation.flows.auth.coordinator.screensFactory.addProxy
 
 import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.di.AddProxyModule
-import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.di.AddProxyModule.addProxyScreenCodeScreenQualifier
+import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.di.AddProxyModule.addProxyScreenQualifier
 import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.types.ProxyType
 import org.koin.core.parameter.parametersOf
 import org.koin.core.scope.Scope
@@ -15,7 +15,7 @@ class AddProxyScreenFactoryImp(
         proxyType: ProxyType,
         shouldShowBackButton: Boolean
     ): SupportAppScreen =
-        koinScope.get(addProxyScreenCodeScreenQualifier) {
+        koinScope.get(addProxyScreenQualifier) {
             parametersOf(
                 AddProxyModule.AddProxyScreenParameters(
                     shouldShowBackButton = shouldShowBackButton,

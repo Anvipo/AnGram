@@ -143,8 +143,6 @@ class AuthorizationCoordinatorImp(
     override val coroutineContext: CoroutineContext = Dispatchers.IO
 
 
-    /// PRIVATE
-
     private lateinit var finishAuthorizationFlow: Continuation<AuthorizationCoordinateResult>
 
     private var enterPhoneNumberScreen: SupportAppScreen? = null

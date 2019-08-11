@@ -62,8 +62,6 @@ class AppActivity : BaseActivity(), AppView {
     @InjectPresenter
     lateinit var mPresenter: AppPresenterImp
 
-    /// PRIVATE
-
 
     private fun changeThemeFromSplashToApp() {
         setTheme(R.style.AppTheme)

@@ -3,6 +3,7 @@ package com.anvipo.angram.layers.data.gateways.tdLib.application
 import android.content.Context
 import android.os.Build
 import com.anvipo.angram.BuildConfig
+import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.USE_TEST_ENVIRONMENT
 import com.anvipo.angram.layers.data.gateways.tdLib.base.BaseTdLibGatewayImp
 import org.drinkless.td.libcore.telegram.Client
 import org.drinkless.td.libcore.telegram.TdApi
@@ -20,9 +21,6 @@ class ApplicationTDLibGatewayImp(tdClient: Client) :
 
     override suspend fun logoutCatching(): Result<TdApi.Ok> =
         doRequestCatching(TdApi.LogOut())
-
-
-    /// PRIVATE
 
 
     private fun createTDLibParameters(context: Context): TdApi.TdlibParameters {
@@ -60,7 +58,7 @@ class ApplicationTDLibGatewayImp(tdClient: Client) :
         parameters.useFileDatabase = true
         parameters.useMessageDatabase = true
         parameters.useSecretChats = false
-        parameters.useTestDc = true
+        parameters.useTestDc = USE_TEST_ENVIRONMENT
 
         return parameters
     }

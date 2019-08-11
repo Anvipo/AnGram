@@ -27,7 +27,6 @@ class EnterAuthenticationCodePresenterImp(
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-
         viewState.hideNextButton()
         viewState.hideRegistrationViews()
         viewState.hideProgress()
@@ -37,6 +36,7 @@ class EnterAuthenticationCodePresenterImp(
         if (registrationRequired) {
             viewState.showRegistrationViews()
         }
+
         viewState.hideProgress()
     }
 

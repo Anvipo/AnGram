@@ -25,7 +25,7 @@ object AddProxyModule {
         private val parameters: AddProxyScreenParameters
     ) : SupportAppScreen() {
         override fun getFragment(): Fragment =
-            GlobalContext.get().koin.get(addProxyScreenCodeViewQualifier) {
+            GlobalContext.get().koin.get(addProxyViewQualifier) {
                 parametersOf(parameters)
             }
     }
@@ -37,8 +37,8 @@ object AddProxyModule {
 
     val addProxyScreenFactoryQualifier: StringQualifier = named("addProxyScreenFactory")
 
-    val addProxyScreenCodeViewQualifier: StringQualifier = named("addProxyScreenCodeView")
-    val addProxyScreenCodeScreenQualifier: StringQualifier = named("addProxyScreenCodeScreen")
+    val addProxyViewQualifier: StringQualifier = named("addProxyView")
+    val addProxyScreenQualifier: StringQualifier = named("addProxyScreen")
 
     val addProxyPresenterQualifier: StringQualifier = named("addProxyPresenter")
 
@@ -54,7 +54,7 @@ object AddProxyModule {
         }
 
         factory<AddProxyView>(
-            addProxyScreenCodeViewQualifier
+            addProxyViewQualifier
         ) { (parameters: AddProxyScreenParameters) ->
             AddProxyFragment.createNewInstance(
                 shouldShowBackButton = parameters.shouldShowBackButton,
@@ -63,7 +63,7 @@ object AddProxyModule {
         }
 
         factory<SupportAppScreen>(
-            addProxyScreenCodeScreenQualifier
+            addProxyScreenQualifier
         ) { (parameters: AddProxyScreenParameters) ->
             AddProxyScreen(parameters = parameters)
         }
