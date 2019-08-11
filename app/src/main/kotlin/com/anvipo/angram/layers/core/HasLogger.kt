@@ -1,7 +1,7 @@
 package com.anvipo.angram.layers.core
 
 import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.SHOULD_LOG
-import com.anvipo.angram.layers.core.CoreHelpers.debugLog
+import com.anvipo.angram.layers.core.CoreHelpers.logIfShould
 
 interface HasLogger {
 
@@ -10,16 +10,19 @@ interface HasLogger {
     fun log(
         invokationPlace: String,
         text: String = "",
-        additionalLogging: ((String) -> Unit)? = null
+        customLogging: (() -> Unit)? = null
     ) {
         @Suppress("ConstantConditionIf")
         if (SHOULD_LOG) {
             val mInvokationPlace = "$className::$invokationPlace"
             val mAdditionalText = if (text.isNotEmpty()) ": $text" else ""
             val mText = "$mInvokationPlace is logging$mAdditionalText"
-            debugLog(mText)
-            additionalLogging?.invoke(mText)
+            logIfShould(mText)
+            additionalLogging(mText)
+            customLogging?.invoke()
         }
     }
+
+    fun <T> additionalLogging(logObj: T): Unit = Unit
 
 }

@@ -12,32 +12,62 @@ import com.anvipo.angram.layers.application.types.ConnectionStateSendChannel
 import com.anvipo.angram.layers.application.types.EnabledProxyIdSendChannel
 import com.anvipo.angram.layers.application.types.SystemMessageSendChannel
 import com.anvipo.angram.layers.businessLogic.di.UseCasesModule
-import com.anvipo.angram.layers.core.CoreErrors
 import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
 import com.anvipo.angram.layers.core.CoreHelpers.debugLog
+import com.anvipo.angram.layers.core.CoreHelpers.logIfShould
+import com.anvipo.angram.layers.core.HasLogger
 import com.anvipo.angram.layers.core.collections.IMutableStack
 import com.anvipo.angram.layers.core.collections.MutableStack
 import com.anvipo.angram.layers.core.message.SystemMessage
 import com.anvipo.angram.layers.core.message.SystemMessageType
 import com.anvipo.angram.layers.data.di.GatewaysModule
-import com.anvipo.angram.layers.global.GlobalHelpers.createTGSystemMessageFromApp
+import com.anvipo.angram.layers.global.GlobalHelpers.createTGSystemMessage
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.di.AuthorizationCoordinatorModule
 import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.di.AddProxyModule
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationCode.di.EnterAuthenticationCodeModule
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationPassword.di.EnterAuthenticationPasswordModule
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumber.di.EnterPhoneNumberModule
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumber.di.EnterPhoneNumberModule.connectionStateEnterPhoneNumberSendChannelQualifier
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.drinkless.td.libcore.telegram.TdApi
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 import org.koin.core.error.*
+import kotlin.coroutines.CoroutineContext
 
-class App : Application() {
+class App :
+    Application(),
+    HasLogger,
+    CoroutineScope {
 
     companion object {
         private lateinit var INSTANCE: App
+    }
+
+    override val coroutineContext: CoroutineContext = Dispatchers.IO
+
+    override val className: String = this::class.java.name
+
+    override fun <T> additionalLogging(logObj: T) {
+        val sendSystemMessageCEH =
+            CoroutineExceptionHandler { _, error ->
+                logIfShould(error.localizedMessage)
+            }
+
+        launch(coroutineContext + sendSystemMessageCEH) {
+            val systemMessage: SystemMessage = when (logObj) {
+                is String -> createTGSystemMessage(logObj)
+                is SystemMessage -> logObj
+                else -> TODO()
+            }
+
+            systemMessageSendChannel.send(systemMessage)
+        }
     }
 
     override fun onCreate() {
@@ -47,13 +77,12 @@ class App : Application() {
     }
 
     fun handleUpdates(tdApiObject: TdApi.Object) {
+        log(
+            invokationPlace = object {}.javaClass.enclosingMethod!!.name,
+            text = tdApiObject.toString()
+        )
+
         tdObjectsStack.push(tdApiObject)
-
-        val tag = "${this::class.java.simpleName} handleUpdates"
-        val text = "$tag = $tdApiObject"
-
-        debugLog(text)
-        systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
 
         when (tdApiObject) {
             is TdApi.Update -> onUpdate(tdApiObject)
@@ -62,47 +91,51 @@ class App : Application() {
     }
 
     fun handleUpdatesException(error: Throwable) {
-        tdErrorsStack.push(error)
+        val text = error.localizedMessage
 
-        val tag = "${this::class.java.simpleName} handleUpdatesException"
-        val text = "$tag = ${error.localizedMessage}"
-
-        debugLog(text)
-
-        when (error) {
-            is NoBeanDefFoundException,
-            is BadScopeInstanceException,
-            is DefinitionOverrideException,
-            is KoinAppAlreadyStartedException,
-            is MissingPropertyException,
-            is NoParameterFoundException,
-            is NoPropertyFileFoundException,
-            is NoScopeDefinitionFoundException,
-            is ScopeAlreadyCreatedException,
-            is ScopeNotCreatedException,
-            is InstanceCreationException -> {
-                val koinExceptionMessage = SystemMessage(
-                    text = text,
-                    type = SystemMessageType.ALERT,
-                    shouldBeShownToUser = BuildConfig.DEBUG,
-                    shouldBeShownInLogs = false
-                )
-
-                systemMessageSendChannel.offer(koinExceptionMessage)
+        val systemMessage: SystemMessage =
+            when (error) {
+                is NoBeanDefFoundException,
+                is BadScopeInstanceException,
+                is DefinitionOverrideException,
+                is KoinAppAlreadyStartedException,
+                is MissingPropertyException,
+                is NoParameterFoundException,
+                is NoPropertyFileFoundException,
+                is NoScopeDefinitionFoundException,
+                is ScopeAlreadyCreatedException,
+                is ScopeNotCreatedException,
+                is InstanceCreationException -> {
+                    SystemMessage(
+                        text = text,
+                        type = SystemMessageType.ALERT,
+                        shouldBeShownToUser = BuildConfig.DEBUG,
+                        shouldBeShownInLogs = false
+                    )
+                }
+                else -> createTGSystemMessage(text)
             }
-            is CoreErrors.DebugError -> systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
-            else -> systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
+
+        val customLogging: () -> Unit = {
+            additionalLogging(systemMessage)
         }
+
+        log(
+            invokationPlace = object {}.javaClass.enclosingMethod!!.name,
+            text = text,
+            customLogging = customLogging
+        )
+
+        tdErrorsStack.push(error)
     }
 
     fun handleDefaultException(error: Throwable) {
+        log(
+            invokationPlace = object {}.javaClass.enclosingMethod!!.name,
+            text = error.localizedMessage
+        )
+
         tdErrorsStack.push(error)
-
-        val tag = "${this::class.java.simpleName} handleDefaultException"
-        val text = "$tag = ${error.localizedMessage}"
-
-        debugLog(text)
-        systemMessageSendChannel.offer(createTGSystemMessageFromApp(text))
     }
 
 
@@ -132,6 +165,10 @@ class App : Application() {
             // TODO: release config
             debugLog("TODO")
         }
+
+        log(
+            invokationPlace = object {}.javaClass.enclosingMethod!!.name
+        )
     }
 
     private val systemMessageSendChannel: SystemMessageSendChannel

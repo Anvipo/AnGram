@@ -7,7 +7,7 @@ import com.anvipo.angram.layers.application.types.SystemMessageSendChannel
 import com.anvipo.angram.layers.core.CoreHelpers.debugLog
 import com.anvipo.angram.layers.core.message.SystemMessage
 import com.anvipo.angram.layers.data.gateways.tdLib.application.ApplicationTDLibGateway
-import com.anvipo.angram.layers.global.GlobalHelpers.createTGSystemMessage
+import com.anvipo.angram.layers.global.GlobalHelpers.createTGSystemMessageWithLogging
 import com.anvipo.angram.layers.presentation.common.baseClasses.BaseCoordinatorImp
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -54,7 +54,7 @@ class ApplicationCoordinatorImp(
 
                 val text = "$tag $errorText"
 
-                systemMessageSendChannel.offer(createTGSystemMessage(text))
+                systemMessageSendChannel.offer(createTGSystemMessageWithLogging(text))
             }
 
         launch(
@@ -131,7 +131,7 @@ class ApplicationCoordinatorImp(
             CoroutineExceptionHandler { _, error ->
                 val errorText = "$tag ${error.localizedMessage}"
 
-                systemMessageSendChannel.offer(createTGSystemMessage(errorText))
+                systemMessageSendChannel.offer(createTGSystemMessageWithLogging(errorText))
             }
 
         launch(
@@ -154,7 +154,7 @@ class ApplicationCoordinatorImp(
             CoroutineExceptionHandler { _, error ->
                 val errorText = error.localizedMessage
 
-                systemMessageSendChannel.offer(createTGSystemMessage(errorText))
+                systemMessageSendChannel.offer(createTGSystemMessageWithLogging(errorText))
             }
 
         launch(
@@ -198,7 +198,7 @@ class ApplicationCoordinatorImp(
             CoroutineExceptionHandler { _, error ->
                 val errorText = error.localizedMessage
 
-                systemMessageSendChannel.offer(createTGSystemMessage(errorText))
+                systemMessageSendChannel.offer(createTGSystemMessageWithLogging(errorText))
             }
 
         launch(coroutineContext + startAuthenticationFlowCEH) {

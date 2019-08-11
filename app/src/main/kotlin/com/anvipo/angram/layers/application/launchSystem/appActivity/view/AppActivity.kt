@@ -22,7 +22,9 @@ import ru.terrakok.cicerone.NavigatorHolder
 import ru.terrakok.cicerone.android.support.SupportAppNavigator
 import ru.terrakok.cicerone.commands.*
 
-class AppActivity : BaseActivity(), AppView {
+class AppActivity :
+    BaseActivity(),
+    AppView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         changeThemeFromSplashToApp()

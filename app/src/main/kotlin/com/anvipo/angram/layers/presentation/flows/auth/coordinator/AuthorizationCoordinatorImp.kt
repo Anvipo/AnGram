@@ -5,7 +5,7 @@ import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
 import com.anvipo.angram.layers.core.CoreHelpers.debugLog
 import com.anvipo.angram.layers.core.message.SystemMessage
 import com.anvipo.angram.layers.data.gateways.tdLib.authorization.AuthorizationTDLibGateway
-import com.anvipo.angram.layers.global.GlobalHelpers.createTGSystemMessage
+import com.anvipo.angram.layers.global.GlobalHelpers.createTGSystemMessageWithLogging
 import com.anvipo.angram.layers.presentation.common.baseClasses.BaseCoordinatorImp
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.interfaces.*
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.screensFactory.authorization.AuthorizationScreensFactory
@@ -152,7 +152,7 @@ class AuthorizationCoordinatorImp(
             CoroutineExceptionHandler { _, error ->
                 val errorText = error.localizedMessage
 
-                systemMessageSendChannel.offer(createTGSystemMessage(errorText))
+                systemMessageSendChannel.offer(createTGSystemMessageWithLogging(errorText))
             }
 
         launch(
@@ -180,7 +180,7 @@ class AuthorizationCoordinatorImp(
             CoroutineExceptionHandler { _, error ->
                 val errorText = error.localizedMessage
 
-                systemMessageSendChannel.offer(createTGSystemMessage(errorText))
+                systemMessageSendChannel.offer(createTGSystemMessageWithLogging(errorText))
             }
 
         launch(
@@ -212,7 +212,7 @@ class AuthorizationCoordinatorImp(
             CoroutineExceptionHandler { _, error ->
                 val errorText = error.localizedMessage
 
-                systemMessageSendChannel.offer(createTGSystemMessage(errorText))
+                systemMessageSendChannel.offer(createTGSystemMessageWithLogging(errorText))
             }
 
         launch(
@@ -249,7 +249,7 @@ class AuthorizationCoordinatorImp(
             else -> {
                 val tag = "${this::class.java.simpleName} showNeededScreen"
                 val text = "$tag: Undefined authState: $authState"
-                systemMessageSendChannel.offer(createTGSystemMessage(text))
+                systemMessageSendChannel.offer(createTGSystemMessageWithLogging(text))
             }
         }
     }
@@ -260,7 +260,7 @@ class AuthorizationCoordinatorImp(
             CoroutineExceptionHandler { _, error ->
                 val errorText = error.localizedMessage
 
-                systemMessageSendChannel.offer(createTGSystemMessage(errorText))
+                systemMessageSendChannel.offer(createTGSystemMessageWithLogging(errorText))
             }
 
         launch(
@@ -276,7 +276,7 @@ class AuthorizationCoordinatorImp(
             CoroutineExceptionHandler { _, error ->
                 val errorText = error.localizedMessage
 
-                systemMessageSendChannel.offer(createTGSystemMessage(errorText))
+                systemMessageSendChannel.offer(createTGSystemMessageWithLogging(errorText))
             }
 
         val (
@@ -306,7 +306,7 @@ class AuthorizationCoordinatorImp(
             CoroutineExceptionHandler { _, error ->
                 val errorText = error.localizedMessage
 
-                systemMessageSendChannel.offer(createTGSystemMessage(errorText))
+                systemMessageSendChannel.offer(createTGSystemMessageWithLogging(errorText))
             }
 
         launch(
@@ -344,7 +344,7 @@ class AuthorizationCoordinatorImp(
     private fun onAuthorizationStateReady() {
         val tag = "${this::class.java.simpleName} onAuthorizationStateReady"
         val text = "$tag: successful authorization"
-        systemMessageSendChannel.offer(createTGSystemMessage(text))
+        systemMessageSendChannel.offer(createTGSystemMessageWithLogging(text))
 
         finishAuthorizationFlow.resume(AuthorizationCoordinateResult)
     }

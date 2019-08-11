@@ -12,6 +12,8 @@ import ru.terrakok.cicerone.Router
 
 object SystemInfrastructureModule {
 
+    const val SHOULD_LOG: Boolean = true
+
     const val APP_TAG: String = "AnGram"
 
     const val USE_TEST_ENVIRONMENT: Boolean = true
