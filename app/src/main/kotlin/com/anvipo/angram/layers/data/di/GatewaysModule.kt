@@ -35,7 +35,7 @@ object GatewaysModule {
 
     private val updatesExceptionHandlerQualifier = named("updatesExceptionHandler")
 
-    private val updatesHandlerQualifier = named("updatesHandler")
+    private val updatesHandlerQualifier = named("handleUpdates")
 
     private val defaultExceptionHandlerQualifier = named("defaultExceptionHandler")
 
@@ -46,23 +46,20 @@ object GatewaysModule {
 
         single<Client.ResultHandler>(updatesHandlerQualifier) {
             val app = androidApplication() as App
-            val updatesHandlerFunction = app.updatesHandlerFunction
 
-            Client.ResultHandler(updatesHandlerFunction)
+            Client.ResultHandler(app::handleUpdates)
         }
 
         single<Client.ExceptionHandler>(updatesExceptionHandlerQualifier) {
             val app = androidApplication() as App
-            val updatesExceptionHandlerFunction = app.updatesExceptionHandlerFunction
 
-            Client.ExceptionHandler(updatesExceptionHandlerFunction)
+            Client.ExceptionHandler(app::handleUpdatesException)
         }
 
         single<Client.ExceptionHandler>(defaultExceptionHandlerQualifier) {
             val app = androidApplication() as App
-            val defaultExceptionHandlerFunction = app.defaultExceptionHandlerFunction
 
-            Client.ExceptionHandler(defaultExceptionHandlerFunction)
+            Client.ExceptionHandler(app::handleDefaultException)
         }
 
         single<Client>(tdClientQualifier) {

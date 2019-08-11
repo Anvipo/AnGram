@@ -46,10 +46,10 @@ class App : Application() {
         INSTANCE = this
     }
 
-    val updatesHandlerFunction: (TdApi.Object) -> Unit = { tdApiObject ->
+    fun handleUpdates(tdApiObject: TdApi.Object) {
         tdObjectsStack.push(tdApiObject)
 
-        val tag = "${this::class.java.simpleName} updatesHandler"
+        val tag = "${this::class.java.simpleName} handleUpdates"
         val text = "$tag = $tdApiObject"
 
         debugLog(text)
@@ -61,10 +61,10 @@ class App : Application() {
         }
     }
 
-    val updatesExceptionHandlerFunction: (Throwable) -> Unit = { error ->
+    fun handleUpdatesException(error: Throwable) {
         tdErrorsStack.push(error)
 
-        val tag = "${this::class.java.simpleName} updatesExceptionHandlerFunction"
+        val tag = "${this::class.java.simpleName} handleUpdatesException"
         val text = "$tag = ${error.localizedMessage}"
 
         debugLog(text)
@@ -95,10 +95,10 @@ class App : Application() {
         }
     }
 
-    val defaultExceptionHandlerFunction: (Throwable) -> Unit = { error ->
+    fun handleDefaultException(error: Throwable) {
         tdErrorsStack.push(error)
 
-        val tag = "${this::class.java.simpleName} defaultExceptionHandlerFunction"
+        val tag = "${this::class.java.simpleName} handleDefaultException"
         val text = "$tag = ${error.localizedMessage}"
 
         debugLog(text)
