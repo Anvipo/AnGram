@@ -1,9 +1,8 @@
 package com.anvipo.angram.layers.data.gateways.tdLib.proxy
 
-import com.anvipo.angram.layers.data.gateways.tdLib.base.BaseTdLibGateway
 import org.drinkless.td.libcore.telegram.TdApi
 
-interface ProxyTDLibGateway : BaseTdLibGateway {
+interface ProxyTDLibGateway {
 
     suspend fun addProxyCatching(
         server: String,

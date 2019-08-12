@@ -7,7 +7,7 @@ import com.anvipo.angram.layers.core.message.SystemMessageType
 @Suppress("unused")
 object GlobalHelpers {
 
-    const val USE_TEST_ENVIRONMENT: Boolean = false
+    const val USE_TEST_ENVIRONMENT: Boolean = true
 
     fun createTGSystemMessageWithLogging(text: String): SystemMessage = SystemMessage(
         text = text,

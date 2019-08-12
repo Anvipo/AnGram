@@ -4,14 +4,28 @@ import com.anvipo.angram.layers.application.coordinator.ApplicationCoordinator
 import com.anvipo.angram.layers.application.coordinator.ApplicationCoordinatorImp
 import com.anvipo.angram.layers.application.coordinator.coordinatorsFactory.ApplicationCoordinatorsFactory
 import com.anvipo.angram.layers.application.coordinator.coordinatorsFactory.ApplicationCoordinatorsFactoryImp
-import com.anvipo.angram.layers.application.di.LaunchSystemModule.systemMessageSendChannelQualifier
+import com.anvipo.angram.layers.application.launchSystem.appActivity.di.AppActivityModule.systemMessageSendChannelQualifier
 import com.anvipo.angram.layers.data.di.GatewaysModule.applicationTDLibGatewayQualifier
+import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationState
+import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationStateBroadcastChannel
+import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationStateReceiveChannel
+import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationStateSendChannel
+import kotlinx.coroutines.channels.BroadcastChannel
+import kotlinx.coroutines.channels.Channel
 import org.koin.core.module.Module
 import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
+@Suppress("EXPERIMENTAL_API_USAGE")
 object ApplicationCoordinatorModule {
+
+    val tdApiUpdateAuthorizationStateApplicationCoordinatorSendChannelQualifier: StringQualifier =
+        named("tdApiUpdateAuthorizationStateApplicationCoordinatorSendChannel")
+    private val tdApiUpdateAuthorizationStateApplicationCoordinatorReceiveChannelQualifier =
+        named("tdApiUpdateAuthorizationStateApplicationCoordinatorReceiveChannel")
+    private val tdApiUpdateAuthorizationStateApplicationCoordinatorBroadcastChannelQualifier =
+        named("tdApiUpdateAuthorizationStateApplicationCoordinatorBroadcastChannel")
 
     val applicationCoordinatorQualifier: StringQualifier = named("applicationCoordinator")
 
@@ -20,15 +34,35 @@ object ApplicationCoordinatorModule {
     @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
 
-        single<ApplicationCoordinator>(applicationCoordinatorQualifier) {
+        single<TdApiUpdateAuthorizationStateSendChannel>(
+            tdApiUpdateAuthorizationStateApplicationCoordinatorSendChannelQualifier
+        ) {
+            get(tdApiUpdateAuthorizationStateApplicationCoordinatorBroadcastChannelQualifier)
+        }
+        factory<TdApiUpdateAuthorizationStateReceiveChannel>(
+            tdApiUpdateAuthorizationStateApplicationCoordinatorReceiveChannelQualifier
+        ) {
+            get<TdApiUpdateAuthorizationStateBroadcastChannel>(
+                tdApiUpdateAuthorizationStateApplicationCoordinatorBroadcastChannelQualifier
+            ).openSubscription()
+        }
+        single<TdApiUpdateAuthorizationStateBroadcastChannel>(
+            tdApiUpdateAuthorizationStateApplicationCoordinatorBroadcastChannelQualifier
+        ) {
+            BroadcastChannel<TdApiUpdateAuthorizationState>(Channel.CONFLATED)
+        }
+
+        factory<ApplicationCoordinator>(applicationCoordinatorQualifier) {
             ApplicationCoordinatorImp(
                 coordinatorsFactory = get(applicationCoordinatorsFactoryQualifier),
                 tdLibGateway = get(applicationTDLibGatewayQualifier),
+                tdApiUpdateAuthorizationStateReceiveChannel =
+                get(tdApiUpdateAuthorizationStateApplicationCoordinatorReceiveChannelQualifier),
                 systemMessageSendChannel = get(systemMessageSendChannelQualifier)
             )
         }
 
-        single<ApplicationCoordinatorsFactory>(applicationCoordinatorsFactoryQualifier) {
+        factory<ApplicationCoordinatorsFactory>(applicationCoordinatorsFactoryQualifier) {
             ApplicationCoordinatorsFactoryImp(
                 koinScope = this
             )

@@ -1,8 +1,8 @@
-package com.anvipo.angram.layers.core.collections
+package com.anvipo.angram.layers.core.collections.stack
 
 import java.util.*
 
-class MutableStack<E> : IMutableStack<E> {
+class MyStack<E> : IStack<E> {
 
     override fun push(item: E): E {
         return _stack.push(item)

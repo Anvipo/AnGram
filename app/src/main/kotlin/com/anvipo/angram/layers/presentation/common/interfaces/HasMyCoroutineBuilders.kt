@@ -6,34 +6,27 @@ import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 interface HasMyCoroutineBuilders : CoroutineScope {
 
-    val jobsThatMustBeCancelledInLifecycleEnd: MutableList<Job>
-
     fun myLaunch(
-        context: CoroutineContext = coroutineContext,
+        context: CoroutineContext = EmptyCoroutineContext,
         start: CoroutineStart = CoroutineStart.DEFAULT,
         customMyLaunchExceptionHandler: ((Throwable) -> Unit)? = null,
-        customAppendMyLaunchJob: ((Job) -> Unit)? = null,
         block: suspend CoroutineScope.() -> Unit
-    ) {
+    ): Job {
         val coroutineExceptionHandlerWithLogger =
             CoroutineExceptionHandlerWithLogger { _, throwable ->
-                customMyLaunchExceptionHandler?.invoke(throwable) ?: myLaunchExceptionHandler(throwable)
+                customMyLaunchExceptionHandler?.invoke(throwable)
+                    ?: myLaunchExceptionHandler(throwable)
             }
 
-        launch(
+        return launch(
             context = context + coroutineExceptionHandlerWithLogger,
             start = start,
             block = block
-        ).also {
-            customAppendMyLaunchJob?.invoke(it) ?: appendMyLaunchJobToJobsThatMustBeCancelledInLifecycleEnd(it)
-        }
-    }
-
-    fun appendMyLaunchJobToJobsThatMustBeCancelledInLifecycleEnd(newMyLaunchJob: Job) {
-        jobsThatMustBeCancelledInLifecycleEnd += newMyLaunchJob
+        )
     }
 
     fun myLaunchExceptionHandler(throwable: Throwable)

@@ -5,14 +5,25 @@ import android.view.View
 import android.widget.Toast
 import androidx.annotation.LayoutRes
 import com.anvipo.angram.R
+import com.anvipo.angram.layers.core.HasLogger
 import com.anvipo.angram.layers.core.base.interfaces.BaseView
 import com.anvipo.angram.layers.core.dialogFragment.MessageDialogFragment
 import com.anvipo.angram.layers.core.showSnackbarMessage
 import com.anvipo.angram.layers.presentation.common.interfaces.BasePresenter
 import com.anvipo.angram.layers.presentation.common.mvp.MvpAppCompatActivity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
+import java.util.concurrent.CancellationException
 
 @Suppress("unused")
-abstract class BaseActivity : MvpAppCompatActivity(), BaseView {
+abstract class BaseActivity :
+    MvpAppCompatActivity(),
+    BaseView,
+    HasLogger,
+    CoroutineScope by MainScope() {
+
+    final override val className: String = this::class.java.name
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +42,13 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseView {
     final override fun onPause() {
         presenter.onPauseTriggered()
         super.onPause()
+    }
+
+    override fun onDestroy() {
+        val methodName = object {}.javaClass.enclosingMethod!!.name
+        val cancellationException = CancellationException("$className::$methodName")
+        cancel(cancellationException)
+        super.onDestroy()
     }
 
     final override fun showAlertMessage(

@@ -3,14 +3,12 @@ package com.anvipo.angram.layers.application.launchSystem.appActivity.presenter
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.application.coordinator.ApplicationCoordinator
 import com.anvipo.angram.layers.application.launchSystem.appActivity.view.AppView
-import com.anvipo.angram.layers.application.types.ConnectionStateReceiveChannel
-import com.anvipo.angram.layers.application.types.EnabledProxyIdReceiveChannel
-import com.anvipo.angram.layers.application.types.SystemMessageReceiveChannel
 import com.anvipo.angram.layers.businessLogic.useCases.app.AppUseCase
 import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
 import com.anvipo.angram.layers.core.ResourceManager
 import com.anvipo.angram.layers.core.message.SystemMessage
 import com.anvipo.angram.layers.core.message.SystemMessageType
+import com.anvipo.angram.layers.global.types.*
 import com.anvipo.angram.layers.presentation.common.baseClasses.BasePresenterImp
 import com.arellomobile.mvp.InjectViewState
 import com.google.android.material.snackbar.Snackbar
@@ -20,33 +18,40 @@ import org.drinkless.td.libcore.telegram.TdApi
 @InjectViewState
 class AppPresenterImp(
     private val useCase: AppUseCase,
-    private val coordinator: ApplicationCoordinator,
+    private val coordinatorFactoryMethod: () -> ApplicationCoordinator,
     private val enabledProxyIdReceiveChannel: EnabledProxyIdReceiveChannel,
     private val systemMessageReceiveChannel: SystemMessageReceiveChannel,
-    private val connectionStateReceiveChannel: ConnectionStateReceiveChannel,
+    private val tdApiUpdateConnectionStateReceiveChannel: TdApiUpdateConnectionStateReceiveChannel,
+    private val tdLibClientHasBeenRecreatedReceiveChannel: TDLibClientHasBeenRecreatedReceiveChannel,
     private val resourceManager: ResourceManager
 ) : BasePresenterImp<AppView>(), AppPresenter {
 
     init {
-        val receiveChannelList = listOf(
-            enabledProxyIdReceiveChannel,
-            systemMessageReceiveChannel,
-            connectionStateReceiveChannel
+        channelsThatWillBeUnsubscribedInOnDestroy.addAll(
+            listOf(
+                enabledProxyIdReceiveChannel,
+                systemMessageReceiveChannel,
+                tdApiUpdateConnectionStateReceiveChannel
+            )
         )
-
-        channelsThatWillBeUnsubscribedInOnPause.addAll(receiveChannelList)
     }
 
     override fun coldStart() {
         val invokationPlace = object {}.javaClass.enclosingMethod!!.name
 
         myLaunch {
-            val applicationFlowCoordinateResult = coordinator.start()
+            val applicationCoordinator = coordinatorFactoryMethod()
+
+            val applicationFlowCoordinateResult = applicationCoordinator.start()
 
             myLog(
                 invokationPlace = invokationPlace,
-                currentParameters = "applicationFlowCoordinateResult = $applicationFlowCoordinateResult"
+                text = "applicationFlowCoordinateResult = $applicationFlowCoordinateResult"
             )
+
+            for (tdLibClientHasBeenRecreatedPing in tdLibClientHasBeenRecreatedReceiveChannel) {
+                coldStart()
+            }
         }
     }
 
@@ -77,8 +82,8 @@ class AppPresenterImp(
 
     private fun subscribeOnConnectionStates() {
         myLaunch {
-            for (receivedConnectionState in connectionStateReceiveChannel) {
-                onReceivedConnectionState(receivedConnectionState)
+            for (receivedTdApiUpdateConnectionState in tdApiUpdateConnectionStateReceiveChannel) {
+                onReceivedTdApiUpdateConnectionState(receivedTdApiUpdateConnectionState)
             }
         }
     }
@@ -107,17 +112,19 @@ class AppPresenterImp(
         if (shouldBeShownInLogs) {
             myLog(
                 invokationPlace = invokationPlace,
-                currentParameters = text
+                text = text
             )
         }
     }
 
-    private fun onReceivedConnectionState(receivedConnectionState: TdApi.ConnectionState) {
+    private fun onReceivedTdApiUpdateConnectionState(
+        receivedTdApiUpdateConnectionState: TdApiUpdateConnectionState
+    ) {
         val connectionState = resourceManager.getString(R.string.connection_state)
         val text: String
         var duration: Int = Snackbar.LENGTH_INDEFINITE
 
-        when (receivedConnectionState) {
+        when (receivedTdApiUpdateConnectionState.state) {
             is TdApi.ConnectionStateWaitingForNetwork -> {
                 text = "$connectionState: waiting for network"
             }
@@ -135,7 +142,9 @@ class AppPresenterImp(
                 duration = Snackbar.LENGTH_SHORT
             }
             else -> {
-                assertionFailure("Undefined received connection state = $receivedConnectionState")
+                assertionFailure(
+                    "Undefined received td api update connection state = $receivedTdApiUpdateConnectionState"
+                )
                 text = "$connectionState: ERROR"
             }
         }
@@ -148,8 +157,10 @@ class AppPresenterImp(
         }
     }
 
-    private suspend fun onReceivedEnabledProxyId(receivedEnabledProxyId: Int?) {
-        useCase.saveEnabledProxyId(receivedEnabledProxyId)
+    private fun onReceivedEnabledProxyId(receivedEnabledProxyId: Int?) {
+        myLaunch {
+            useCase.saveEnabledProxyId(receivedEnabledProxyId)
+        }
     }
 
 }

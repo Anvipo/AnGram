@@ -2,23 +2,26 @@ package com.anvipo.angram.layers.application.coordinator
 
 import com.anvipo.angram.layers.application.coordinator.coordinatorsFactory.ApplicationCoordinatorsFactory
 import com.anvipo.angram.layers.application.coordinator.types.ApplicationCoordinateResult
-import com.anvipo.angram.layers.application.types.SystemMessageSendChannel
 import com.anvipo.angram.layers.data.gateways.tdLib.application.ApplicationTDLibGateway
-import com.anvipo.angram.layers.presentation.common.baseClasses.BaseCoordinatorWithCheckAuthorizationStateHelpers
+import com.anvipo.angram.layers.global.HasCheckAuthorizationStateHelper
+import com.anvipo.angram.layers.global.types.SystemMessageSendChannel
+import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationState
+import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationStateReceiveChannel
+import com.anvipo.angram.layers.presentation.common.baseClasses.BaseCoordinatorImp
 import org.drinkless.td.libcore.telegram.TdApi
 import kotlin.coroutines.Continuation
-import kotlin.coroutines.suspendCoroutine
 
 @Suppress("RedundantUnitReturnType")
 class ApplicationCoordinatorImp(
     private val coordinatorsFactory: ApplicationCoordinatorsFactory,
     private val tdLibGateway: ApplicationTDLibGateway,
+    private val tdApiUpdateAuthorizationStateReceiveChannel: TdApiUpdateAuthorizationStateReceiveChannel,
     systemMessageSendChannel: SystemMessageSendChannel
-) : BaseCoordinatorWithCheckAuthorizationStateHelpers<ApplicationCoordinateResult>(
-    tdLibGateway = tdLibGateway,
+) : BaseCoordinatorImp<ApplicationCoordinateResult>(
     systemMessageSendChannel = systemMessageSendChannel
 ),
-    ApplicationCoordinator {
+    ApplicationCoordinator,
+    HasCheckAuthorizationStateHelper<ApplicationCoordinateResult> {
 
     override suspend fun start(): ApplicationCoordinateResult {
         childCoordinators.clear()
@@ -26,9 +29,16 @@ class ApplicationCoordinatorImp(
         return configureApp()
     }
 
+    override fun onCreatedCheckAuthorizationStateContinuation(
+        checkAuthorizationStateContinuation: Continuation<ApplicationCoordinateResult>
+    ) {
+        finishFlowContinuation = checkAuthorizationStateContinuation
+    }
 
-    override fun onSuccessGetAuthorizationStateResult(authState: TdApi.AuthorizationState) {
-        when (authState) {
+    override fun onReceivedTdApiUpdateAuthorizationState(
+        receivedTdApiUpdateAuthorizationState: TdApiUpdateAuthorizationState
+    ) {
+        when (receivedTdApiUpdateAuthorizationState.authorizationState) {
             is TdApi.AuthorizationStateWaitTdlibParameters -> onAuthorizationStateWaitTdlibParameters()
             is TdApi.AuthorizationStateWaitEncryptionKey -> onAuthorizationStateWaitEncryptionKey()
             is TdApi.AuthorizationStateWaitPhoneNumber -> onAuthorizationStateWaitPhoneNumber()
@@ -36,98 +46,45 @@ class ApplicationCoordinatorImp(
             is TdApi.AuthorizationStateWaitPassword -> onAuthorizationStateWaitPassword()
             is TdApi.AuthorizationStateReady -> onAuthorizationStateReady()
             is TdApi.AuthorizationStateLoggingOut -> onAuthorizationStateLoggingOut()
+            is TdApi.AuthorizationStateClosing -> onAuthorizationStateClosing()
             is TdApi.AuthorizationStateClosed -> onAuthorizationStateClosed()
-            else -> {
-                myLog(
-                    invokationPlace = object {}.javaClass.enclosingMethod!!.name,
-                    currentParameters = "authState = $authState"
-                )
-            }
         }
     }
 
-    override fun onFailureGetAuthorizationStateResult(error: Throwable) {
-        myLog(
-            invokationPlace = object {}.javaClass.enclosingMethod!!.name,
-            currentParameters = "error.localizedMessage = ${error.localizedMessage}"
-        )
 
-        checkAuthorizationStateHelper()
-    }
-
+    private var authorizationFlowHasBeenStarted = false
 
     private suspend fun configureApp(): ApplicationCoordinateResult = startApp()
 
-    private suspend fun startApp(): ApplicationCoordinateResult = checkAuthorizationState()
-
-    private lateinit var finishApplicationFlow: Continuation<ApplicationCoordinateResult>
-
-    private suspend fun checkAuthorizationState(): ApplicationCoordinateResult = suspendCoroutine {
-        finishApplicationFlow = it
-        checkAuthorizationStateHelper()
-    }
-
-
-    private fun onAuthorizationStateWaitPassword() {
-        myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
-
-        startAuthorizationFlow()
-    }
-
-    private fun onAuthorizationStateClosed() {
-        myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
-
-        // TODO: recreate client
-
-        checkAuthorizationStateHelper()
-    }
-
-    private fun onAuthorizationStateLoggingOut() {
-        myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
-
-        checkAuthorizationStateHelper()
-    }
-
+    private suspend fun startApp(): ApplicationCoordinateResult =
+        checkAuthorizationState(tdApiUpdateAuthorizationStateReceiveChannel)
 
     private fun onAuthorizationStateWaitTdlibParameters() {
-        myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
+        val invokationPlace = object {}.javaClass.enclosingMethod!!.name
+        myLog(invokationPlace = invokationPlace)
 
         myLaunch {
             val setTdLibParametersResult = tdLibGateway.setTdLibParametersCatching()
 
-            setTdLibParametersResult
-                .onSuccess { checkAuthorizationStateHelper() }
-                .onFailure { checkAuthorizationStateHelper() }
+            myLog(
+                invokationPlace = invokationPlace,
+                text = "setTdLibParametersResult = $setTdLibParametersResult"
+            )
         }
     }
 
     private fun onAuthorizationStateWaitEncryptionKey() {
-        myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
+        val invokationPlace = object {}.javaClass.enclosingMethod!!.name
+        myLog(invokationPlace = invokationPlace)
 
         myLaunch {
             val checkDatabaseEncryptionKeyResult = tdLibGateway.checkDatabaseEncryptionKeyCatching()
 
-            checkDatabaseEncryptionKeyResult
-                .onSuccess { checkAuthorizationStateHelper() }
-                .onFailure { checkAuthorizationStateHelper() }
+            myLog(
+                invokationPlace = invokationPlace,
+                text = "checkDatabaseEncryptionKeyResult = $checkDatabaseEncryptionKeyResult"
+            )
         }
-    }
-
-    private fun onAuthorizationStateReady() {
-        val invokationPlace = object {}.javaClass.enclosingMethod!!.name
-        myLog(invokationPlace = invokationPlace)
-
-        // TODO: start main flow
-        myLog(
-            currentParameters = "START MAIN FLOW",
-            invokationPlace = invokationPlace
-        )
-    }
-
-    private fun onAuthorizationStateWaitCode() {
-        myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
-
-        startAuthorizationFlow(withEnterAuthorizationCodeAsRootScreen = true)
     }
 
     private fun onAuthorizationStateWaitPhoneNumber() {
@@ -136,23 +93,86 @@ class ApplicationCoordinatorImp(
         startAuthorizationFlow()
     }
 
-    private fun startAuthorizationFlow(withEnterAuthorizationCodeAsRootScreen: Boolean = false) {
+    private fun onAuthorizationStateWaitCode() {
+        myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
+
+        startAuthorizationFlow()
+    }
+
+    private fun onAuthorizationStateWaitPassword() {
+        myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
+
+        startAuthorizationFlow()
+    }
+
+    private fun onAuthorizationStateReady() {
+        val invokationPlace = object {}.javaClass.enclosingMethod!!.name
+        myLog(invokationPlace = invokationPlace)
+
+        // TODO: start main flow
+        myLog(
+            text = "START MAIN FLOW",
+            invokationPlace = invokationPlace
+        )
+    }
+
+    private fun onAuthorizationStateLoggingOut() {
+        myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
+    }
+
+    private fun onAuthorizationStateClosing() {
+        myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
+    }
+
+    private fun onAuthorizationStateClosed() {
+        myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
+
+        finishFlow(
+            tdApiUpdateAuthorizationStateReceiveChannel,
+            finishFlowContinuation,
+            ApplicationCoordinateResult
+        )
+    }
+
+    private fun startAuthorizationFlow() {
+        if (authorizationFlowHasBeenStarted) {
+            return
+        }
+
         val invokationPlace = object {}.javaClass.enclosingMethod!!.name
 
         myLaunch {
             val authorizationCoordinator = coordinatorsFactory.createAuthorizationCoordinator()
 
-            if (withEnterAuthorizationCodeAsRootScreen) {
-                authorizationCoordinator.startAuthorizationFlowWithEnterAuthorizationCodeAsRootScreen()
-            } else {
-                authorizationCoordinator.start()
-            }
+            authorizationFlowHasBeenStarted = true
 
-            // TODO: start main flow
+            val authenticationFlowCoordinateResult = coordinateTo(authorizationCoordinator)
+
             myLog(
-                currentParameters = "START MAIN FLOW",
+                text = "authenticationFlowCoordinateResult = $authenticationFlowCoordinateResult",
                 invokationPlace = invokationPlace
             )
+
+            authorizationFlowHasBeenStarted = false
+
+            // TODO: start main flow
+        }
+    }
+
+    private fun logout() {
+        myLaunch {
+            tdLibGateway
+                .logoutCatching()
+                .onSuccess {
+                    finishFlow(
+                        tdApiUpdateAuthorizationStateReceiveChannel,
+                        finishFlowContinuation,
+                        ApplicationCoordinateResult
+                    )
+                }
+                .onFailure {
+                    println()
+                }
         }
     }
 

@@ -7,8 +7,8 @@ import androidx.annotation.AnimatorRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.anvipo.angram.R
-import com.anvipo.angram.layers.application.di.LaunchSystemModule.appPresenterQualifier
 import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.navigatorHolderQualifier
+import com.anvipo.angram.layers.application.launchSystem.appActivity.di.AppActivityModule.appPresenterQualifier
 import com.anvipo.angram.layers.application.launchSystem.appActivity.presenter.AppPresenter
 import com.anvipo.angram.layers.application.launchSystem.appActivity.presenter.AppPresenterImp
 import com.anvipo.angram.layers.core.base.classes.BaseActivity

@@ -1,11 +1,10 @@
 package com.anvipo.angram.layers.data.gateways.tdLib.authorization
 
-import com.anvipo.angram.layers.data.gateways.tdLib.base.BaseTdLibGatewayWithGetAuthorizationState
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationCode.types.CorrectAuthenticationCodeType
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationPassword.types.CorrectAuthenticationPasswordType
 import org.drinkless.td.libcore.telegram.TdApi
 
-interface AuthorizationTDLibGateway : BaseTdLibGatewayWithGetAuthorizationState {
+interface AuthorizationTDLibGateway {
 
     suspend fun setAuthenticationPhoneNumberCatching(enteredPhoneNumber: String): Result<TdApi.Ok>
 

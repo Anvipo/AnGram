@@ -9,20 +9,20 @@ interface HasLogger {
 
     fun myLog(
         invokationPlace: String,
-        currentParameters: String? = null,
+        text: String? = null,
         customLogging: (() -> Unit)? = null
     ) {
         val mInvokationPlace = "$className::$invokationPlace"
 
         logIfShould(
             invokationPlace = mInvokationPlace,
-            text = currentParameters
+            text = text
         )
 
         @Suppress("ConstantConditionIf")
         if (SHOULD_LOG) {
-            if (currentParameters != null) {
-                additionalLogging(currentParameters)
+            if (text != null) {
+                additionalLogging(text)
             }
             customLogging?.invoke()
         }

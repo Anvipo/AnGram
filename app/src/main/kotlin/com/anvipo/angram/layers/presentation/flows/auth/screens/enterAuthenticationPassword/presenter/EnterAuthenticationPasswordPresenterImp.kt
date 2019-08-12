@@ -26,9 +26,6 @@ class EnterAuthenticationPasswordPresenterImp(
 
         myLaunch {
             useCase.checkAuthenticationPasswordCatching(enteredAuthenticationPassword)
-                .onSuccess {
-                    routeEventHandler.onEnterCorrectAuthenticationPassword()
-                }
                 .onFailure {
                     val errorMessage: String = resourceManager.run {
                         getString(R.string.unknown_error)

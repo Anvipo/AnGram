@@ -2,10 +2,11 @@ package com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumbe
 
 import androidx.fragment.app.Fragment
 import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.resourceManagerQualifier
-import com.anvipo.angram.layers.application.types.ConnectionStateBroadcastChannel
-import com.anvipo.angram.layers.application.types.ConnectionStateReceiveChannel
-import com.anvipo.angram.layers.application.types.ConnectionStateSendChannel
 import com.anvipo.angram.layers.businessLogic.di.UseCasesModule.enterPhoneNumberUseCaseQualifier
+import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionState
+import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionStateBroadcastChannel
+import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionStateReceiveChannel
+import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionStateSendChannel
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorQualifier
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.screensFactory.enterPhoneNumber.EnterPhoneNumberScreenFactory
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.screensFactory.enterPhoneNumber.EnterPhoneNumberScreenFactoryImp
@@ -15,7 +16,6 @@ import com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumber
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumber.view.EnterPhoneNumberView
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
-import org.drinkless.td.libcore.telegram.TdApi
 import org.koin.core.context.GlobalContext
 import org.koin.core.module.Module
 import org.koin.core.qualifier.StringQualifier
@@ -41,13 +41,13 @@ object EnterPhoneNumberModule {
 
     val enterPhoneNumberPresenterQualifier: StringQualifier =
         named("enterPhoneNumberPresenter")
-    private val connectionStateEnterPhoneNumberReceiveChannelQualifier =
-        named("connectionStateEnterPhoneNumberReceiveChannel")
-    val connectionStateEnterPhoneNumberSendChannelQualifier: StringQualifier =
-        named("connectionStateEnterPhoneNumberSendChannel")
 
-    private val connectionStateEnterPhoneNumberBroadcastChannelQualifier =
-        named("connectionStateEnterPhoneNumberBroadcastChannel")
+    private val tdApiUpdateConnectionStateEnterPhoneNumberScreenReceiveChannelQualifier =
+        named("tdApiUpdateConnectionStateEnterPhoneNumberScreenReceiveChannel")
+    val tdApiUpdateConnectionStateEnterPhoneNumberScreenSendChannelQualifier: StringQualifier =
+        named("tdApiUpdateConnectionStateEnterPhoneNumberScreenSendChannel")
+    private val tdApiUpdateConnectionStateEnterPhoneNumberScreenBroadcastChannelQualifier =
+        named("tdApiUpdateConnectionStateEnterPhoneNumberScreenBroadcastChannel")
 
     @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
@@ -70,15 +70,22 @@ object EnterPhoneNumberModule {
             EnterPhoneNumberScreen()
         }
 
-        factory<ConnectionStateSendChannel>(connectionStateEnterPhoneNumberSendChannelQualifier) {
-            get(connectionStateEnterPhoneNumberBroadcastChannelQualifier)
+        factory<TdApiUpdateConnectionStateSendChannel>(
+            tdApiUpdateConnectionStateEnterPhoneNumberScreenSendChannelQualifier
+        ) {
+            get(tdApiUpdateConnectionStateEnterPhoneNumberScreenBroadcastChannelQualifier)
         }
-        factory<ConnectionStateReceiveChannel>(connectionStateEnterPhoneNumberReceiveChannelQualifier) {
-            get<ConnectionStateBroadcastChannel>(connectionStateEnterPhoneNumberBroadcastChannelQualifier)
-                .openSubscription()
+        factory<TdApiUpdateConnectionStateReceiveChannel>(
+            tdApiUpdateConnectionStateEnterPhoneNumberScreenReceiveChannelQualifier
+        ) {
+            get<TdApiUpdateConnectionStateBroadcastChannel>(
+                tdApiUpdateConnectionStateEnterPhoneNumberScreenBroadcastChannelQualifier
+            ).openSubscription()
         }
-        single<ConnectionStateBroadcastChannel>(connectionStateEnterPhoneNumberBroadcastChannelQualifier) {
-            BroadcastChannel<TdApi.ConnectionState>(Channel.CONFLATED)
+        single<TdApiUpdateConnectionStateBroadcastChannel>(
+            tdApiUpdateConnectionStateEnterPhoneNumberScreenBroadcastChannelQualifier
+        ) {
+            BroadcastChannel<TdApiUpdateConnectionState>(Channel.CONFLATED)
         }
 
         factory<EnterPhoneNumberPresenter>(enterPhoneNumberPresenterQualifier) {
@@ -86,7 +93,9 @@ object EnterPhoneNumberModule {
                 routeEventHandler = get(authorizationCoordinatorQualifier),
                 useCase = get(enterPhoneNumberUseCaseQualifier),
                 resourceManager = get(resourceManagerQualifier),
-                connectionStateReceiveChannel = get(connectionStateEnterPhoneNumberReceiveChannelQualifier)
+                tdApiUpdateConnectionStateReceiveChannel = get(
+                    tdApiUpdateConnectionStateEnterPhoneNumberScreenReceiveChannelQualifier
+                )
             )
         }
 

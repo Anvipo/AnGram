@@ -10,6 +10,7 @@ import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticat
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationCode.view.EnterAuthenticationCodeView
 import com.arellomobile.mvp.InjectViewState
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 
 @Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS")
 @InjectViewState
@@ -48,7 +49,6 @@ class EnterAuthenticationCodePresenterImp(
                     lastName = lastName,
                     firstName = firstName
                 )
-                .onSuccess { routeEventHandler.onEnterCorrectAuthenticationCode() }
                 .onFailure { handleAuthenticationCodeFailure(it) }
         }
     }
@@ -59,7 +59,7 @@ class EnterAuthenticationCodePresenterImp(
         myLaunch {
             useCase
                 .resendAuthenticationCodeCatching()
-                .onSuccess { myLaunch { viewState.hideProgress() } }
+                .onSuccess { myLaunch(Dispatchers.Main) { viewState.hideProgress() } }
                 .onFailure(::handleAuthenticationCodeFailure)
         }
     }

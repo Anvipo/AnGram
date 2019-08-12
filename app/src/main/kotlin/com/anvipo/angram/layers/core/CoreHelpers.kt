@@ -3,6 +3,7 @@ package com.anvipo.angram.layers.core
 import android.util.Log
 import com.anvipo.angram.BuildConfig
 
+@Suppress("unused")
 object CoreHelpers {
 
     val IS_IN_DEBUG_MODE: Boolean = BuildConfig.DEBUG
@@ -24,8 +25,8 @@ object CoreHelpers {
     }
 
     fun logIfShould(
-        invokationPlace: String,
-        text: String? = null
+        text: String? = null,
+        invokationPlace: String
     ) {
         @Suppress("ConstantConditionIf")
         if (SHOULD_LOG) {
@@ -42,3 +43,18 @@ object CoreHelpers {
     }
 
 }
+
+val Throwable.errorMessage: String
+    get() {
+        val firstStackTraceElement = this.stackTrace?.firstOrNull()
+        val nullableErrorMessage = this.message
+
+        return when {
+            nullableErrorMessage != null -> nullableErrorMessage
+            firstStackTraceElement != null -> "Error in ${firstStackTraceElement.className} class" +
+                    " in ${firstStackTraceElement.fileName} file" +
+                    " in ${firstStackTraceElement.methodName} method" +
+                    " in ${firstStackTraceElement.lineNumber} line"
+            else -> "Undefined error: $this"
+        }
+    }

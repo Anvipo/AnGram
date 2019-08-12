@@ -1,19 +1,22 @@
 package com.anvipo.angram.layers.presentation.common.baseClasses
 
-import com.anvipo.angram.layers.application.types.SystemMessageSendChannel
 import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
+import com.anvipo.angram.layers.core.CoreHelpers.logIfShould
 import com.anvipo.angram.layers.core.HasLogger
+import com.anvipo.angram.layers.core.errorMessage
 import com.anvipo.angram.layers.core.message.SystemMessage
-import com.anvipo.angram.layers.global.GlobalHelpers
+import com.anvipo.angram.layers.global.GlobalHelpers.createTGSystemMessage
+import com.anvipo.angram.layers.global.types.SystemMessageSendChannel
 import com.anvipo.angram.layers.presentation.common.interfaces.BaseCoordinator
+import com.anvipo.angram.layers.presentation.common.interfaces.Coordinatorable
 import com.anvipo.angram.layers.presentation.common.interfaces.HasMyCoroutineBuilders
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import java.util.*
+import kotlinx.coroutines.cancel
+import kotlin.coroutines.Continuation
 import kotlin.coroutines.CoroutineContext
 
-abstract class BaseCoordinatorImp<out CoordinateResultType>(
+abstract class BaseCoordinatorImp<CoordinateResultType>(
     private val systemMessageSendChannel: SystemMessageSendChannel
 ) :
     BaseCoordinator<CoordinateResultType>,
@@ -24,22 +27,33 @@ abstract class BaseCoordinatorImp<out CoordinateResultType>(
 
     final override val className: String = this::class.java.name
 
-    final override val jobsThatMustBeCancelledInLifecycleEnd: MutableList<Job> = mutableListOf()
-
     final override fun <T : Any> additionalLogging(logObj: T) {
-        myLaunch(
-            customMyLaunchExceptionHandler = ::onLogException
-        ) {
-            additionalLoggingHelper(logObj)
+        val systemMessage: SystemMessage = when (logObj) {
+            is String -> createTGSystemMessage(logObj)
+            is SystemMessage -> logObj
+            else -> {
+                val text = "Undefined logObj type = $logObj"
+                assertionFailure(text)
+                TODO(text)
+            }
+        }
+
+        val couldImmediatelySend = systemMessageSendChannel.offer(systemMessage)
+
+        if (!couldImmediatelySend) {
+            logIfShould(
+                invokationPlace = object {}.javaClass.enclosingMethod!!.name,
+                text = "couldImmediatelySend = $couldImmediatelySend"
+            )
         }
     }
 
     final override fun myLaunchExceptionHandler(throwable: Throwable) {
-        additionalLogging(throwable.localizedMessage)
+        additionalLogging(throwable.errorMessage)
     }
 
     suspend fun <T> coordinateTo(
-        coordinator: BaseCoordinatorImp<T>
+        coordinator: BaseCoordinator<T>
     ): T {
         store(coordinator)
 
@@ -52,41 +66,26 @@ abstract class BaseCoordinatorImp<out CoordinateResultType>(
     }
 
 
-    protected val childCoordinators: MutableMap<String, BaseCoordinatorImp<*>?> = mutableMapOf()
+    protected val childCoordinators: MutableList<Coordinatorable> = mutableListOf()
+
+    protected lateinit var finishFlowContinuation: Continuation<CoordinateResultType>
 
     protected open fun onLogException(throwable: Throwable): Unit = Unit
 
-    protected open suspend fun <T> additionalLoggingHelper(logObj: T) {
-        val systemMessage: SystemMessage = when (logObj) {
-            null -> return
-            is String -> GlobalHelpers.createTGSystemMessage(logObj)
-            is SystemMessage -> logObj
-            else -> {
-                val text = "Undefined logObj type = $logObj"
-                assertionFailure(text)
-                TODO(text)
-            }
-        }
-
-        systemMessageSendChannel.send(systemMessage)
-    }
-
-
-    private val uniqueIdentifier = UUID.randomUUID().toString()
 
     private fun cancelAllJobs() {
         val methodName = object {}.javaClass.enclosingMethod!!.name
         val cancellationException = CancellationException("$className::$methodName")
 
-        jobsThatMustBeCancelledInLifecycleEnd.forEach { it.cancel(cancellationException) }
+        cancel(cancellationException)
     }
 
-    private fun <T> store(coordinator: BaseCoordinatorImp<T>) {
-        childCoordinators[coordinator.uniqueIdentifier] = coordinator
+    private fun store(coordinator: Coordinatorable) {
+        childCoordinators.add(coordinator)
     }
 
-    private fun <T> free(coordinator: BaseCoordinatorImp<T>) {
-        childCoordinators.remove(coordinator.uniqueIdentifier)
+    private fun free(coordinator: Coordinatorable) {
+        childCoordinators.remove(coordinator)
     }
 
 }

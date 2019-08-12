@@ -2,34 +2,44 @@ package com.anvipo.angram.layers.application.launchSystem
 
 import android.app.Application
 import com.anvipo.angram.layers.application.coordinator.di.ApplicationCoordinatorModule
+import com.anvipo.angram.layers.application.coordinator.di.ApplicationCoordinatorModule.tdApiUpdateAuthorizationStateApplicationCoordinatorSendChannelQualifier
 import com.anvipo.angram.layers.application.di.LaunchSystemModule
-import com.anvipo.angram.layers.application.di.LaunchSystemModule.connectionStateAppSendChannelQualifier
-import com.anvipo.angram.layers.application.di.LaunchSystemModule.enabledProxyIdSendChannelQualifier
-import com.anvipo.angram.layers.application.di.LaunchSystemModule.systemMessageSendChannelQualifier
+import com.anvipo.angram.layers.application.di.LaunchSystemModule.tdApiObjectIMutableStackQualifier
+import com.anvipo.angram.layers.application.di.LaunchSystemModule.tdApiUpdateAuthorizationStateIMutableStackQualifier
+import com.anvipo.angram.layers.application.di.LaunchSystemModule.tdApiUpdateConnectionStateIMutableStackQualifier
+import com.anvipo.angram.layers.application.di.LaunchSystemModule.tdApiUpdateOptionIMutableStackQualifier
+import com.anvipo.angram.layers.application.di.LaunchSystemModule.tdApiUpdatesIMutableStackQualifier
+import com.anvipo.angram.layers.application.di.LaunchSystemModule.tdLibDefaultExceptionsIMutableStackQualifier
+import com.anvipo.angram.layers.application.di.LaunchSystemModule.tdLibUpdatesExceptionsIMutableStackQualifier
 import com.anvipo.angram.layers.application.di.SystemInfrastructureModule
-import com.anvipo.angram.layers.application.types.ConnectionStateSendChannel
-import com.anvipo.angram.layers.application.types.EnabledProxyIdSendChannel
-import com.anvipo.angram.layers.application.types.SystemMessageSendChannel
+import com.anvipo.angram.layers.application.launchSystem.appActivity.di.AppActivityModule
+import com.anvipo.angram.layers.application.launchSystem.appActivity.di.AppActivityModule.enabledProxyIdSendChannelQualifier
+import com.anvipo.angram.layers.application.launchSystem.appActivity.di.AppActivityModule.systemMessageSendChannelQualifier
+import com.anvipo.angram.layers.application.launchSystem.appActivity.di.AppActivityModule.tdApiUpdateConnectionStateAppPresenterSendChannelQualifier
 import com.anvipo.angram.layers.businessLogic.di.UseCasesModule
 import com.anvipo.angram.layers.core.CoreHelpers.IS_IN_DEBUG_MODE
 import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
+import com.anvipo.angram.layers.core.CoreHelpers.logIfShould
 import com.anvipo.angram.layers.core.HasLogger
-import com.anvipo.angram.layers.core.collections.IMutableStack
-import com.anvipo.angram.layers.core.collections.MutableStack
+import com.anvipo.angram.layers.core.collections.stack.IMutableStack
+import com.anvipo.angram.layers.core.errorMessage
 import com.anvipo.angram.layers.core.message.SystemMessage
 import com.anvipo.angram.layers.core.message.SystemMessageType
 import com.anvipo.angram.layers.data.di.GatewaysModule
+import com.anvipo.angram.layers.data.di.GatewaysModule.mustRecreateTDLibClientSendChannelQualifier
 import com.anvipo.angram.layers.global.GlobalHelpers.createTGSystemMessage
+import com.anvipo.angram.layers.global.types.*
 import com.anvipo.angram.layers.presentation.common.interfaces.HasMyCoroutineBuilders
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.di.AuthorizationCoordinatorModule
+import com.anvipo.angram.layers.presentation.flows.auth.coordinator.di.AuthorizationCoordinatorModule.tdApiUpdateAuthorizationStateAuthorizationCoordinatorSendChannelQualifier
 import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.di.AddProxyModule
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationCode.di.EnterAuthenticationCodeModule
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationPassword.di.EnterAuthenticationPasswordModule
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumber.di.EnterPhoneNumberModule
-import com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumber.di.EnterPhoneNumberModule.connectionStateEnterPhoneNumberSendChannelQualifier
+import com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumber.di.EnterPhoneNumberModule.tdApiUpdateConnectionStateEnterPhoneNumberScreenSendChannelQualifier
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import org.drinkless.td.libcore.telegram.TdApi
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
@@ -43,12 +53,6 @@ class App :
     HasLogger,
     HasMyCoroutineBuilders {
 
-    companion object {
-        private lateinit var INSTANCE: App
-    }
-
-    override val jobsThatMustBeCancelledInLifecycleEnd: MutableList<Job> = mutableListOf()
-
     override val coroutineContext: CoroutineContext = Dispatchers.IO
 
     override val className: String = this::class.java.name
@@ -56,7 +60,6 @@ class App :
     override fun onCreate() {
         super.onCreate()
         initDI()
-        INSTANCE = this
     }
 
     override fun onTerminate() {
@@ -65,96 +68,77 @@ class App :
         val methodName = object {}.javaClass.enclosingMethod!!.name
         val cancellationException = CancellationException("$className::$methodName")
 
-        jobsThatMustBeCancelledInLifecycleEnd.forEach { it.cancel(cancellationException) }
+        cancel(cancellationException)
     }
 
 
     override fun <T : Any> additionalLogging(logObj: T) {
-        myLaunch {
-            val systemMessage: SystemMessage = when (logObj) {
-                is String -> createTGSystemMessage(logObj)
-                is SystemMessage -> logObj
-                is Unit -> return@myLaunch
-                else -> {
-                    val message = "Undefined logObj type = $logObj"
-                    assertionFailure(message)
-                    TODO(message)
-                }
+        val systemMessage: SystemMessage = when (logObj) {
+            is String -> createTGSystemMessage(logObj)
+            is SystemMessage -> logObj
+            is Unit -> return
+            else -> {
+                val message = "Undefined logObj type = $logObj"
+                assertionFailure(message)
+                TODO(message)
             }
+        }
 
-            systemMessageSendChannel.send(systemMessage)
+        val couldImmediatelySend = systemMessageSendChannel.offer(systemMessage)
+
+        if (!couldImmediatelySend) {
+            logIfShould(
+                invokationPlace = object {}.javaClass.enclosingMethod!!.name,
+                text = "couldImmediatelySend = $couldImmediatelySend"
+            )
         }
     }
 
     override fun myLaunchExceptionHandler(throwable: Throwable) {
-        additionalLogging(throwable.localizedMessage)
+        additionalLogging(throwable.errorMessage)
     }
 
 
-    fun handleUpdates(tdApiObject: TdApi.Object) {
+    fun handleTDLibUpdate(tdApiObject: TdApiObject) {
+        saveAndBrodcastNewTdApiObject(tdApiObject)
+
         val invokationPlace = object {}.javaClass.enclosingMethod!!.name
+        val text = "tdApiObject = $tdApiObject"
         myLog(
             invokationPlace = invokationPlace,
-            currentParameters = "tdApiObject = $tdApiObject"
+            text = text
         )
 
-        tdObjectsStack.push(tdApiObject)
-
         when (tdApiObject) {
-            is TdApi.Update -> onUpdate(tdApiObject)
+            is TdApiUpdate -> onUpdate(tdApiObject)
             else -> myLog(
-                currentParameters = "Undefined td api object = $tdApiObject",
+                text = text,
                 invokationPlace = invokationPlace
             )
         }
     }
 
-    fun handleUpdatesException(error: Throwable) {
-        val text = "error.localizedMessage = ${error.localizedMessage}"
+    fun handleTDLibUpdatesException(tdLibUpdatesException: TDLibUpdatesException) {
+        saveAndBrodcastNewTDLibUpdatesException(tdLibUpdatesException)
 
-        val systemMessage: SystemMessage =
-            when (error) {
-                is NoBeanDefFoundException,
-                is BadScopeInstanceException,
-                is DefinitionOverrideException,
-                is KoinAppAlreadyStartedException,
-                is MissingPropertyException,
-                is NoParameterFoundException,
-                is NoPropertyFileFoundException,
-                is NoScopeDefinitionFoundException,
-                is ScopeAlreadyCreatedException,
-                is ScopeNotCreatedException,
-                is InstanceCreationException -> {
-                    SystemMessage(
-                        text = text,
-                        type = SystemMessageType.ALERT,
-                        shouldBeShownToUser = IS_IN_DEBUG_MODE,
-                        shouldBeShownInLogs = false
-                    )
-                }
-                else -> createTGSystemMessage(text)
-            }
+        val text = "tdLibUpdatesException.errorMessage = ${tdLibUpdatesException.errorMessage}"
 
-        val customLogging: () -> Unit = {
-            additionalLogging(systemMessage)
-        }
+        val systemMessage = createSystemMessageFrom(tdLibUpdatesException, text)
 
         myLog(
             invokationPlace = object {}.javaClass.enclosingMethod!!.name,
-            currentParameters = text,
-            customLogging = customLogging
+            text = "tdLibUpdatesException.errorMessage = ${tdLibUpdatesException.errorMessage}",
+            customLogging = { additionalLogging(systemMessage) }
         )
-
-        tdErrorsStack.push(error)
     }
 
-    fun handleDefaultException(throwable: Throwable) {
+    fun handleTDLibDefaultException(tdLibDefaultException: TDLibDefaultException) {
+        saveAndBrodcastNewTDLibDefaultExceptions(tdLibDefaultException)
+
         myLog(
             invokationPlace = object {}.javaClass.enclosingMethod!!.name,
-            currentParameters = "error.localizedMessage = ${throwable.localizedMessage}"
+            text = "tdLibDefaultException.errorMessage = ${tdLibDefaultException.errorMessage}"
         )
-
-        tdErrorsStack.push(throwable)
     }
 
 
@@ -164,21 +148,43 @@ class App :
     private val enabledProxyIdSendChannel: EnabledProxyIdSendChannel
             by inject(enabledProxyIdSendChannelQualifier)
 
-    private val connectionStateAppSendChannel: ConnectionStateSendChannel
-            by inject(connectionStateAppSendChannelQualifier)
+    private val tdApiUpdateConnectionStateSendChanels by lazy {
+        val tdApiUpdateConnectionStateApplicationPresenterSendChannel
+                by inject<TdApiUpdateConnectionStateSendChannel>(
+                    tdApiUpdateConnectionStateAppPresenterSendChannelQualifier
+                )
 
-    private val connectionStateEnterPhoneNumberSendChannel: ConnectionStateSendChannel
-            by inject(connectionStateEnterPhoneNumberSendChannelQualifier)
+        val tdApiUpdateConnectionStateEnterPhoneNumberScreenSendChannel
+                by inject<TdApiUpdateConnectionStateSendChannel>(
+                    tdApiUpdateConnectionStateEnterPhoneNumberScreenSendChannelQualifier
+                )
 
+        listOf(
+            tdApiUpdateConnectionStateApplicationPresenterSendChannel,
+            tdApiUpdateConnectionStateEnterPhoneNumberScreenSendChannel
+        )
+    }
 
-    // ------- TG Client properties and methods
+    private val tdApiUpdateAuthorizationStateSendChannels by lazy {
+        val tdApiUpdateAuthorizationStateApplicationCoordinatorSendChannel
+                by inject<TdApiUpdateAuthorizationStateSendChannel>(
+                    tdApiUpdateAuthorizationStateApplicationCoordinatorSendChannelQualifier
+                )
 
+        val tdApiUpdateAuthorizationStateAuthorizationCoordinatorSendChannel
+                by inject<TdApiUpdateAuthorizationStateSendChannel>(
+                    tdApiUpdateAuthorizationStateAuthorizationCoordinatorSendChannelQualifier
+                )
 
-    private val tdObjectsStack: IMutableStack<TdApi.Object> = MutableStack()
+        listOf(
+            tdApiUpdateAuthorizationStateApplicationCoordinatorSendChannel,
+            tdApiUpdateAuthorizationStateAuthorizationCoordinatorSendChannel
+        )
+    }
 
-    private val tdUpdateStack: IMutableStack<TdApi.Update> = MutableStack()
-
-    private val tdErrorsStack: IMutableStack<Throwable> = MutableStack()
+    private val mustRecreateTDLibClientSendChannel by inject<MustRecreateTDLibClientSendChannel>(
+        mustRecreateTDLibClientSendChannelQualifier
+    )
 
     private fun initDI() {
         val invokationPlace = object {}.javaClass.enclosingMethod!!.name
@@ -188,6 +194,7 @@ class App :
             SystemInfrastructureModule.module,
             UseCasesModule.module,
             GatewaysModule.module,
+            AppActivityModule.module,
             ApplicationCoordinatorModule.module,
             AuthorizationCoordinatorModule.module,
             EnterPhoneNumberModule.module,
@@ -208,7 +215,7 @@ class App :
             // TODO: release config
             myLog(
                 invokationPlace = invokationPlace,
-                currentParameters = "TODO"
+                text = "TODO"
             )
         }
 
@@ -217,36 +224,174 @@ class App :
 
 
     private fun onUpdate(
-        tdApiUpdate: TdApi.Update
+        tdApiUpdate: TdApiUpdate
     ) {
-        tdUpdateStack.push(tdApiUpdate)
+        saveAndBrodcastNewTdApiUpdate(tdApiUpdate)
 
         when (tdApiUpdate) {
-            is TdApi.UpdateConnectionState -> onUpdateConnectionState(tdApiUpdate)
-            is TdApi.UpdateOption -> onUpdateOption(tdApiUpdate)
+            is TdApiUpdateAuthorizationState -> onUpdateAuthorizationState(tdApiUpdate)
+            is TdApiUpdateConnectionState -> onUpdateConnectionState(tdApiUpdate)
+            is TdApiUpdateOption -> onUpdateOption(tdApiUpdate)
         }
     }
 
+    private fun onUpdateAuthorizationState(updateAuthorizationState: TdApiUpdateAuthorizationState) {
+        saveAndBrodcastNewTdApiAuthorizationState(updateAuthorizationState)
+    }
+
     private fun onUpdateConnectionState(
-        tdApiUpdateConnectionState: TdApi.UpdateConnectionState
+        tdApiUpdateConnectionState: TdApiUpdateConnectionState
     ) {
-        val connectionState = tdApiUpdateConnectionState.state
-        connectionStateAppSendChannel.offer(connectionState)
-        connectionStateEnterPhoneNumberSendChannel.offer(connectionState)
+        saveAndBrodcastNewTdApiConnectionState(tdApiUpdateConnectionState)
     }
 
     private fun onUpdateOption(
-        updateOption: TdApi.UpdateOption
+        updateOption: TdApiUpdateOption
     ) {
+        saveAndBrodcastNewTdApiUpdateOption(updateOption)
+
         val optionValue = updateOption.value
 
         if (updateOption.name == "enabled_proxy_id") {
             when (optionValue) {
-                is TdApi.OptionValueInteger -> enabledProxyIdSendChannel.offer(optionValue.value)
-                is TdApi.OptionValueEmpty -> enabledProxyIdSendChannel.offer(null)
-                else -> assertionFailure("Undefined enabled_proxy_id value = ${optionValue}")
+                is TdApi.OptionValueInteger -> {
+                    val couldImmediatelySend = enabledProxyIdSendChannel.offer(optionValue.value)
+
+                    if (!couldImmediatelySend) {
+                        logIfShould(
+                            invokationPlace = object {}.javaClass.enclosingMethod!!.name,
+                            text = "couldImmediatelySend = $couldImmediatelySend"
+                        )
+                    }
+                }
+                is TdApi.OptionValueEmpty -> {
+                    val couldImmediatelySend = enabledProxyIdSendChannel.offer(null)
+
+                    if (!couldImmediatelySend) {
+                        logIfShould(
+                            invokationPlace = object {}.javaClass.enclosingMethod!!.name,
+                            text = "couldImmediatelySend = $couldImmediatelySend"
+                        )
+                    }
+                }
+                else -> assertionFailure("Undefined enabled_proxy_id value = $optionValue")
             }
         }
     }
+
+
+    private fun saveAndBrodcastNewTdApiObject(tdApiObject: TdApiObject) {
+        tdLibUpdates.push(tdApiObject)
+    }
+
+
+    private fun saveAndBrodcastNewTdApiUpdate(tdApiUpdate: TdApiUpdate) {
+        tdApiUpdates.push(tdApiUpdate)
+    }
+
+    private fun saveAndBrodcastNewTdApiConnectionState(tdApiConnectionState: TdApiUpdateConnectionState) {
+        tdApiUpdateConnectionStates.push(tdApiConnectionState)
+
+        tdApiUpdateConnectionStateSendChanels.forEach {
+            val couldImmediatelySend = it.offer(tdApiConnectionState)
+
+            if (!couldImmediatelySend) {
+                logIfShould(
+                    invokationPlace = object {}.javaClass.enclosingMethod!!.name,
+                    text = "couldImmediatelySend = $couldImmediatelySend"
+                )
+            }
+        }
+    }
+
+    private fun saveAndBrodcastNewTdApiAuthorizationState(
+        tdApiAuthorizationState: TdApiUpdateAuthorizationState
+    ) {
+        tdApiUpdateAuthorizationStates.push(tdApiAuthorizationState)
+
+        tdApiUpdateAuthorizationStateSendChannels.forEach {
+            val couldImmediatelySend = it.offer(tdApiAuthorizationState)
+
+            if (!couldImmediatelySend) {
+                logIfShould(
+                    invokationPlace = object {}.javaClass.enclosingMethod!!.name,
+                    text = "couldImmediatelySend = $couldImmediatelySend"
+                )
+            }
+        }
+
+        if (tdApiAuthorizationState.authorizationState is TdApi.AuthorizationStateClosed) {
+            val couldImmediatelySend = mustRecreateTDLibClientSendChannel.offer(MustRecreateTDLibClient)
+
+            if (!couldImmediatelySend) {
+                logIfShould(
+                    invokationPlace = object {}.javaClass.enclosingMethod!!.name,
+                    text = "couldImmediatelySend = $couldImmediatelySend"
+                )
+            }
+        }
+    }
+
+    private fun saveAndBrodcastNewTdApiUpdateOption(tdApiUpdateOption: TdApiUpdateOption) {
+        tdApiUpdateOptions.push(tdApiUpdateOption)
+    }
+
+
+    private fun saveAndBrodcastNewTDLibUpdatesException(tdLibUpdatesException: TDLibUpdatesException) {
+        tdLibUpdatesExceptions.push(tdLibUpdatesException)
+    }
+
+    private fun saveAndBrodcastNewTDLibDefaultExceptions(tdLibDefaultException: TDLibDefaultException) {
+        tdLibDefaultExceptions.push(tdLibDefaultException)
+    }
+
+
+    private fun createSystemMessageFrom(
+        error: Throwable,
+        text: String
+    ): SystemMessage = when (error) {
+        is NoBeanDefFoundException,
+        is BadScopeInstanceException,
+        is DefinitionOverrideException,
+        is KoinAppAlreadyStartedException,
+        is MissingPropertyException,
+        is NoParameterFoundException,
+        is NoPropertyFileFoundException,
+        is NoScopeDefinitionFoundException,
+        is ScopeAlreadyCreatedException,
+        is ScopeNotCreatedException,
+        is InstanceCreationException -> {
+            SystemMessage(
+                text = text,
+                type = SystemMessageType.ALERT,
+                shouldBeShownToUser = IS_IN_DEBUG_MODE,
+                shouldBeShownInLogs = false
+            )
+        }
+        else -> createTGSystemMessage(text)
+    }
+
+    ///--- for debug purposes
+    private val tdLibUpdates: IMutableStack<TdApiObject>
+            by inject(tdApiObjectIMutableStackQualifier)
+
+
+    private val tdApiUpdates: IMutableStack<TdApiUpdate>
+            by inject(tdApiUpdatesIMutableStackQualifier)
+
+    private val tdApiUpdateConnectionStates: IMutableStack<TdApiUpdateConnectionState>
+            by inject(tdApiUpdateConnectionStateIMutableStackQualifier)
+
+    private val tdApiUpdateAuthorizationStates: IMutableStack<TdApiUpdateAuthorizationState>
+            by inject(tdApiUpdateAuthorizationStateIMutableStackQualifier)
+
+    private val tdApiUpdateOptions: IMutableStack<TdApiUpdateOption>
+            by inject(tdApiUpdateOptionIMutableStackQualifier)
+
+
+    private val tdLibUpdatesExceptions: IMutableStack<TDLibUpdatesException>
+            by inject(tdLibUpdatesExceptionsIMutableStackQualifier)
+    private val tdLibDefaultExceptions: IMutableStack<TDLibDefaultException>
+            by inject(tdLibDefaultExceptionsIMutableStackQualifier)
 
 }

@@ -34,7 +34,6 @@ object UseCasesModule {
 
         factory<AppUseCase>(appUseCaseQualifier) {
             AppUseCaseImp(
-                proxyTDLibGateway = get(proxyTDLibGatewayQualifier),
                 sharedPreferencesGateway = get(sharedPreferencesGatewayQualifier)
             )
         }

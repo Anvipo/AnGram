@@ -23,12 +23,17 @@ import com.anvipo.angram.layers.core.dialogFragment.MessageDialogFragment
 import com.anvipo.angram.layers.core.showSnackbarMessage
 import com.anvipo.angram.layers.presentation.common.interfaces.BasePresenter
 import com.anvipo.angram.layers.presentation.common.mvp.MvpAppCompatFragment
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
+import java.util.concurrent.CancellationException
 
 @Suppress("unused")
 abstract class BaseFragment :
     MvpAppCompatFragment(),
     BaseView,
-    HasLogger {
+    HasLogger,
+    CoroutineScope by MainScope() {
 
     final override val className: String = this::class.java.name
 
@@ -67,6 +72,13 @@ abstract class BaseFragment :
     final override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         instanceStateSaved = true
+    }
+
+    override fun onDestroy() {
+        val methodName = object {}.javaClass.enclosingMethod!!.name
+        val cancellationException = CancellationException("$className::$methodName")
+        cancel(cancellationException)
+        super.onDestroy()
     }
 
     final override fun onActivityResult(
@@ -211,7 +223,7 @@ abstract class BaseFragment :
         if (supportActionBar == null) {
             myLog(
                 invokationPlace = invokationPlace,
-                currentParameters = "supportActionBar == null"
+                text = "supportActionBar = $supportActionBar"
             )
             return
         }
@@ -227,7 +239,7 @@ abstract class BaseFragment :
         if (appCompatActivity == null) {
             myLog(
                 invokationPlace = invokationPlace,
-                currentParameters = "appCompatActivity == null"
+                text = "appCompatActivity = $appCompatActivity"
             )
             return
         }
@@ -239,7 +251,7 @@ abstract class BaseFragment :
         if (supportActionBar == null) {
             myLog(
                 invokationPlace = invokationPlace,
-                currentParameters = "supportActionBar == null"
+                text = "supportActionBar = $supportActionBar"
             )
             return
         }

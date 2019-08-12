@@ -1,11 +1,12 @@
 package com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumber.presenter
 
 import com.anvipo.angram.R
-import com.anvipo.angram.layers.application.types.ConnectionStateReceiveChannel
 import com.anvipo.angram.layers.businessLogic.useCases.authFlow.enterPhoneNumber.EnterPhoneNumberUseCase
 import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
 import com.anvipo.angram.layers.core.ResourceManager
 import com.anvipo.angram.layers.data.gateways.tdLib.errors.TdApiError
+import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionState
+import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionStateReceiveChannel
 import com.anvipo.angram.layers.presentation.common.baseClasses.BasePresenterImp
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.interfaces.AuthorizationCoordinatorEnterPhoneNumberRouteEventHandler
 import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.types.ProxyType
@@ -22,15 +23,11 @@ class EnterPhoneNumberPresenterImp(
     private val useCase: EnterPhoneNumberUseCase,
     private val routeEventHandler: AuthorizationCoordinatorEnterPhoneNumberRouteEventHandler,
     private val resourceManager: ResourceManager,
-    private val connectionStateReceiveChannel: ConnectionStateReceiveChannel
+    private val tdApiUpdateConnectionStateReceiveChannel: TdApiUpdateConnectionStateReceiveChannel
 ) : BasePresenterImp<EnterPhoneNumberView>(), EnterPhoneNumberPresenter {
 
     init {
-        val receiveChannelList = listOf(
-            connectionStateReceiveChannel
-        )
-
-        channelsThatWillBeUnsubscribedInOnPause.addAll(receiveChannelList)
+        channelsThatWillBeUnsubscribedInOnDestroy.add(tdApiUpdateConnectionStateReceiveChannel)
     }
 
     override fun coldStart() {
@@ -61,7 +58,6 @@ class EnterPhoneNumberPresenterImp(
 
         myLaunch {
             useCase.setAuthenticationPhoneNumberCatching(enteredPhoneNumber)
-                .onSuccess { routeEventHandler.onEnterCorrectPhoneNumber() }
                 .onFailure { error ->
                     val errorMessage: String = resourceManager.run {
                         if (error is TdApiError) {
@@ -110,15 +106,15 @@ class EnterPhoneNumberPresenterImp(
 
     private fun subscribeOnConnectionStates() {
         myLaunch {
-            for (receivedConnectionState in connectionStateReceiveChannel) {
-                onReceivedConnectionState(receivedConnectionState)
+            for (receivedTdApiUpdateConnectionState in tdApiUpdateConnectionStateReceiveChannel) {
+                onReceivedTdApiUpdateConnectionState(receivedTdApiUpdateConnectionState)
             }
         }
     }
 
-    private fun onReceivedConnectionState(receivedConnectionState: TdApi.ConnectionState) {
+    private fun onReceivedTdApiUpdateConnectionState(receivedTdApiUpdateConnectionState: TdApiUpdateConnectionState) {
         myLaunch(Dispatchers.Main) {
-            when (receivedConnectionState) {
+            when (val receivedConnectionState = receivedTdApiUpdateConnectionState.state) {
                 is TdApi.ConnectionStateWaitingForNetwork -> viewState.disableNextButton()
                 is TdApi.ConnectionStateConnectingToProxy -> viewState.disableNextButton()
                 is TdApi.ConnectionStateConnecting -> viewState.disableNextButton()
