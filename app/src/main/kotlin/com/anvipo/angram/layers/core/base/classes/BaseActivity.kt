@@ -5,23 +5,18 @@ import android.view.View
 import android.widget.Toast
 import androidx.annotation.LayoutRes
 import com.anvipo.angram.R
-import com.anvipo.angram.layers.core.UiScope
 import com.anvipo.angram.layers.core.base.interfaces.BasePresenter
 import com.anvipo.angram.layers.core.base.interfaces.BaseView
 import com.anvipo.angram.layers.core.dialogFragment.MessageDialogFragment
 import com.anvipo.angram.layers.core.logHelpers.HasLogger
 import com.anvipo.angram.layers.core.mvp.MvpAppCompatActivity
 import com.anvipo.angram.layers.core.showSnackbarMessage
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.cancel
-import java.util.concurrent.CancellationException
 
 @Suppress("unused")
 abstract class BaseActivity :
     MvpAppCompatActivity(),
     BaseView,
-    HasLogger,
-    CoroutineScope by UiScope() {
+    HasLogger {
 
     final override val className: String = this::class.java.name
 
@@ -42,20 +37,6 @@ abstract class BaseActivity :
     final override fun onPause() {
         presenter.onPauseTriggered()
         super.onPause()
-    }
-
-    final override fun onDestroy() {
-        val methodName = object {}.javaClass.enclosingMethod!!.name
-        val cancellationException = CancellationException("$className::$methodName")
-        try {
-            cancel(cancellationException)
-        } catch (exception: Exception) {
-            myLog(
-                invokationPlace = methodName,
-                text = "exception = $exception"
-            )
-        }
-        super.onDestroy()
     }
 
     final override fun showAlertMessage(

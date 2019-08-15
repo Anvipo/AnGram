@@ -15,7 +15,6 @@ import androidx.appcompat.widget.Toolbar
 import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.core.CoreConstants.PROGRESS_TAG
-import com.anvipo.angram.layers.core.UiScope
 import com.anvipo.angram.layers.core.base.interfaces.BasePresenter
 import com.anvipo.angram.layers.core.base.interfaces.BaseView
 import com.anvipo.angram.layers.core.dialogFragment.ItemsDialogFragment
@@ -24,16 +23,12 @@ import com.anvipo.angram.layers.core.logHelpers.HasLogger
 import com.anvipo.angram.layers.core.mvp.MvpAppCompatFragment
 import com.anvipo.angram.layers.core.showSnackbarMessage
 import com.anvipo.angram.layers.core.views.MyProgressDialog
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.cancel
-import java.util.concurrent.CancellationException
 
 @Suppress("unused")
 abstract class BaseFragment :
     MvpAppCompatFragment(),
     BaseView,
-    HasLogger,
-    CoroutineScope by UiScope() {
+    HasLogger {
 
     final override val className: String by lazy { this::class.java.name }
 
@@ -72,20 +67,6 @@ abstract class BaseFragment :
     final override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         instanceStateSaved = true
-    }
-
-    override fun onDestroy() {
-        val methodName = object {}.javaClass.enclosingMethod!!.name
-        val cancellationException = CancellationException("$className::$methodName")
-        try {
-            cancel(cancellationException)
-        } catch (exception: Exception) {
-            myLog(
-                invokationPlace = methodName,
-                text = "exception = $exception"
-            )
-        }
-        super.onDestroy()
     }
 
     final override fun onActivityResult(
