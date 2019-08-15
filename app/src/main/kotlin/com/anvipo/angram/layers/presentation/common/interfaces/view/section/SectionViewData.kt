@@ -1,7 +1,7 @@
 package com.anvipo.angram.layers.presentation.common.interfaces.view.section
 
 import android.view.View
-import com.anvipo.angram.layers.presentation.common.baseClasses.view.section.SectionViewHolder
+import com.anvipo.angram.layers.presentation.common.baseClasses.section.SectionViewHolder
 import com.anvipo.angram.layers.presentation.common.interfaces.view.ViewData
 
 interface SectionViewData : ViewData {

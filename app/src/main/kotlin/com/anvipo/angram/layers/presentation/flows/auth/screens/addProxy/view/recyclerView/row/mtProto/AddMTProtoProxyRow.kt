@@ -4,7 +4,6 @@ import android.text.InputType
 import com.anvipo.angram.layers.core.IndexPath
 import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.view.recyclerView.row.base.AddProxyRow
 
-@Suppress("EXPERIMENTAL_API_USAGE")
 class AddMTProtoProxyRow(
     val textInputHint: String,
     val textInputType: Int = InputType.TYPE_CLASS_TEXT,

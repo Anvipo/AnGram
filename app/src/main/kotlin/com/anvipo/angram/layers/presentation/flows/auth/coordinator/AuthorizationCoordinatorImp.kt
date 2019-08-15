@@ -1,23 +1,23 @@
 package com.anvipo.angram.layers.presentation.flows.auth.coordinator
 
 import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
+import com.anvipo.angram.layers.core.base.classes.BaseCoordinatorImp
 import com.anvipo.angram.layers.global.HasCheckAuthorizationStateHelper
 import com.anvipo.angram.layers.global.types.SystemMessageSendChannel
 import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationState
 import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationStateReceiveChannel
-import com.anvipo.angram.layers.presentation.common.baseClasses.BaseCoordinatorImp
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.interfaces.*
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.screensFactory.authorization.AuthorizationScreensFactory
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.types.AuthorizationCoordinateResult
 import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.types.ProxyType
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationCode.di.EnterAuthenticationCodeModule
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.drinkless.td.libcore.telegram.TdApi
 import ru.terrakok.cicerone.Router
 import ru.terrakok.cicerone.android.support.SupportAppScreen
 import kotlin.coroutines.Continuation
 
-@Suppress("RedundantUnitReturnType")
 class AuthorizationCoordinatorImp(
     private val router: Router,
     private val screensFactory: AuthorizationScreensFactory,
@@ -42,7 +42,7 @@ class AuthorizationCoordinatorImp(
         finishFlowContinuation = checkAuthorizationStateContinuation
     }
 
-    override fun onReceivedTdApiUpdateAuthorizationState(
+    override suspend fun onReceivedTdApiUpdateAuthorizationState(
         receivedTdApiUpdateAuthorizationState: TdApiUpdateAuthorizationState
     ) {
         when (val authorizationState = receivedTdApiUpdateAuthorizationState.authorizationState) {
@@ -53,52 +53,66 @@ class AuthorizationCoordinatorImp(
         }
     }
 
-    override fun onPressedBackButtonInEnterPhoneNumberScreen() {
+    override suspend fun onPressedBackButtonInEnterPhoneNumberScreen() {
         myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
 
-        router.exit()
+        withContext(Dispatchers.Main) {
+            router.exit()
+        }
     }
 
-    override fun onPressedBackButtonInEnterAuthenticationCodeScreen() {
+    override suspend fun onPressedBackButtonInEnterAuthenticationCodeScreen() {
         myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
 
-        router.exit()
+        withContext(Dispatchers.Main) {
+            router.exit()
+        }
 
         enterAuthenticationCodeScreenHasBeenPresented = false
     }
 
-    override fun onPressedBackButtonInEnterAuthenticationPasswordScreen() {
+    override suspend fun onPressedBackButtonInEnterAuthenticationPasswordScreen() {
         myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
 
-        router.backTo(enterPhoneNumberScreen)
+        withContext(Dispatchers.Main) {
+            router.backTo(enterPhoneNumberScreen)
+        }
     }
 
-    override fun onAddProxyButtonTapped(proxyType: ProxyType) {
+    override suspend fun onAddProxyButtonTapped(proxyType: ProxyType) {
         myLog(
             invokationPlace = object {}.javaClass.enclosingMethod!!.name,
             text = "proxyType = $proxyType"
         )
 
-        val addProxyScreen = screensFactory
-            .addProxyScreenFactory
-            .createAddProxyScreen(
-                proxyType = proxyType,
-                shouldShowBackButton = true
-            )
+        val addProxyScreen = withContext(Dispatchers.Default) {
+            screensFactory
+                .addProxyScreenFactory
+                .createAddProxyScreen(
+                    proxyType = proxyType,
+                    shouldShowBackButton = true
+                )
+        }
 
-        router.navigateTo(addProxyScreen)
+        withContext(Dispatchers.Main) {
+            router.navigateTo(addProxyScreen)
+        }
     }
 
-    override fun onPressedBackButtonInAddProxyScreen() {
+    override suspend fun onPressedBackButtonInAddProxyScreen() {
         myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
 
-        router.exit()
+        withContext(Dispatchers.Main) {
+            router.exit()
+        }
     }
 
-    override fun onSuccessAddProxy() {
+    override suspend fun onSuccessAddProxy() {
         myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
 
-        router.exit()
+        withContext(Dispatchers.Main) {
+            router.exit()
+        }
     }
 
 
@@ -107,11 +121,11 @@ class AuthorizationCoordinatorImp(
     private var enterAuthenticationCodeScreenHasBeenPresented = false
 
 
-    private fun onAuthStateWaitsPhoneNumber() {
+    private suspend fun onAuthStateWaitsPhoneNumber() {
         showEnterPhoneNumberScreen()
     }
 
-    private fun onAuthStateWaitsCode(
+    private suspend fun onAuthStateWaitsCode(
         currentAuthorizationState: TdApi.AuthorizationStateWaitCode
     ) {
         val (
@@ -119,7 +133,9 @@ class AuthorizationCoordinatorImp(
             enteredPhoneNumber,
             registrationRequired,
             termsOfServiceText
-        ) = prepareParametersForEnterAuthCodeScreen(currentAuthorizationState)
+        ) = withContext(Dispatchers.Default) {
+            prepareParametersForEnterAuthCodeScreen(currentAuthorizationState)
+        }
 
         showEnterAuthenticationCodeScreen(
             expectedCodeLength = expectedCodeLength,
@@ -129,7 +145,7 @@ class AuthorizationCoordinatorImp(
         )
     }
 
-    private fun onAuthorizationStateWaitPassword() {
+    private suspend fun onAuthorizationStateWaitPassword() {
         showEnterAuthenticationPasswordScreen()
     }
 
@@ -144,20 +160,21 @@ class AuthorizationCoordinatorImp(
     }
 
 
-    private fun showEnterPhoneNumberScreen() {
+    private suspend fun showEnterPhoneNumberScreen() {
         myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
 
-        enterPhoneNumberScreen =
+        enterPhoneNumberScreen = withContext(Dispatchers.Default) {
             screensFactory
                 .enterPhoneNumberScreenFactory
                 .createEnterPhoneNumberScreen()
+        }
 
-        myLaunch(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             router.newRootScreen(enterPhoneNumberScreen!!)
         }
     }
 
-    private fun showEnterAuthenticationCodeScreen(
+    private suspend fun showEnterAuthenticationCodeScreen(
         expectedCodeLength: Int = 5,
         enteredPhoneNumber: String = "",
         registrationRequired: Boolean,
@@ -173,18 +190,21 @@ class AuthorizationCoordinatorImp(
         }
 
         val enterAuthenticationCodeScreenParameters =
-            EnterAuthenticationCodeModule.EnterAuthenticationCodeScreenParameters(
-                expectedCodeLength = expectedCodeLength,
-                enteredPhoneNumber = enteredPhoneNumber,
-                registrationRequired = registrationRequired,
-                termsOfServiceText = termsOfServiceText,
-                shouldShowBackButton = true
-            )
+            withContext(Dispatchers.Default) {
+                EnterAuthenticationCodeModule.EnterAuthenticationCodeScreenParameters(
+                    expectedCodeLength = expectedCodeLength,
+                    enteredPhoneNumber = enteredPhoneNumber,
+                    registrationRequired = registrationRequired,
+                    termsOfServiceText = termsOfServiceText,
+                    shouldShowBackButton = true
+                )
+            }
 
-        val enterAuthenticationCodeScreen =
+        val enterAuthenticationCodeScreen = withContext(Dispatchers.Default) {
             screensFactory
                 .enterAuthenticationCodeScreenFactory
                 .createEnterAuthenticationCodeScreen(enterAuthenticationCodeScreenParameters)
+        }
 
         myLog(
             invokationPlace = object {}.javaClass.enclosingMethod!!.name,
@@ -194,29 +214,36 @@ class AuthorizationCoordinatorImp(
         enterAuthenticationCodeScreenHasBeenPresented = true
 
         if (enterPhoneNumberScreen == null) {
-            enterPhoneNumberScreen = screensFactory
-                .enterPhoneNumberScreenFactory
-                .createEnterPhoneNumberScreen()
+            enterPhoneNumberScreen = withContext(Dispatchers.Default) {
+                screensFactory
+                    .enterPhoneNumberScreenFactory
+                    .createEnterPhoneNumberScreen()
+            }
 
-            myLaunch(Dispatchers.Main) {
-                router.newRootChain(enterPhoneNumberScreen!!, enterAuthenticationCodeScreen)
+            withContext(Dispatchers.Main) {
+                router.newRootChain(
+                    enterPhoneNumberScreen!!,
+                    enterAuthenticationCodeScreen
+                )
             }
         } else {
-            myLaunch(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
                 router.navigateTo(enterAuthenticationCodeScreen)
             }
         }
     }
 
-    private fun showEnterAuthenticationPasswordScreen() {
+    private suspend fun showEnterAuthenticationPasswordScreen() {
         myLog(
             invokationPlace = object {}.javaClass.enclosingMethod!!.name
         )
 
         val enterAuthenticationPasswordScreen =
-            screensFactory
-                .enterAuthenticationPasswordScreenFactory
-                .createEnterPasswordScreen()
+            withContext(Dispatchers.Default) {
+                screensFactory
+                    .enterAuthenticationPasswordScreenFactory
+                    .createEnterPasswordScreen()
+            }
 
         myLog(
             invokationPlace = object {}.javaClass.enclosingMethod!!.name,
@@ -224,15 +251,17 @@ class AuthorizationCoordinatorImp(
         )
 
         if (enterPhoneNumberScreen == null) {
-            enterPhoneNumberScreen = screensFactory
-                .enterPhoneNumberScreenFactory
-                .createEnterPhoneNumberScreen()
+            enterPhoneNumberScreen = withContext(Dispatchers.Default) {
+                screensFactory
+                    .enterPhoneNumberScreenFactory
+                    .createEnterPhoneNumberScreen()
+            }
 
-            myLaunch(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
                 router.newRootChain(enterPhoneNumberScreen!!, enterAuthenticationPasswordScreen)
             }
         } else {
-            myLaunch(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
                 router.navigateTo(enterAuthenticationPasswordScreen)
             }
         }

@@ -3,7 +3,6 @@ package com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthentica
 import com.anvipo.angram.layers.presentation.common.interfaces.BasePresenter
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationCode.types.CorrectAuthenticationCodeType
 
-@Suppress("EXPERIMENTAL_API_USAGE")
 interface EnterAuthenticationCodePresenter : BasePresenter {
 
     fun onNextButtonPressed(
@@ -14,7 +13,9 @@ interface EnterAuthenticationCodePresenter : BasePresenter {
 
     fun onResendAuthenticationCodeButtonPressed()
 
+    @ExperimentalUnsignedTypes
     fun onGetExpectedCodeLength(expectedCodeLength: UInt)
+
     fun onGetEnteredPhoneNumber(enteredPhoneNumber: String)
     fun onGetRegistrationRequired(registrationRequired: Boolean)
     fun onGetTermsOfServiceText(termsOfServiceText: String)

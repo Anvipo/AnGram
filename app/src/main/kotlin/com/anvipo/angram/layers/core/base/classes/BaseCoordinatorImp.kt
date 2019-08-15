@@ -1,8 +1,9 @@
-package com.anvipo.angram.layers.presentation.common.baseClasses
+package com.anvipo.angram.layers.core.base.classes
 
 import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
 import com.anvipo.angram.layers.core.CoreHelpers.logIfShould
 import com.anvipo.angram.layers.core.HasLogger
+import com.anvipo.angram.layers.core.UiScope
 import com.anvipo.angram.layers.core.errorMessage
 import com.anvipo.angram.layers.core.message.SystemMessage
 import com.anvipo.angram.layers.global.GlobalHelpers.createTGSystemMessage
@@ -10,20 +11,16 @@ import com.anvipo.angram.layers.global.types.SystemMessageSendChannel
 import com.anvipo.angram.layers.presentation.common.interfaces.BaseCoordinator
 import com.anvipo.angram.layers.presentation.common.interfaces.Coordinatorable
 import com.anvipo.angram.layers.presentation.common.interfaces.HasMyCoroutineBuilders
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.*
 import kotlin.coroutines.Continuation
-import kotlin.coroutines.CoroutineContext
 
 abstract class BaseCoordinatorImp<CoordinateResultType>(
     private val systemMessageSendChannel: SystemMessageSendChannel
 ) :
     BaseCoordinator<CoordinateResultType>,
     HasMyCoroutineBuilders,
-    HasLogger {
-
-    final override val coroutineContext: CoroutineContext = Dispatchers.IO
+    HasLogger,
+    CoroutineScope by UiScope() {
 
     final override val className: String = this::class.java.name
 
@@ -55,29 +52,45 @@ abstract class BaseCoordinatorImp<CoordinateResultType>(
     suspend fun <T> coordinateTo(
         coordinator: BaseCoordinator<T>
     ): T {
-        store(coordinator)
+        withContext(Dispatchers.Default) {
+            store(coordinator)
+        }
 
-        val result = coordinator.start()
+        val coordinateResult = withContext(Dispatchers.Main) { coordinator.start() }
 
-        free(coordinator)
+        withContext(Dispatchers.Default) {
+            free(coordinator)
+        }
+
         cancelAllJobs()
 
-        return result
+        return coordinateResult
     }
 
-
-    protected val childCoordinators: MutableList<Coordinatorable> = mutableListOf()
 
     protected lateinit var finishFlowContinuation: Continuation<CoordinateResultType>
 
     protected open fun onLogException(throwable: Throwable): Unit = Unit
+
+    protected fun clearChildCoordinators() {
+        childCoordinators.clear()
+    }
+
+    private val childCoordinators: MutableList<Coordinatorable> = mutableListOf()
 
 
     private fun cancelAllJobs() {
         val methodName = object {}.javaClass.enclosingMethod!!.name
         val cancellationException = CancellationException("$className::$methodName")
 
-        cancel(cancellationException)
+        try {
+            cancel(cancellationException)
+        } catch (exception: Exception) {
+            myLog(
+                invokationPlace = methodName,
+                text = "exception = $exception"
+            )
+        }
     }
 
     private fun store(coordinator: Coordinatorable) {

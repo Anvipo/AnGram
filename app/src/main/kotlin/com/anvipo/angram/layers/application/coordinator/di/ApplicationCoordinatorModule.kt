@@ -10,6 +10,7 @@ import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationState
 import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationStateBroadcastChannel
 import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationStateReceiveChannel
 import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationStateSendChannel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
 import org.koin.core.module.Module
@@ -17,7 +18,6 @@ import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-@Suppress("EXPERIMENTAL_API_USAGE")
 object ApplicationCoordinatorModule {
 
     val tdApiUpdateAuthorizationStateApplicationCoordinatorSendChannelQualifier: StringQualifier =
@@ -31,6 +31,7 @@ object ApplicationCoordinatorModule {
 
     private val applicationCoordinatorsFactoryQualifier = named("applicationCoordinatorsFactory")
 
+    @ExperimentalCoroutinesApi
     @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
 

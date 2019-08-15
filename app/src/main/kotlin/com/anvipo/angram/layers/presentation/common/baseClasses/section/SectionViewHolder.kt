@@ -1,4 +1,4 @@
-package com.anvipo.angram.layers.presentation.common.baseClasses.view.section
+package com.anvipo.angram.layers.presentation.common.baseClasses.section
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView

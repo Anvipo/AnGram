@@ -10,7 +10,6 @@ import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-@Suppress("EXPERIMENTAL_API_USAGE")
 object LaunchSystemModule {
 
     val tdApiUpdateAuthorizationStateIMutableStackQualifier: StringQualifier =

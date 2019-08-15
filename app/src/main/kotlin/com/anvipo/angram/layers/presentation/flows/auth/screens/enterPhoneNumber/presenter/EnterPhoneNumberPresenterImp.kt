@@ -4,10 +4,10 @@ import com.anvipo.angram.R
 import com.anvipo.angram.layers.businessLogic.useCases.authFlow.enterPhoneNumber.EnterPhoneNumberUseCase
 import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
 import com.anvipo.angram.layers.core.ResourceManager
+import com.anvipo.angram.layers.core.base.classes.BasePresenterImp
 import com.anvipo.angram.layers.data.gateways.tdLib.errors.TdApiError
 import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionState
 import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionStateReceiveChannel
-import com.anvipo.angram.layers.presentation.common.baseClasses.BasePresenterImp
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.interfaces.AuthorizationCoordinatorEnterPhoneNumberRouteEventHandler
 import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.types.ProxyType
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumber.view.EnterPhoneNumberView
@@ -15,9 +15,9 @@ import com.arellomobile.mvp.InjectViewState
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.withContext
 import org.drinkless.td.libcore.telegram.TdApi
 
-@Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS")
 @InjectViewState
 class EnterPhoneNumberPresenterImp(
     private val useCase: EnterPhoneNumberUseCase,
@@ -48,8 +48,10 @@ class EnterPhoneNumberPresenterImp(
     }
 
     override fun onItemClicked(index: Int) {
-        when (proxys[index]) {
-            mtprotoPair.second -> routeEventHandler.onAddProxyButtonTapped(ProxyType.MTPROTO)
+        myLaunch {
+            when (proxys[index]) {
+                mtprotoPair.second -> routeEventHandler.onAddProxyButtonTapped(ProxyType.MTPROTO)
+            }
         }
     }
 
@@ -57,7 +59,12 @@ class EnterPhoneNumberPresenterImp(
         viewState.showProgress()
 
         myLaunch {
-            useCase.setAuthenticationPhoneNumberCatching(enteredPhoneNumber)
+            val setAuthenticationPhoneNumberResult =
+                withContext(Dispatchers.IO) {
+                    useCase.setAuthenticationPhoneNumberCatching(enteredPhoneNumber)
+                }
+
+            setAuthenticationPhoneNumberResult
                 .onFailure { error ->
                     val errorMessage: String = resourceManager.run {
                         if (error is TdApiError) {
@@ -72,7 +79,7 @@ class EnterPhoneNumberPresenterImp(
                         }
                     }
 
-                    myLaunch(Dispatchers.Main) {
+                    withContext(Dispatchers.Main) {
                         viewState.hideProgress()
                         viewState.showErrorAlert(errorMessage)
                     }
@@ -90,7 +97,9 @@ class EnterPhoneNumberPresenterImp(
     }
 
     override fun onBackPressed() {
-        routeEventHandler.onPressedBackButtonInEnterPhoneNumberScreen()
+        myLaunch {
+            routeEventHandler.onPressedBackButtonInEnterPhoneNumberScreen()
+        }
     }
 
     override fun onCanceledProgressDialog() {
@@ -105,15 +114,15 @@ class EnterPhoneNumberPresenterImp(
     private var onNextButtonPressedJob: Job? = null
 
     private fun subscribeOnConnectionStates() {
-        myLaunch {
+        myLaunch(Dispatchers.IO) {
             for (receivedTdApiUpdateConnectionState in tdApiUpdateConnectionStateReceiveChannel) {
                 onReceivedTdApiUpdateConnectionState(receivedTdApiUpdateConnectionState)
             }
         }
     }
 
-    private fun onReceivedTdApiUpdateConnectionState(receivedTdApiUpdateConnectionState: TdApiUpdateConnectionState) {
-        myLaunch(Dispatchers.Main) {
+    private suspend fun onReceivedTdApiUpdateConnectionState(receivedTdApiUpdateConnectionState: TdApiUpdateConnectionState) {
+        withContext(Dispatchers.Main) {
             when (val receivedConnectionState = receivedTdApiUpdateConnectionState.state) {
                 is TdApi.ConnectionStateWaitingForNetwork -> viewState.disableNextButton()
                 is TdApi.ConnectionStateConnectingToProxy -> viewState.disableNextButton()

@@ -6,13 +6,13 @@ import android.widget.Toast
 import androidx.annotation.LayoutRes
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.core.HasLogger
+import com.anvipo.angram.layers.core.UiScope
 import com.anvipo.angram.layers.core.base.interfaces.BaseView
 import com.anvipo.angram.layers.core.dialogFragment.MessageDialogFragment
 import com.anvipo.angram.layers.core.showSnackbarMessage
 import com.anvipo.angram.layers.presentation.common.interfaces.BasePresenter
 import com.anvipo.angram.layers.presentation.common.mvp.MvpAppCompatActivity
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import java.util.concurrent.CancellationException
 
@@ -21,7 +21,7 @@ abstract class BaseActivity :
     MvpAppCompatActivity(),
     BaseView,
     HasLogger,
-    CoroutineScope by MainScope() {
+    CoroutineScope by UiScope() {
 
     final override val className: String = this::class.java.name
 
@@ -44,10 +44,17 @@ abstract class BaseActivity :
         super.onPause()
     }
 
-    override fun onDestroy() {
+    final override fun onDestroy() {
         val methodName = object {}.javaClass.enclosingMethod!!.name
         val cancellationException = CancellationException("$className::$methodName")
-        cancel(cancellationException)
+        try {
+            cancel(cancellationException)
+        } catch (exception: Exception) {
+            myLog(
+                invokationPlace = methodName,
+                text = "exception = $exception"
+            )
+        }
         super.onDestroy()
     }
 

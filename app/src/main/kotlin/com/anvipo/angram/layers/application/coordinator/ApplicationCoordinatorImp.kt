@@ -2,12 +2,14 @@ package com.anvipo.angram.layers.application.coordinator
 
 import com.anvipo.angram.layers.application.coordinator.coordinatorsFactory.ApplicationCoordinatorsFactory
 import com.anvipo.angram.layers.application.coordinator.types.ApplicationCoordinateResult
+import com.anvipo.angram.layers.core.base.classes.BaseCoordinatorImp
 import com.anvipo.angram.layers.data.gateways.tdLib.application.ApplicationTDLibGateway
 import com.anvipo.angram.layers.global.HasCheckAuthorizationStateHelper
 import com.anvipo.angram.layers.global.types.SystemMessageSendChannel
 import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationState
 import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationStateReceiveChannel
-import com.anvipo.angram.layers.presentation.common.baseClasses.BaseCoordinatorImp
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.drinkless.td.libcore.telegram.TdApi
 import kotlin.coroutines.Continuation
 
@@ -24,9 +26,11 @@ class ApplicationCoordinatorImp(
     HasCheckAuthorizationStateHelper<ApplicationCoordinateResult> {
 
     override suspend fun start(): ApplicationCoordinateResult {
-        childCoordinators.clear()
+        withContext(Dispatchers.Default) {
+            clearChildCoordinators()
+        }
 
-        return configureApp()
+        return withContext(Dispatchers.Main) { configureApp() }
     }
 
     override fun onCreatedCheckAuthorizationStateContinuation(
@@ -35,7 +39,7 @@ class ApplicationCoordinatorImp(
         finishFlowContinuation = checkAuthorizationStateContinuation
     }
 
-    override fun onReceivedTdApiUpdateAuthorizationState(
+    override suspend fun onReceivedTdApiUpdateAuthorizationState(
         receivedTdApiUpdateAuthorizationState: TdApiUpdateAuthorizationState
     ) {
         when (receivedTdApiUpdateAuthorizationState.authorizationState) {
@@ -59,11 +63,11 @@ class ApplicationCoordinatorImp(
     private suspend fun startApp(): ApplicationCoordinateResult =
         checkAuthorizationState(tdApiUpdateAuthorizationStateReceiveChannel)
 
-    private fun onAuthorizationStateWaitTdlibParameters() {
+    private suspend fun onAuthorizationStateWaitTdlibParameters() {
         val invokationPlace = object {}.javaClass.enclosingMethod!!.name
         myLog(invokationPlace = invokationPlace)
 
-        myLaunch {
+        withContext(Dispatchers.IO) {
             val setTdLibParametersResult = tdLibGateway.setTdLibParametersCatching()
 
             myLog(
@@ -73,11 +77,11 @@ class ApplicationCoordinatorImp(
         }
     }
 
-    private fun onAuthorizationStateWaitEncryptionKey() {
+    private suspend fun onAuthorizationStateWaitEncryptionKey() {
         val invokationPlace = object {}.javaClass.enclosingMethod!!.name
         myLog(invokationPlace = invokationPlace)
 
-        myLaunch {
+        withContext(Dispatchers.IO) {
             val checkDatabaseEncryptionKeyResult = tdLibGateway.checkDatabaseEncryptionKeyCatching()
 
             myLog(
@@ -87,19 +91,19 @@ class ApplicationCoordinatorImp(
         }
     }
 
-    private fun onAuthorizationStateWaitPhoneNumber() {
+    private suspend fun onAuthorizationStateWaitPhoneNumber() {
         myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
 
         startAuthorizationFlow()
     }
 
-    private fun onAuthorizationStateWaitCode() {
+    private suspend fun onAuthorizationStateWaitCode() {
         myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
 
         startAuthorizationFlow()
     }
 
-    private fun onAuthorizationStateWaitPassword() {
+    private suspend fun onAuthorizationStateWaitPassword() {
         myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
 
         startAuthorizationFlow()
@@ -134,35 +138,39 @@ class ApplicationCoordinatorImp(
         )
     }
 
-    private fun startAuthorizationFlow() {
+    private suspend fun startAuthorizationFlow() {
         if (authorizationFlowHasBeenStarted) {
             return
         }
 
         val invokationPlace = object {}.javaClass.enclosingMethod!!.name
 
-        myLaunch {
-            val authorizationCoordinator = coordinatorsFactory.createAuthorizationCoordinator()
-
-            authorizationFlowHasBeenStarted = true
-
-            val authenticationFlowCoordinateResult = coordinateTo(authorizationCoordinator)
-
-            myLog(
-                text = "authenticationFlowCoordinateResult = $authenticationFlowCoordinateResult",
-                invokationPlace = invokationPlace
-            )
-
-            authorizationFlowHasBeenStarted = false
-
-            // TODO: start main flow
+        val authorizationCoordinator = withContext(Dispatchers.Default) {
+            coordinatorsFactory.createAuthorizationCoordinator()
         }
+
+        authorizationFlowHasBeenStarted = true
+
+        val authenticationFlowCoordinateResult = coordinateTo(authorizationCoordinator)
+
+        myLog(
+            text = "authenticationFlowCoordinateResult = $authenticationFlowCoordinateResult",
+            invokationPlace = invokationPlace
+        )
+
+        authorizationFlowHasBeenStarted = false
+
+        // TODO: start main flow
     }
 
-    private fun logout() {
-        myLaunch {
-            tdLibGateway
-                .logoutCatching()
+    @Suppress("unused")
+    private suspend fun logout() {
+        val invokationPlace = object {}.javaClass.enclosingMethod!!.name
+
+        withContext(Dispatchers.IO) {
+            val logoutResult = tdLibGateway.logoutCatching()
+
+            logoutResult
                 .onSuccess {
                     finishFlow(
                         tdApiUpdateAuthorizationStateReceiveChannel,
@@ -171,7 +179,10 @@ class ApplicationCoordinatorImp(
                     )
                 }
                 .onFailure {
-                    println()
+                    myLog(
+                        invokationPlace = invokationPlace,
+                        text = "throwable = $it"
+                    )
                 }
         }
     }

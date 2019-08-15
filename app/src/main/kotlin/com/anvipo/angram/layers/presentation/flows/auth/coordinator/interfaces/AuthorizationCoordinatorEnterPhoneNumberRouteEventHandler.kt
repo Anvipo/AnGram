@@ -4,8 +4,8 @@ import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.types.P
 
 interface AuthorizationCoordinatorEnterPhoneNumberRouteEventHandler {
 
-    fun onPressedBackButtonInEnterPhoneNumberScreen()
+    suspend fun onPressedBackButtonInEnterPhoneNumberScreen()
 
-    fun onAddProxyButtonTapped(proxyType: ProxyType)
+    suspend fun onAddProxyButtonTapped(proxyType: ProxyType)
 
 }

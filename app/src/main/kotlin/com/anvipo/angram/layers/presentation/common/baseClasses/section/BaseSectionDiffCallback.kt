@@ -1,4 +1,4 @@
-package com.anvipo.angram.layers.presentation.common.baseClasses.view.section
+package com.anvipo.angram.layers.presentation.common.baseClasses.section
 
 import androidx.recyclerview.widget.DiffUtil
 import com.anvipo.angram.layers.presentation.common.interfaces.view.section.BaseSection
@@ -6,7 +6,7 @@ import com.anvipo.angram.layers.presentation.common.interfaces.view.section.Base
 abstract class BaseSectionDiffCallback<BS : BaseSection> :
     DiffUtil.ItemCallback<BS>() {
 
-    @Suppress("EXPERIMENTAL_API_USAGE")
+    @ExperimentalUnsignedTypes
     final override fun areItemsTheSame(
         oldItem: BS,
         newItem: BS

@@ -8,6 +8,7 @@ import com.anvipo.angram.layers.businessLogic.di.UseCasesModule.appUseCaseQualif
 import com.anvipo.angram.layers.core.message.SystemMessage
 import com.anvipo.angram.layers.data.di.GatewaysModule.tdLibClientHasBeenRecreatedReceiveChannelQualifier
 import com.anvipo.angram.layers.global.types.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
 import org.koin.core.module.Module
@@ -15,7 +16,6 @@ import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-@Suppress("EXPERIMENTAL_API_USAGE")
 object AppActivityModule {
 
     val tdApiUpdateConnectionStateAppPresenterSendChannelQualifier: StringQualifier =
@@ -35,6 +35,7 @@ object AppActivityModule {
 
     val appPresenterQualifier: StringQualifier = named("appPresenter")
 
+    @ExperimentalCoroutinesApi
     @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
 

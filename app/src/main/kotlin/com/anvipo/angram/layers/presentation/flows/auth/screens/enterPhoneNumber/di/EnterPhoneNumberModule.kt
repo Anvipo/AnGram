@@ -14,6 +14,7 @@ import com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumber
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumber.presenter.EnterPhoneNumberPresenterImp
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumber.view.EnterPhoneNumberFragment
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumber.view.EnterPhoneNumberView
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
 import org.koin.core.context.GlobalContext
@@ -23,7 +24,6 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import ru.terrakok.cicerone.android.support.SupportAppScreen
 
-@Suppress("EXPERIMENTAL_API_USAGE")
 object EnterPhoneNumberModule {
 
     class EnterPhoneNumberScreen : SupportAppScreen() {
@@ -49,6 +49,7 @@ object EnterPhoneNumberModule {
     private val tdApiUpdateConnectionStateEnterPhoneNumberScreenBroadcastChannelQualifier =
         named("tdApiUpdateConnectionStateEnterPhoneNumberScreenBroadcastChannel")
 
+    @ExperimentalCoroutinesApi
     @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
 

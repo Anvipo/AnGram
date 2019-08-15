@@ -1,7 +1,7 @@
 package com.anvipo.angram.layers.core
 
-@Suppress("EXPERIMENTAL_API_USAGE")
-class IndexPath(
+class IndexPath
+@ExperimentalUnsignedTypes constructor(
     val section: UInt,
     val row: UInt
 )

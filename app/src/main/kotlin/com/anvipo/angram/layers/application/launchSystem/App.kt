@@ -21,6 +21,7 @@ import com.anvipo.angram.layers.core.CoreHelpers.IS_IN_DEBUG_MODE
 import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
 import com.anvipo.angram.layers.core.CoreHelpers.logIfShould
 import com.anvipo.angram.layers.core.HasLogger
+import com.anvipo.angram.layers.core.UiScope
 import com.anvipo.angram.layers.core.collections.stack.IMutableStack
 import com.anvipo.angram.layers.core.errorMessage
 import com.anvipo.angram.layers.core.message.SystemMessage
@@ -38,37 +39,46 @@ import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticat
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumber.di.EnterPhoneNumberModule
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumber.di.EnterPhoneNumberModule.tdApiUpdateConnectionStateEnterPhoneNumberScreenSendChannelQualifier
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import org.drinkless.td.libcore.telegram.TdApi
+import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 import org.koin.core.error.*
-import kotlin.coroutines.CoroutineContext
 
 class App :
     Application(),
     HasLogger,
-    HasMyCoroutineBuilders {
+    HasMyCoroutineBuilders,
+    CoroutineScope by UiScope() {
 
-    override val coroutineContext: CoroutineContext = Dispatchers.IO
+    override val className: String by lazy { this::class.java.name }
 
-    override val className: String = this::class.java.name
-
+    @ExperimentalCoroutinesApi
     override fun onCreate() {
         super.onCreate()
         initDI()
     }
 
     override fun onTerminate() {
-        super.onTerminate()
-
         val methodName = object {}.javaClass.enclosingMethod!!.name
         val cancellationException = CancellationException("$className::$methodName")
 
-        cancel(cancellationException)
+        try {
+            cancel(cancellationException)
+        } catch (exception: Exception) {
+            myLog(
+                invokationPlace = methodName,
+                text = "exception = $exception"
+            )
+        }
+
+        GatewaysModule.stopCoroutinesWork()
+        super.onTerminate()
     }
 
 
@@ -149,15 +159,15 @@ class App :
             by inject(enabledProxyIdSendChannelQualifier)
 
     private val tdApiUpdateConnectionStateSendChanels by lazy {
-        val tdApiUpdateConnectionStateApplicationPresenterSendChannel
-                by inject<TdApiUpdateConnectionStateSendChannel>(
-                    tdApiUpdateConnectionStateAppPresenterSendChannelQualifier
-                )
+        val tdApiUpdateConnectionStateApplicationPresenterSendChannel =
+            get<TdApiUpdateConnectionStateSendChannel>(
+                tdApiUpdateConnectionStateAppPresenterSendChannelQualifier
+            )
 
-        val tdApiUpdateConnectionStateEnterPhoneNumberScreenSendChannel
-                by inject<TdApiUpdateConnectionStateSendChannel>(
-                    tdApiUpdateConnectionStateEnterPhoneNumberScreenSendChannelQualifier
-                )
+        val tdApiUpdateConnectionStateEnterPhoneNumberScreenSendChannel =
+            get<TdApiUpdateConnectionStateSendChannel>(
+                tdApiUpdateConnectionStateEnterPhoneNumberScreenSendChannelQualifier
+            )
 
         listOf(
             tdApiUpdateConnectionStateApplicationPresenterSendChannel,
@@ -166,15 +176,15 @@ class App :
     }
 
     private val tdApiUpdateAuthorizationStateSendChannels by lazy {
-        val tdApiUpdateAuthorizationStateApplicationCoordinatorSendChannel
-                by inject<TdApiUpdateAuthorizationStateSendChannel>(
-                    tdApiUpdateAuthorizationStateApplicationCoordinatorSendChannelQualifier
-                )
+        val tdApiUpdateAuthorizationStateApplicationCoordinatorSendChannel =
+            get<TdApiUpdateAuthorizationStateSendChannel>(
+                tdApiUpdateAuthorizationStateApplicationCoordinatorSendChannelQualifier
+            )
 
-        val tdApiUpdateAuthorizationStateAuthorizationCoordinatorSendChannel
-                by inject<TdApiUpdateAuthorizationStateSendChannel>(
-                    tdApiUpdateAuthorizationStateAuthorizationCoordinatorSendChannelQualifier
-                )
+        val tdApiUpdateAuthorizationStateAuthorizationCoordinatorSendChannel =
+            get<TdApiUpdateAuthorizationStateSendChannel>(
+                tdApiUpdateAuthorizationStateAuthorizationCoordinatorSendChannelQualifier
+            )
 
         listOf(
             tdApiUpdateAuthorizationStateApplicationCoordinatorSendChannel,
@@ -186,22 +196,25 @@ class App :
         mustRecreateTDLibClientSendChannelQualifier
     )
 
+    @ExperimentalCoroutinesApi
     private fun initDI() {
         val invokationPlace = object {}.javaClass.enclosingMethod!!.name
 
-        val debugModules = listOf(
-            LaunchSystemModule.module,
-            SystemInfrastructureModule.module,
-            UseCasesModule.module,
-            GatewaysModule.module,
-            AppActivityModule.module,
-            ApplicationCoordinatorModule.module,
-            AuthorizationCoordinatorModule.module,
-            EnterPhoneNumberModule.module,
-            EnterAuthenticationCodeModule.module,
-            EnterAuthenticationPasswordModule.module,
-            AddProxyModule.module
-        )
+        val debugModules by lazy {
+            listOf(
+                LaunchSystemModule.module,
+                SystemInfrastructureModule.module,
+                UseCasesModule.module,
+                GatewaysModule.module,
+                AppActivityModule.module,
+                ApplicationCoordinatorModule.module,
+                AuthorizationCoordinatorModule.module,
+                EnterPhoneNumberModule.module,
+                EnterAuthenticationCodeModule.module,
+                EnterAuthenticationPasswordModule.module,
+                AddProxyModule.module
+            )
+        }
 
         if (IS_IN_DEBUG_MODE) {
             startKoin {

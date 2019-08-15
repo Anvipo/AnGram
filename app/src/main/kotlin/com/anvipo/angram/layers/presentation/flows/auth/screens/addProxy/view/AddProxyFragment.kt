@@ -93,7 +93,6 @@ class AddProxyFragment :
 
     private val adapter by lazy { AddProxySectionListAdapter() }
 
-    @Suppress("EXPERIMENTAL_UNSIGNED_LITERALS")
     private fun setupMTProtoUI() {
         presenter.setProxyType(TdApi.ProxyTypeMtproto())
 
@@ -105,7 +104,6 @@ class AddProxyFragment :
         )
     }
 
-    @Suppress("EXPERIMENTAL_UNSIGNED_LITERALS")
     private fun createFirstSection(): AddMTProtoProxySection {
         val firstSectionIndex = 0u
 
@@ -130,7 +128,6 @@ class AddProxyFragment :
         )
     }
 
-    @Suppress("EXPERIMENTAL_UNSIGNED_LITERALS")
     private fun createSecondSection(): AddMTProtoProxySection {
         val secondSectionIndex = 1u
 

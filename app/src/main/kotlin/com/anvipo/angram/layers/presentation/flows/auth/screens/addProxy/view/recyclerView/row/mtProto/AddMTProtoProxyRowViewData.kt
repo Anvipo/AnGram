@@ -2,7 +2,7 @@ package com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.view.r
 
 import android.view.View
 import com.anvipo.angram.R
-import com.anvipo.angram.layers.presentation.common.baseClasses.view.row.RowViewHolder
+import com.anvipo.angram.layers.presentation.common.baseClasses.row.RowViewHolder
 import com.anvipo.angram.layers.presentation.common.interfaces.view.row.BaseRow
 import com.anvipo.angram.layers.presentation.common.interfaces.view.row.RowViewData
 

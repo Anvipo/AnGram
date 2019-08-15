@@ -6,13 +6,14 @@ import com.anvipo.angram.layers.application.launchSystem.appActivity.view.AppVie
 import com.anvipo.angram.layers.businessLogic.useCases.app.AppUseCase
 import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
 import com.anvipo.angram.layers.core.ResourceManager
+import com.anvipo.angram.layers.core.base.classes.BasePresenterImp
 import com.anvipo.angram.layers.core.message.SystemMessage
 import com.anvipo.angram.layers.core.message.SystemMessageType
 import com.anvipo.angram.layers.global.types.*
-import com.anvipo.angram.layers.presentation.common.baseClasses.BasePresenterImp
 import com.arellomobile.mvp.InjectViewState
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.drinkless.td.libcore.telegram.TdApi
 
 @InjectViewState
@@ -40,7 +41,9 @@ class AppPresenterImp(
         val invokationPlace = object {}.javaClass.enclosingMethod!!.name
 
         myLaunch {
-            val applicationCoordinator = coordinatorFactoryMethod()
+            val applicationCoordinator = withContext(Dispatchers.Default) {
+                coordinatorFactoryMethod()
+            }
 
             val applicationFlowCoordinateResult = applicationCoordinator.start()
 
@@ -49,8 +52,10 @@ class AppPresenterImp(
                 text = "applicationFlowCoordinateResult = $applicationFlowCoordinateResult"
             )
 
-            for (tdLibClientHasBeenRecreatedPing in tdLibClientHasBeenRecreatedReceiveChannel) {
-                coldStart()
+            withContext(Dispatchers.IO) {
+                for (tdLibClientHasBeenRecreatedPing in tdLibClientHasBeenRecreatedReceiveChannel) {
+                    coldStart()
+                }
             }
         }
     }
@@ -73,7 +78,9 @@ class AppPresenterImp(
     }
 
     private fun subscribeOnSystemMessages() {
-        myLaunch {
+        myLaunch(
+            context = Dispatchers.IO
+        ) {
             for (receivedSystemMessage in systemMessageReceiveChannel) {
                 onReceivedSystemMessage(receivedSystemMessage)
             }
@@ -81,7 +88,9 @@ class AppPresenterImp(
     }
 
     private fun subscribeOnConnectionStates() {
-        myLaunch {
+        myLaunch(
+            context = Dispatchers.IO
+        ) {
             for (receivedTdApiUpdateConnectionState in tdApiUpdateConnectionStateReceiveChannel) {
                 onReceivedTdApiUpdateConnectionState(receivedTdApiUpdateConnectionState)
             }
@@ -89,19 +98,21 @@ class AppPresenterImp(
     }
 
     private fun subscribeOnEnabledProxyId() {
-        myLaunch {
+        myLaunch(
+            context = Dispatchers.IO
+        ) {
             for (receivedEnabledProxyId in enabledProxyIdReceiveChannel) {
                 onReceivedEnabledProxyId(receivedEnabledProxyId)
             }
         }
     }
 
-    private fun onReceivedSystemMessage(receivedSystemMessage: SystemMessage) {
+    private suspend fun onReceivedSystemMessage(receivedSystemMessage: SystemMessage) {
         val invokationPlace = object {}.javaClass.enclosingMethod!!.name
         val (text, type, shouldBeShownToUser, shouldBeShownInLogs) = receivedSystemMessage
 
         if (shouldBeShownToUser) {
-            myLaunch(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
                 when (type) {
                     SystemMessageType.TOAST -> viewState.showToastMessage(text)
                     SystemMessageType.ALERT -> viewState.showAlertMessage(text)
@@ -117,7 +128,7 @@ class AppPresenterImp(
         }
     }
 
-    private fun onReceivedTdApiUpdateConnectionState(
+    private suspend fun onReceivedTdApiUpdateConnectionState(
         receivedTdApiUpdateConnectionState: TdApiUpdateConnectionState
     ) {
         val connectionState = resourceManager.getString(R.string.connection_state)
@@ -149,7 +160,7 @@ class AppPresenterImp(
             }
         }
 
-        myLaunch(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             viewState.showConnectionStateSnackMessage(
                 text = text,
                 duration = duration
@@ -157,8 +168,8 @@ class AppPresenterImp(
         }
     }
 
-    private fun onReceivedEnabledProxyId(receivedEnabledProxyId: Int?) {
-        myLaunch {
+    private suspend fun onReceivedEnabledProxyId(receivedEnabledProxyId: Int?) {
+        withContext(Dispatchers.IO) {
             useCase.saveEnabledProxyId(receivedEnabledProxyId)
         }
     }

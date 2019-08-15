@@ -3,15 +3,15 @@ package com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.presen
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.businessLogic.useCases.authFlow.addProxy.AddProxyUseCase
 import com.anvipo.angram.layers.core.ResourceManager
+import com.anvipo.angram.layers.core.base.classes.BasePresenterImp
 import com.anvipo.angram.layers.data.gateways.tdLib.errors.TdApiError
-import com.anvipo.angram.layers.presentation.common.baseClasses.BasePresenterImp
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.interfaces.AuthorizationCoordinatorAddProxyRouteEventHandler
 import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.view.AddProxyView
 import com.arellomobile.mvp.InjectViewState
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.drinkless.td.libcore.telegram.TdApi
 
-@Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS")
 @InjectViewState
 class AddProxyPresenterImp(
     private val routeEventHandler: AuthorizationCoordinatorAddProxyRouteEventHandler,
@@ -28,14 +28,19 @@ class AddProxyPresenterImp(
         viewState.showProgress()
 
         myLaunch {
-            useCase
-                .addProxyCatching(
-                    server = "tg-2.rknsosatb.pw",
-                    port = 443,
-                    type = TdApi.ProxyTypeMtproto("dde99993ad3d7146fcf8f3baa789cc62ac")
-                )
+            val addProxyResult =
+                withContext(Dispatchers.IO) {
+                    useCase
+                        .addProxyCatching(
+                            server = "tg-2.rknsosatb.pw",
+                            port = 443,
+                            type = TdApi.ProxyTypeMtproto("dde99993ad3d7146fcf8f3baa789cc62ac")
+                        )
+                }
+
+            addProxyResult
                 .onSuccess {
-                    myLaunch(Dispatchers.Main) {
+                    withContext(Dispatchers.Main) {
                         viewState.hideProgress()
                         viewState.showAlertMessage(
                             resourceManager.getString(R.string.proxy_successfully_has_been_added),
@@ -53,7 +58,7 @@ class AddProxyPresenterImp(
                         }
                     }
 
-                    myLaunch(Dispatchers.Main) {
+                    withContext(Dispatchers.Main) {
                         viewState.hideProgress()
                         viewState.showErrorAlert(errorMessage)
                     }
@@ -63,12 +68,16 @@ class AddProxyPresenterImp(
 
     override fun messageDialogPositiveClicked(tag: String) {
         if (tag == addProxySuccessTag) {
-            routeEventHandler.onSuccessAddProxy()
+            myLaunch {
+                routeEventHandler.onSuccessAddProxy()
+            }
         }
     }
 
     override fun onBackPressed() {
-        routeEventHandler.onPressedBackButtonInAddProxyScreen()
+        myLaunch {
+            routeEventHandler.onPressedBackButtonInAddProxyScreen()
+        }
     }
 
 

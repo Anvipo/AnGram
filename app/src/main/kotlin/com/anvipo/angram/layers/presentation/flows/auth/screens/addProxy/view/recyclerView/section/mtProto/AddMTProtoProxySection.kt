@@ -5,8 +5,8 @@ import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.view.re
 import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.view.recyclerView.row.mtProto.AddMTProtoProxyRow
 import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.view.recyclerView.section.base.AddProxySection
 
-@Suppress("EXPERIMENTAL_API_USAGE")
-class AddMTProtoProxySection(
+class AddMTProtoProxySection
+@ExperimentalUnsignedTypes constructor(
     override val index: UInt,
     override val items: List<AddMTProtoProxyRow>,
     override val headerData: AddMTProtoProxyHeaderData?,

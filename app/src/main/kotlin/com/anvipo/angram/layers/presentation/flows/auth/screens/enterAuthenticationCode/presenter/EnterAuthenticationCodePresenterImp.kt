@@ -3,16 +3,15 @@ package com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthentica
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.businessLogic.useCases.authFlow.enterAuthenticationCode.EnterAuthenticationCodeUseCase
 import com.anvipo.angram.layers.core.ResourceManager
+import com.anvipo.angram.layers.core.base.classes.BasePresenterImp
 import com.anvipo.angram.layers.data.gateways.tdLib.errors.TdApiError
-import com.anvipo.angram.layers.presentation.common.baseClasses.BasePresenterImp
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.interfaces.AuthorizationCoordinatorEnterAuthenticationCodeRouteEventHandler
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationCode.types.CorrectAuthenticationCodeType
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationCode.view.EnterAuthenticationCodeView
 import com.arellomobile.mvp.InjectViewState
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.withContext
 
-@Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS")
 @InjectViewState
 class EnterAuthenticationCodePresenterImp(
     private val routeEventHandler: AuthorizationCoordinatorEnterAuthenticationCodeRouteEventHandler,
@@ -43,13 +42,16 @@ class EnterAuthenticationCodePresenterImp(
         viewState.showProgress()
 
         myLaunch {
-            useCase
-                .checkAuthenticationCodeCatching(
-                    enteredAuthenticationCode = enteredAuthenticationCode,
-                    lastName = lastName,
-                    firstName = firstName
-                )
-                .onFailure { handleAuthenticationCodeFailure(it) }
+            val checkAuthenticationCodeResult = withContext(Dispatchers.IO) {
+                useCase
+                    .checkAuthenticationCodeCatching(
+                        enteredAuthenticationCode = enteredAuthenticationCode,
+                        lastName = lastName,
+                        firstName = firstName
+                    )
+            }
+
+            checkAuthenticationCodeResult.onFailure { handleAuthenticationCodeFailure(it) }
         }
     }
 
@@ -57,13 +59,17 @@ class EnterAuthenticationCodePresenterImp(
         viewState.showProgress()
 
         myLaunch {
-            useCase
-                .resendAuthenticationCodeCatching()
-                .onSuccess { myLaunch(Dispatchers.Main) { viewState.hideProgress() } }
-                .onFailure(::handleAuthenticationCodeFailure)
+            val resendAuthenticationCodeResult = withContext(Dispatchers.IO) {
+                useCase.resendAuthenticationCodeCatching()
+            }
+
+            resendAuthenticationCodeResult
+                .onSuccess { withContext(Dispatchers.Main) { viewState.hideProgress() } }
+                .onFailure { handleAuthenticationCodeFailure(it) }
         }
     }
 
+    @ExperimentalUnsignedTypes
     override fun onGetExpectedCodeLength(expectedCodeLength: UInt) {
         this.expectedCodeLength = expectedCodeLength
         viewState.setMaxLengthOfEditText(this.expectedCodeLength.toInt())
@@ -83,6 +89,7 @@ class EnterAuthenticationCodePresenterImp(
         }
     }
 
+    @ExperimentalUnsignedTypes
     override fun onAuthenticationCodeTextChanged(text: CharSequence?) {
         if (text.isNullOrBlank()) {
             authenticationCodeIsEnteredAndCorrect = false
@@ -149,11 +156,14 @@ class EnterAuthenticationCodePresenterImp(
     }
 
     override fun onBackPressed() {
-        routeEventHandler.onPressedBackButtonInEnterAuthenticationCodeScreen()
+        myLaunch {
+            routeEventHandler.onPressedBackButtonInEnterAuthenticationCodeScreen()
+        }
     }
 
 
     private var enteredPhoneNumber: String = ""
+    @ExperimentalUnsignedTypes
     private var expectedCodeLength: UInt = 10u
 
     private var authenticationCodeIsEnteredAndCorrect: Boolean = false
@@ -163,7 +173,7 @@ class EnterAuthenticationCodePresenterImp(
     private var firstNameIsEntered: Boolean = false
     private var lastNameIsEntered: Boolean = false
 
-    private fun handleAuthenticationCodeFailure(error: Throwable) {
+    private suspend fun handleAuthenticationCodeFailure(error: Throwable) {
         val errorMessage: String = resourceManager.run {
             if (error is TdApiError) {
                 when {
@@ -176,7 +186,7 @@ class EnterAuthenticationCodePresenterImp(
             }
         }
 
-        myLaunch(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             viewState.hideProgress()
             viewState.showErrorAlert(errorMessage)
         }

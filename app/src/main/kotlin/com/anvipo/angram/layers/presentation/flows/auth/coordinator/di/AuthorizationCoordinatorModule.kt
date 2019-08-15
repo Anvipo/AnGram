@@ -14,6 +14,7 @@ import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.di.AddP
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationCode.di.EnterAuthenticationCodeModule.enterAuthenticationCodeScreenFactoryQualifier
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationPassword.di.EnterAuthenticationPasswordModule.enterAuthenticationPasswordScreenFactoryQualifier
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumber.di.EnterPhoneNumberModule.enterPhoneNumberScreenFactoryQualifier
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
 import org.koin.core.module.Module
@@ -21,7 +22,6 @@ import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-@Suppress("EXPERIMENTAL_API_USAGE", "RemoveExplicitTypeArguments")
 object AuthorizationCoordinatorModule {
 
     val tdApiUpdateAuthorizationStateAuthorizationCoordinatorSendChannelQualifier: StringQualifier =
@@ -34,6 +34,8 @@ object AuthorizationCoordinatorModule {
     val authorizationCoordinatorQualifier: StringQualifier = named("authorizationCoordinator")
     private val authorizationScreensFactoryQualifier: StringQualifier = named("authorizationScreensFactory")
 
+    @ExperimentalCoroutinesApi
+    @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
 
         single<TdApiUpdateAuthorizationStateSendChannel>(

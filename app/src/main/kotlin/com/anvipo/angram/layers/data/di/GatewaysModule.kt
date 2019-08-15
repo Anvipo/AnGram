@@ -5,6 +5,7 @@ import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.resour
 import com.anvipo.angram.layers.application.launchSystem.App
 import com.anvipo.angram.layers.core.CoreHelpers.logIfShould
 import com.anvipo.angram.layers.core.CoroutineExceptionHandlerWithLogger
+import com.anvipo.angram.layers.core.IOScope
 import com.anvipo.angram.layers.data.gateways.local.db.room.AppDatabase
 import com.anvipo.angram.layers.data.gateways.local.db.room.proxy.ProxyRoomDAO
 import com.anvipo.angram.layers.data.gateways.local.sharedPreferences.SharedPreferencesDAO
@@ -16,23 +17,18 @@ import com.anvipo.angram.layers.data.gateways.tdLib.authorization.AuthorizationT
 import com.anvipo.angram.layers.data.gateways.tdLib.proxy.ProxyTDLibGateway
 import com.anvipo.angram.layers.data.gateways.tdLib.proxy.ProxyTDLibGatewayImp
 import com.anvipo.angram.layers.global.types.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.launch
 import org.drinkless.td.libcore.telegram.Client
 import org.koin.android.ext.koin.androidApplication
+import org.koin.core.context.GlobalContext
 import org.koin.core.module.Module
 import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
-import kotlin.coroutines.CoroutineContext
 
-@Suppress("EXPERIMENTAL_API_USAGE")
-object GatewaysModule : CoroutineScope {
-
-    override val coroutineContext: CoroutineContext = Dispatchers.IO
+object GatewaysModule : CoroutineScope by IOScope() {
 
     private val appDatabaseQualifier = named("appDatabase")
 
@@ -69,6 +65,19 @@ object GatewaysModule : CoroutineScope {
 
     private var client: Client? = null
 
+    private val mustRecreateTDLibClientReceiveChannel by lazy {
+        GlobalContext.get().koin.get<MustRecreateTDLibClientReceiveChannel>(
+            mustRecreateTDLibClientReceiveChannelQualifier
+        )
+    }
+
+    private val tdLibClientHasBeenRecreatedSendChannel by lazy {
+        GlobalContext.get().koin.get<TDLibClientHasBeenRecreatedSendChannel>(
+            tdLibClientHasBeenRecreatedSendChannelQualifier
+        )
+    }
+
+    @ExperimentalCoroutinesApi
     @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
 
@@ -139,16 +148,7 @@ object GatewaysModule : CoroutineScope {
                     )
                 }
 
-            val mustRecreateTDLibClientReceiveChannel = get<MustRecreateTDLibClientReceiveChannel>(
-                mustRecreateTDLibClientReceiveChannelQualifier
-            )
-
-            val tdLibClientHasBeenRecreatedSendChannel = get<TDLibClientHasBeenRecreatedSendChannel>(
-                tdLibClientHasBeenRecreatedSendChannelQualifier
-            )
-
-            // TODO: cancel launch and receive channel
-            launch(coroutineContext + coroutineExceptionHandlerWithLogger) {
+            launch(coroutineExceptionHandlerWithLogger) {
                 for (mustRecreateTDLibClientPing in mustRecreateTDLibClientReceiveChannel) {
                     client = Client.create(
                         get(tdLibUpdatesHandlerQualifier),
@@ -220,6 +220,22 @@ object GatewaysModule : CoroutineScope {
                 .build()
         }
 
+    }
+
+    fun stopCoroutinesWork() {
+        val methodName = object {}.javaClass.enclosingMethod!!.name
+        val cancellationException = CancellationException("${this::class.java.name}::$methodName")
+
+        mustRecreateTDLibClientReceiveChannel.cancel(cancellationException)
+
+        try {
+            cancel(cancellationException)
+        } catch (exception: Exception) {
+            logIfShould(
+                invokationPlace = methodName,
+                text = "exception = $exception"
+            )
+        }
     }
 
 }

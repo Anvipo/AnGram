@@ -2,8 +2,8 @@ package com.anvipo.angram.layers.presentation.flows.auth.coordinator.interfaces
 
 interface AuthorizationCoordinatorAddProxyRouteEventHandler {
 
-    fun onPressedBackButtonInAddProxyScreen()
+    suspend fun onPressedBackButtonInAddProxyScreen()
 
-    fun onSuccessAddProxy()
+    suspend fun onSuccessAddProxy()
 
 }

@@ -4,6 +4,7 @@ import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationState
 import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationStateReceiveChannel
 import com.anvipo.angram.layers.presentation.common.interfaces.HasMyCoroutineBuilders
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -15,7 +16,7 @@ interface HasCheckAuthorizationStateHelper<T> : HasMyCoroutineBuilders {
     ): T = suspendCoroutine {
         onCreatedCheckAuthorizationStateContinuation(it)
 
-        myLaunch {
+        myLaunch(Dispatchers.IO) {
             for (receivedTdApiUpdateAuthorizationState in tdApiUpdateAuthorizationStateReceiveChannel) {
                 onReceivedTdApiUpdateAuthorizationState(receivedTdApiUpdateAuthorizationState)
             }
@@ -26,7 +27,7 @@ interface HasCheckAuthorizationStateHelper<T> : HasMyCoroutineBuilders {
         checkAuthorizationStateContinuation: Continuation<T>
     )
 
-    fun onReceivedTdApiUpdateAuthorizationState(
+    suspend fun onReceivedTdApiUpdateAuthorizationState(
         receivedTdApiUpdateAuthorizationState: TdApiUpdateAuthorizationState
     )
 

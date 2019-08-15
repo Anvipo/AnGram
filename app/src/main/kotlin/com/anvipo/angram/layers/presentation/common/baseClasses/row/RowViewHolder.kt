@@ -1,4 +1,4 @@
-package com.anvipo.angram.layers.presentation.common.baseClasses.view.row
+package com.anvipo.angram.layers.presentation.common.baseClasses.row
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView

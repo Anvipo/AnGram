@@ -16,6 +16,7 @@ import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.core.HasLogger
 import com.anvipo.angram.layers.core.MyProgressDialog
+import com.anvipo.angram.layers.core.UiScope
 import com.anvipo.angram.layers.core.base.CoreConstants.PROGRESS_TAG
 import com.anvipo.angram.layers.core.base.interfaces.BaseView
 import com.anvipo.angram.layers.core.dialogFragment.ItemsDialogFragment
@@ -24,7 +25,6 @@ import com.anvipo.angram.layers.core.showSnackbarMessage
 import com.anvipo.angram.layers.presentation.common.interfaces.BasePresenter
 import com.anvipo.angram.layers.presentation.common.mvp.MvpAppCompatFragment
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import java.util.concurrent.CancellationException
 
@@ -33,9 +33,9 @@ abstract class BaseFragment :
     MvpAppCompatFragment(),
     BaseView,
     HasLogger,
-    CoroutineScope by MainScope() {
+    CoroutineScope by UiScope() {
 
-    final override val className: String = this::class.java.name
+    final override val className: String by lazy { this::class.java.name }
 
     final override fun onCreateView(
         inflater: LayoutInflater,
@@ -77,7 +77,14 @@ abstract class BaseFragment :
     override fun onDestroy() {
         val methodName = object {}.javaClass.enclosingMethod!!.name
         val cancellationException = CancellationException("$className::$methodName")
-        cancel(cancellationException)
+        try {
+            cancel(cancellationException)
+        } catch (exception: Exception) {
+            myLog(
+                invokationPlace = methodName,
+                text = "exception = $exception"
+            )
+        }
         super.onDestroy()
     }
 
@@ -178,6 +185,31 @@ abstract class BaseFragment :
     }
 
 
+    protected open val shouldShowBackButton: Boolean
+        get() = arguments?.getBoolean(ARG_SHOULD_SHOW_BACK_BUTTON) ?: false
+
+    protected open val actionBarSubtitle: String = ""
+
+    protected abstract val presenter: BasePresenter
+
+    protected abstract val actionBarTitle: String
+    protected abstract val actionBar: Toolbar
+    protected abstract val layoutRes: Int
+        @LayoutRes
+        get
+    @Suppress("MemberVisibilityCanBePrivate")
+    protected val appCompatActivity: AppCompatActivity?
+        get() = (activity as? AppCompatActivity)
+
+    @Suppress("MemberVisibilityCanBePrivate")
+    protected val supportActionBar: ActionBar?
+        get() = appCompatActivity?.supportActionBar
+
+    protected open fun setupUI(): Unit = Unit
+    protected open fun setupClickListeners(): Unit = Unit
+
+    protected open fun extractDataFromBundle(): Unit = Unit
+
     protected fun goToSettings() {
         val applicationID = BuildConfig.APPLICATION_ID //activity?.packageName is same
 
@@ -188,31 +220,6 @@ abstract class BaseFragment :
 
         startActivityForResult(showApplicationDetailsSettings, fromApplicationSettingsRequestCode)
     }
-
-    protected open fun setupUI(): Unit = Unit
-    protected open fun setupClickListeners(): Unit = Unit
-
-    protected open fun extractDataFromBundle(): Unit = Unit
-
-    protected open val shouldShowBackButton: Boolean
-        get() = arguments?.getBoolean(ARG_SHOULD_SHOW_BACK_BUTTON) ?: false
-
-    protected open val actionBarSubtitle: String = ""
-
-    protected abstract val presenter: BasePresenter
-    protected abstract val actionBarTitle: String
-    protected abstract val actionBar: Toolbar
-    protected abstract val layoutRes: Int
-        @LayoutRes
-        get
-
-    @Suppress("MemberVisibilityCanBePrivate")
-    protected val appCompatActivity: AppCompatActivity?
-        get() = (activity as? AppCompatActivity)
-
-    @Suppress("MemberVisibilityCanBePrivate")
-    protected val supportActionBar: ActionBar?
-        get() = appCompatActivity?.supportActionBar
 
     private var instanceStateSaved: Boolean = false
 
