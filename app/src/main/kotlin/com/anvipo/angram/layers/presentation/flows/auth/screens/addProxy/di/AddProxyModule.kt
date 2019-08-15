@@ -11,7 +11,8 @@ import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.present
 import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.types.ProxyType
 import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.view.AddProxyFragment
 import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.view.AddProxyView
-import org.koin.core.context.GlobalContext
+import org.koin.core.KoinComponent
+import org.koin.core.get
 import org.koin.core.module.Module
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.StringQualifier
@@ -23,9 +24,9 @@ object AddProxyModule {
 
     class AddProxyScreen(
         private val parameters: AddProxyScreenParameters
-    ) : SupportAppScreen() {
+    ) : SupportAppScreen(), KoinComponent {
         override fun getFragment(): Fragment =
-            GlobalContext.get().koin.get(addProxyViewQualifier) {
+            get(addProxyViewQualifier) {
                 parametersOf(parameters)
             }
     }

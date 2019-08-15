@@ -22,13 +22,14 @@ import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
 import org.drinkless.td.libcore.telegram.Client
 import org.koin.android.ext.koin.androidApplication
-import org.koin.core.context.GlobalContext
+import org.koin.core.KoinComponent
+import org.koin.core.get
 import org.koin.core.module.Module
 import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-object GatewaysModule : CoroutineScope by IOScope() {
+object GatewaysModule : CoroutineScope by IOScope(), KoinComponent {
 
     private val appDatabaseQualifier = named("appDatabase")
 
@@ -66,13 +67,13 @@ object GatewaysModule : CoroutineScope by IOScope() {
     private var client: Client? = null
 
     private val mustRecreateTDLibClientReceiveChannel by lazy {
-        GlobalContext.get().koin.get<MustRecreateTDLibClientReceiveChannel>(
+        get<MustRecreateTDLibClientReceiveChannel>(
             mustRecreateTDLibClientReceiveChannelQualifier
         )
     }
 
     private val tdLibClientHasBeenRecreatedSendChannel by lazy {
-        GlobalContext.get().koin.get<TDLibClientHasBeenRecreatedSendChannel>(
+        get<TDLibClientHasBeenRecreatedSendChannel>(
             tdLibClientHasBeenRecreatedSendChannelQualifier
         )
     }

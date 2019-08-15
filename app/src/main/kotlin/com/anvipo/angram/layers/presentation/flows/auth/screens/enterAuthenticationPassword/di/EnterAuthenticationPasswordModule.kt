@@ -10,7 +10,8 @@ import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticat
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationPassword.presenter.EnterAuthenticationPasswordPresenterImp
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationPassword.view.EnterAuthenticationPasswordFragment
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationPassword.view.EnterAuthenticationPasswordView
-import org.koin.core.context.GlobalContext
+import org.koin.core.KoinComponent
+import org.koin.core.get
 import org.koin.core.module.Module
 import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier.named
@@ -19,9 +20,8 @@ import ru.terrakok.cicerone.android.support.SupportAppScreen
 
 object EnterAuthenticationPasswordModule {
 
-    class EnterPasswordScreen : SupportAppScreen() {
-        override fun getFragment(): Fragment =
-            GlobalContext.get().koin.get(enterAuthenticationPasswordViewQualifier)
+    class EnterPasswordScreen : SupportAppScreen(), KoinComponent {
+        override fun getFragment(): Fragment = get(enterAuthenticationPasswordViewQualifier)
     }
 
     val enterAuthenticationPasswordScreenFactoryQualifier: StringQualifier =

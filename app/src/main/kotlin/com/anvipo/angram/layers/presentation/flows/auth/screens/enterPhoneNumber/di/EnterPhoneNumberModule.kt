@@ -17,7 +17,8 @@ import com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumber
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
-import org.koin.core.context.GlobalContext
+import org.koin.core.KoinComponent
+import org.koin.core.get
 import org.koin.core.module.Module
 import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier.named
@@ -26,9 +27,8 @@ import ru.terrakok.cicerone.android.support.SupportAppScreen
 
 object EnterPhoneNumberModule {
 
-    class EnterPhoneNumberScreen : SupportAppScreen() {
-        override fun getFragment(): Fragment =
-            GlobalContext.get().koin.get(enterPhoneNumberViewQualifier)
+    class EnterPhoneNumberScreen : SupportAppScreen(), KoinComponent {
+        override fun getFragment(): Fragment = get(enterPhoneNumberViewQualifier)
     }
 
     val enterPhoneNumberScreenFactoryQualifier: StringQualifier =

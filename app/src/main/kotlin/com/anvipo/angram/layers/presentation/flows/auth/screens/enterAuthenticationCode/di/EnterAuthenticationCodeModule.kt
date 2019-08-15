@@ -10,7 +10,8 @@ import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticat
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationCode.presenter.EnterAuthenticationCodePresenterImp
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationCode.view.EnterAuthenticationCodeFragment
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationCode.view.EnterAuthenticationCodeView
-import org.koin.core.context.GlobalContext
+import org.koin.core.KoinComponent
+import org.koin.core.get
 import org.koin.core.module.Module
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.StringQualifier
@@ -22,9 +23,9 @@ object EnterAuthenticationCodeModule {
 
     class EnterAuthenticationCodeScreen(
         private val parameters: EnterAuthenticationCodeScreenParameters
-    ) : SupportAppScreen() {
+    ) : SupportAppScreen(), KoinComponent {
         override fun getFragment(): Fragment =
-            GlobalContext.get().koin.get(enterAuthenticationCodeViewQualifier) {
+            get(enterAuthenticationCodeViewQualifier) {
                 parametersOf(parameters)
             }
     }
