@@ -1,6 +1,6 @@
 package com.anvipo.angram.layers.data.gateways.local.sharedPreferences
 
-import android.annotation.SuppressLint
+import androidx.core.content.edit
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.core.ResourceManager
 
@@ -17,13 +17,9 @@ class SharedPreferencesDAOImp(
             )
             ?.toIntOrNull()
 
-    @SuppressLint("ApplySharedPref")
     override fun saveEnabledProxyId(enabledProxyId: Int?) {
-        val sharedPreferences = resourceManager.getSharedPreferences()
-
-        with(sharedPreferences.edit()) {
+        resourceManager.getSharedPreferences().edit(commit = true) {
             putString(resourceManager.getString(R.string.enabled_proxy_id), enabledProxyId?.toString())
-            commit()
         }
     }
 

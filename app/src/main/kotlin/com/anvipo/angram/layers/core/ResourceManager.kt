@@ -3,6 +3,7 @@ package com.anvipo.angram.layers.core
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.annotation.StringRes
+import androidx.core.content.getSystemService
 import com.anvipo.angram.R
 
 @Suppress("unused")
@@ -15,7 +16,7 @@ class ResourceManager(val context: Context) {
         vararg formatArgs: Any
     ): String = String.format(context.getString(id, *formatArgs))
 
-    fun getSystemService(serviceName: String): Any? = context.getSystemService(serviceName)
+    inline fun <reified T : Any> getSystemService(): T? = context.getSystemService()
 
     fun getSharedPreferences(): SharedPreferences {
         val preferenceFileKey = getString(R.string.preference_file_key)
