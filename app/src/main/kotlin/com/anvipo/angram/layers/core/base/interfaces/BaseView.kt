@@ -1,6 +1,5 @@
 package com.anvipo.angram.layers.core.base.interfaces
 
-import com.anvipo.angram.layers.presentation.common.interfaces.Presentable
 import com.arellomobile.mvp.MvpView
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy

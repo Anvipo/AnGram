@@ -10,7 +10,7 @@ import com.anvipo.angram.layers.core.dialogFragment.MessageDialogFragment
 import com.anvipo.angram.layers.core.hideKeyboard
 import com.anvipo.angram.layers.core.hideWithAnimate
 import com.anvipo.angram.layers.core.showWithAnimate
-import com.anvipo.angram.layers.presentation.common.PhoneNumberTextWatcher
+import com.anvipo.angram.layers.core.textWatchers.PhoneNumberTextWatcher
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumber.di.EnterPhoneNumberModule.enterPhoneNumberPresenterQualifier
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumber.presenter.EnterPhoneNumberPresenter
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumber.presenter.EnterPhoneNumberPresenterImp

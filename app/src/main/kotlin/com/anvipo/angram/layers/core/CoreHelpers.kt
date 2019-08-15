@@ -2,10 +2,6 @@ package com.anvipo.angram.layers.core
 
 import android.util.Log
 import com.anvipo.angram.BuildConfig
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.SupervisorJob
 
 @Suppress("unused")
 object CoreHelpers {
@@ -47,27 +43,3 @@ object CoreHelpers {
     }
 
 }
-
-val Throwable.errorMessage: String
-    get() {
-        val firstStackTraceElement = this.stackTrace?.firstOrNull()
-        val nullableErrorMessage = this.message
-
-        return when {
-            nullableErrorMessage != null -> nullableErrorMessage
-            firstStackTraceElement != null -> "Error in ${firstStackTraceElement.className} class" +
-                    " in ${firstStackTraceElement.fileName} file" +
-                    " in ${firstStackTraceElement.methodName} method" +
-                    " in ${firstStackTraceElement.lineNumber} line"
-            else -> "Undefined error: $this"
-        }
-    }
-
-@Suppress("FunctionName")
-fun UiScope(): CoroutineScope = MainScope()
-
-@Suppress("FunctionName")
-fun IOScope(): CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-
-@Suppress("FunctionName")
-fun CPUScope(): CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)

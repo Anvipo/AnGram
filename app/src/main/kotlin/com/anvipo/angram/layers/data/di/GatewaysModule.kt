@@ -4,8 +4,8 @@ import androidx.room.Room
 import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.resourceManagerQualifier
 import com.anvipo.angram.layers.application.launchSystem.App
 import com.anvipo.angram.layers.core.CoreHelpers.logIfShould
-import com.anvipo.angram.layers.core.CoroutineExceptionHandlerWithLogger
 import com.anvipo.angram.layers.core.IOScope
+import com.anvipo.angram.layers.core.logHelpers.CoroutineExceptionHandlerWithLogger
 import com.anvipo.angram.layers.data.gateways.local.db.room.AppDatabase
 import com.anvipo.angram.layers.data.gateways.local.db.room.proxy.ProxyRoomDAO
 import com.anvipo.angram.layers.data.gateways.local.sharedPreferences.SharedPreferencesDAO

@@ -1,6 +1,6 @@
 package com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumber.presenter
 
-import com.anvipo.angram.layers.presentation.common.interfaces.BasePresenter
+import com.anvipo.angram.layers.core.base.interfaces.BasePresenter
 
 interface EnterPhoneNumberPresenter : BasePresenter {
 

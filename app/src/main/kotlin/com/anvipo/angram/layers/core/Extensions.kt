@@ -23,6 +23,14 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import com.anvipo.angram.R
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.SupervisorJob
+import ru.terrakok.cicerone.Navigator
+import ru.terrakok.cicerone.android.support.SupportAppScreen
+import ru.terrakok.cicerone.commands.BackTo
+import ru.terrakok.cicerone.commands.Replace
 
 
 fun Context.color(colorRes: Int): Int = ContextCompat.getColor(this, colorRes)
@@ -70,6 +78,15 @@ fun View.visible(visible: Boolean) {
 fun TextView.showTextOrHide(str: String?) {
     this.text = str
     this.visible(!str.isNullOrBlank())
+}
+
+fun Navigator.setLaunchScreen(screen: SupportAppScreen) {
+    applyCommands(
+        arrayOf(
+            BackTo(null),
+            Replace(screen)
+        )
+    )
 }
 
 fun Fragment.tryOpenLink(
@@ -167,3 +184,27 @@ fun View.hideWithAnimate(
         .alpha(0.0f)
         .duration = animationDuration
 }
+
+val Throwable.errorMessage: String
+    get() {
+        val firstStackTraceElement = this.stackTrace?.firstOrNull()
+        val nullableErrorMessage = this.message
+
+        return when {
+            nullableErrorMessage != null -> nullableErrorMessage
+            firstStackTraceElement != null -> "Error in ${firstStackTraceElement.className} class" +
+                    " in ${firstStackTraceElement.fileName} file" +
+                    " in ${firstStackTraceElement.methodName} method" +
+                    " in ${firstStackTraceElement.lineNumber} line"
+            else -> "Undefined error: $this"
+        }
+    }
+
+@Suppress("FunctionName")
+fun UiScope(): CoroutineScope = MainScope()
+
+@Suppress("FunctionName")
+fun IOScope(): CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
+@Suppress("FunctionName")
+fun CPUScope(): CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)

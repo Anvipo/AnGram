@@ -10,7 +10,7 @@ import com.anvipo.angram.layers.core.base.classes.BaseFragment
 import com.anvipo.angram.layers.core.hideKeyboard
 import com.anvipo.angram.layers.core.hideWithAnimate
 import com.anvipo.angram.layers.core.showWithAnimate
-import com.anvipo.angram.layers.presentation.common.TextWatcherImp
+import com.anvipo.angram.layers.core.textWatchers.TextWatcherImp
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationCode.di.EnterAuthenticationCodeModule.enterAuthenticationCodePresenterQualifier
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationCode.presenter.EnterAuthenticationCodePresenter
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationCode.presenter.EnterAuthenticationCodePresenterImp

@@ -2,15 +2,15 @@ package com.anvipo.angram.layers.core.base.classes
 
 import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
 import com.anvipo.angram.layers.core.CoreHelpers.logIfShould
-import com.anvipo.angram.layers.core.HasLogger
 import com.anvipo.angram.layers.core.UiScope
+import com.anvipo.angram.layers.core.base.interfaces.BaseCoordinator
+import com.anvipo.angram.layers.core.base.interfaces.Coordinatorable
+import com.anvipo.angram.layers.core.base.interfaces.HasMyCoroutineBuilders
 import com.anvipo.angram.layers.core.errorMessage
+import com.anvipo.angram.layers.core.logHelpers.HasLogger
 import com.anvipo.angram.layers.core.message.SystemMessage
 import com.anvipo.angram.layers.global.GlobalHelpers.createTGSystemMessage
 import com.anvipo.angram.layers.global.types.SystemMessageSendChannel
-import com.anvipo.angram.layers.presentation.common.interfaces.BaseCoordinator
-import com.anvipo.angram.layers.presentation.common.interfaces.Coordinatorable
-import com.anvipo.angram.layers.presentation.common.interfaces.HasMyCoroutineBuilders
 import kotlinx.coroutines.*
 import kotlin.coroutines.Continuation
 

@@ -1,11 +1,11 @@
 package com.anvipo.angram.layers.core.base.classes
 
-import com.anvipo.angram.layers.core.HasLogger
 import com.anvipo.angram.layers.core.UiScope
+import com.anvipo.angram.layers.core.base.interfaces.BasePresenter
 import com.anvipo.angram.layers.core.base.interfaces.BaseView
+import com.anvipo.angram.layers.core.base.interfaces.HasMyCoroutineBuilders
 import com.anvipo.angram.layers.core.errorMessage
-import com.anvipo.angram.layers.presentation.common.interfaces.BasePresenter
-import com.anvipo.angram.layers.presentation.common.interfaces.HasMyCoroutineBuilders
+import com.anvipo.angram.layers.core.logHelpers.HasLogger
 import com.arellomobile.mvp.MvpPresenter
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope

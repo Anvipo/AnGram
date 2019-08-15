@@ -1,8 +1,8 @@
 package com.anvipo.angram.layers.global
 
+import com.anvipo.angram.layers.core.base.interfaces.HasMyCoroutineBuilders
 import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationState
 import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationStateReceiveChannel
-import com.anvipo.angram.layers.presentation.common.interfaces.HasMyCoroutineBuilders
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlin.coroutines.Continuation

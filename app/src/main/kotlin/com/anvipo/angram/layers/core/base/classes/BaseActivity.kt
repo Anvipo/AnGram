@@ -5,13 +5,13 @@ import android.view.View
 import android.widget.Toast
 import androidx.annotation.LayoutRes
 import com.anvipo.angram.R
-import com.anvipo.angram.layers.core.HasLogger
 import com.anvipo.angram.layers.core.UiScope
+import com.anvipo.angram.layers.core.base.interfaces.BasePresenter
 import com.anvipo.angram.layers.core.base.interfaces.BaseView
 import com.anvipo.angram.layers.core.dialogFragment.MessageDialogFragment
+import com.anvipo.angram.layers.core.logHelpers.HasLogger
+import com.anvipo.angram.layers.core.mvp.MvpAppCompatActivity
 import com.anvipo.angram.layers.core.showSnackbarMessage
-import com.anvipo.angram.layers.presentation.common.interfaces.BasePresenter
-import com.anvipo.angram.layers.presentation.common.mvp.MvpAppCompatActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import java.util.concurrent.CancellationException
