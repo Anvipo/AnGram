@@ -2,9 +2,9 @@ package com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.view.r
 
 import android.view.View
 import com.anvipo.angram.R
-import com.anvipo.angram.layers.core.base.classes.section.SectionViewHolder
-import com.anvipo.angram.layers.core.base.interfaces.view.section.BaseSection
-import com.anvipo.angram.layers.core.base.interfaces.view.section.SectionViewData
+import com.anvipo.angram.layers.core.base.classes.recyclerView.section.SectionViewHolder
+import com.anvipo.angram.layers.core.base.interfaces.recyclerView.section.BaseSection
+import com.anvipo.angram.layers.core.base.interfaces.recyclerView.section.SectionViewData
 
 object AddMTProtoProxySectionViewData :
     SectionViewData {

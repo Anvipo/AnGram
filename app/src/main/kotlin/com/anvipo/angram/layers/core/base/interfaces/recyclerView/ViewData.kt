@@ -1,4 +1,4 @@
-package com.anvipo.angram.layers.core.base.interfaces.view
+package com.anvipo.angram.layers.core.base.interfaces.recyclerView
 
 interface ViewData {
 

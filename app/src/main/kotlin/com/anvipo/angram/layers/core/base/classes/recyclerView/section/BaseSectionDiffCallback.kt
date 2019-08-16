@@ -1,10 +1,9 @@
-package com.anvipo.angram.layers.core.base.classes.section
+package com.anvipo.angram.layers.core.base.classes.recyclerView.section
 
 import androidx.recyclerview.widget.DiffUtil
-import com.anvipo.angram.layers.core.base.interfaces.view.section.BaseSection
+import com.anvipo.angram.layers.core.base.interfaces.recyclerView.section.BaseSection
 
-abstract class BaseSectionDiffCallback<BS : BaseSection> :
-    DiffUtil.ItemCallback<BS>() {
+abstract class BaseSectionDiffCallback<BS : BaseSection> : DiffUtil.ItemCallback<BS>() {
 
     @ExperimentalUnsignedTypes
     final override fun areItemsTheSame(

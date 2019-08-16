@@ -21,7 +21,7 @@ abstract class BasePresenterImp<V : BaseView> :
 
     final override val className: String = this::class.java.name
 
-    override fun myLaunchExceptionHandler(throwable: Throwable) {
+    final override fun myLaunchExceptionHandler(throwable: Throwable) {
         val errorMessage = throwable.errorMessage
         additionalLogging(errorMessage)
         viewState.showErrorAlert(errorMessage)

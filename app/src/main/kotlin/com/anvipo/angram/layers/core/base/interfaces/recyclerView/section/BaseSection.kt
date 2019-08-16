@@ -1,7 +1,7 @@
-package com.anvipo.angram.layers.core.base.interfaces.view.section
+package com.anvipo.angram.layers.core.base.interfaces.recyclerView.section
 
-import com.anvipo.angram.layers.core.base.interfaces.view.BaseHeaderFooterData
-import com.anvipo.angram.layers.core.base.interfaces.view.row.BaseRow
+import com.anvipo.angram.layers.core.base.interfaces.recyclerView.BaseHeaderFooterData
+import com.anvipo.angram.layers.core.base.interfaces.recyclerView.row.BaseRow
 
 @Suppress("unused")
 interface BaseSection {

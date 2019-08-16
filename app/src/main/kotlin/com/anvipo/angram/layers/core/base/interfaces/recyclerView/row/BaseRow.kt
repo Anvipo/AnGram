@@ -1,4 +1,4 @@
-package com.anvipo.angram.layers.core.base.interfaces.view.row
+package com.anvipo.angram.layers.core.base.interfaces.recyclerView.row
 
 import com.anvipo.angram.layers.core.IndexPath
 

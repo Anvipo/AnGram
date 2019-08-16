@@ -1,22 +1,22 @@
-package com.anvipo.angram.layers.core.base.classes.row
+package com.anvipo.angram.layers.core.base.classes.recyclerView.section
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.anvipo.angram.layers.core.base.interfaces.view.row.BaseRow
+import com.anvipo.angram.layers.core.base.interfaces.recyclerView.section.BaseSection
 
 @Suppress("unused")
-abstract class RowListAdapter<BR : BaseRow, RVH : RowViewHolder<BR>> :
-    ListAdapter<BR, RVH> {
+abstract class SectionListAdapter<BS : BaseSection, SVH : SectionViewHolder<BS>> :
+    ListAdapter<BS, SVH> {
 
     constructor(
-        diffCallback: DiffUtil.ItemCallback<BR>
+        diffCallback: DiffUtil.ItemCallback<BS>
     ) : super(diffCallback)
 
     constructor(
-        config: AsyncDifferConfig<BR>
+        config: AsyncDifferConfig<BS>
     ) : super(config)
 
     final override fun getItemViewType(position: Int): Int = getItem(position).viewType
@@ -24,19 +24,19 @@ abstract class RowListAdapter<BR : BaseRow, RVH : RowViewHolder<BR>> :
     final override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): RVH {
+    ): SVH {
         val inflater = LayoutInflater.from(parent.context)
 
         val viewData = getItem(0).viewsData.find { it.viewType == viewType }!!
 
         val itemView = inflater.inflate(viewData.layoutRes, parent, false)
 
-        return viewData.createRowViewHolder(itemView)
+        return viewData.createSectionViewHolder(itemView)
     }
 
     final override fun onBindViewHolder(
-        holder: RVH,
+        holder: SVH,
         position: Int
-    ): Unit = holder.bind(row = getItem(position))
+    ): Unit = holder.bind(section = getItem(position))
 
 }

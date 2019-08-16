@@ -2,9 +2,9 @@ package com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.view.r
 
 import android.view.View
 import com.anvipo.angram.R
-import com.anvipo.angram.layers.core.base.classes.row.RowViewHolder
-import com.anvipo.angram.layers.core.base.interfaces.view.row.BaseRow
-import com.anvipo.angram.layers.core.base.interfaces.view.row.RowViewData
+import com.anvipo.angram.layers.core.base.classes.recyclerView.row.RowViewHolder
+import com.anvipo.angram.layers.core.base.interfaces.recyclerView.row.BaseRow
+import com.anvipo.angram.layers.core.base.interfaces.recyclerView.row.RowViewData
 
 
 object AddMTProtoProxyRowViewData : RowViewData {

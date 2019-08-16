@@ -2,7 +2,7 @@ package com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.view.r
 
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.DiffUtil
-import com.anvipo.angram.layers.core.base.classes.row.RowListAdapter
+import com.anvipo.angram.layers.core.base.classes.recyclerView.row.RowListAdapter
 import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.view.recyclerView.row.base.AddProxyRow
 import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.view.recyclerView.row.base.AddProxyRowViewHolder
 
