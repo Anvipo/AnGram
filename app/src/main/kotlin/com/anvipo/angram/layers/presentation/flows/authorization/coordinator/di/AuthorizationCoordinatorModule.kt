@@ -13,7 +13,7 @@ import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.scr
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.di.AddProxyModule.addProxyScreenFactoryQualifier
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.di.EnterAuthenticationCodeModule.enterAuthenticationCodeScreenFactoryQualifier
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.di.EnterAuthenticationPasswordModule.enterAuthenticationPasswordScreenFactoryQualifier
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterPhoneNumber.di.EnterPhoneNumberModule.enterPhoneNumberScreenFactoryQualifier
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.di.EnterAuthenticationPhoneNumberModule.enterAuthenticationPhoneNumberScreenFactoryQualifier
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
@@ -68,7 +68,7 @@ object AuthorizationCoordinatorModule {
 
         factory<AuthorizationScreensFactory>(authorizationScreensFactoryQualifier) {
             AuthorizationScreensFactoryImpl(
-                enterPhoneNumberScreenFactory = get(enterPhoneNumberScreenFactoryQualifier),
+                enterAuthenticationPhoneNumberScreenFactory = get(enterAuthenticationPhoneNumberScreenFactoryQualifier),
                 enterAuthenticationPasswordScreenFactory = get(enterAuthenticationPasswordScreenFactoryQualifier),
                 enterAuthenticationCodeScreenFactory = get(enterAuthenticationCodeScreenFactoryQualifier),
                 addProxyScreenFactory = get(addProxyScreenFactoryQualifier)

@@ -1,4 +1,4 @@
-package com.anvipo.angram.layers.presentation.flows.authorization.screens.enterPhoneNumber.view
+package com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.view
 
 
 import android.view.View
@@ -11,22 +11,22 @@ import com.anvipo.angram.layers.core.hideKeyboard
 import com.anvipo.angram.layers.core.hideWithAnimate
 import com.anvipo.angram.layers.core.showWithAnimate
 import com.anvipo.angram.layers.core.textWatchers.PhoneNumberTextWatcher
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterPhoneNumber.di.EnterPhoneNumberModule.enterPhoneNumberPresenterQualifier
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterPhoneNumber.presenter.EnterPhoneNumberPresenter
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterPhoneNumber.presenter.EnterPhoneNumberPresenterImpl
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.di.EnterAuthenticationPhoneNumberModule.enterAuthenticationPhoneNumberPresenterQualifier
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.presenter.EnterAuthenticationPhoneNumberPresenter
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.presenter.EnterAuthenticationPhoneNumberPresenterImpl
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import kotlinx.android.synthetic.main.fragment_enter_phone_number.*
 import org.koin.android.ext.android.get
 
-class EnterPhoneNumberFragment :
+class EnterAuthenticationPhoneNumberFragment :
     BaseFragment(),
-    EnterPhoneNumberView,
+    EnterAuthenticationPhoneNumberView,
     MessageDialogFragment.OnClickListener,
     ItemsDialogFragment.OnClickListener {
 
     companion object {
-        fun createNewInstance(): EnterPhoneNumberView = EnterPhoneNumberFragment()
+        fun createNewInstance(): EnterAuthenticationPhoneNumberView = EnterAuthenticationPhoneNumberFragment()
     }
 
     override fun enableNextButton() {
@@ -45,7 +45,7 @@ class EnterPhoneNumberFragment :
         enter_phone_number_next_button.hideWithAnimate()
     }
 
-    override val presenter: EnterPhoneNumberPresenter by lazy { mPresenter }
+    override val presenter: EnterAuthenticationPhoneNumberPresenter by lazy { mPresenter }
     override val layoutRes: Int by lazy { R.layout.fragment_enter_phone_number }
 
     override val actionBarTitle: String by lazy { getString(R.string.enter_your_phone_number_title) }
@@ -74,11 +74,11 @@ class EnterPhoneNumberFragment :
     }
 
     @ProvidePresenter
-    fun providePresenter(): EnterPhoneNumberPresenterImpl =
-        get(enterPhoneNumberPresenterQualifier)
+    fun providePresenter(): EnterAuthenticationPhoneNumberPresenterImpl =
+        get(enterAuthenticationPhoneNumberPresenterQualifier)
 
     @InjectPresenter
-    lateinit var mPresenter: EnterPhoneNumberPresenterImpl
+    lateinit var mPresenter: EnterAuthenticationPhoneNumberPresenterImpl
 
     private val phoneNumberTextWatcher by lazy {
         PhoneNumberTextWatcher(

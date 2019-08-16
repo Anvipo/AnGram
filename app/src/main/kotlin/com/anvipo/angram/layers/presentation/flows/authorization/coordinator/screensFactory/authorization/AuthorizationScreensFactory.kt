@@ -3,11 +3,11 @@ package com.anvipo.angram.layers.presentation.flows.authorization.coordinator.sc
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.addProxy.AddProxyScreenFactory
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.enterAuthenticationCode.EnterAuthenticationCodeScreenFactory
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.enterAuthenticationPassword.EnterAuthenticationPasswordScreenFactory
-import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.enterPhoneNumber.EnterPhoneNumberScreenFactory
+import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.enterAuthenticationPhoneNumber.EnterAuthenticationPhoneNumberScreenFactory
 
 interface AuthorizationScreensFactory {
 
-    val enterPhoneNumberScreenFactory: EnterPhoneNumberScreenFactory
+    val enterAuthenticationPhoneNumberScreenFactory: EnterAuthenticationPhoneNumberScreenFactory
 
     val enterAuthenticationCodeScreenFactory: EnterAuthenticationCodeScreenFactory
 

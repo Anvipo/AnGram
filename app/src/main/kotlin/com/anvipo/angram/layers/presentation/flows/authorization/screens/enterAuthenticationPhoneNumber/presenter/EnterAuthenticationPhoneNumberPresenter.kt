@@ -1,8 +1,8 @@
-package com.anvipo.angram.layers.presentation.flows.authorization.screens.enterPhoneNumber.presenter
+package com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.presenter
 
 import com.anvipo.angram.layers.core.base.interfaces.BasePresenter
 
-interface EnterPhoneNumberPresenter : BasePresenter {
+interface EnterAuthenticationPhoneNumberPresenter : BasePresenter {
 
     fun onAddProxyButtonPressed()
     fun onItemClicked(index: Int)

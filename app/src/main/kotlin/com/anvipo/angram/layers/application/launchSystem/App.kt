@@ -36,8 +36,8 @@ import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.di.AddProxyModule
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.di.EnterAuthenticationCodeModule
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.di.EnterAuthenticationPasswordModule
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterPhoneNumber.di.EnterPhoneNumberModule
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterPhoneNumber.di.EnterPhoneNumberModule.tdApiUpdateConnectionStateEnterPhoneNumberScreenSendChannelQualifier
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.di.EnterAuthenticationPhoneNumberModule
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.di.EnterAuthenticationPhoneNumberModule.tdApiUpdateConnectionStateEnterAuthenticationPhoneNumberScreenSendChannelQualifier
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -164,14 +164,14 @@ class App :
                 tdApiUpdateConnectionStateAppPresenterSendChannelQualifier
             )
 
-        val tdApiUpdateConnectionStateEnterPhoneNumberScreenSendChannel =
+        val tdApiUpdateConnectionStateEnterAuthenticationPhoneNumberScreenSendChannel =
             get<TdApiUpdateConnectionStateSendChannel>(
-                tdApiUpdateConnectionStateEnterPhoneNumberScreenSendChannelQualifier
+                tdApiUpdateConnectionStateEnterAuthenticationPhoneNumberScreenSendChannelQualifier
             )
 
         listOf(
             tdApiUpdateConnectionStateApplicationPresenterSendChannel,
-            tdApiUpdateConnectionStateEnterPhoneNumberScreenSendChannel
+            tdApiUpdateConnectionStateEnterAuthenticationPhoneNumberScreenSendChannel
         )
     }
 
@@ -209,7 +209,7 @@ class App :
                 AppActivityModule.module,
                 ApplicationCoordinatorModule.module,
                 AuthorizationCoordinatorModule.module,
-                EnterPhoneNumberModule.module,
+                EnterAuthenticationPhoneNumberModule.module,
                 EnterAuthenticationCodeModule.module,
                 EnterAuthenticationPasswordModule.module,
                 AddProxyModule.module

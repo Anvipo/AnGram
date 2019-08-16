@@ -27,7 +27,7 @@ class AuthorizationCoordinatorImpl(
     systemMessageSendChannel = systemMessageSendChannel
 ),
     AuthorizationCoordinator,
-    AuthorizationCoordinatorEnterPhoneNumberRouteEventHandler,
+    AuthorizationCoordinatorEnterAuthenticationPhoneNumberRouteEventHandler,
     AuthorizationCoordinatorEnterAuthenticationCodeRouteEventHandler,
     AuthorizationCoordinatorEnterAuthenticationPasswordRouteEventHandler,
     AuthorizationCoordinatorAddProxyRouteEventHandler,
@@ -53,7 +53,7 @@ class AuthorizationCoordinatorImpl(
         }
     }
 
-    override suspend fun onPressedBackButtonInEnterPhoneNumberScreen() {
+    override suspend fun onPressedBackButtonInEnterAuthenticationPhoneNumberScreen() {
         myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
 
         withContext(Dispatchers.Main) {
@@ -75,7 +75,7 @@ class AuthorizationCoordinatorImpl(
         myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
 
         withContext(Dispatchers.Main) {
-            router.backTo(enterPhoneNumberScreen)
+            router.backTo(enterAuthenticationPhoneNumberScreen)
         }
     }
 
@@ -116,13 +116,13 @@ class AuthorizationCoordinatorImpl(
     }
 
 
-    private var enterPhoneNumberScreen: SupportAppScreen? = null
+    private var enterAuthenticationPhoneNumberScreen: SupportAppScreen? = null
 
     private var enterAuthenticationCodeScreenHasBeenPresented = false
 
 
     private suspend fun onAuthStateWaitsPhoneNumber() {
-        showEnterPhoneNumberScreen()
+        showEnterAuthenticationPhoneNumberScreen()
     }
 
     private suspend fun onAuthStateWaitsCode(
@@ -160,17 +160,17 @@ class AuthorizationCoordinatorImpl(
     }
 
 
-    private suspend fun showEnterPhoneNumberScreen() {
+    private suspend fun showEnterAuthenticationPhoneNumberScreen() {
         myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
 
-        enterPhoneNumberScreen = withContext(Dispatchers.Default) {
+        enterAuthenticationPhoneNumberScreen = withContext(Dispatchers.Default) {
             screensFactory
-                .enterPhoneNumberScreenFactory
-                .createEnterPhoneNumberScreen()
+                .enterAuthenticationPhoneNumberScreenFactory
+                .createEnterAuthenticationPhoneNumberScreen()
         }
 
         withContext(Dispatchers.Main) {
-            router.newRootScreen(enterPhoneNumberScreen!!)
+            router.newRootScreen(enterAuthenticationPhoneNumberScreen!!)
         }
     }
 
@@ -185,7 +185,7 @@ class AuthorizationCoordinatorImpl(
         )
 
         if (enterAuthenticationCodeScreenHasBeenPresented) {
-            // TODO: set new parameters in authentication screen
+            // TODO: set new parameters in enter authentication code screen
             return
         }
 
@@ -208,21 +208,21 @@ class AuthorizationCoordinatorImpl(
 
         myLog(
             invokationPlace = object {}.javaClass.enclosingMethod!!.name,
-            text = "Show enter authentication code screen: enterPhoneNumberScreen = $enterPhoneNumberScreen"
+            text = "Show enter authentication code screen: enterAuthenticationPhoneNumberScreen = $enterAuthenticationPhoneNumberScreen"
         )
 
         enterAuthenticationCodeScreenHasBeenPresented = true
 
-        if (enterPhoneNumberScreen == null) {
-            enterPhoneNumberScreen = withContext(Dispatchers.Default) {
+        if (enterAuthenticationPhoneNumberScreen == null) {
+            enterAuthenticationPhoneNumberScreen = withContext(Dispatchers.Default) {
                 screensFactory
-                    .enterPhoneNumberScreenFactory
-                    .createEnterPhoneNumberScreen()
+                    .enterAuthenticationPhoneNumberScreenFactory
+                    .createEnterAuthenticationPhoneNumberScreen()
             }
 
             withContext(Dispatchers.Main) {
                 router.newRootChain(
-                    enterPhoneNumberScreen!!,
+                    enterAuthenticationPhoneNumberScreen!!,
                     enterAuthenticationCodeScreen
                 )
             }
@@ -247,18 +247,18 @@ class AuthorizationCoordinatorImpl(
 
         myLog(
             invokationPlace = object {}.javaClass.enclosingMethod!!.name,
-            text = "Show enter authentication code screen: enterPhoneNumberScreen = $enterPhoneNumberScreen"
+            text = "Show enter authentication code screen: enterAuthenticationPhoneNumberScreen = $enterAuthenticationPhoneNumberScreen"
         )
 
-        if (enterPhoneNumberScreen == null) {
-            enterPhoneNumberScreen = withContext(Dispatchers.Default) {
+        if (enterAuthenticationPhoneNumberScreen == null) {
+            enterAuthenticationPhoneNumberScreen = withContext(Dispatchers.Default) {
                 screensFactory
-                    .enterPhoneNumberScreenFactory
-                    .createEnterPhoneNumberScreen()
+                    .enterAuthenticationPhoneNumberScreenFactory
+                    .createEnterAuthenticationPhoneNumberScreen()
             }
 
             withContext(Dispatchers.Main) {
-                router.newRootChain(enterPhoneNumberScreen!!, enterAuthenticationPasswordScreen)
+                router.newRootChain(enterAuthenticationPhoneNumberScreen!!, enterAuthenticationPasswordScreen)
             }
         } else {
             withContext(Dispatchers.Main) {

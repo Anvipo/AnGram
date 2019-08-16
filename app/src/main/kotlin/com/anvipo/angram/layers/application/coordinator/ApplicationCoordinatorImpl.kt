@@ -151,10 +151,10 @@ class ApplicationCoordinatorImpl(
 
         authorizationFlowHasBeenStarted = true
 
-        val authenticationFlowCoordinateResult = coordinateTo(authorizationCoordinator)
+        val authorizationFlowCoordinateResult = coordinateTo(authorizationCoordinator)
 
         myLog(
-            text = "authenticationFlowCoordinateResult = $authenticationFlowCoordinateResult",
+            text = "authorizationFlowCoordinateResult = $authorizationFlowCoordinateResult",
             invokationPlace = invokationPlace
         )
 

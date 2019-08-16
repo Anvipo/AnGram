@@ -1,11 +1,11 @@
-package com.anvipo.angram.layers.businessLogic.useCases.flows.authorization.enterPhoneNumber
+package com.anvipo.angram.layers.businessLogic.useCases.flows.authorization.enterAuthenticationPhoneNumber
 
 import com.anvipo.angram.layers.data.gateways.tdLib.authorization.AuthorizationTDLibGateway
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterPhoneNumber.types.CorrectPhoneNumberType
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.types.CorrectPhoneNumberType
 
-class EnterPhoneNumberUseCaseImpl(
+class EnterAuthenticationPhoneNumberUseCaseImpl(
     private val authorizationTDLibGateway: AuthorizationTDLibGateway
-) : EnterPhoneNumberUseCase {
+) : EnterAuthenticationPhoneNumberUseCase {
 
     override suspend fun setAuthenticationPhoneNumberCatching(
         enteredPhoneNumber: CorrectPhoneNumberType

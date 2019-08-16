@@ -8,8 +8,8 @@ import com.anvipo.angram.layers.businessLogic.useCases.flows.authorization.enter
 import com.anvipo.angram.layers.businessLogic.useCases.flows.authorization.enterAuthenticationCode.EnterAuthenticationCodeUseCaseImpl
 import com.anvipo.angram.layers.businessLogic.useCases.flows.authorization.enterAuthenticationPassword.EnterAuthenticationPasswordUseCase
 import com.anvipo.angram.layers.businessLogic.useCases.flows.authorization.enterAuthenticationPassword.EnterAuthenticationPasswordUseCaseImpl
-import com.anvipo.angram.layers.businessLogic.useCases.flows.authorization.enterPhoneNumber.EnterPhoneNumberUseCase
-import com.anvipo.angram.layers.businessLogic.useCases.flows.authorization.enterPhoneNumber.EnterPhoneNumberUseCaseImpl
+import com.anvipo.angram.layers.businessLogic.useCases.flows.authorization.enterAuthenticationPhoneNumber.EnterAuthenticationPhoneNumberUseCase
+import com.anvipo.angram.layers.businessLogic.useCases.flows.authorization.enterAuthenticationPhoneNumber.EnterAuthenticationPhoneNumberUseCaseImpl
 import com.anvipo.angram.layers.data.di.GatewaysModule.authorizationTDLibGatewayQualifier
 import com.anvipo.angram.layers.data.di.GatewaysModule.proxyLocalGatewayQualifier
 import com.anvipo.angram.layers.data.di.GatewaysModule.proxyTDLibGatewayQualifier
@@ -24,9 +24,11 @@ object UseCasesModule {
 
     val appUseCaseQualifier: StringQualifier = named("appUseCase")
 
-    val enterPhoneNumberUseCaseQualifier: StringQualifier = named("enterPhoneNumberUseCase")
+    val enterAuthenticationPhoneNumberUseCaseQualifier: StringQualifier =
+        named("enterAuthenticationPhoneNumberUseCase")
     val enterAuthenticationCodeUseCaseQualifier: StringQualifier = named("enterAuthenticationCodeUseCase")
-    val enterAuthenticationPasswordUseCaseQualifier: StringQualifier = named("enterAuthenticationPasswordUseCase")
+    val enterAuthenticationPasswordUseCaseQualifier: StringQualifier =
+        named("enterAuthenticationPasswordUseCase")
 
     val addProxyUseCaseQualifier: StringQualifier = named("addProxyUseCase")
 
@@ -38,8 +40,8 @@ object UseCasesModule {
             )
         }
 
-        factory<EnterPhoneNumberUseCase>(enterPhoneNumberUseCaseQualifier) {
-            EnterPhoneNumberUseCaseImpl(
+        factory<EnterAuthenticationPhoneNumberUseCase>(enterAuthenticationPhoneNumberUseCaseQualifier) {
+            EnterAuthenticationPhoneNumberUseCaseImpl(
                 authorizationTDLibGateway = get(authorizationTDLibGatewayQualifier)
             )
         }
