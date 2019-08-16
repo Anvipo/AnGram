@@ -1,7 +1,7 @@
 package com.anvipo.angram.layers.presentation.flows.authorization.screens.enterPhoneNumber.presenter
 
 import com.anvipo.angram.R
-import com.anvipo.angram.layers.businessLogic.useCases.authFlow.enterPhoneNumber.EnterPhoneNumberUseCase
+import com.anvipo.angram.layers.businessLogic.useCases.flows.authorization.enterPhoneNumber.EnterPhoneNumberUseCase
 import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
 import com.anvipo.angram.layers.core.ResourceManager
 import com.anvipo.angram.layers.core.base.classes.BasePresenterImpl

@@ -1,7 +1,7 @@
 package com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.presenter
 
 import com.anvipo.angram.R
-import com.anvipo.angram.layers.businessLogic.useCases.authFlow.enterAuthenticationCode.EnterAuthenticationCodeUseCase
+import com.anvipo.angram.layers.businessLogic.useCases.flows.authorization.enterAuthenticationCode.EnterAuthenticationCodeUseCase
 import com.anvipo.angram.layers.core.ResourceManager
 import com.anvipo.angram.layers.core.base.classes.BasePresenterImpl
 import com.anvipo.angram.layers.data.gateways.tdLib.errors.TdApiError
