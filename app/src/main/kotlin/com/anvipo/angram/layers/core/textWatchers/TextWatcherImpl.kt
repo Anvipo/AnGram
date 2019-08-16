@@ -3,7 +3,7 @@ package com.anvipo.angram.layers.core.textWatchers
 import android.text.Editable
 import android.text.TextWatcher
 
-class TextWatcherImp(
+class TextWatcherImpl(
     private val onEnteredText: ((String) -> Unit)? = null
 ) : TextWatcher {
 

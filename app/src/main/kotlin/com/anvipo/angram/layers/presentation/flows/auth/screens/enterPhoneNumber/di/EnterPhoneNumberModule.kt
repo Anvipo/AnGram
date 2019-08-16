@@ -9,9 +9,9 @@ import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionStateReceiveCh
 import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionStateSendChannel
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorQualifier
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.screensFactory.enterPhoneNumber.EnterPhoneNumberScreenFactory
-import com.anvipo.angram.layers.presentation.flows.auth.coordinator.screensFactory.enterPhoneNumber.EnterPhoneNumberScreenFactoryImp
+import com.anvipo.angram.layers.presentation.flows.auth.coordinator.screensFactory.enterPhoneNumber.EnterPhoneNumberScreenFactoryImpl
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumber.presenter.EnterPhoneNumberPresenter
-import com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumber.presenter.EnterPhoneNumberPresenterImp
+import com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumber.presenter.EnterPhoneNumberPresenterImpl
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumber.view.EnterPhoneNumberFragment
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumber.view.EnterPhoneNumberView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -54,7 +54,7 @@ object EnterPhoneNumberModule {
     val module: Module = module {
 
         factory<EnterPhoneNumberScreenFactory>(enterPhoneNumberScreenFactoryQualifier) {
-            EnterPhoneNumberScreenFactoryImp(
+            EnterPhoneNumberScreenFactoryImpl(
                 koinScope = this
             )
         }
@@ -90,7 +90,7 @@ object EnterPhoneNumberModule {
         }
 
         factory<EnterPhoneNumberPresenter>(enterPhoneNumberPresenterQualifier) {
-            EnterPhoneNumberPresenterImp(
+            EnterPhoneNumberPresenterImpl(
                 routeEventHandler = get(authorizationCoordinatorQualifier),
                 useCase = get(enterPhoneNumberUseCaseQualifier),
                 resourceManager = get(resourceManagerQualifier),

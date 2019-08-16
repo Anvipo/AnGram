@@ -4,7 +4,7 @@ import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticat
 import org.koin.core.scope.Scope
 import ru.terrakok.cicerone.android.support.SupportAppScreen
 
-class EnterAuthenticationPasswordScreenFactoryImp(
+class EnterAuthenticationPasswordScreenFactoryImpl(
     private val koinScope: Scope
 ) : EnterAuthenticationPasswordScreenFactory {
 

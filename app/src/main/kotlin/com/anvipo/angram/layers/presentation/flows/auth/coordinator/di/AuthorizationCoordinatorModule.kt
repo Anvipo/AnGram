@@ -6,10 +6,10 @@ import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationState
 import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationStateBroadcastChannel
 import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationStateReceiveChannel
 import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationStateSendChannel
-import com.anvipo.angram.layers.presentation.flows.auth.coordinator.AuthorizationCoordinatorImp
+import com.anvipo.angram.layers.presentation.flows.auth.coordinator.AuthorizationCoordinatorImpl
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.interfaces.AuthorizationCoordinator
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.screensFactory.authorization.AuthorizationScreensFactory
-import com.anvipo.angram.layers.presentation.flows.auth.coordinator.screensFactory.authorization.AuthorizationScreensFactoryImp
+import com.anvipo.angram.layers.presentation.flows.auth.coordinator.screensFactory.authorization.AuthorizationScreensFactoryImpl
 import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.di.AddProxyModule.addProxyScreenFactoryQualifier
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationCode.di.EnterAuthenticationCodeModule.enterAuthenticationCodeScreenFactoryQualifier
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationPassword.di.EnterAuthenticationPasswordModule.enterAuthenticationPasswordScreenFactoryQualifier
@@ -57,7 +57,7 @@ object AuthorizationCoordinatorModule {
         }
 
         factory<AuthorizationCoordinator>(authorizationCoordinatorQualifier) {
-            AuthorizationCoordinatorImp(
+            AuthorizationCoordinatorImpl(
                 router = get(routerQualifier),
                 screensFactory = get(authorizationScreensFactoryQualifier),
                 tdApiUpdateAuthorizationStateReceiveChannel =
@@ -67,7 +67,7 @@ object AuthorizationCoordinatorModule {
         }
 
         factory<AuthorizationScreensFactory>(authorizationScreensFactoryQualifier) {
-            AuthorizationScreensFactoryImp(
+            AuthorizationScreensFactoryImpl(
                 enterPhoneNumberScreenFactory = get(enterPhoneNumberScreenFactoryQualifier),
                 enterAuthenticationPasswordScreenFactory = get(enterAuthenticationPasswordScreenFactoryQualifier),
                 enterAuthenticationCodeScreenFactory = get(enterAuthenticationCodeScreenFactoryQualifier),

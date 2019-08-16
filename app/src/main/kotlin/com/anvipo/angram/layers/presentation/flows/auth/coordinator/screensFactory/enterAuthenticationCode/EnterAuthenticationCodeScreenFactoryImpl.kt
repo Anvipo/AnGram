@@ -6,7 +6,7 @@ import org.koin.core.parameter.parametersOf
 import org.koin.core.scope.Scope
 import ru.terrakok.cicerone.android.support.SupportAppScreen
 
-class EnterAuthenticationCodeScreenFactoryImp(
+class EnterAuthenticationCodeScreenFactoryImpl(
     private val koinScope: Scope
 ) : EnterAuthenticationCodeScreenFactory {
 

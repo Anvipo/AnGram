@@ -10,7 +10,7 @@ import com.anvipo.angram.R
 import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.navigatorHolderQualifier
 import com.anvipo.angram.layers.application.launchSystem.appActivity.di.AppActivityModule.appPresenterQualifier
 import com.anvipo.angram.layers.application.launchSystem.appActivity.presenter.AppPresenter
-import com.anvipo.angram.layers.application.launchSystem.appActivity.presenter.AppPresenterImp
+import com.anvipo.angram.layers.application.launchSystem.appActivity.presenter.AppPresenterImpl
 import com.anvipo.angram.layers.core.base.classes.BaseActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -59,10 +59,10 @@ class AppActivity :
 
 
     @ProvidePresenter
-    fun providePresenter(): AppPresenterImp = get(appPresenterQualifier)
+    fun providePresenter(): AppPresenterImpl = get(appPresenterQualifier)
 
     @InjectPresenter
-    lateinit var mPresenter: AppPresenterImp
+    lateinit var mPresenter: AppPresenterImpl
 
 
     private fun changeThemeFromSplashToApp() {

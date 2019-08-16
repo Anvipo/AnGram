@@ -10,10 +10,10 @@ import com.anvipo.angram.layers.core.base.classes.BaseFragment
 import com.anvipo.angram.layers.core.hideKeyboard
 import com.anvipo.angram.layers.core.hideWithAnimate
 import com.anvipo.angram.layers.core.showWithAnimate
-import com.anvipo.angram.layers.core.textWatchers.TextWatcherImp
+import com.anvipo.angram.layers.core.textWatchers.TextWatcherImpl
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationCode.di.EnterAuthenticationCodeModule.enterAuthenticationCodePresenterQualifier
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationCode.presenter.EnterAuthenticationCodePresenter
-import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationCode.presenter.EnterAuthenticationCodePresenterImp
+import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationCode.presenter.EnterAuthenticationCodePresenterImpl
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import kotlinx.android.synthetic.main.fragment_enter_authentication_code.*
@@ -104,11 +104,11 @@ class EnterAuthenticationCodeFragment : BaseFragment(), EnterAuthenticationCodeV
     override val presenter: EnterAuthenticationCodePresenter by lazy { mPresenter }
 
     @ProvidePresenter
-    fun providePresenter(): EnterAuthenticationCodePresenterImp =
+    fun providePresenter(): EnterAuthenticationCodePresenterImpl =
         get(enterAuthenticationCodePresenterQualifier)
 
     @InjectPresenter
-    lateinit var mPresenter: EnterAuthenticationCodePresenterImp
+    lateinit var mPresenter: EnterAuthenticationCodePresenterImpl
 
     private fun onClickedResendAuthenticationCodeButton(
         @Suppress("UNUSED_PARAMETER") view: View
@@ -140,19 +140,19 @@ class EnterAuthenticationCodeFragment : BaseFragment(), EnterAuthenticationCodeV
     }
 
     private val authCodeTextWatcher by lazy {
-        TextWatcherImp(
+        TextWatcherImpl(
             onEnteredText = { presenter.onAuthenticationCodeTextChanged(it) }
         )
     }
 
     private val firstNameTextWatcher by lazy {
-        TextWatcherImp(
+        TextWatcherImpl(
             onEnteredText = { presenter.onFirstNameTextChanged(it) }
         )
     }
 
     private val lastNameTextWatcher by lazy {
-        TextWatcherImp(
+        TextWatcherImpl(
             onEnteredText = { presenter.onLastNameTextChanged(it) }
         )
     }

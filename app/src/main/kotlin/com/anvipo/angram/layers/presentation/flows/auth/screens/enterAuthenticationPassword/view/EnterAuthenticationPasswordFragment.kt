@@ -5,7 +5,7 @@ import com.anvipo.angram.R
 import com.anvipo.angram.layers.core.base.classes.BaseFragment
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationPassword.di.EnterAuthenticationPasswordModule.enterAuthenticationPasswordPresenterQualifier
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationPassword.presenter.EnterAuthenticationPasswordPresenter
-import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationPassword.presenter.EnterAuthenticationPasswordPresenterImp
+import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationPassword.presenter.EnterAuthenticationPasswordPresenterImpl
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import kotlinx.android.synthetic.main.fragment_enter_authentication_password.*
@@ -31,10 +31,10 @@ class EnterAuthenticationPasswordFragment : BaseFragment(), EnterAuthenticationP
 
 
     @ProvidePresenter
-    fun providePresenter(): EnterAuthenticationPasswordPresenterImp =
+    fun providePresenter(): EnterAuthenticationPasswordPresenterImpl =
         get(enterAuthenticationPasswordPresenterQualifier)
 
     @InjectPresenter
-    lateinit var mPresenter: EnterAuthenticationPasswordPresenterImp
+    lateinit var mPresenter: EnterAuthenticationPasswordPresenterImpl
 
 }

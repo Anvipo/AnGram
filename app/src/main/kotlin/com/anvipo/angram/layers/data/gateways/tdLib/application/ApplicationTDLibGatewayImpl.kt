@@ -9,7 +9,7 @@ import org.drinkless.td.libcore.telegram.Client
 import org.drinkless.td.libcore.telegram.TdApi
 import java.util.*
 
-class ApplicationTDLibGatewayImp(
+class ApplicationTDLibGatewayImpl(
     tdLibClient: Client,
     private val resourceManager: ResourceManager
 ) :

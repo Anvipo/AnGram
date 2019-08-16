@@ -1,4 +1,4 @@
-package com.anvipo.angram.layers.data.gateways.local.db.room.entities.proxy.type.imp
+package com.anvipo.angram.layers.data.gateways.local.db.room.entities.proxy.type.impl
 
 import com.anvipo.angram.layers.data.gateways.local.db.room.entities.proxy.type.base.TdApiProxyTypeRoomEntity
 

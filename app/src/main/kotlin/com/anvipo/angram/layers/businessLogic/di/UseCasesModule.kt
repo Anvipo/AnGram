@@ -1,15 +1,15 @@
 package com.anvipo.angram.layers.businessLogic.di
 
 import com.anvipo.angram.layers.businessLogic.useCases.app.AppUseCase
-import com.anvipo.angram.layers.businessLogic.useCases.app.AppUseCaseImp
+import com.anvipo.angram.layers.businessLogic.useCases.app.AppUseCaseImpl
 import com.anvipo.angram.layers.businessLogic.useCases.authFlow.addProxy.AddProxyUseCase
-import com.anvipo.angram.layers.businessLogic.useCases.authFlow.addProxy.AddProxyUseCaseImp
+import com.anvipo.angram.layers.businessLogic.useCases.authFlow.addProxy.AddProxyUseCaseImpl
 import com.anvipo.angram.layers.businessLogic.useCases.authFlow.enterAuthenticationCode.EnterAuthenticationCodeUseCase
-import com.anvipo.angram.layers.businessLogic.useCases.authFlow.enterAuthenticationCode.EnterAuthenticationCodeUseCaseImp
+import com.anvipo.angram.layers.businessLogic.useCases.authFlow.enterAuthenticationCode.EnterAuthenticationCodeUseCaseImpl
 import com.anvipo.angram.layers.businessLogic.useCases.authFlow.enterAuthenticationPassword.EnterAuthenticationPasswordUseCase
-import com.anvipo.angram.layers.businessLogic.useCases.authFlow.enterAuthenticationPassword.EnterAuthenticationPasswordUseCaseImp
+import com.anvipo.angram.layers.businessLogic.useCases.authFlow.enterAuthenticationPassword.EnterAuthenticationPasswordUseCaseImpl
 import com.anvipo.angram.layers.businessLogic.useCases.authFlow.enterPhoneNumber.EnterPhoneNumberUseCase
-import com.anvipo.angram.layers.businessLogic.useCases.authFlow.enterPhoneNumber.EnterPhoneNumberUseCaseImp
+import com.anvipo.angram.layers.businessLogic.useCases.authFlow.enterPhoneNumber.EnterPhoneNumberUseCaseImpl
 import com.anvipo.angram.layers.data.di.GatewaysModule.authorizationTDLibGatewayQualifier
 import com.anvipo.angram.layers.data.di.GatewaysModule.proxyLocalGatewayQualifier
 import com.anvipo.angram.layers.data.di.GatewaysModule.proxyTDLibGatewayQualifier
@@ -33,31 +33,31 @@ object UseCasesModule {
     val module: Module = module {
 
         factory<AppUseCase>(appUseCaseQualifier) {
-            AppUseCaseImp(
+            AppUseCaseImpl(
                 sharedPreferencesGateway = get(sharedPreferencesGatewayQualifier)
             )
         }
 
         factory<EnterPhoneNumberUseCase>(enterPhoneNumberUseCaseQualifier) {
-            EnterPhoneNumberUseCaseImp(
+            EnterPhoneNumberUseCaseImpl(
                 authorizationTDLibGateway = get(authorizationTDLibGatewayQualifier)
             )
         }
 
         factory<EnterAuthenticationCodeUseCase>(enterAuthenticationCodeUseCaseQualifier) {
-            EnterAuthenticationCodeUseCaseImp(
+            EnterAuthenticationCodeUseCaseImpl(
                 tdLibGateway = get(authorizationTDLibGatewayQualifier)
             )
         }
 
         factory<EnterAuthenticationPasswordUseCase>(enterAuthenticationPasswordUseCaseQualifier) {
-            EnterAuthenticationPasswordUseCaseImp(
+            EnterAuthenticationPasswordUseCaseImpl(
                 tdLibGateway = get(authorizationTDLibGatewayQualifier)
             )
         }
 
         factory<AddProxyUseCase>(addProxyUseCaseQualifier) {
-            AddProxyUseCaseImp(
+            AddProxyUseCaseImpl(
                 tdLibGateway = get(proxyTDLibGatewayQualifier),
                 dbGateway = get(proxyLocalGatewayQualifier)
             )

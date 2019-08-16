@@ -14,7 +14,7 @@ import com.anvipo.angram.layers.global.types.SystemMessageSendChannel
 import kotlinx.coroutines.*
 import kotlin.coroutines.Continuation
 
-abstract class BaseCoordinatorImp<CoordinateResultType>(
+abstract class BaseCoordinatorImpl<CoordinateResultType>(
     private val systemMessageSendChannel: SystemMessageSendChannel
 ) :
     BaseCoordinator<CoordinateResultType>,

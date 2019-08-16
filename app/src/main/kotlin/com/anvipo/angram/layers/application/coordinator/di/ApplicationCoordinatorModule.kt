@@ -1,9 +1,9 @@
 package com.anvipo.angram.layers.application.coordinator.di
 
 import com.anvipo.angram.layers.application.coordinator.ApplicationCoordinator
-import com.anvipo.angram.layers.application.coordinator.ApplicationCoordinatorImp
+import com.anvipo.angram.layers.application.coordinator.ApplicationCoordinatorImpl
 import com.anvipo.angram.layers.application.coordinator.coordinatorsFactory.ApplicationCoordinatorsFactory
-import com.anvipo.angram.layers.application.coordinator.coordinatorsFactory.ApplicationCoordinatorsFactoryImp
+import com.anvipo.angram.layers.application.coordinator.coordinatorsFactory.ApplicationCoordinatorsFactoryImpl
 import com.anvipo.angram.layers.application.launchSystem.appActivity.di.AppActivityModule.systemMessageSendChannelQualifier
 import com.anvipo.angram.layers.data.di.GatewaysModule.applicationTDLibGatewayQualifier
 import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationState
@@ -54,7 +54,7 @@ object ApplicationCoordinatorModule {
         }
 
         factory<ApplicationCoordinator>(applicationCoordinatorQualifier) {
-            ApplicationCoordinatorImp(
+            ApplicationCoordinatorImpl(
                 coordinatorsFactory = get(applicationCoordinatorsFactoryQualifier),
                 tdLibGateway = get(applicationTDLibGatewayQualifier),
                 tdApiUpdateAuthorizationStateReceiveChannel =
@@ -64,7 +64,7 @@ object ApplicationCoordinatorModule {
         }
 
         factory<ApplicationCoordinatorsFactory>(applicationCoordinatorsFactoryQualifier) {
-            ApplicationCoordinatorsFactoryImp(
+            ApplicationCoordinatorsFactoryImpl(
                 koinScope = this
             )
         }

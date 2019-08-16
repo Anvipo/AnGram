@@ -5,7 +5,7 @@ import com.anvipo.angram.layers.presentation.flows.auth.coordinator.screensFacto
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.screensFactory.enterAuthenticationPassword.EnterAuthenticationPasswordScreenFactory
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.screensFactory.enterPhoneNumber.EnterPhoneNumberScreenFactory
 
-class AuthorizationScreensFactoryImp(
+class AuthorizationScreensFactoryImpl(
     override val enterPhoneNumberScreenFactory: EnterPhoneNumberScreenFactory,
     override val enterAuthenticationCodeScreenFactory: EnterAuthenticationCodeScreenFactory,
     override val enterAuthenticationPasswordScreenFactory: EnterAuthenticationPasswordScreenFactory,

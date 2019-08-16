@@ -4,7 +4,7 @@ import com.anvipo.angram.layers.data.gateways.tdLib.base.BaseTdLibGateway
 import org.drinkless.td.libcore.telegram.Client
 import org.drinkless.td.libcore.telegram.TdApi
 
-class ProxyTDLibGatewayImp(tdLibClient: Client) :
+class ProxyTDLibGatewayImpl(tdLibClient: Client) :
     BaseTdLibGateway(tdLibClient),
     ProxyTDLibGateway {
 

@@ -13,7 +13,7 @@ import com.anvipo.angram.layers.core.showWithAnimate
 import com.anvipo.angram.layers.core.textWatchers.PhoneNumberTextWatcher
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumber.di.EnterPhoneNumberModule.enterPhoneNumberPresenterQualifier
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumber.presenter.EnterPhoneNumberPresenter
-import com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumber.presenter.EnterPhoneNumberPresenterImp
+import com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumber.presenter.EnterPhoneNumberPresenterImpl
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import kotlinx.android.synthetic.main.fragment_enter_phone_number.*
@@ -74,11 +74,11 @@ class EnterPhoneNumberFragment :
     }
 
     @ProvidePresenter
-    fun providePresenter(): EnterPhoneNumberPresenterImp =
+    fun providePresenter(): EnterPhoneNumberPresenterImpl =
         get(enterPhoneNumberPresenterQualifier)
 
     @InjectPresenter
-    lateinit var mPresenter: EnterPhoneNumberPresenterImp
+    lateinit var mPresenter: EnterPhoneNumberPresenterImpl
 
     private val phoneNumberTextWatcher by lazy {
         PhoneNumberTextWatcher(

@@ -7,7 +7,7 @@ import org.koin.core.parameter.parametersOf
 import org.koin.core.scope.Scope
 import ru.terrakok.cicerone.android.support.SupportAppScreen
 
-class AddProxyScreenFactoryImp(
+class AddProxyScreenFactoryImpl(
     private val koinScope: Scope
 ) : AddProxyScreenFactory {
 

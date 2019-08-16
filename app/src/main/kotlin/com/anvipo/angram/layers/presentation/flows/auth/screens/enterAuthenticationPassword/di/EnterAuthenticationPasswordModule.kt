@@ -5,9 +5,9 @@ import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.resour
 import com.anvipo.angram.layers.businessLogic.di.UseCasesModule.enterAuthenticationPasswordUseCaseQualifier
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorQualifier
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.screensFactory.enterAuthenticationPassword.EnterAuthenticationPasswordScreenFactory
-import com.anvipo.angram.layers.presentation.flows.auth.coordinator.screensFactory.enterAuthenticationPassword.EnterAuthenticationPasswordScreenFactoryImp
+import com.anvipo.angram.layers.presentation.flows.auth.coordinator.screensFactory.enterAuthenticationPassword.EnterAuthenticationPasswordScreenFactoryImpl
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationPassword.presenter.EnterAuthenticationPasswordPresenter
-import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationPassword.presenter.EnterAuthenticationPasswordPresenterImp
+import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationPassword.presenter.EnterAuthenticationPasswordPresenterImpl
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationPassword.view.EnterAuthenticationPasswordFragment
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationPassword.view.EnterAuthenticationPasswordView
 import org.koin.core.KoinComponent
@@ -38,7 +38,7 @@ object EnterAuthenticationPasswordModule {
     val module: Module = module {
 
         factory<EnterAuthenticationPasswordScreenFactory>(enterAuthenticationPasswordScreenFactoryQualifier) {
-            EnterAuthenticationPasswordScreenFactoryImp(
+            EnterAuthenticationPasswordScreenFactoryImpl(
                 koinScope = this
             )
         }
@@ -56,7 +56,7 @@ object EnterAuthenticationPasswordModule {
         }
 
         factory<EnterAuthenticationPasswordPresenter>(enterAuthenticationPasswordPresenterQualifier) {
-            EnterAuthenticationPasswordPresenterImp(
+            EnterAuthenticationPasswordPresenterImpl(
                 routeEventHandler = get(authorizationCoordinatorQualifier),
                 useCase = get(enterAuthenticationPasswordUseCaseQualifier),
                 resourceManager = get(resourceManagerQualifier)

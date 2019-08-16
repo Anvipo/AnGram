@@ -4,7 +4,7 @@ import com.anvipo.angram.layers.presentation.flows.auth.screens.enterPhoneNumber
 import org.koin.core.scope.Scope
 import ru.terrakok.cicerone.android.support.SupportAppScreen
 
-class EnterPhoneNumberScreenFactoryImp(
+class EnterPhoneNumberScreenFactoryImpl(
     private val koinScope: Scope
 ) : EnterPhoneNumberScreenFactory {
 

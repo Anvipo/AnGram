@@ -5,9 +5,9 @@ import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.resour
 import com.anvipo.angram.layers.businessLogic.di.UseCasesModule.enterAuthenticationCodeUseCaseQualifier
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorQualifier
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.screensFactory.enterAuthenticationCode.EnterAuthenticationCodeScreenFactory
-import com.anvipo.angram.layers.presentation.flows.auth.coordinator.screensFactory.enterAuthenticationCode.EnterAuthenticationCodeScreenFactoryImp
+import com.anvipo.angram.layers.presentation.flows.auth.coordinator.screensFactory.enterAuthenticationCode.EnterAuthenticationCodeScreenFactoryImpl
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationCode.presenter.EnterAuthenticationCodePresenter
-import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationCode.presenter.EnterAuthenticationCodePresenterImp
+import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationCode.presenter.EnterAuthenticationCodePresenterImpl
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationCode.view.EnterAuthenticationCodeFragment
 import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationCode.view.EnterAuthenticationCodeView
 import org.koin.core.KoinComponent
@@ -51,7 +51,7 @@ object EnterAuthenticationCodeModule {
         factory<EnterAuthenticationCodeScreenFactory>(
             enterAuthenticationCodeScreenFactoryQualifier
         ) {
-            EnterAuthenticationCodeScreenFactoryImp(
+            EnterAuthenticationCodeScreenFactoryImpl(
                 koinScope = this
             )
         }
@@ -75,7 +75,7 @@ object EnterAuthenticationCodeModule {
         }
 
         factory<EnterAuthenticationCodePresenter>(enterAuthenticationCodePresenterQualifier) {
-            EnterAuthenticationCodePresenterImp(
+            EnterAuthenticationCodePresenterImpl(
                 routeEventHandler = get(authorizationCoordinatorQualifier),
                 useCase = get(enterAuthenticationCodeUseCaseQualifier),
                 resourceManager = get(resourceManagerQualifier)

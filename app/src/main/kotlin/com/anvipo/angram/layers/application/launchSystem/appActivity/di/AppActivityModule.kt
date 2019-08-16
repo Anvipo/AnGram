@@ -3,7 +3,7 @@ package com.anvipo.angram.layers.application.launchSystem.appActivity.di
 import com.anvipo.angram.layers.application.coordinator.di.ApplicationCoordinatorModule.applicationCoordinatorQualifier
 import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.resourceManagerQualifier
 import com.anvipo.angram.layers.application.launchSystem.appActivity.presenter.AppPresenter
-import com.anvipo.angram.layers.application.launchSystem.appActivity.presenter.AppPresenterImp
+import com.anvipo.angram.layers.application.launchSystem.appActivity.presenter.AppPresenterImpl
 import com.anvipo.angram.layers.businessLogic.di.UseCasesModule.appUseCaseQualifier
 import com.anvipo.angram.layers.core.message.SystemMessage
 import com.anvipo.angram.layers.data.di.GatewaysModule.tdLibClientHasBeenRecreatedReceiveChannelQualifier
@@ -81,7 +81,7 @@ object AppActivityModule {
 
 
         factory<AppPresenter>(appPresenterQualifier) {
-            AppPresenterImp(
+            AppPresenterImpl(
                 useCase = get(appUseCaseQualifier),
                 coordinatorFactoryMethod = { get(applicationCoordinatorQualifier) },
                 enabledProxyIdReceiveChannel = get(enabledProxyIdReceiveChannelQualifier),

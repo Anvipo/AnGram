@@ -7,7 +7,7 @@ import androidx.room.TypeConverter
 import com.anvipo.angram.layers.data.gateways.local.db.room.base.BaseConverter
 import com.anvipo.angram.layers.data.gateways.local.db.room.entities.proxy.TdApiProxyInfoRoomEntity.Companion.TD_API_PROXY_INFOS_TABLE_NAME
 import com.anvipo.angram.layers.data.gateways.local.db.room.entities.proxy.type.base.TdApiProxyTypeRoomEntity
-import com.anvipo.angram.layers.data.gateways.local.db.room.entities.proxy.type.imp.TdApiMTProtoProxyTypeRoomEntity
+import com.anvipo.angram.layers.data.gateways.local.db.room.entities.proxy.type.impl.TdApiMTProtoProxyTypeRoomEntity
 
 @Entity(tableName = TD_API_PROXY_INFOS_TABLE_NAME)
 class TdApiProxyInfoRoomEntity(

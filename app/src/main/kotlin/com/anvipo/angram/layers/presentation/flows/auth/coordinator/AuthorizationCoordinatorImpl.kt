@@ -1,7 +1,7 @@
 package com.anvipo.angram.layers.presentation.flows.auth.coordinator
 
 import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
-import com.anvipo.angram.layers.core.base.classes.BaseCoordinatorImp
+import com.anvipo.angram.layers.core.base.classes.BaseCoordinatorImpl
 import com.anvipo.angram.layers.global.HasCheckAuthorizationStateHelper
 import com.anvipo.angram.layers.global.types.SystemMessageSendChannel
 import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationState
@@ -18,12 +18,12 @@ import ru.terrakok.cicerone.Router
 import ru.terrakok.cicerone.android.support.SupportAppScreen
 import kotlin.coroutines.Continuation
 
-class AuthorizationCoordinatorImp(
+class AuthorizationCoordinatorImpl(
     private val router: Router,
     private val screensFactory: AuthorizationScreensFactory,
     private val tdApiUpdateAuthorizationStateReceiveChannel: TdApiUpdateAuthorizationStateReceiveChannel,
     systemMessageSendChannel: SystemMessageSendChannel
-) : BaseCoordinatorImp<AuthorizationCoordinateResult>(
+) : BaseCoordinatorImpl<AuthorizationCoordinateResult>(
     systemMessageSendChannel = systemMessageSendChannel
 ),
     AuthorizationCoordinator,

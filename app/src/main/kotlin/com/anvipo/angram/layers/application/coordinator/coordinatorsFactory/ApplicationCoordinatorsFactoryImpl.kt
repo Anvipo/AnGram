@@ -4,7 +4,7 @@ import com.anvipo.angram.layers.presentation.flows.auth.coordinator.di.Authoriza
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.interfaces.AuthorizationCoordinator
 import org.koin.core.scope.Scope
 
-class ApplicationCoordinatorsFactoryImp(
+class ApplicationCoordinatorsFactoryImpl(
     private val koinScope: Scope
 ) : ApplicationCoordinatorsFactory {
 

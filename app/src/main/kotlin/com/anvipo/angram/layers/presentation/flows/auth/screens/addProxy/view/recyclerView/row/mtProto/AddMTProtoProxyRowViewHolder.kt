@@ -1,7 +1,7 @@
 package com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.view.recyclerView.row.mtProto
 
 import android.view.View
-import com.anvipo.angram.layers.core.textWatchers.TextWatcherImp
+import com.anvipo.angram.layers.core.textWatchers.TextWatcherImpl
 import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.view.recyclerView.row.base.AddProxyRowViewHolder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -25,7 +25,7 @@ class AddMTProtoProxyRowViewHolder(
     private val editText: TextInputEditText = editTextInputLayout.add_proxy_edit_text
 
     private val textWatcher by lazy {
-        TextWatcherImp(
+        TextWatcherImpl(
             onEnteredText = { onTextChangedHelper!!(it) }
         )
     }

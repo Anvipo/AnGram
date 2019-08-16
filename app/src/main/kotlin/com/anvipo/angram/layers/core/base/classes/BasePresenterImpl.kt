@@ -12,7 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.ReceiveChannel
 
-abstract class BasePresenterImp<V : BaseView> :
+abstract class BasePresenterImpl<V : BaseView> :
     MvpPresenter<V>(),
     BasePresenter,
     HasMyCoroutineBuilders,

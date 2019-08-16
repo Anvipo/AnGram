@@ -5,9 +5,9 @@ import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.resour
 import com.anvipo.angram.layers.businessLogic.di.UseCasesModule.addProxyUseCaseQualifier
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorQualifier
 import com.anvipo.angram.layers.presentation.flows.auth.coordinator.screensFactory.addProxy.AddProxyScreenFactory
-import com.anvipo.angram.layers.presentation.flows.auth.coordinator.screensFactory.addProxy.AddProxyScreenFactoryImp
+import com.anvipo.angram.layers.presentation.flows.auth.coordinator.screensFactory.addProxy.AddProxyScreenFactoryImpl
 import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.presenter.AddProxyPresenter
-import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.presenter.AddProxyPresenterImp
+import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.presenter.AddProxyPresenterImpl
 import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.types.ProxyType
 import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.view.AddProxyFragment
 import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.view.AddProxyView
@@ -49,7 +49,7 @@ object AddProxyModule {
         factory<AddProxyScreenFactory>(
             addProxyScreenFactoryQualifier
         ) {
-            AddProxyScreenFactoryImp(
+            AddProxyScreenFactoryImpl(
                 koinScope = this
             )
         }
@@ -70,7 +70,7 @@ object AddProxyModule {
         }
 
         factory<AddProxyPresenter>(addProxyPresenterQualifier) {
-            AddProxyPresenterImp(
+            AddProxyPresenterImpl(
                 routeEventHandler = get(authorizationCoordinatorQualifier),
                 useCase = get(addProxyUseCaseQualifier),
                 resourceManager = get(resourceManagerQualifier)

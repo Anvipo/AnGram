@@ -9,13 +9,13 @@ import com.anvipo.angram.layers.core.logHelpers.CoroutineExceptionHandlerWithLog
 import com.anvipo.angram.layers.data.gateways.local.db.room.AppDatabase
 import com.anvipo.angram.layers.data.gateways.local.db.room.proxy.ProxyRoomDAO
 import com.anvipo.angram.layers.data.gateways.local.sharedPreferences.SharedPreferencesDAO
-import com.anvipo.angram.layers.data.gateways.local.sharedPreferences.SharedPreferencesDAOImp
+import com.anvipo.angram.layers.data.gateways.local.sharedPreferences.SharedPreferencesDAOImpl
 import com.anvipo.angram.layers.data.gateways.tdLib.application.ApplicationTDLibGateway
-import com.anvipo.angram.layers.data.gateways.tdLib.application.ApplicationTDLibGatewayImp
+import com.anvipo.angram.layers.data.gateways.tdLib.application.ApplicationTDLibGatewayImpl
 import com.anvipo.angram.layers.data.gateways.tdLib.authorization.AuthorizationTDLibGateway
-import com.anvipo.angram.layers.data.gateways.tdLib.authorization.AuthorizationTDLibGatewayImp
+import com.anvipo.angram.layers.data.gateways.tdLib.authorization.AuthorizationTDLibGatewayImpl
 import com.anvipo.angram.layers.data.gateways.tdLib.proxy.ProxyTDLibGateway
-import com.anvipo.angram.layers.data.gateways.tdLib.proxy.ProxyTDLibGatewayImp
+import com.anvipo.angram.layers.data.gateways.tdLib.proxy.ProxyTDLibGatewayImpl
 import com.anvipo.angram.layers.global.types.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BroadcastChannel
@@ -183,20 +183,20 @@ object GatewaysModule : CoroutineScope by IOScope(), KoinComponent {
         // ---------------------------- GATEWAYS ---------------------
 
         factory<ApplicationTDLibGateway>(applicationTDLibGatewayQualifier) {
-            ApplicationTDLibGatewayImp(
+            ApplicationTDLibGatewayImpl(
                 tdLibClient = get(tdClientQualifier),
                 resourceManager = get(resourceManagerQualifier)
             )
         }
 
         factory<AuthorizationTDLibGateway>(authorizationTDLibGatewayQualifier) {
-            AuthorizationTDLibGatewayImp(
+            AuthorizationTDLibGatewayImpl(
                 tdLibClient = get(tdClientQualifier)
             )
         }
 
         factory<ProxyTDLibGateway>(proxyTDLibGatewayQualifier) {
-            ProxyTDLibGatewayImp(
+            ProxyTDLibGatewayImpl(
                 tdLibClient = get(tdClientQualifier)
             )
         }
@@ -206,7 +206,7 @@ object GatewaysModule : CoroutineScope by IOScope(), KoinComponent {
         }
 
         single<SharedPreferencesDAO>(sharedPreferencesGatewayQualifier) {
-            SharedPreferencesDAOImp(
+            SharedPreferencesDAOImpl(
                 resourceManager = get(resourceManagerQualifier)
             )
         }

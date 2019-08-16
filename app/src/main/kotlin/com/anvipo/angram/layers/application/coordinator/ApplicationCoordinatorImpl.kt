@@ -2,7 +2,7 @@ package com.anvipo.angram.layers.application.coordinator
 
 import com.anvipo.angram.layers.application.coordinator.coordinatorsFactory.ApplicationCoordinatorsFactory
 import com.anvipo.angram.layers.application.coordinator.types.ApplicationCoordinateResult
-import com.anvipo.angram.layers.core.base.classes.BaseCoordinatorImp
+import com.anvipo.angram.layers.core.base.classes.BaseCoordinatorImpl
 import com.anvipo.angram.layers.data.gateways.tdLib.application.ApplicationTDLibGateway
 import com.anvipo.angram.layers.global.HasCheckAuthorizationStateHelper
 import com.anvipo.angram.layers.global.types.SystemMessageSendChannel
@@ -14,12 +14,12 @@ import org.drinkless.td.libcore.telegram.TdApi
 import kotlin.coroutines.Continuation
 
 @Suppress("RedundantUnitReturnType")
-class ApplicationCoordinatorImp(
+class ApplicationCoordinatorImpl(
     private val coordinatorsFactory: ApplicationCoordinatorsFactory,
     private val tdLibGateway: ApplicationTDLibGateway,
     private val tdApiUpdateAuthorizationStateReceiveChannel: TdApiUpdateAuthorizationStateReceiveChannel,
     systemMessageSendChannel: SystemMessageSendChannel
-) : BaseCoordinatorImp<ApplicationCoordinateResult>(
+) : BaseCoordinatorImpl<ApplicationCoordinateResult>(
     systemMessageSendChannel = systemMessageSendChannel
 ),
     ApplicationCoordinator,

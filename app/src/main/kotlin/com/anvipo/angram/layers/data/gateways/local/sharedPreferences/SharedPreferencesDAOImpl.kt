@@ -4,7 +4,7 @@ import androidx.core.content.edit
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.core.ResourceManager
 
-class SharedPreferencesDAOImp(
+class SharedPreferencesDAOImpl(
     private val resourceManager: ResourceManager
 ) : SharedPreferencesDAO {
 

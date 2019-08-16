@@ -13,7 +13,7 @@ import com.anvipo.angram.layers.core.hideWithAnimate
 import com.anvipo.angram.layers.core.showWithAnimate
 import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.di.AddProxyModule.addProxyPresenterQualifier
 import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.presenter.AddProxyPresenter
-import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.presenter.AddProxyPresenterImp
+import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.presenter.AddProxyPresenterImpl
 import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.types.ProxyType
 import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.view.recyclerView.headersAndFooters.mtProto.AddMTProtoProxyHeaderData
 import com.anvipo.angram.layers.presentation.flows.auth.screens.addProxy.view.recyclerView.row.mtProto.AddMTProtoProxyRow
@@ -85,11 +85,11 @@ class AddProxyFragment :
     override val layoutRes: Int by lazy { R.layout.fragment_add_proxy }
 
     @ProvidePresenter
-    fun providePresenter(): AddProxyPresenterImp =
+    fun providePresenter(): AddProxyPresenterImpl =
         get(addProxyPresenterQualifier)
 
     @InjectPresenter
-    lateinit var mPresenter: AddProxyPresenterImp
+    lateinit var mPresenter: AddProxyPresenterImpl
 
     private val adapter by lazy { AddProxySectionListAdapter() }
 

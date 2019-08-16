@@ -6,7 +6,7 @@ import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticat
 import org.drinkless.td.libcore.telegram.Client
 import org.drinkless.td.libcore.telegram.TdApi
 
-class AuthorizationTDLibGatewayImp(
+class AuthorizationTDLibGatewayImpl(
     tdLibClient: Client
 ) : BaseTdLibGateway(tdLibClient),
     AuthorizationTDLibGateway {
