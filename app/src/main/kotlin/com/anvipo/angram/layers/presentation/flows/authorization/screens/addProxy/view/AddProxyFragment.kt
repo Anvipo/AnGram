@@ -45,6 +45,7 @@ class AddProxyFragment :
             }
     }
 
+    @ExperimentalUnsignedTypes
     override fun extractDataFromBundle() {
         (arguments?.getSerializable(ARG_PROXY_TYPE) as ProxyType).let {
             when (it) {
@@ -93,6 +94,7 @@ class AddProxyFragment :
 
     private val adapter by lazy { AddProxySectionListAdapter() }
 
+    @ExperimentalUnsignedTypes
     private fun setupMTProtoUI() {
         presenter.setProxyType(TdApi.ProxyTypeMtproto())
 
@@ -104,6 +106,7 @@ class AddProxyFragment :
         )
     }
 
+    @ExperimentalUnsignedTypes
     private fun createFirstSection(): AddMTProtoProxySection {
         val firstSectionIndex = 0u
 
@@ -128,6 +131,7 @@ class AddProxyFragment :
         )
     }
 
+    @ExperimentalUnsignedTypes
     private fun createSecondSection(): AddMTProtoProxySection {
         val secondSectionIndex = 1u
 
