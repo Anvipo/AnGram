@@ -13,6 +13,7 @@ android {
         jniLibs.srcDir 'src/main/libs'
         jni.srcDirs = [] //disable automatic ndk-build call
     }
+
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
         test.java.srcDirs += 'src/test/kotlin'
@@ -36,19 +37,18 @@ android {
         }
     }
 
-    lintOptions {
-        // use this line to check all rules except those listed
-        disable 'InvalidPackage'
-    }
     buildToolsVersion = build_tools_version
+
     compileOptions {
         sourceCompatibility = source_compatibility
         targetCompatibility = target_compatibility
     }
 
     kotlinOptions {
-        freeCompilerArgs += ["-Xallow-result-return-type"]
-        freeCompilerArgs += ["-Xuse-experimental=kotlin.Experimental"]
+        jvmTarget = source_compatibility
+
+        freeCompilerArgs += "-Xallow-result-return-type"
+        freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
     }
 }
 
