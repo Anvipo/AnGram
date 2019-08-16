@@ -1,9 +1,9 @@
 package com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.presenter
 
-import com.anvipo.angram.layers.core.base.interfaces.BasePresenter
+import com.anvipo.angram.layers.core.base.interfaces.BaseViewModel
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.types.CorrectAuthenticationCodeType
 
-interface EnterAuthenticationCodePresenter : BasePresenter {
+interface EnterAuthenticationCodeViewModel : BaseViewModel {
 
     fun onNextButtonPressed(
         enteredAuthenticationCode: CorrectAuthenticationCodeType,

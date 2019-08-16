@@ -12,8 +12,8 @@ import com.anvipo.angram.layers.core.hideWithAnimate
 import com.anvipo.angram.layers.core.showWithAnimate
 import com.anvipo.angram.layers.core.textWatchers.PhoneNumberTextWatcher
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.di.EnterAuthenticationPhoneNumberModule.enterAuthenticationPhoneNumberPresenterQualifier
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.presenter.EnterAuthenticationPhoneNumberPresenter
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.presenter.EnterAuthenticationPhoneNumberPresenterImpl
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.presenter.EnterAuthenticationPhoneNumberViewModel
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.presenter.EnterAuthenticationPhoneNumberViewModelImpl
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import kotlinx.android.synthetic.main.fragment_enter_phone_number.*
@@ -45,7 +45,7 @@ class EnterAuthenticationPhoneNumberFragment :
         enter_phone_number_next_button.hideWithAnimate()
     }
 
-    override val presenter: EnterAuthenticationPhoneNumberPresenter by lazy { mPresenter }
+    override val viewModel: EnterAuthenticationPhoneNumberViewModel by lazy { mPresenter }
     override val layoutRes: Int by lazy { R.layout.fragment_enter_phone_number }
 
     override val actionBarTitle: String by lazy { getString(R.string.enter_your_phone_number_title) }
@@ -70,19 +70,19 @@ class EnterAuthenticationPhoneNumberFragment :
         tag: String,
         index: Int
     ) {
-        presenter.onItemClicked(index)
+        viewModel.onItemClicked(index)
     }
 
     @ProvidePresenter
-    fun providePresenter(): EnterAuthenticationPhoneNumberPresenterImpl =
+    fun providePresenter(): EnterAuthenticationPhoneNumberViewModelImpl =
         get(enterAuthenticationPhoneNumberPresenterQualifier)
 
     @InjectPresenter
-    lateinit var mPresenter: EnterAuthenticationPhoneNumberPresenterImpl
+    lateinit var mPresenter: EnterAuthenticationPhoneNumberViewModelImpl
 
     private val phoneNumberTextWatcher by lazy {
         PhoneNumberTextWatcher(
-            onEnteredCleanedPhoneNumber = { presenter.onPhoneNumberTextChanged(it) }
+            onEnteredCleanedPhoneNumber = { viewModel.onPhoneNumberTextChanged(it) }
         )
     }
 
@@ -100,7 +100,7 @@ class EnterAuthenticationPhoneNumberFragment :
     private fun onClickedPhoneNumberAddProxyButton(
         @Suppress("UNUSED_PARAMETER") view: View
     ) {
-        presenter.onAddProxyButtonPressed()
+        viewModel.onAddProxyButtonPressed()
     }
 
     private fun onClickedPhoneNumberNextButton(
@@ -108,7 +108,7 @@ class EnterAuthenticationPhoneNumberFragment :
     ) {
         val enteredPhoneNumber = enter_phone_number_edit_text.text.toString()
 
-        presenter.onNextButtonPressed(enteredPhoneNumber)
+        viewModel.onNextButtonPressed(enteredPhoneNumber)
     }
 
 }

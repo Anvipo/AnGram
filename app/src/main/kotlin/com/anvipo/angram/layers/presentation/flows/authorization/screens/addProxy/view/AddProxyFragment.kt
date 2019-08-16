@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.text.InputType
 import android.view.View
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.core.IndexPath
@@ -11,23 +13,21 @@ import com.anvipo.angram.layers.core.base.classes.BaseFragment
 import com.anvipo.angram.layers.core.dialogFragment.MessageDialogFragment
 import com.anvipo.angram.layers.core.hideWithAnimate
 import com.anvipo.angram.layers.core.showWithAnimate
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.di.AddProxyModule.addProxyPresenterQualifier
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.presenter.AddProxyPresenter
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.presenter.AddProxyPresenterImpl
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.di.AddProxyModule.addProxyViewModelQualifier
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.viewModel.AddProxyViewModel
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.types.ProxyType
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.types.ShowAddProxyEvent.HIDE
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.types.ShowAddProxyEvent.SHOW
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.view.recyclerView.headersAndFooters.mtProto.AddMTProtoProxyHeaderData
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.view.recyclerView.row.mtProto.AddMTProtoProxyRow
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.view.recyclerView.section.AddProxySectionListAdapter
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.view.recyclerView.section.mtProto.AddMTProtoProxySection
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import kotlinx.android.synthetic.main.fragment_add_proxy.*
 import org.drinkless.td.libcore.telegram.TdApi
 import org.koin.android.ext.android.get
 
 class AddProxyFragment :
     BaseFragment(),
-    AddProxyView,
     MessageDialogFragment.OnClickListener {
 
     companion object {
@@ -36,7 +36,7 @@ class AddProxyFragment :
         fun createNewInstance(
             proxyType: ProxyType,
             shouldShowBackButton: Boolean
-        ): AddProxyView =
+        ): AddProxyFragment =
             AddProxyFragment().apply {
                 arguments = Bundle().apply {
                     putSerializable(ARG_PROXY_TYPE, proxyType)
@@ -60,23 +60,30 @@ class AddProxyFragment :
         add_proxy_rv.setHasFixedSize(true)
     }
 
+    override fun setupViewModelsObservers() {
+        super.setupViewModelsObservers()
+        viewModel
+            .showAddProxyEvents
+            .observe(this) {
+                @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
+                when (it) {
+                    SHOW -> showAddProxyButton()
+                    HIDE -> hideAddProxyButton()
+                }
+            }
+    }
+
     override fun setupClickListeners() {
         add_proxy_button.setOnClickListener(::onAddProxyButtonClicked)
     }
 
-    override fun showAddProxyButton() {
-        add_proxy_button.showWithAnimate()
-    }
-
-    override fun hideAddProxyButton() {
-        add_proxy_button.hideWithAnimate()
-    }
-
     override fun messageDialogPositiveClicked(tag: String) {
-        presenter.messageDialogPositiveClicked(tag)
+        viewModel.messageDialogPositiveClicked(tag)
     }
 
-    override val presenter: AddProxyPresenter by lazy { mPresenter }
+    override val viewModel: AddProxyViewModel by viewModels {
+        get(addProxyViewModelQualifier)
+    }
 
     override val actionBarTitle: String by lazy { getString(R.string.enter_proxy_server_data) }
 
@@ -85,18 +92,19 @@ class AddProxyFragment :
 
     override val layoutRes: Int by lazy { R.layout.fragment_add_proxy }
 
-    @ProvidePresenter
-    fun providePresenter(): AddProxyPresenterImpl =
-        get(addProxyPresenterQualifier)
-
-    @InjectPresenter
-    lateinit var mPresenter: AddProxyPresenterImpl
-
     private val adapter by lazy { AddProxySectionListAdapter() }
+
+    private fun showAddProxyButton() {
+        add_proxy_button.showWithAnimate()
+    }
+
+    private fun hideAddProxyButton() {
+        add_proxy_button.hideWithAnimate()
+    }
 
     @ExperimentalUnsignedTypes
     private fun setupMTProtoUI() {
-        presenter.setProxyType(TdApi.ProxyTypeMtproto())
+        viewModel.setProxyType(TdApi.ProxyTypeMtproto())
 
         adapter.submitList(
             listOf(
@@ -119,12 +127,12 @@ class AddProxyFragment :
                 AddMTProtoProxyRow(
                     textInputHint = getString(R.string.server_add_mt_proto_proxy_label),
                     indexPath = IndexPath(section = firstSectionIndex, row = 0u),
-                    onTextChanged = { presenter.onServerTextChanged(it) }
+                    onTextChanged = { viewModel.onServerTextChanged(it) }
                 ),
                 AddMTProtoProxyRow(
                     textInputHint = getString(R.string.port_add_mt_proto_proxy_label),
                     indexPath = IndexPath(section = firstSectionIndex, row = 1u),
-                    onTextChanged = { presenter.onPortTextChanged(it) },
+                    onTextChanged = { viewModel.onPortTextChanged(it) },
                     textInputType = InputType.TYPE_CLASS_NUMBER
                 )
             )
@@ -144,7 +152,7 @@ class AddProxyFragment :
                 AddMTProtoProxyRow(
                     textInputHint = getString(R.string.key_add_mtproto_proxy_label),
                     indexPath = IndexPath(section = secondSectionIndex, row = 0u),
-                    onTextChanged = { presenter.onSecretTextChanged(it) }
+                    onTextChanged = { viewModel.onSecretTextChanged(it) }
                 )
             )
         )
@@ -153,7 +161,7 @@ class AddProxyFragment :
     private fun onAddProxyButtonClicked(
         @Suppress("UNUSED_PARAMETER") view: View
     ) {
-        presenter.addProxyButtonTapped()
+        viewModel.addProxyButtonTapped()
     }
 
 }

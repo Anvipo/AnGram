@@ -12,8 +12,8 @@ import com.anvipo.angram.layers.core.hideWithAnimate
 import com.anvipo.angram.layers.core.showWithAnimate
 import com.anvipo.angram.layers.core.textWatchers.TextWatcherImpl
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.di.EnterAuthenticationCodeModule.enterAuthenticationCodePresenterQualifier
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.presenter.EnterAuthenticationCodePresenter
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.presenter.EnterAuthenticationCodePresenterImpl
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.presenter.EnterAuthenticationCodeViewModel
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.presenter.EnterAuthenticationCodeViewModelImpl
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import kotlinx.android.synthetic.main.fragment_enter_authentication_code.*
@@ -49,16 +49,16 @@ class EnterAuthenticationCodeFragment : BaseFragment(), EnterAuthenticationCodeV
     @ExperimentalUnsignedTypes
     override fun extractDataFromBundle() {
         val expectedCodeLength = arguments?.getInt(ARG_EXPECTED_CODE_LENGTH) ?: 5
-        presenter.onGetExpectedCodeLength(expectedCodeLength.toUInt())
+        viewModel.onGetExpectedCodeLength(expectedCodeLength.toUInt())
 
         val enteredPhoneNumber = arguments?.getString(ARG_ENTERED_PHONE_NUMBER) ?: ""
-        presenter.onGetEnteredPhoneNumber(enteredPhoneNumber)
+        viewModel.onGetEnteredPhoneNumber(enteredPhoneNumber)
 
         val registrationRequired = arguments?.getBoolean(ARG_REGISTRATION_REQUIRED) ?: false
-        presenter.onGetRegistrationRequired(registrationRequired)
+        viewModel.onGetRegistrationRequired(registrationRequired)
 
         val termsOfServiceText = arguments?.getString(ARG_TERMS_OF_SERVICE_TEXT) ?: ""
-        presenter.onGetTermsOfServiceText(termsOfServiceText)
+        viewModel.onGetTermsOfServiceText(termsOfServiceText)
     }
 
     override fun showRegistrationViews() {
@@ -101,19 +101,19 @@ class EnterAuthenticationCodeFragment : BaseFragment(), EnterAuthenticationCodeV
 
     override val layoutRes: Int = R.layout.fragment_enter_authentication_code
 
-    override val presenter: EnterAuthenticationCodePresenter by lazy { mPresenter }
+    override val viewModel: EnterAuthenticationCodeViewModel by lazy { mPresenter }
 
     @ProvidePresenter
-    fun providePresenter(): EnterAuthenticationCodePresenterImpl =
+    fun providePresenter(): EnterAuthenticationCodeViewModelImpl =
         get(enterAuthenticationCodePresenterQualifier)
 
     @InjectPresenter
-    lateinit var mPresenter: EnterAuthenticationCodePresenterImpl
+    lateinit var mPresenter: EnterAuthenticationCodeViewModelImpl
 
     private fun onClickedResendAuthenticationCodeButton(
         @Suppress("UNUSED_PARAMETER") view: View
     ) {
-        presenter.onResendAuthenticationCodeButtonPressed()
+        viewModel.onResendAuthenticationCodeButtonPressed()
     }
 
     private fun onClickedPhoneNumberNextButton(
@@ -121,7 +121,7 @@ class EnterAuthenticationCodeFragment : BaseFragment(), EnterAuthenticationCodeV
     ) {
         val enteredAuthCode = enter_auth_code_edit_text.text.toString()
 
-        presenter.onNextButtonPressed(
+        viewModel.onNextButtonPressed(
             enteredAuthenticationCode = enteredAuthCode,
             lastName = last_name_edit_text.text.toString(),
             firstName = first_name_edit_text.text.toString()
@@ -141,19 +141,19 @@ class EnterAuthenticationCodeFragment : BaseFragment(), EnterAuthenticationCodeV
 
     private val authCodeTextWatcher by lazy {
         TextWatcherImpl(
-            onEnteredText = { presenter.onAuthenticationCodeTextChanged(it) }
+            onEnteredText = { viewModel.onAuthenticationCodeTextChanged(it) }
         )
     }
 
     private val firstNameTextWatcher by lazy {
         TextWatcherImpl(
-            onEnteredText = { presenter.onFirstNameTextChanged(it) }
+            onEnteredText = { viewModel.onFirstNameTextChanged(it) }
         )
     }
 
     private val lastNameTextWatcher by lazy {
         TextWatcherImpl(
-            onEnteredText = { presenter.onLastNameTextChanged(it) }
+            onEnteredText = { viewModel.onLastNameTextChanged(it) }
         )
     }
 

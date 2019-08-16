@@ -3,7 +3,7 @@ package com.anvipo.angram.layers.presentation.flows.authorization.screens.enterA
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.businessLogic.useCases.flows.authorization.enterAuthenticationCode.EnterAuthenticationCodeUseCase
 import com.anvipo.angram.layers.core.ResourceManager
-import com.anvipo.angram.layers.core.base.classes.BasePresenterImpl
+import com.anvipo.angram.layers.core.base.classes.BaseViewModelImpl
 import com.anvipo.angram.layers.data.gateways.tdLib.errors.TdApiError
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.interfaces.AuthorizationCoordinatorEnterAuthenticationCodeRouteEventHandler
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.types.CorrectAuthenticationCodeType
@@ -13,11 +13,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 @InjectViewState
-class EnterAuthenticationCodePresenterImpl(
+class EnterAuthenticationCodeViewModelImpl(
     private val routeEventHandler: AuthorizationCoordinatorEnterAuthenticationCodeRouteEventHandler,
     private val useCase: EnterAuthenticationCodeUseCase,
     private val resourceManager: ResourceManager
-) : BasePresenterImpl<EnterAuthenticationCodeView>(), EnterAuthenticationCodePresenter {
+) : BaseViewModelImpl<EnterAuthenticationCodeView>(), EnterAuthenticationCodeViewModel {
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()

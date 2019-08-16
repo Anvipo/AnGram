@@ -20,6 +20,7 @@ ext {
     cicerone_version = '5.0.0'
     lottie_version = '3.0.7'
     room_version = '2.1.0'
+    lifecycle_version = '2.1.0-rc01'
 }
 
 buildscript {

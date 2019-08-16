@@ -4,8 +4,8 @@ import androidx.appcompat.widget.Toolbar
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.core.base.classes.BaseFragment
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.di.EnterAuthenticationPasswordModule.enterAuthenticationPasswordPresenterQualifier
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.presenter.EnterAuthenticationPasswordPresenter
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.presenter.EnterAuthenticationPasswordPresenterImpl
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.presenter.EnterAuthenticationPasswordViewModel
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.presenter.EnterAuthenticationPasswordViewModelImpl
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import kotlinx.android.synthetic.main.fragment_enter_authentication_password.*
@@ -19,11 +19,11 @@ class EnterAuthenticationPasswordFragment : BaseFragment(), EnterAuthenticationP
 
     override fun setupClickListeners() {
         enter_password_next_button.setOnClickListener {
-            presenter.onNextButtonPressed(enter_password_edit_text.text.toString())
+            viewModel.onNextButtonPressed(enter_password_edit_text.text.toString())
         }
     }
 
-    override val presenter: EnterAuthenticationPasswordPresenter by lazy { mPresenter }
+    override val viewModel: EnterAuthenticationPasswordViewModel by lazy { mPresenter }
     override val actionBarTitle: String by lazy { getString(R.string.enter_password) }
     override val actionBar: Toolbar
         get() = enter_phone_number_toolbar as Toolbar
@@ -31,10 +31,10 @@ class EnterAuthenticationPasswordFragment : BaseFragment(), EnterAuthenticationP
 
 
     @ProvidePresenter
-    fun providePresenter(): EnterAuthenticationPasswordPresenterImpl =
+    fun providePresenter(): EnterAuthenticationPasswordViewModelImpl =
         get(enterAuthenticationPasswordPresenterQualifier)
 
     @InjectPresenter
-    lateinit var mPresenter: EnterAuthenticationPasswordPresenterImpl
+    lateinit var mPresenter: EnterAuthenticationPasswordViewModelImpl
 
 }

@@ -6,8 +6,8 @@ import com.anvipo.angram.layers.businessLogic.di.UseCasesModule.enterAuthenticat
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorQualifier
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.enterAuthenticationCode.EnterAuthenticationCodeScreenFactory
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.enterAuthenticationCode.EnterAuthenticationCodeScreenFactoryImpl
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.presenter.EnterAuthenticationCodePresenter
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.presenter.EnterAuthenticationCodePresenterImpl
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.presenter.EnterAuthenticationCodeViewModel
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.presenter.EnterAuthenticationCodeViewModelImpl
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.view.EnterAuthenticationCodeFragment
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.view.EnterAuthenticationCodeView
 import org.koin.core.KoinComponent
@@ -74,8 +74,8 @@ object EnterAuthenticationCodeModule {
             EnterAuthenticationCodeScreen(parameters = parameters)
         }
 
-        factory<EnterAuthenticationCodePresenter>(enterAuthenticationCodePresenterQualifier) {
-            EnterAuthenticationCodePresenterImpl(
+        factory<EnterAuthenticationCodeViewModel>(enterAuthenticationCodePresenterQualifier) {
+            EnterAuthenticationCodeViewModelImpl(
                 routeEventHandler = get(authorizationCoordinatorQualifier),
                 useCase = get(enterAuthenticationCodeUseCaseQualifier),
                 resourceManager = get(resourceManagerQualifier)

@@ -1,23 +1,29 @@
-package com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.presenter
+package com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.viewModel
 
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.businessLogic.useCases.flows.authorization.addProxy.AddProxyUseCase
 import com.anvipo.angram.layers.core.ResourceManager
-import com.anvipo.angram.layers.core.base.classes.BasePresenterImpl
+import com.anvipo.angram.layers.core.base.classes.BaseViewModelImpl
+import com.anvipo.angram.layers.core.events.ErrorEvent
+import com.anvipo.angram.layers.core.events.ShowAlertMessageEvent
+import com.anvipo.angram.layers.core.events.SingleLiveEvent
 import com.anvipo.angram.layers.data.gateways.tdLib.errors.TdApiError
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.interfaces.AuthorizationCoordinatorAddProxyRouteEventHandler
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.view.AddProxyView
-import com.arellomobile.mvp.InjectViewState
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.types.ShowAddProxyEvent
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.types.ShowAddProxyEvent.HIDE
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.types.ShowAddProxyEvent.SHOW
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.drinkless.td.libcore.telegram.TdApi
 
-@InjectViewState
-class AddProxyPresenterImpl(
+class AddProxyViewModelImpl(
     private val routeEventHandler: AuthorizationCoordinatorAddProxyRouteEventHandler,
     private val useCase: AddProxyUseCase,
     private val resourceManager: ResourceManager
-) : BasePresenterImpl<AddProxyView>(), AddProxyPresenter {
+) : BaseViewModelImpl(), AddProxyViewModel {
+
+    override val showAddProxyEvents: SingleLiveEvent<ShowAddProxyEvent> =
+        SingleLiveEvent()
 
     override fun coldStart() {
         // TODO: uncomment
@@ -25,7 +31,7 @@ class AddProxyPresenterImpl(
     }
 
     override fun addProxyButtonTapped() {
-        viewState.showProgress()
+        showProgress()
 
         myLaunch {
             val addProxyResult =
@@ -41,11 +47,14 @@ class AddProxyPresenterImpl(
             addProxyResult
                 .onSuccess {
                     withContext(Dispatchers.Main) {
-                        viewState.hideProgress()
-                        viewState.showAlertMessage(
-                            resourceManager.getString(R.string.proxy_successfully_has_been_added),
-                            cancelable = false,
-                            messageDialogTag = addProxySuccessTag
+                        hideProgress()
+                        showAlertMessage(
+                            ShowAlertMessageEvent(
+                                title = null,
+                                text = resourceManager.getString(R.string.proxy_successfully_has_been_added),
+                                cancelable = false,
+                                messageDialogTag = addProxySuccessTag
+                            )
                         )
                     }
                 }
@@ -59,8 +68,8 @@ class AddProxyPresenterImpl(
                     }
 
                     withContext(Dispatchers.Main) {
-                        viewState.hideProgress()
-                        viewState.showErrorAlert(errorMessage)
+                        hideProgress()
+                        showErrorAlert(ErrorEvent(text = errorMessage))
                     }
                 }
         }
@@ -105,18 +114,18 @@ class AddProxyPresenterImpl(
         set(value) {
             field = value
             if (field.isNotEmpty() && port != 0) {
-                viewState.showAddProxyButton()
+                showAddProxyButton()
             } else {
-                viewState.hideAddProxyButton()
+                hideAddProxyButton()
             }
         }
     private var port: Int = 0
         set(value) {
             field = value
             if (serverAddress.isNotEmpty() && field != 0) {
-                viewState.showAddProxyButton()
+                showAddProxyButton()
             } else {
-                viewState.hideAddProxyButton()
+                hideAddProxyButton()
             }
         }
 
@@ -125,5 +134,13 @@ class AddProxyPresenterImpl(
             field = value
             (this.proxyType as TdApi.ProxyTypeMtproto).secret = field
         }
+
+    private fun showAddProxyButton() {
+        showAddProxyEvents.value = SHOW
+    }
+
+    private fun hideAddProxyButton() {
+        showAddProxyEvents.value = HIDE
+    }
 
 }

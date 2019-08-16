@@ -4,18 +4,16 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.LayoutRes
+import androidx.appcompat.app.AppCompatActivity
 import com.anvipo.angram.R
-import com.anvipo.angram.layers.core.base.interfaces.BasePresenter
-import com.anvipo.angram.layers.core.base.interfaces.BaseView
+import com.anvipo.angram.layers.core.base.interfaces.BaseViewModel
 import com.anvipo.angram.layers.core.dialogFragment.MessageDialogFragment
 import com.anvipo.angram.layers.core.logHelpers.HasLogger
-import com.anvipo.angram.layers.core.mvp.MvpAppCompatActivity
 import com.anvipo.angram.layers.core.showSnackbarMessage
 
 @Suppress("unused")
 abstract class BaseActivity :
-    MvpAppCompatActivity(),
-    BaseView,
+    AppCompatActivity(),
     HasLogger {
 
     final override val className: String = this::class.java.name
@@ -28,18 +26,18 @@ abstract class BaseActivity :
         setupClickListeners()
 
         if (savedInstanceState == null) {
-            presenter.coldStart()
+            viewModel.coldStart()
         } else {
-            presenter.hotStart()
+            viewModel.hotStart()
         }
     }
 
     final override fun onPause() {
-        presenter.onPauseTriggered()
+        viewModel.onPauseTriggered()
         super.onPause()
     }
 
-    final override fun showAlertMessage(
+    private fun showAlertMessage(
         text: String,
         title: String?,
         cancelable: Boolean,
@@ -57,15 +55,25 @@ abstract class BaseActivity :
 
     }
 
-    final override fun showErrorAlert(text: String) {
-        showAlertMessage(title = getString(R.string.error_title), text = text)
+    private fun showErrorAlert(
+        title: String? = getString(R.string.error_title),
+        text: String,
+        cancelable: Boolean = true,
+        messageDialogTag: String = ""
+    ) {
+        showAlertMessage(
+            title = title,
+            text = text,
+            cancelable = cancelable,
+            messageDialogTag = messageDialogTag
+        )
     }
 
-    final override fun showToastMessage(text: String) {
+    private fun showToastMessage(text: String) {
         Toast.makeText(this, text, Toast.LENGTH_LONG).show()
     }
 
-    final override fun showSnackMessage(
+    private fun showSnackMessage(
         text: String,
         duration: Int
     ) {
@@ -75,7 +83,7 @@ abstract class BaseActivity :
         )
     }
 
-    final override fun showConnectionStateSnackMessage(
+    private fun showConnectionStateSnackMessage(
         text: String,
         duration: Int
     ) {
@@ -90,7 +98,7 @@ abstract class BaseActivity :
         get() = supportFragmentManager.findFragmentById(R.id.container) as BaseFragment
 
 
-    protected abstract val presenter: BasePresenter
+    protected abstract val viewModel: BaseViewModel
     protected abstract val layoutRes: Int
         @LayoutRes
         get

@@ -4,7 +4,7 @@ import com.anvipo.angram.R
 import com.anvipo.angram.layers.businessLogic.useCases.flows.authorization.enterAuthenticationPhoneNumber.EnterAuthenticationPhoneNumberUseCase
 import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
 import com.anvipo.angram.layers.core.ResourceManager
-import com.anvipo.angram.layers.core.base.classes.BasePresenterImpl
+import com.anvipo.angram.layers.core.base.classes.BaseViewModelImpl
 import com.anvipo.angram.layers.data.gateways.tdLib.errors.TdApiError
 import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionState
 import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionStateReceiveChannel
@@ -19,12 +19,12 @@ import kotlinx.coroutines.withContext
 import org.drinkless.td.libcore.telegram.TdApi
 
 @InjectViewState
-class EnterAuthenticationPhoneNumberPresenterImpl(
+class EnterAuthenticationPhoneNumberViewModelImpl(
     private val useCase: EnterAuthenticationPhoneNumberUseCase,
     private val routeEventHandler: AuthorizationCoordinatorEnterAuthenticationPhoneNumberRouteEventHandler,
     private val resourceManager: ResourceManager,
     private val tdApiUpdateConnectionStateReceiveChannel: TdApiUpdateConnectionStateReceiveChannel
-) : BasePresenterImpl<EnterAuthenticationPhoneNumberView>(), EnterAuthenticationPhoneNumberPresenter {
+) : BaseViewModelImpl<EnterAuthenticationPhoneNumberView>(), EnterAuthenticationPhoneNumberViewModel {
 
     init {
         channelsThatWillBeUnsubscribedInOnDestroy.add(tdApiUpdateConnectionStateReceiveChannel)

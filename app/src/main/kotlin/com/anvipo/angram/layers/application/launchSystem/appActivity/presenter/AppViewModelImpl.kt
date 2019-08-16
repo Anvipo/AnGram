@@ -6,7 +6,7 @@ import com.anvipo.angram.layers.application.launchSystem.appActivity.view.AppVie
 import com.anvipo.angram.layers.businessLogic.useCases.app.AppUseCase
 import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
 import com.anvipo.angram.layers.core.ResourceManager
-import com.anvipo.angram.layers.core.base.classes.BasePresenterImpl
+import com.anvipo.angram.layers.core.base.classes.BaseViewModelImpl
 import com.anvipo.angram.layers.core.message.SystemMessage
 import com.anvipo.angram.layers.core.message.SystemMessageType
 import com.anvipo.angram.layers.global.types.*
@@ -17,7 +17,7 @@ import kotlinx.coroutines.withContext
 import org.drinkless.td.libcore.telegram.TdApi
 
 @InjectViewState
-class AppPresenterImpl(
+class AppViewModelImpl(
     private val useCase: AppUseCase,
     private val coordinatorFactoryMethod: () -> ApplicationCoordinator,
     private val enabledProxyIdReceiveChannel: EnabledProxyIdReceiveChannel,
@@ -25,7 +25,7 @@ class AppPresenterImpl(
     private val tdApiUpdateConnectionStateReceiveChannel: TdApiUpdateConnectionStateReceiveChannel,
     private val tdLibClientHasBeenRecreatedReceiveChannel: TDLibClientHasBeenRecreatedReceiveChannel,
     private val resourceManager: ResourceManager
-) : BasePresenterImpl<AppView>(), AppPresenter {
+) : BaseViewModelImpl<AppView>(), AppViewModel {
 
     init {
         channelsThatWillBeUnsubscribedInOnDestroy.addAll(
@@ -66,7 +66,7 @@ class AppPresenterImpl(
     }
 
     override fun onPauseTriggered() {
-        super<BasePresenterImpl>.onPauseTriggered()
+        super<BaseViewModelImpl>.onPauseTriggered()
         viewState.removeNavigator()
     }
 

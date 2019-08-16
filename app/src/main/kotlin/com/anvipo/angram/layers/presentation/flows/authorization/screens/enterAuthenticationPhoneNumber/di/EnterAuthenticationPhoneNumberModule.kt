@@ -10,8 +10,8 @@ import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionStateSendChann
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorQualifier
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.enterAuthenticationPhoneNumber.EnterAuthenticationPhoneNumberScreenFactory
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.enterAuthenticationPhoneNumber.EnterAuthenticationPhoneNumberScreenFactoryImpl
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.presenter.EnterAuthenticationPhoneNumberPresenter
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.presenter.EnterAuthenticationPhoneNumberPresenterImpl
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.presenter.EnterAuthenticationPhoneNumberViewModel
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.presenter.EnterAuthenticationPhoneNumberViewModelImpl
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.view.EnterAuthenticationPhoneNumberFragment
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.view.EnterAuthenticationPhoneNumberView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -91,10 +91,10 @@ object EnterAuthenticationPhoneNumberModule {
             BroadcastChannel<TdApiUpdateConnectionState>(Channel.CONFLATED)
         }
 
-        factory<EnterAuthenticationPhoneNumberPresenter>(
+        factory<EnterAuthenticationPhoneNumberViewModel>(
             enterAuthenticationPhoneNumberPresenterQualifier
         ) {
-            EnterAuthenticationPhoneNumberPresenterImpl(
+            EnterAuthenticationPhoneNumberViewModelImpl(
                 routeEventHandler = get(authorizationCoordinatorQualifier),
                 useCase = get(enterAuthenticationPhoneNumberUseCaseQualifier),
                 resourceManager = get(resourceManagerQualifier),

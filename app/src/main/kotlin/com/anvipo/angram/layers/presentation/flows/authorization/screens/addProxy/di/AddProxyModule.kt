@@ -6,11 +6,10 @@ import com.anvipo.angram.layers.businessLogic.di.UseCasesModule.addProxyUseCaseQ
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorQualifier
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.addProxy.AddProxyScreenFactory
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.addProxy.AddProxyScreenFactoryImpl
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.presenter.AddProxyPresenter
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.presenter.AddProxyPresenterImpl
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.viewModel.AddProxyViewModel
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.viewModel.AddProxyViewModelImpl
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.types.ProxyType
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.view.AddProxyFragment
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.view.AddProxyView
 import org.koin.core.KoinComponent
 import org.koin.core.get
 import org.koin.core.module.Module
@@ -41,7 +40,7 @@ object AddProxyModule {
     val addProxyViewQualifier: StringQualifier = named("addProxyView")
     val addProxyScreenQualifier: StringQualifier = named("addProxyScreen")
 
-    val addProxyPresenterQualifier: StringQualifier = named("addProxyPresenter")
+    val addProxyViewModelQualifier = named("addProxyViewModel")
 
     @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
@@ -54,7 +53,7 @@ object AddProxyModule {
             )
         }
 
-        factory<AddProxyView>(
+        factory<AddProxyFragment>(
             addProxyViewQualifier
         ) { (parameters: AddProxyScreenParameters) ->
             AddProxyFragment.createNewInstance(
@@ -69,8 +68,8 @@ object AddProxyModule {
             AddProxyScreen(parameters = parameters)
         }
 
-        factory<AddProxyPresenter>(addProxyPresenterQualifier) {
-            AddProxyPresenterImpl(
+        factory<AddProxyViewModel>(addProxyViewModelQualifier) {
+            AddProxyViewModelImpl(
                 routeEventHandler = get(authorizationCoordinatorQualifier),
                 useCase = get(addProxyUseCaseQualifier),
                 resourceManager = get(resourceManagerQualifier)
