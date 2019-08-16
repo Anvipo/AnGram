@@ -1,7 +1,7 @@
 package com.anvipo.angram.layers.data.gateways.tdLib.authorization
 
-import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationCode.types.CorrectAuthenticationCodeType
-import com.anvipo.angram.layers.presentation.flows.auth.screens.enterAuthenticationPassword.types.CorrectAuthenticationPasswordType
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.types.CorrectAuthenticationCodeType
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.types.CorrectAuthenticationPasswordType
 import org.drinkless.td.libcore.telegram.TdApi
 
 interface AuthorizationTDLibGateway {

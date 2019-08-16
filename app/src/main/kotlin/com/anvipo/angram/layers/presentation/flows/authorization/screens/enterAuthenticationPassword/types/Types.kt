@@ -1,0 +1,3 @@
+package com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.types
+
+typealias CorrectAuthenticationPasswordType = String

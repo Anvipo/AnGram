@@ -1,0 +1,23 @@
+package com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.view.recyclerView.row
+
+import androidx.recyclerview.widget.AsyncDifferConfig
+import androidx.recyclerview.widget.DiffUtil
+import com.anvipo.angram.layers.core.base.classes.recyclerView.row.RowListAdapter
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.view.recyclerView.row.base.AddProxyRow
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.view.recyclerView.row.base.AddProxyRowViewHolder
+
+@Suppress("unused")
+abstract class AddProxyRowListAdapter<
+        APR : AddProxyRow,
+        RVH : AddProxyRowViewHolder<APR>
+        > : RowListAdapter<APR, RVH> {
+
+    constructor(
+        diffCallback: DiffUtil.ItemCallback<APR>
+    ) : super(diffCallback)
+
+    constructor(
+        config: AsyncDifferConfig<APR>
+    ) : super(config)
+
+}
