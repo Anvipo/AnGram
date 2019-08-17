@@ -11,8 +11,8 @@ import com.anvipo.angram.R
 import com.anvipo.angram.layers.core.IndexPath
 import com.anvipo.angram.layers.core.base.classes.BaseFragment
 import com.anvipo.angram.layers.core.dialogFragment.MessageDialogFragment
-import com.anvipo.angram.layers.core.events.ShowViewEventParameters.HIDE
-import com.anvipo.angram.layers.core.events.ShowViewEventParameters.SHOW
+import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters.HIDE
+import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters.SHOW
 import com.anvipo.angram.layers.core.hideWithAnimate
 import com.anvipo.angram.layers.core.showWithAnimate
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.di.AddProxyModule.addProxyViewModelQualifier
@@ -88,7 +88,7 @@ class AddProxyFragment :
         add_proxy_button.setOnClickListener(::onAddProxyButtonClicked)
     }
 
-    override fun messageDialogPositiveClicked(tag: String) {
+    override fun messageDialogPositiveClicked(tag: String?) {
         viewModel.messageDialogPositiveClicked(tag)
     }
 

@@ -2,8 +2,8 @@ package com.anvipo.angram.layers.application.launchSystem.appActivity.di
 
 import com.anvipo.angram.layers.application.coordinator.di.ApplicationCoordinatorModule.applicationCoordinatorQualifier
 import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.resourceManagerQualifier
-import com.anvipo.angram.layers.application.launchSystem.appActivity.presenter.AppViewModel
-import com.anvipo.angram.layers.application.launchSystem.appActivity.presenter.AppViewModelImpl
+import com.anvipo.angram.layers.application.launchSystem.appActivity.viewModel.AppViewModel
+import com.anvipo.angram.layers.application.launchSystem.appActivity.viewModel.AppViewModelImpl
 import com.anvipo.angram.layers.businessLogic.di.UseCasesModule.appUseCaseQualifier
 import com.anvipo.angram.layers.core.message.SystemMessage
 import com.anvipo.angram.layers.data.di.GatewaysModule.tdLibClientHasBeenRecreatedReceiveChannelQualifier

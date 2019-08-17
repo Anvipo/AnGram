@@ -4,12 +4,12 @@ import com.anvipo.angram.R
 import com.anvipo.angram.layers.businessLogic.useCases.flows.authorization.enterAuthenticationCode.EnterAuthenticationCodeUseCase
 import com.anvipo.angram.layers.core.ResourceManager
 import com.anvipo.angram.layers.core.base.classes.BaseViewModelImpl
-import com.anvipo.angram.layers.core.events.ShowAlertMessageEventParameters
-import com.anvipo.angram.layers.core.events.ShowErrorEventParameters
-import com.anvipo.angram.layers.core.events.ShowViewEventParameters
-import com.anvipo.angram.layers.core.events.ShowViewEventParameters.HIDE
-import com.anvipo.angram.layers.core.events.ShowViewEventParameters.SHOW
 import com.anvipo.angram.layers.core.events.SingleLiveEvent
+import com.anvipo.angram.layers.core.events.parameters.ShowAlertMessageEventParameters
+import com.anvipo.angram.layers.core.events.parameters.ShowErrorEventParameters
+import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters
+import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters.HIDE
+import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters.SHOW
 import com.anvipo.angram.layers.data.gateways.tdLib.errors.TdApiError
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.interfaces.AuthorizationCoordinatorEnterAuthenticationCodeRouteEventHandler
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.types.CorrectAuthenticationCodeType
@@ -208,7 +208,9 @@ class EnterAuthenticationCodeViewModelImpl(
             hideProgress()
             showErrorAlert(
                 ShowErrorEventParameters(
-                    text = errorMessage
+                    text = errorMessage,
+                    cancelable = true,
+                    messageDialogTag = null
                 )
             )
         }

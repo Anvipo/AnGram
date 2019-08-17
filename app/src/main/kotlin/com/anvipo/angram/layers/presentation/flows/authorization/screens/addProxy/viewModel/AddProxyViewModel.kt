@@ -1,7 +1,7 @@
 package com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.viewModel
 
 import com.anvipo.angram.layers.core.base.interfaces.BaseViewModel
-import com.anvipo.angram.layers.core.events.ShowViewEventParameters
+import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters
 import com.anvipo.angram.layers.core.events.SingleLiveEvent
 import org.drinkless.td.libcore.telegram.TdApi
 
@@ -17,6 +17,6 @@ interface AddProxyViewModel : BaseViewModel {
     fun onPortTextChanged(portText: CharSequence?)
     fun onSecretTextChanged(secretText: CharSequence?)
 
-    fun messageDialogPositiveClicked(tag: String)
+    fun messageDialogPositiveClicked(tag: String?)
 
 }

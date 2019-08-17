@@ -9,8 +9,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.core.base.classes.BaseFragment
-import com.anvipo.angram.layers.core.events.ShowViewEventParameters.HIDE
-import com.anvipo.angram.layers.core.events.ShowViewEventParameters.SHOW
+import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters.HIDE
+import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters.SHOW
 import com.anvipo.angram.layers.core.hideKeyboard
 import com.anvipo.angram.layers.core.hideWithAnimate
 import com.anvipo.angram.layers.core.showWithAnimate

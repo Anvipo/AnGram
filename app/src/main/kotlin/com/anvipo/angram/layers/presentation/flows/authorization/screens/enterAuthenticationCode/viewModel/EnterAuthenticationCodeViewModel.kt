@@ -1,7 +1,7 @@
 package com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.viewModel
 
 import com.anvipo.angram.layers.core.base.interfaces.BaseViewModel
-import com.anvipo.angram.layers.core.events.ShowViewEventParameters
+import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters
 import com.anvipo.angram.layers.core.events.SingleLiveEvent
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.types.CorrectAuthenticationCodeType
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.types.SetExpectedCodeLengthEventParameters

@@ -17,13 +17,15 @@ import androidx.lifecycle.observe
 import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.core.CoreConstants.PROGRESS_TAG
-import com.anvipo.angram.layers.core.ShowItemsDialogEvent
+import com.anvipo.angram.layers.core.ShowItemsDialogEventParameters
 import com.anvipo.angram.layers.core.base.interfaces.BaseViewModel
 import com.anvipo.angram.layers.core.dialogFragment.ItemsDialogFragment
 import com.anvipo.angram.layers.core.dialogFragment.MessageDialogFragment
-import com.anvipo.angram.layers.core.events.ShowAlertMessageEventParameters
-import com.anvipo.angram.layers.core.events.ShowViewEventParameters.HIDE
-import com.anvipo.angram.layers.core.events.ShowViewEventParameters.SHOW
+import com.anvipo.angram.layers.core.events.parameters.ShowAlertMessageEventParameters
+import com.anvipo.angram.layers.core.events.parameters.ShowErrorEventParameters
+import com.anvipo.angram.layers.core.events.parameters.ShowToastEventParameters
+import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters.HIDE
+import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters.SHOW
 import com.anvipo.angram.layers.core.logHelpers.HasLogger
 import com.anvipo.angram.layers.core.showSnackbarMessage
 import com.anvipo.angram.layers.core.views.MyProgressDialog
@@ -114,7 +116,7 @@ abstract class BaseFragment :
         viewModel
             .showErrorEvents
             .observe(this) {
-                showErrorAlert(text = it.text)
+                showErrorAlert(it)
             }
 
         viewModel
@@ -138,6 +140,12 @@ abstract class BaseFragment :
             .observe(this) {
                 showItemsDialog(it)
             }
+
+        viewModel
+            .showToastEvents
+            .observe(this) {
+                showToastMessage(it)
+            }
     }
 
     protected open fun extractDataFromBundle(): Unit = Unit
@@ -155,13 +163,15 @@ abstract class BaseFragment :
 
     private var instanceStateSaved: Boolean = false
 
-    private fun showErrorAlert(text: String) {
+    private fun showErrorAlert(
+        showErrorEventParameters: ShowErrorEventParameters
+    ) {
         showAlertMessage(
             ShowAlertMessageEventParameters(
                 title = getString(R.string.error_title),
-                text = text,
-                cancelable = true,
-                messageDialogTag = null
+                text = showErrorEventParameters.text,
+                cancelable = showErrorEventParameters.cancelable,
+                messageDialogTag = showErrorEventParameters.messageDialogTag
             )
         )
     }
@@ -197,7 +207,7 @@ abstract class BaseFragment :
     }
 
     private fun showItemsDialog(
-        showItemsDialogEvent: ShowItemsDialogEvent
+        showItemsDialogEvent: ShowItemsDialogEventParameters
     ) {
         ItemsDialogFragment
             .create(
@@ -223,8 +233,16 @@ abstract class BaseFragment :
             .show(childFragmentManager, null)
     }
 
-    private fun showToastMessage(text: String) {
-        Toast.makeText(this.context, text, Toast.LENGTH_LONG).show()
+    private fun showToastMessage(
+        showToastEventParameters: ShowToastEventParameters
+    ) {
+        val context = this.context ?: return
+
+        Toast.makeText(
+            context,
+            showToastEventParameters.text,
+            showToastEventParameters.length
+        ).show()
     }
 
     private fun showSnackMessage(

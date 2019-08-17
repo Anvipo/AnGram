@@ -5,9 +5,13 @@ import android.view.View
 import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.observe
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.core.base.interfaces.BaseViewModel
 import com.anvipo.angram.layers.core.dialogFragment.MessageDialogFragment
+import com.anvipo.angram.layers.core.events.parameters.ShowAlertMessageEventParameters
+import com.anvipo.angram.layers.core.events.parameters.ShowErrorEventParameters
+import com.anvipo.angram.layers.core.events.parameters.ShowToastEventParameters
 import com.anvipo.angram.layers.core.logHelpers.HasLogger
 import com.anvipo.angram.layers.core.showSnackbarMessage
 
@@ -33,11 +37,6 @@ abstract class BaseActivity :
         viewModel.onStartTriggered()
     }
 
-    override fun onResumeFragments() {
-        super.onResumeFragments()
-        viewModel.onResumeTriggered()
-    }
-
     final override fun onPause() {
         viewModel.onPauseTriggered()
         super.onPause()
@@ -58,40 +57,63 @@ abstract class BaseActivity :
 
     protected abstract val rootView: View
 
+    protected open fun setupViewModelsObservers() {
+        viewModel
+            .showErrorEvents
+            .observe(this) {
+                showErrorAlert(it)
+            }
+
+        viewModel
+            .showAlertMessageEvents
+            .observe(this) {
+                showAlertMessage(it)
+            }
+
+        viewModel
+            .showToastEvents
+            .observe(this) {
+                showToastMessage(it)
+            }
+    }
+
+
     private fun showAlertMessage(
-        text: String,
-        title: String?,
-        cancelable: Boolean,
-        messageDialogTag: String
+        showAlertMessageEvent: ShowAlertMessageEventParameters
     ) {
         MessageDialogFragment
             .create(
-                message = text,
-                title = title,
+                message = showAlertMessageEvent.text,
+                title = showAlertMessageEvent.title,
                 positive = getString(android.R.string.ok),
-                cancelable = cancelable,
-                messageDialogTag = messageDialogTag
+                cancelable = showAlertMessageEvent.cancelable,
+                messageDialogTag = showAlertMessageEvent.messageDialogTag
             )
             .show(supportFragmentManager, null)
 
     }
 
     private fun showErrorAlert(
-        title: String? = getString(R.string.error_title),
-        text: String,
-        cancelable: Boolean = true,
-        messageDialogTag: String = ""
+        showErrorEventParameters: ShowErrorEventParameters
     ) {
         showAlertMessage(
-            title = title,
-            text = text,
-            cancelable = cancelable,
-            messageDialogTag = messageDialogTag
+            ShowAlertMessageEventParameters(
+                title = getString(R.string.error_title),
+                text = showErrorEventParameters.text,
+                cancelable = showErrorEventParameters.cancelable,
+                messageDialogTag = showErrorEventParameters.messageDialogTag
+            )
         )
     }
 
-    private fun showToastMessage(text: String) {
-        Toast.makeText(this, text, Toast.LENGTH_LONG).show()
+    private fun showToastMessage(
+        showToastEventParameters: ShowToastEventParameters
+    ) {
+        Toast.makeText(
+            this,
+            showToastEventParameters.text,
+            showToastEventParameters.length
+        ).show()
     }
 
     private fun showSnackMessage(

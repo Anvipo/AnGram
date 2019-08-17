@@ -1,20 +1,22 @@
 package com.anvipo.angram.layers.core.base.interfaces
 
 import android.content.Intent
-import com.anvipo.angram.layers.core.ShowItemsDialogEvent
-import com.anvipo.angram.layers.core.ShowSnackMessageEvent
-import com.anvipo.angram.layers.core.events.ShowAlertMessageEventParameters
-import com.anvipo.angram.layers.core.events.ShowErrorEventParameters
-import com.anvipo.angram.layers.core.events.ShowViewEventParameters
+import com.anvipo.angram.layers.core.ShowItemsDialogEventParameters
+import com.anvipo.angram.layers.core.ShowSnackMessageEventParameters
+import com.anvipo.angram.layers.core.events.parameters.ShowAlertMessageEventParameters
+import com.anvipo.angram.layers.core.events.parameters.ShowErrorEventParameters
+import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters
 import com.anvipo.angram.layers.core.events.SingleLiveEvent
+import com.anvipo.angram.layers.core.events.parameters.ShowToastEventParameters
 
 interface BaseViewModel {
 
-    val showErrorEvents: SingleLiveEvent<ShowErrorEventParameters>
     val showViewEvents: SingleLiveEvent<ShowViewEventParameters>
+    val showItemsDialogEvents: SingleLiveEvent<ShowItemsDialogEventParameters>
+    val showErrorEvents: SingleLiveEvent<ShowErrorEventParameters>
     val showAlertMessageEvents: SingleLiveEvent<ShowAlertMessageEventParameters>
-    val showItemsDialogEvents: SingleLiveEvent<ShowItemsDialogEvent>
-    val showSnackMessageEvents: SingleLiveEvent<ShowSnackMessageEvent>
+    val showSnackMessageEvents: SingleLiveEvent<ShowSnackMessageEventParameters>
+    val showToastEvents: SingleLiveEvent<ShowToastEventParameters>
 
     fun onCreateTriggered(): Unit = Unit
     fun onStartTriggered(): Unit = Unit

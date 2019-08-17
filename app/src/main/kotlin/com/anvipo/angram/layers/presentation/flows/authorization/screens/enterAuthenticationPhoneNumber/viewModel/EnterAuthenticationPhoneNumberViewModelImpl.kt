@@ -4,16 +4,17 @@ import com.anvipo.angram.R
 import com.anvipo.angram.layers.businessLogic.useCases.flows.authorization.enterAuthenticationPhoneNumber.EnterAuthenticationPhoneNumberUseCase
 import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
 import com.anvipo.angram.layers.core.ResourceManager
-import com.anvipo.angram.layers.core.ShowItemsDialogEvent
+import com.anvipo.angram.layers.core.ShowItemsDialogEventParameters
+import com.anvipo.angram.layers.core.ShowSnackMessageEventParameters
 import com.anvipo.angram.layers.core.base.classes.BaseViewModelImpl
-import com.anvipo.angram.layers.core.events.EnableViewEventsParameters
-import com.anvipo.angram.layers.core.events.EnableViewEventsParameters.DISABLE
-import com.anvipo.angram.layers.core.events.EnableViewEventsParameters.ENABLE
-import com.anvipo.angram.layers.core.events.ShowErrorEventParameters
-import com.anvipo.angram.layers.core.events.ShowViewEventParameters
-import com.anvipo.angram.layers.core.events.ShowViewEventParameters.HIDE
-import com.anvipo.angram.layers.core.events.ShowViewEventParameters.SHOW
 import com.anvipo.angram.layers.core.events.SingleLiveEvent
+import com.anvipo.angram.layers.core.events.parameters.EnableViewEventsParameters
+import com.anvipo.angram.layers.core.events.parameters.EnableViewEventsParameters.DISABLE
+import com.anvipo.angram.layers.core.events.parameters.EnableViewEventsParameters.ENABLE
+import com.anvipo.angram.layers.core.events.parameters.ShowErrorEventParameters
+import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters
+import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters.HIDE
+import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters.SHOW
 import com.anvipo.angram.layers.data.gateways.tdLib.errors.TdApiError
 import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionState
 import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionStateReceiveChannel
@@ -54,7 +55,7 @@ class EnterAuthenticationPhoneNumberViewModelImpl(
 
     override fun onAddProxyButtonPressed() {
         showItemsDialog(
-            ShowItemsDialogEvent(
+            ShowItemsDialogEventParameters(
                 title = resourceManager.getString(R.string.choose_proxy_server_type),
                 items = proxysList,
                 tag = null,
@@ -100,7 +101,9 @@ class EnterAuthenticationPhoneNumberViewModelImpl(
                         hideProgress()
                         showErrorAlert(
                             ShowErrorEventParameters(
-                                text = errorMessage
+                                text = errorMessage,
+                                cancelable = true,
+                                messageDialogTag = null
                             )
                         )
                     }
@@ -128,7 +131,11 @@ class EnterAuthenticationPhoneNumberViewModelImpl(
         val cancellationException = CancellationException("$className::$methodName")
 
         onNextButtonPressedJob?.cancel(cancellationException)
-        showSnackMessage(resourceManager.getString(R.string.query_canceled))
+        showSnackMessage(
+            ShowSnackMessageEventParameters(
+                text = resourceManager.getString(R.string.query_canceled)
+            )
+        )
     }
 
 

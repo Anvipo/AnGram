@@ -4,7 +4,7 @@ import com.anvipo.angram.R
 import com.anvipo.angram.layers.businessLogic.useCases.flows.authorization.enterAuthenticationPassword.EnterAuthenticationPasswordUseCase
 import com.anvipo.angram.layers.core.ResourceManager
 import com.anvipo.angram.layers.core.base.classes.BaseViewModelImpl
-import com.anvipo.angram.layers.core.events.ShowErrorEventParameters
+import com.anvipo.angram.layers.core.events.parameters.ShowErrorEventParameters
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.interfaces.AuthorizationCoordinatorEnterAuthenticationPasswordRouteEventHandler
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.types.CorrectAuthenticationPasswordType
 import kotlinx.coroutines.Dispatchers
@@ -38,7 +38,9 @@ class EnterAuthenticationPasswordViewModelImpl(
                         hideProgress()
                         showErrorAlert(
                             ShowErrorEventParameters(
-                                text = errorMessage
+                                text = errorMessage,
+                                cancelable = true,
+                                messageDialogTag = null
                             )
                         )
                     }
