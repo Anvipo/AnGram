@@ -32,9 +32,9 @@ class AddProxyViewModelImpl(
     }
 
     override fun addProxyButtonTapped() {
-        showProgress()
-
         myLaunch {
+            showProgress()
+
             val addProxyResult =
                 withContext(Dispatchers.IO) {
                     useCase
@@ -47,17 +47,15 @@ class AddProxyViewModelImpl(
 
             addProxyResult
                 .onSuccess {
-                    withContext(Dispatchers.Main) {
-                        hideProgress()
-                        showAlertMessage(
-                            ShowAlertMessageEventParameters(
-                                title = null,
-                                text = resourceManager.getString(R.string.proxy_successfully_has_been_added),
-                                cancelable = false,
-                                messageDialogTag = addProxySuccessTag
-                            )
+                    hideProgress()
+                    showAlertMessage(
+                        ShowAlertMessageEventParameters(
+                            title = null,
+                            text = resourceManager.getString(R.string.proxy_successfully_has_been_added),
+                            cancelable = false,
+                            messageDialogTag = addProxySuccessTag
                         )
-                    }
+                    )
                 }
                 .onFailure { error ->
                     val errorMessage: String = resourceManager.run {
@@ -68,16 +66,14 @@ class AddProxyViewModelImpl(
                         }
                     }
 
-                    withContext(Dispatchers.Main) {
-                        hideProgress()
-                        showErrorAlert(
-                            ShowErrorEventParameters(
-                                text = errorMessage,
-                                cancelable = true,
-                                messageDialogTag = null
-                            )
+                    hideProgress()
+                    showErrorAlert(
+                        ShowErrorEventParameters(
+                            text = errorMessage,
+                            cancelable = true,
+                            messageDialogTag = null
                         )
-                    }
+                    )
                 }
         }
     }

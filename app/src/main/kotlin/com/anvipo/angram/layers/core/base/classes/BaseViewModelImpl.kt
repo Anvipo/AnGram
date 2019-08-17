@@ -1,5 +1,7 @@
 package com.anvipo.angram.layers.core.base.classes
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anvipo.angram.layers.core.ShowItemsDialogEventParameters
@@ -16,8 +18,10 @@ import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters.H
 import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters.SHOW
 import com.anvipo.angram.layers.core.logHelpers.HasLogger
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
 abstract class BaseViewModelImpl :
@@ -34,6 +38,10 @@ abstract class BaseViewModelImpl :
         SingleLiveEvent()
     final override val showSnackMessageEvents: SingleLiveEvent<ShowSnackMessageEventParameters> =
         SingleLiveEvent()
+    final override val showConnectionSnackMessageEvents: LiveData<ShowSnackMessageEventParameters> by lazy {
+        _showConnectionSnackMessageEvents
+    }
+
     final override val showAlertMessageEvents: SingleLiveEvent<ShowAlertMessageEventParameters> =
         SingleLiveEvent()
     final override val showToastMessageEvents: SingleLiveEvent<ShowToastMessageEventParameters> =
@@ -45,12 +53,16 @@ abstract class BaseViewModelImpl :
     final override fun myLaunchExceptionHandler(throwable: Throwable) {
         val errorMessage = throwable.errorMessage
         additionalLogging(errorMessage)
-        showErrorEvents.value =
-            ShowErrorEventParameters(
-                text = errorMessage,
-                cancelable = true,
-                messageDialogTag = null
+
+        myLaunch {
+            showErrorAlert(
+                ShowErrorEventParameters(
+                    text = errorMessage,
+                    cancelable = true,
+                    messageDialogTag = null
+                )
             )
+        }
     }
 
     override fun onCleared() {
@@ -73,40 +85,67 @@ abstract class BaseViewModelImpl :
     protected val channelsThatWillBeUnsubscribedInOnDestroy: MutableList<ReceiveChannel<*>> =
         mutableListOf()
 
-    protected fun showProgress() {
-        showViewEvents.value = SHOW
+    protected suspend fun showProgress() {
+        withContext(Dispatchers.Main) {
+            showViewEvents.value = SHOW
+        }
     }
 
-    protected fun hideProgress() {
-        showViewEvents.value = HIDE
+    protected suspend fun hideProgress() {
+        withContext(Dispatchers.Main) {
+            showViewEvents.value = HIDE
+        }
     }
 
-    protected fun showToastMessage(
+    protected suspend fun showToastMessage(
         showToastMessageEventParameters: ShowToastMessageEventParameters
     ) {
-        showToastMessageEvents.value = showToastMessageEventParameters
+        withContext(Dispatchers.Main) {
+            showToastMessageEvents.value = showToastMessageEventParameters
+        }
     }
 
-    protected fun showAlertMessage(
+    protected suspend fun showAlertMessage(
         showAlertMessageEvent: ShowAlertMessageEventParameters
     ) {
-        showAlertMessageEvents.value = showAlertMessageEvent
+        withContext(Dispatchers.Main) {
+            showAlertMessageEvents.value = showAlertMessageEvent
+        }
     }
 
-    protected fun showErrorAlert(
+    protected suspend fun showErrorAlert(
         showErrorEvent: ShowErrorEventParameters
     ) {
-        showErrorEvents.value = showErrorEvent
+        withContext(Dispatchers.Main) {
+            showErrorEvents.value = showErrorEvent
+        }
     }
 
-    protected fun showItemsDialog(
+    protected suspend fun showItemsDialog(
         showItemsDialogEvent: ShowItemsDialogEventParameters
     ) {
-        showItemsDialogEvents.value = showItemsDialogEvent
+        withContext(Dispatchers.Main) {
+            showItemsDialogEvents.value = showItemsDialogEvent
+        }
     }
 
-    protected fun showSnackMessage(showSnackMessageEventParameters: ShowSnackMessageEventParameters) {
-        showSnackMessageEvents.value = showSnackMessageEventParameters
+    protected suspend fun showSnackMessage(
+        showSnackMessageEventParameters: ShowSnackMessageEventParameters
+    ) {
+        withContext(Dispatchers.Main) {
+            showSnackMessageEvents.value = showSnackMessageEventParameters
+        }
     }
+
+    protected suspend fun showConnectionSnackMessage(
+        showSnackMessageEventParameters: ShowSnackMessageEventParameters
+    ) {
+        withContext(Dispatchers.Main) {
+            _showConnectionSnackMessageEvents.value = showSnackMessageEventParameters
+        }
+    }
+
+    private val _showConnectionSnackMessageEvents =
+        MutableLiveData<ShowSnackMessageEventParameters>()
 
 }

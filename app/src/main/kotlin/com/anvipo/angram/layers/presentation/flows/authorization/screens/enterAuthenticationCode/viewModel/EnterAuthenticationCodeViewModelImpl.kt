@@ -34,7 +34,9 @@ class EnterAuthenticationCodeViewModelImpl(
         super<BaseViewModelImpl>.onCreateTriggered()
         hideNextButton()
         hideRegistrationViews()
-        hideProgress()
+        myLaunch {
+            hideProgress()
+        }
     }
 
     override fun onResumeTriggered() {
@@ -42,7 +44,9 @@ class EnterAuthenticationCodeViewModelImpl(
             showRegistrationViews()
         }
 
-        hideProgress()
+        myLaunch {
+            hideProgress()
+        }
     }
 
     override fun onNextButtonPressed(
@@ -50,9 +54,9 @@ class EnterAuthenticationCodeViewModelImpl(
         lastName: String,
         firstName: String
     ) {
-        showProgress()
-
         myLaunch {
+            showProgress()
+
             val checkAuthenticationCodeResult = withContext(Dispatchers.IO) {
                 useCase
                     .checkAuthenticationCodeCatching(
@@ -67,9 +71,9 @@ class EnterAuthenticationCodeViewModelImpl(
     }
 
     override fun onResendAuthenticationCodeButtonPressed() {
-        showProgress()
-
         myLaunch {
+            showProgress()
+
             val resendAuthenticationCodeResult = withContext(Dispatchers.IO) {
                 useCase.resendAuthenticationCodeCatching()
             }
@@ -96,14 +100,16 @@ class EnterAuthenticationCodeViewModelImpl(
 
     override fun onGetTermsOfServiceText(termsOfServiceText: String) {
         if (termsOfServiceText.isNotBlank() && termsOfServiceText.isNotEmpty()) {
-            showAlertMessage(
-                ShowAlertMessageEventParameters(
-                    title = null,
-                    text = termsOfServiceText,
-                    cancelable = true,
-                    messageDialogTag = null
+            myLaunch {
+                showAlertMessage(
+                    ShowAlertMessageEventParameters(
+                        title = null,
+                        text = termsOfServiceText,
+                        cancelable = true,
+                        messageDialogTag = null
+                    )
                 )
-            )
+            }
         }
     }
 
@@ -204,16 +210,14 @@ class EnterAuthenticationCodeViewModelImpl(
             }
         }
 
-        withContext(Dispatchers.Main) {
-            hideProgress()
-            showErrorAlert(
-                ShowErrorEventParameters(
-                    text = errorMessage,
-                    cancelable = true,
-                    messageDialogTag = null
-                )
+        hideProgress()
+        showErrorAlert(
+            ShowErrorEventParameters(
+                text = errorMessage,
+                cancelable = true,
+                messageDialogTag = null
             )
-        }
+        )
     }
 
     private fun setMaxLengthOfEditText(expectedCodeLength: Int) {

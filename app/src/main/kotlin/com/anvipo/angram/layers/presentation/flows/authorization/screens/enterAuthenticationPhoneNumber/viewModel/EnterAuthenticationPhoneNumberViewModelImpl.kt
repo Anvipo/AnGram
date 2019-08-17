@@ -1,5 +1,7 @@
 package com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.viewModel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.businessLogic.useCases.flows.authorization.enterAuthenticationPhoneNumber.EnterAuthenticationPhoneNumberUseCase
 import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
@@ -39,8 +41,9 @@ class EnterAuthenticationPhoneNumberViewModelImpl(
 
     override val showNextButtonEvents: SingleLiveEvent<ShowViewEventParameters> =
         SingleLiveEvent()
-    override val enableNextButtonEvents: SingleLiveEvent<EnableViewEventsParameters> =
-        SingleLiveEvent()
+    override val enableNextButtonEvents: LiveData<EnableViewEventsParameters> by lazy {
+        _enableNextButtonEvents
+    }
 
     override fun onCreateTriggered() {
         super<BaseViewModelImpl>.onCreateTriggered()
@@ -48,20 +51,24 @@ class EnterAuthenticationPhoneNumberViewModelImpl(
     }
 
     override fun onResumeTriggered() {
-        hideProgress()
+        myLaunch {
+            hideProgress()
+        }
         subscribeOnConnectionStates()
     }
 
 
     override fun onAddProxyButtonPressed() {
-        showItemsDialog(
-            ShowItemsDialogEventParameters(
-                title = resourceManager.getString(R.string.choose_proxy_server_type),
-                items = proxysList,
-                tag = null,
-                cancelable = true
+        myLaunch {
+            showItemsDialog(
+                ShowItemsDialogEventParameters(
+                    title = resourceManager.getString(R.string.choose_proxy_server_type),
+                    items = proxysList,
+                    tag = null,
+                    cancelable = true
+                )
             )
-        )
+        }
     }
 
     override fun onItemClicked(index: Int) {
@@ -74,9 +81,9 @@ class EnterAuthenticationPhoneNumberViewModelImpl(
     }
 
     override fun onNextButtonPressed(enteredPhoneNumber: String) {
-        showProgress()
-
         myLaunch {
+            showProgress()
+
             val setAuthenticationPhoneNumberResult =
                 withContext(Dispatchers.IO) {
                     useCase.setAuthenticationPhoneNumberCatching(enteredPhoneNumber)
@@ -97,16 +104,14 @@ class EnterAuthenticationPhoneNumberViewModelImpl(
                         }
                     }
 
-                    withContext(Dispatchers.Main) {
-                        hideProgress()
-                        showErrorAlert(
-                            ShowErrorEventParameters(
-                                text = errorMessage,
-                                cancelable = true,
-                                messageDialogTag = null
-                            )
+                    hideProgress()
+                    showErrorAlert(
+                        ShowErrorEventParameters(
+                            text = errorMessage,
+                            cancelable = true,
+                            messageDialogTag = null
                         )
-                    }
+                    )
                 }
         }
     }
@@ -131,17 +136,21 @@ class EnterAuthenticationPhoneNumberViewModelImpl(
         val cancellationException = CancellationException("$className::$methodName")
 
         onNextButtonPressedJob?.cancel(cancellationException)
-        showSnackMessage(
-            ShowSnackMessageEventParameters(
-                text = resourceManager.getString(R.string.query_canceled)
+        myLaunch {
+            showSnackMessage(
+                ShowSnackMessageEventParameters(
+                    text = resourceManager.getString(R.string.query_canceled)
+                )
             )
-        )
+        }
     }
 
 
     private var onNextButtonPressedJob: Job? = null
 
     private val mtprotoPair = 0 to "MTPROTO"
+
+    private val _enableNextButtonEvents = MutableLiveData<EnableViewEventsParameters>()
 
     private val proxysList: List<String>
         get() {
@@ -180,19 +189,43 @@ class EnterAuthenticationPhoneNumberViewModelImpl(
     }
 
     private fun showNextButton() {
+        val showNextButtonEventsCurrentValue = showNextButtonEvents.value
+
+        if (showNextButtonEventsCurrentValue == SHOW) {
+            return
+        }
+
         showNextButtonEvents.value = SHOW
     }
 
     private fun hideNextButton() {
+        val showNextButtonEventsCurrentValue = showNextButtonEvents.value
+
+        if (showNextButtonEventsCurrentValue == HIDE) {
+            return
+        }
+
         showNextButtonEvents.value = HIDE
     }
 
     private fun enableNextButton() {
-        enableNextButtonEvents.value = ENABLE
+        val enableNextButtonEventsCurrentValue = _enableNextButtonEvents.value
+
+        if (enableNextButtonEventsCurrentValue == ENABLE) {
+            return
+        }
+
+        _enableNextButtonEvents.value = ENABLE
     }
 
     private fun disableNextButton() {
-        enableNextButtonEvents.value = DISABLE
+        val enableNextButtonEventsCurrentValue = _enableNextButtonEvents.value
+
+        if (enableNextButtonEventsCurrentValue == DISABLE) {
+            return
+        }
+
+        _enableNextButtonEvents.value = DISABLE
     }
 
 }

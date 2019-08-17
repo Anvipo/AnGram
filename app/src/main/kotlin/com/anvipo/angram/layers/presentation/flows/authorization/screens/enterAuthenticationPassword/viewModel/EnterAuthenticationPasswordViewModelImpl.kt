@@ -17,13 +17,15 @@ class EnterAuthenticationPasswordViewModelImpl(
 ) : BaseViewModelImpl(), EnterAuthenticationPasswordViewModel {
 
     override fun onResumeTriggered() {
-        hideProgress()
+        myLaunch {
+            hideProgress()
+        }
     }
 
     override fun onNextButtonPressed(enteredAuthenticationPassword: CorrectAuthenticationPasswordType) {
-        showProgress()
-
         myLaunch {
+            showProgress()
+
             val checkAuthenticationPasswordResult = withContext(Dispatchers.IO) {
                 useCase.checkAuthenticationPasswordCatching(enteredAuthenticationPassword)
             }
@@ -34,16 +36,14 @@ class EnterAuthenticationPasswordViewModelImpl(
                         getString(R.string.unknown_error)
                     }
 
-                    withContext(Dispatchers.Main) {
-                        hideProgress()
-                        showErrorAlert(
-                            ShowErrorEventParameters(
-                                text = errorMessage,
-                                cancelable = true,
-                                messageDialogTag = null
-                            )
+                    hideProgress()
+                    showErrorAlert(
+                        ShowErrorEventParameters(
+                            text = errorMessage,
+                            cancelable = true,
+                            messageDialogTag = null
                         )
-                    }
+                    )
                 }
         }
     }

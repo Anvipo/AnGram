@@ -127,22 +127,20 @@ class AppViewModelImpl(
         val (text, type, shouldBeShownToUser, shouldBeShownInLogs) = receivedSystemMessage
 
         if (shouldBeShownToUser) {
-            withContext(Dispatchers.Main) {
-                when (type) {
-                    SystemMessageType.TOAST -> showToastMessage(
-                        ShowToastMessageEventParameters(
-                            text = text
-                        )
+            when (type) {
+                SystemMessageType.TOAST -> showToastMessage(
+                    ShowToastMessageEventParameters(
+                        text = text
                     )
-                    SystemMessageType.ALERT -> showAlertMessage(
-                        ShowAlertMessageEventParameters(
-                            title = null,
-                            text = text,
-                            cancelable = true,
-                            messageDialogTag = null
-                        )
+                )
+                SystemMessageType.ALERT -> showAlertMessage(
+                    ShowAlertMessageEventParameters(
+                        title = null,
+                        text = text,
+                        cancelable = true,
+                        messageDialogTag = null
                     )
-                }
+                )
             }
         }
 
@@ -154,7 +152,7 @@ class AppViewModelImpl(
         }
     }
 
-    private suspend fun onReceivedTdApiUpdateConnectionState(
+    private fun onReceivedTdApiUpdateConnectionState(
         receivedTdApiUpdateConnectionState: TdApiUpdateConnectionState
     ) {
         val connectionState = resourceManager.getString(R.string.connection_state)
@@ -186,8 +184,8 @@ class AppViewModelImpl(
             }
         }
 
-        withContext(Dispatchers.Main) {
-            showSnackMessage(
+        myLaunch {
+            showConnectionSnackMessage(
                 ShowSnackMessageEventParameters(
                     text = text,
                     duration = duration
