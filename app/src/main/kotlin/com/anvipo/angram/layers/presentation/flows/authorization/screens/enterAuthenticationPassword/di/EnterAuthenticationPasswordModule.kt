@@ -6,10 +6,9 @@ import com.anvipo.angram.layers.businessLogic.di.UseCasesModule.enterAuthenticat
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorQualifier
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.enterAuthenticationPassword.EnterAuthenticationPasswordScreenFactory
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.enterAuthenticationPassword.EnterAuthenticationPasswordScreenFactoryImpl
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.presenter.EnterAuthenticationPasswordViewModel
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.presenter.EnterAuthenticationPasswordViewModelImpl
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.viewModel.EnterAuthenticationPasswordViewModel
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.viewModel.EnterAuthenticationPasswordViewModelImpl
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.view.EnterAuthenticationPasswordFragment
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.view.EnterAuthenticationPasswordView
 import org.koin.core.KoinComponent
 import org.koin.core.get
 import org.koin.core.module.Module

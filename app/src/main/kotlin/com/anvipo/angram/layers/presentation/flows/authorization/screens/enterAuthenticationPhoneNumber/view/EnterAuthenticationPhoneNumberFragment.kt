@@ -9,10 +9,10 @@ import com.anvipo.angram.R
 import com.anvipo.angram.layers.core.base.classes.BaseFragment
 import com.anvipo.angram.layers.core.dialogFragment.ItemsDialogFragment
 import com.anvipo.angram.layers.core.dialogFragment.MessageDialogFragment
-import com.anvipo.angram.layers.core.events.EnableViewEvents.DISABLE
-import com.anvipo.angram.layers.core.events.EnableViewEvents.ENABLE
-import com.anvipo.angram.layers.core.events.ShowViewEvent.HIDE
-import com.anvipo.angram.layers.core.events.ShowViewEvent.SHOW
+import com.anvipo.angram.layers.core.events.EnableViewEventsParameters.DISABLE
+import com.anvipo.angram.layers.core.events.EnableViewEventsParameters.ENABLE
+import com.anvipo.angram.layers.core.events.ShowViewEventParameters.HIDE
+import com.anvipo.angram.layers.core.events.ShowViewEventParameters.SHOW
 import com.anvipo.angram.layers.core.hideKeyboard
 import com.anvipo.angram.layers.core.hideWithAnimate
 import com.anvipo.angram.layers.core.showWithAnimate

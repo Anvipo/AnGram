@@ -21,9 +21,9 @@ import com.anvipo.angram.layers.core.ShowItemsDialogEvent
 import com.anvipo.angram.layers.core.base.interfaces.BaseViewModel
 import com.anvipo.angram.layers.core.dialogFragment.ItemsDialogFragment
 import com.anvipo.angram.layers.core.dialogFragment.MessageDialogFragment
-import com.anvipo.angram.layers.core.events.ShowAlertMessageEvent
-import com.anvipo.angram.layers.core.events.ShowViewEvent.HIDE
-import com.anvipo.angram.layers.core.events.ShowViewEvent.SHOW
+import com.anvipo.angram.layers.core.events.ShowAlertMessageEventParameters
+import com.anvipo.angram.layers.core.events.ShowViewEventParameters.HIDE
+import com.anvipo.angram.layers.core.events.ShowViewEventParameters.SHOW
 import com.anvipo.angram.layers.core.logHelpers.HasLogger
 import com.anvipo.angram.layers.core.showSnackbarMessage
 import com.anvipo.angram.layers.core.views.MyProgressDialog
@@ -49,11 +49,24 @@ abstract class BaseFragment :
         setupClickListeners()
         setupToolbar()
         setupUI()
+
+        viewModel.onCreateTriggered()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.onStartTriggered()
     }
 
     final override fun onResume() {
         super.onResume()
         instanceStateSaved = false
+        viewModel.onResumeTriggered()
+    }
+
+    final override fun onPause() {
+        viewModel.onPauseTriggered()
+        super.onPause()
     }
 
     final override fun onSaveInstanceState(outState: Bundle) {
@@ -144,11 +157,11 @@ abstract class BaseFragment :
 
     private fun showErrorAlert(text: String) {
         showAlertMessage(
-            ShowAlertMessageEvent(
+            ShowAlertMessageEventParameters(
                 title = getString(R.string.error_title),
                 text = text,
                 cancelable = true,
-                messageDialogTag = ""
+                messageDialogTag = null
             )
         )
     }
@@ -197,7 +210,7 @@ abstract class BaseFragment :
     }
 
     private fun showAlertMessage(
-        showAlertMessageEvent: ShowAlertMessageEvent
+        showAlertMessageEvent: ShowAlertMessageEventParameters
     ) {
         MessageDialogFragment
             .create(

@@ -7,11 +7,11 @@ import com.anvipo.angram.layers.core.ShowSnackMessageEvent
 import com.anvipo.angram.layers.core.base.interfaces.BaseViewModel
 import com.anvipo.angram.layers.core.base.interfaces.HasMyCoroutineBuilders
 import com.anvipo.angram.layers.core.errorMessage
-import com.anvipo.angram.layers.core.events.ShowAlertMessageEvent
-import com.anvipo.angram.layers.core.events.ShowErrorEvent
-import com.anvipo.angram.layers.core.events.ShowViewEvent
-import com.anvipo.angram.layers.core.events.ShowViewEvent.HIDE
-import com.anvipo.angram.layers.core.events.ShowViewEvent.SHOW
+import com.anvipo.angram.layers.core.events.ShowAlertMessageEventParameters
+import com.anvipo.angram.layers.core.events.ShowErrorEventParameters
+import com.anvipo.angram.layers.core.events.ShowViewEventParameters
+import com.anvipo.angram.layers.core.events.ShowViewEventParameters.HIDE
+import com.anvipo.angram.layers.core.events.ShowViewEventParameters.SHOW
 import com.anvipo.angram.layers.core.events.SingleLiveEvent
 import com.anvipo.angram.layers.core.logHelpers.HasLogger
 import kotlinx.coroutines.CancellationException
@@ -25,15 +25,15 @@ abstract class BaseViewModelImpl :
     HasMyCoroutineBuilders,
     HasLogger {
 
-    final override val showErrorEvents: SingleLiveEvent<ShowErrorEvent> =
+    final override val showErrorEvents: SingleLiveEvent<ShowErrorEventParameters> =
         SingleLiveEvent()
-    final override val showViewEvents: SingleLiveEvent<ShowViewEvent> =
+    final override val showViewEvents: SingleLiveEvent<ShowViewEventParameters> =
         SingleLiveEvent()
     final override val showSnackMessageEvents: SingleLiveEvent<ShowSnackMessageEvent> =
         SingleLiveEvent()
     final override val showItemsDialogEvents: SingleLiveEvent<ShowItemsDialogEvent> =
         SingleLiveEvent()
-    final override val showAlertMessageEvents: SingleLiveEvent<ShowAlertMessageEvent> =
+    final override val showAlertMessageEvents: SingleLiveEvent<ShowAlertMessageEventParameters> =
         SingleLiveEvent()
     final override val className: String = this::class.java.name
     final override val coroutineContext: CoroutineContext = viewModelScope.coroutineContext
@@ -41,7 +41,7 @@ abstract class BaseViewModelImpl :
     final override fun myLaunchExceptionHandler(throwable: Throwable) {
         val errorMessage = throwable.errorMessage
         additionalLogging(errorMessage)
-        showErrorEvents.value = ShowErrorEvent(text = errorMessage)
+        showErrorEvents.value = ShowErrorEventParameters(text = errorMessage)
     }
 
     override fun onCleared() {
@@ -72,11 +72,11 @@ abstract class BaseViewModelImpl :
         showViewEvents.value = HIDE
     }
 
-    protected fun showAlertMessage(showAlertMessageEvent: ShowAlertMessageEvent) {
+    protected fun showAlertMessage(showAlertMessageEvent: ShowAlertMessageEventParameters) {
         showAlertMessageEvents.value = showAlertMessageEvent
     }
 
-    protected fun showErrorAlert(showErrorEvent: ShowErrorEvent) {
+    protected fun showErrorAlert(showErrorEvent: ShowErrorEventParameters) {
         showErrorEvents.value = showErrorEvent
     }
 

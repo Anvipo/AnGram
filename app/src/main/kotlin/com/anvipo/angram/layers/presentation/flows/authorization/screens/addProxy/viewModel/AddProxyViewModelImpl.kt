@@ -4,11 +4,11 @@ import com.anvipo.angram.R
 import com.anvipo.angram.layers.businessLogic.useCases.flows.authorization.addProxy.AddProxyUseCase
 import com.anvipo.angram.layers.core.ResourceManager
 import com.anvipo.angram.layers.core.base.classes.BaseViewModelImpl
-import com.anvipo.angram.layers.core.events.ShowErrorEvent
-import com.anvipo.angram.layers.core.events.ShowAlertMessageEvent
-import com.anvipo.angram.layers.core.events.ShowViewEvent
-import com.anvipo.angram.layers.core.events.ShowViewEvent.HIDE
-import com.anvipo.angram.layers.core.events.ShowViewEvent.SHOW
+import com.anvipo.angram.layers.core.events.ShowErrorEventParameters
+import com.anvipo.angram.layers.core.events.ShowAlertMessageEventParameters
+import com.anvipo.angram.layers.core.events.ShowViewEventParameters
+import com.anvipo.angram.layers.core.events.ShowViewEventParameters.HIDE
+import com.anvipo.angram.layers.core.events.ShowViewEventParameters.SHOW
 import com.anvipo.angram.layers.core.events.SingleLiveEvent
 import com.anvipo.angram.layers.data.gateways.tdLib.errors.TdApiError
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.interfaces.AuthorizationCoordinatorAddProxyRouteEventHandler
@@ -22,10 +22,11 @@ class AddProxyViewModelImpl(
     private val resourceManager: ResourceManager
 ) : BaseViewModelImpl(), AddProxyViewModel {
 
-    override val showAddProxyEvents: SingleLiveEvent<ShowViewEvent> =
+    override val showAddProxyEvents: SingleLiveEvent<ShowViewEventParameters> =
         SingleLiveEvent()
 
-    override fun coldStart() {
+    override fun onCreateTriggered() {
+        super<BaseViewModelImpl>.onCreateTriggered()
         // TODO: uncomment
 //        hideAddProxyButton()
     }
@@ -49,7 +50,7 @@ class AddProxyViewModelImpl(
                     withContext(Dispatchers.Main) {
                         hideProgress()
                         showAlertMessage(
-                            ShowAlertMessageEvent(
+                            ShowAlertMessageEventParameters(
                                 title = null,
                                 text = resourceManager.getString(R.string.proxy_successfully_has_been_added),
                                 cancelable = false,
@@ -69,7 +70,7 @@ class AddProxyViewModelImpl(
 
                     withContext(Dispatchers.Main) {
                         hideProgress()
-                        showErrorAlert(ShowErrorEvent(text = errorMessage))
+                        showErrorAlert(ShowErrorEventParameters(text = errorMessage))
                     }
                 }
         }

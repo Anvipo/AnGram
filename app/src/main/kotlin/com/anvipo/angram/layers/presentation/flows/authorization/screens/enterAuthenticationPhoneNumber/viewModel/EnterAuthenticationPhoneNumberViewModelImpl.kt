@@ -6,13 +6,13 @@ import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
 import com.anvipo.angram.layers.core.ResourceManager
 import com.anvipo.angram.layers.core.ShowItemsDialogEvent
 import com.anvipo.angram.layers.core.base.classes.BaseViewModelImpl
-import com.anvipo.angram.layers.core.events.EnableViewEvents
-import com.anvipo.angram.layers.core.events.EnableViewEvents.DISABLE
-import com.anvipo.angram.layers.core.events.EnableViewEvents.ENABLE
-import com.anvipo.angram.layers.core.events.ShowErrorEvent
-import com.anvipo.angram.layers.core.events.ShowViewEvent
-import com.anvipo.angram.layers.core.events.ShowViewEvent.HIDE
-import com.anvipo.angram.layers.core.events.ShowViewEvent.SHOW
+import com.anvipo.angram.layers.core.events.EnableViewEventsParameters
+import com.anvipo.angram.layers.core.events.EnableViewEventsParameters.DISABLE
+import com.anvipo.angram.layers.core.events.EnableViewEventsParameters.ENABLE
+import com.anvipo.angram.layers.core.events.ShowErrorEventParameters
+import com.anvipo.angram.layers.core.events.ShowViewEventParameters
+import com.anvipo.angram.layers.core.events.ShowViewEventParameters.HIDE
+import com.anvipo.angram.layers.core.events.ShowViewEventParameters.SHOW
 import com.anvipo.angram.layers.core.events.SingleLiveEvent
 import com.anvipo.angram.layers.data.gateways.tdLib.errors.TdApiError
 import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionState
@@ -36,12 +36,13 @@ class EnterAuthenticationPhoneNumberViewModelImpl(
         channelsThatWillBeUnsubscribedInOnDestroy.add(tdApiUpdateConnectionStateReceiveChannel)
     }
 
-    override val showNextButtonEvents: SingleLiveEvent<ShowViewEvent> =
+    override val showNextButtonEvents: SingleLiveEvent<ShowViewEventParameters> =
         SingleLiveEvent()
-    override val enableNextButtonEvents: SingleLiveEvent<EnableViewEvents> =
+    override val enableNextButtonEvents: SingleLiveEvent<EnableViewEventsParameters> =
         SingleLiveEvent()
 
-    override fun coldStart() {
+    override fun onCreateTriggered() {
+        super<BaseViewModelImpl>.onCreateTriggered()
         hideNextButton()
     }
 
@@ -98,7 +99,7 @@ class EnterAuthenticationPhoneNumberViewModelImpl(
                     withContext(Dispatchers.Main) {
                         hideProgress()
                         showErrorAlert(
-                            ShowErrorEvent(
+                            ShowErrorEventParameters(
                                 text = errorMessage
                             )
                         )

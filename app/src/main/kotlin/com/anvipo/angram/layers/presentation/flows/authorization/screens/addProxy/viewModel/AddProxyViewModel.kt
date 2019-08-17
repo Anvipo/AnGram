@@ -1,13 +1,13 @@
 package com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.viewModel
 
 import com.anvipo.angram.layers.core.base.interfaces.BaseViewModel
-import com.anvipo.angram.layers.core.events.ShowViewEvent
+import com.anvipo.angram.layers.core.events.ShowViewEventParameters
 import com.anvipo.angram.layers.core.events.SingleLiveEvent
 import org.drinkless.td.libcore.telegram.TdApi
 
 interface AddProxyViewModel : BaseViewModel {
 
-    val showAddProxyEvents: SingleLiveEvent<ShowViewEvent>
+    val showAddProxyEvents: SingleLiveEvent<ShowViewEventParameters>
 
     fun addProxyButtonTapped()
 

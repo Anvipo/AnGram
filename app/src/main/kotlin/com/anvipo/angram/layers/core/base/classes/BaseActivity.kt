@@ -25,17 +25,38 @@ abstract class BaseActivity :
         setupToolbar()
         setupClickListeners()
 
-        if (savedInstanceState == null) {
-            viewModel.coldStart()
-        } else {
-            viewModel.hotStart()
-        }
+        viewModel.onCreateTriggered()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.onStartTriggered()
+    }
+
+    override fun onResumeFragments() {
+        super.onResumeFragments()
+        viewModel.onResumeTriggered()
     }
 
     final override fun onPause() {
         viewModel.onPauseTriggered()
         super.onPause()
     }
+
+
+    protected open fun setupClickListeners(): Unit = Unit
+    protected open fun setupToolbar(): Unit = Unit
+
+    protected val currentFragment: BaseFragment
+        get() = supportFragmentManager.findFragmentById(R.id.container) as BaseFragment
+
+
+    protected abstract val viewModel: BaseViewModel
+    protected abstract val layoutRes: Int
+        @LayoutRes
+        get
+
+    protected abstract val rootView: View
 
     private fun showAlertMessage(
         text: String,
@@ -89,20 +110,5 @@ abstract class BaseActivity :
     ) {
         showSnackMessage(text, duration)
     }
-
-
-    protected open fun setupClickListeners(): Unit = Unit
-    protected open fun setupToolbar(): Unit = Unit
-
-    protected val currentFragment: BaseFragment
-        get() = supportFragmentManager.findFragmentById(R.id.container) as BaseFragment
-
-
-    protected abstract val viewModel: BaseViewModel
-    protected abstract val layoutRes: Int
-        @LayoutRes
-        get
-
-    protected abstract val rootView: View
 
 }

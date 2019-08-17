@@ -1,37 +1,48 @@
-package com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.presenter
+package com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.viewModel
 
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.businessLogic.useCases.flows.authorization.enterAuthenticationCode.EnterAuthenticationCodeUseCase
 import com.anvipo.angram.layers.core.ResourceManager
 import com.anvipo.angram.layers.core.base.classes.BaseViewModelImpl
+import com.anvipo.angram.layers.core.events.ShowAlertMessageEventParameters
+import com.anvipo.angram.layers.core.events.ShowErrorEventParameters
+import com.anvipo.angram.layers.core.events.ShowViewEventParameters
+import com.anvipo.angram.layers.core.events.ShowViewEventParameters.HIDE
+import com.anvipo.angram.layers.core.events.ShowViewEventParameters.SHOW
+import com.anvipo.angram.layers.core.events.SingleLiveEvent
 import com.anvipo.angram.layers.data.gateways.tdLib.errors.TdApiError
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.interfaces.AuthorizationCoordinatorEnterAuthenticationCodeRouteEventHandler
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.types.CorrectAuthenticationCodeType
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.view.EnterAuthenticationCodeView
-import com.arellomobile.mvp.InjectViewState
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.types.SetExpectedCodeLengthEventParameters
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-@InjectViewState
 class EnterAuthenticationCodeViewModelImpl(
     private val routeEventHandler: AuthorizationCoordinatorEnterAuthenticationCodeRouteEventHandler,
     private val useCase: EnterAuthenticationCodeUseCase,
     private val resourceManager: ResourceManager
-) : BaseViewModelImpl<EnterAuthenticationCodeView>(), EnterAuthenticationCodeViewModel {
+) : BaseViewModelImpl(), EnterAuthenticationCodeViewModel {
 
-    override fun onFirstViewAttach() {
-        super.onFirstViewAttach()
-        viewState.hideNextButton()
-        viewState.hideRegistrationViews()
-        viewState.hideProgress()
+    override val setExpectedCodeLengthEvents: SingleLiveEvent<SetExpectedCodeLengthEventParameters> =
+        SingleLiveEvent()
+    override val showNextButtonEvents: SingleLiveEvent<ShowViewEventParameters> =
+        SingleLiveEvent()
+    override val showRegistrationViewsEvents: SingleLiveEvent<ShowViewEventParameters> =
+        SingleLiveEvent()
+
+    override fun onCreateTriggered() {
+        super<BaseViewModelImpl>.onCreateTriggered()
+        hideNextButton()
+        hideRegistrationViews()
+        hideProgress()
     }
 
     override fun onResumeTriggered() {
         if (registrationRequired) {
-            viewState.showRegistrationViews()
+            showRegistrationViews()
         }
 
-        viewState.hideProgress()
+        hideProgress()
     }
 
     override fun onNextButtonPressed(
@@ -39,7 +50,7 @@ class EnterAuthenticationCodeViewModelImpl(
         lastName: String,
         firstName: String
     ) {
-        viewState.showProgress()
+        showProgress()
 
         myLaunch {
             val checkAuthenticationCodeResult = withContext(Dispatchers.IO) {
@@ -56,7 +67,7 @@ class EnterAuthenticationCodeViewModelImpl(
     }
 
     override fun onResendAuthenticationCodeButtonPressed() {
-        viewState.showProgress()
+        showProgress()
 
         myLaunch {
             val resendAuthenticationCodeResult = withContext(Dispatchers.IO) {
@@ -64,7 +75,7 @@ class EnterAuthenticationCodeViewModelImpl(
             }
 
             resendAuthenticationCodeResult
-                .onSuccess { withContext(Dispatchers.Main) { viewState.hideProgress() } }
+                .onSuccess { withContext(Dispatchers.Main) { hideProgress() } }
                 .onFailure { handleAuthenticationCodeFailure(it) }
         }
     }
@@ -72,7 +83,7 @@ class EnterAuthenticationCodeViewModelImpl(
     @ExperimentalUnsignedTypes
     override fun onGetExpectedCodeLength(expectedCodeLength: UInt) {
         this.expectedCodeLength = expectedCodeLength
-        viewState.setMaxLengthOfEditText(this.expectedCodeLength.toInt())
+        setMaxLengthOfEditText(this.expectedCodeLength.toInt())
     }
 
     override fun onGetEnteredPhoneNumber(enteredPhoneNumber: String) {
@@ -85,7 +96,14 @@ class EnterAuthenticationCodeViewModelImpl(
 
     override fun onGetTermsOfServiceText(termsOfServiceText: String) {
         if (termsOfServiceText.isNotBlank() && termsOfServiceText.isNotEmpty()) {
-            viewState.showAlertMessage(termsOfServiceText)
+            showAlertMessage(
+                ShowAlertMessageEventParameters(
+                    title = null,
+                    text = termsOfServiceText,
+                    cancelable = true,
+                    messageDialogTag = null
+                )
+            )
         }
     }
 
@@ -93,13 +111,13 @@ class EnterAuthenticationCodeViewModelImpl(
     override fun onAuthenticationCodeTextChanged(text: CharSequence?) {
         if (text.isNullOrBlank()) {
             authenticationCodeIsEnteredAndCorrect = false
-            viewState.hideNextButton()
+            hideNextButton()
             return
         }
 
         if (text.length.toUInt() < expectedCodeLength) {
             authenticationCodeIsEnteredAndCorrect = false
-            viewState.hideNextButton()
+            hideNextButton()
             return
         }
 
@@ -107,14 +125,14 @@ class EnterAuthenticationCodeViewModelImpl(
 
         if (authenticationCodeIsEnteredAndCorrect) {
             if (!registrationRequired) {
-                viewState.showNextButton()
+                showNextButton()
                 return
             }
 
             if (registrationRequired && firstNameIsEntered && lastNameIsEntered) {
-                viewState.showNextButton()
+                showNextButton()
             } else {
-                viewState.hideNextButton()
+                hideNextButton()
             }
         }
     }
@@ -122,7 +140,7 @@ class EnterAuthenticationCodeViewModelImpl(
     override fun onFirstNameTextChanged(text: CharSequence?) {
         if (text.isNullOrBlank()) {
             firstNameIsEntered = false
-            viewState.hideNextButton()
+            hideNextButton()
             return
         }
 
@@ -130,9 +148,9 @@ class EnterAuthenticationCodeViewModelImpl(
 
         if (authenticationCodeIsEnteredAndCorrect) {
             if (registrationRequired && firstNameIsEntered && lastNameIsEntered) {
-                viewState.showNextButton()
+                showNextButton()
             } else {
-                viewState.hideNextButton()
+                hideNextButton()
             }
         }
     }
@@ -140,7 +158,7 @@ class EnterAuthenticationCodeViewModelImpl(
     override fun onLastNameTextChanged(text: CharSequence?) {
         if (text.isNullOrBlank()) {
             lastNameIsEntered = false
-            viewState.hideNextButton()
+            hideNextButton()
             return
         }
 
@@ -148,9 +166,9 @@ class EnterAuthenticationCodeViewModelImpl(
 
         if (authenticationCodeIsEnteredAndCorrect) {
             if (registrationRequired && firstNameIsEntered && lastNameIsEntered) {
-                viewState.showNextButton()
+                showNextButton()
             } else {
-                viewState.hideNextButton()
+                hideNextButton()
             }
         }
     }
@@ -187,9 +205,33 @@ class EnterAuthenticationCodeViewModelImpl(
         }
 
         withContext(Dispatchers.Main) {
-            viewState.hideProgress()
-            viewState.showErrorAlert(errorMessage)
+            hideProgress()
+            showErrorAlert(
+                ShowErrorEventParameters(
+                    text = errorMessage
+                )
+            )
         }
+    }
+
+    private fun setMaxLengthOfEditText(expectedCodeLength: Int) {
+        setExpectedCodeLengthEvents.value = SetExpectedCodeLengthEventParameters(expectedCodeLength)
+    }
+
+    private fun showNextButton() {
+        showNextButtonEvents.value = SHOW
+    }
+
+    private fun hideNextButton() {
+        showNextButtonEvents.value = HIDE
+    }
+
+    private fun showRegistrationViews() {
+        showRegistrationViewsEvents.value = SHOW
+    }
+
+    private fun hideRegistrationViews() {
+        showRegistrationViewsEvents.value = HIDE
     }
 
 }

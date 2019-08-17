@@ -1,9 +1,16 @@
-package com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.presenter
+package com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.viewModel
 
 import com.anvipo.angram.layers.core.base.interfaces.BaseViewModel
+import com.anvipo.angram.layers.core.events.ShowViewEventParameters
+import com.anvipo.angram.layers.core.events.SingleLiveEvent
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.types.CorrectAuthenticationCodeType
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.types.SetExpectedCodeLengthEventParameters
 
 interface EnterAuthenticationCodeViewModel : BaseViewModel {
+
+    val setExpectedCodeLengthEvents: SingleLiveEvent<SetExpectedCodeLengthEventParameters>
+    val showNextButtonEvents: SingleLiveEvent<ShowViewEventParameters>
+    val showRegistrationViewsEvents: SingleLiveEvent<ShowViewEventParameters>
 
     fun onNextButtonPressed(
         enteredAuthenticationCode: CorrectAuthenticationCodeType,
