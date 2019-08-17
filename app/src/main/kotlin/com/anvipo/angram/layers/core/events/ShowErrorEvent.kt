@@ -1,5 +1,5 @@
 package com.anvipo.angram.layers.core.events
 
-class ErrorEvent(
+class ShowErrorEvent(
     val text: String
 )

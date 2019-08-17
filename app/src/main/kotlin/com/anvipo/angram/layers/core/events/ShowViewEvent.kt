@@ -1,6 +1,6 @@
 package com.anvipo.angram.layers.core.events
 
-enum class ShowProgressEvent {
+enum class ShowViewEvent {
     SHOW,
     HIDE
 }

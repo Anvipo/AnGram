@@ -11,17 +11,17 @@ import com.anvipo.angram.R
 import com.anvipo.angram.layers.core.IndexPath
 import com.anvipo.angram.layers.core.base.classes.BaseFragment
 import com.anvipo.angram.layers.core.dialogFragment.MessageDialogFragment
+import com.anvipo.angram.layers.core.events.ShowViewEvent.HIDE
+import com.anvipo.angram.layers.core.events.ShowViewEvent.SHOW
 import com.anvipo.angram.layers.core.hideWithAnimate
 import com.anvipo.angram.layers.core.showWithAnimate
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.di.AddProxyModule.addProxyViewModelQualifier
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.viewModel.AddProxyViewModel
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.types.ProxyType
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.types.ShowAddProxyEvent.HIDE
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.types.ShowAddProxyEvent.SHOW
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.view.recyclerView.headersAndFooters.mtProto.AddMTProtoProxyHeaderData
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.view.recyclerView.row.mtProto.AddMTProtoProxyRow
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.view.recyclerView.section.AddProxySectionListAdapter
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.view.recyclerView.section.mtProto.AddMTProtoProxySection
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.viewModel.AddProxyViewModel
 import kotlinx.android.synthetic.main.fragment_add_proxy.*
 import org.drinkless.td.libcore.telegram.TdApi
 import org.koin.android.ext.android.get
@@ -31,8 +31,6 @@ class AddProxyFragment :
     MessageDialogFragment.OnClickListener {
 
     companion object {
-        private const val ARG_PROXY_TYPE = "arg_proxy_type"
-
         fun createNewInstance(
             proxyType: ProxyType,
             shouldShowBackButton: Boolean
@@ -43,7 +41,20 @@ class AddProxyFragment :
                     putBoolean(ARG_SHOULD_SHOW_BACK_BUTTON, shouldShowBackButton)
                 }
             }
+
+        private const val ARG_PROXY_TYPE = "arg_proxy_type"
     }
+
+    override val viewModel: AddProxyViewModel
+            by viewModels { get(addProxyViewModelQualifier) }
+
+    override val actionBarTitle: String
+            by lazy { getString(R.string.enter_proxy_server_data) }
+
+    override val actionBar: Toolbar
+        get() = add_proxy_toolbar as Toolbar
+
+    override val layoutRes: Int by lazy { R.layout.fragment_add_proxy }
 
     @ExperimentalUnsignedTypes
     override fun extractDataFromBundle() {
@@ -81,16 +92,6 @@ class AddProxyFragment :
         viewModel.messageDialogPositiveClicked(tag)
     }
 
-    override val viewModel: AddProxyViewModel by viewModels {
-        get(addProxyViewModelQualifier)
-    }
-
-    override val actionBarTitle: String by lazy { getString(R.string.enter_proxy_server_data) }
-
-    override val actionBar: Toolbar
-        get() = add_proxy_toolbar as Toolbar
-
-    override val layoutRes: Int by lazy { R.layout.fragment_add_proxy }
 
     private val adapter by lazy { AddProxySectionListAdapter() }
 

@@ -17,11 +17,13 @@ import androidx.lifecycle.observe
 import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.core.CoreConstants.PROGRESS_TAG
+import com.anvipo.angram.layers.core.ShowItemsDialogEvent
 import com.anvipo.angram.layers.core.base.interfaces.BaseViewModel
 import com.anvipo.angram.layers.core.dialogFragment.ItemsDialogFragment
 import com.anvipo.angram.layers.core.dialogFragment.MessageDialogFragment
-import com.anvipo.angram.layers.core.events.ShowProgressEvent.HIDE
-import com.anvipo.angram.layers.core.events.ShowProgressEvent.SHOW
+import com.anvipo.angram.layers.core.events.ShowAlertMessageEvent
+import com.anvipo.angram.layers.core.events.ShowViewEvent.HIDE
+import com.anvipo.angram.layers.core.events.ShowViewEvent.SHOW
 import com.anvipo.angram.layers.core.logHelpers.HasLogger
 import com.anvipo.angram.layers.core.showSnackbarMessage
 import com.anvipo.angram.layers.core.views.MyProgressDialog
@@ -97,13 +99,13 @@ abstract class BaseFragment :
     protected open fun setupClickListeners(): Unit = Unit
     protected open fun setupViewModelsObservers() {
         viewModel
-            .errorEvents
+            .showErrorEvents
             .observe(this) {
                 showErrorAlert(text = it.text)
             }
 
         viewModel
-            .showProgressEvents
+            .showViewEvents
             .observe(this) {
                 @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
                 when (it) {
@@ -115,12 +117,13 @@ abstract class BaseFragment :
         viewModel
             .showAlertMessageEvents
             .observe(this) {
-                showAlertMessage(
-                    text = it.text,
-                    title = it.title,
-                    cancelable = it.cancelable,
-                    messageDialogTag = it.messageDialogTag
-                )
+                showAlertMessage(it)
+            }
+
+        viewModel
+            .showItemsDialogEvents
+            .observe(this) {
+                showItemsDialog(it)
             }
     }
 
@@ -141,10 +144,12 @@ abstract class BaseFragment :
 
     private fun showErrorAlert(text: String) {
         showAlertMessage(
-            title = getString(R.string.error_title),
-            text = text,
-            cancelable = true,
-            messageDialogTag = ""
+            ShowAlertMessageEvent(
+                title = getString(R.string.error_title),
+                text = text,
+                cancelable = true,
+                messageDialogTag = ""
+            )
         )
     }
 
@@ -179,34 +184,28 @@ abstract class BaseFragment :
     }
 
     private fun showItemsDialog(
-        title: String?,
-        items: List<String>,
-        tag: String?,
-        cancelable: Boolean
+        showItemsDialogEvent: ShowItemsDialogEvent
     ) {
         ItemsDialogFragment
             .create(
-                title,
-                items,
-                tag,
-                cancelable
+                showItemsDialogEvent.title,
+                showItemsDialogEvent.items,
+                showItemsDialogEvent.tag,
+                showItemsDialogEvent.cancelable
             )
             .show(childFragmentManager, null)
     }
 
     private fun showAlertMessage(
-        text: String,
-        title: String?,
-        cancelable: Boolean,
-        messageDialogTag: String
+        showAlertMessageEvent: ShowAlertMessageEvent
     ) {
         MessageDialogFragment
             .create(
-                message = text,
-                title = title,
+                message = showAlertMessageEvent.text,
+                title = showAlertMessageEvent.title,
                 positive = getString(android.R.string.ok),
-                cancelable = cancelable,
-                messageDialogTag = messageDialogTag
+                cancelable = showAlertMessageEvent.cancelable,
+                messageDialogTag = showAlertMessageEvent.messageDialogTag
             )
             .show(childFragmentManager, null)
     }

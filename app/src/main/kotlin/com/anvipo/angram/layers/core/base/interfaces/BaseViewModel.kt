@@ -1,16 +1,20 @@
 package com.anvipo.angram.layers.core.base.interfaces
 
 import android.content.Intent
-import com.anvipo.angram.layers.core.events.ErrorEvent
-import com.anvipo.angram.layers.core.events.ShowProgressEvent
+import com.anvipo.angram.layers.core.ShowItemsDialogEvent
+import com.anvipo.angram.layers.core.ShowSnackMessageEvent
 import com.anvipo.angram.layers.core.events.ShowAlertMessageEvent
+import com.anvipo.angram.layers.core.events.ShowErrorEvent
+import com.anvipo.angram.layers.core.events.ShowViewEvent
 import com.anvipo.angram.layers.core.events.SingleLiveEvent
 
 interface BaseViewModel {
 
-    val errorEvents: SingleLiveEvent<ErrorEvent>
-    val showProgressEvents: SingleLiveEvent<ShowProgressEvent>
+    val showErrorEvents: SingleLiveEvent<ShowErrorEvent>
+    val showViewEvents: SingleLiveEvent<ShowViewEvent>
     val showAlertMessageEvents: SingleLiveEvent<ShowAlertMessageEvent>
+    val showItemsDialogEvents: SingleLiveEvent<ShowItemsDialogEvent>
+    val showSnackMessageEvents: SingleLiveEvent<ShowSnackMessageEvent>
 
     fun onStartTriggered(): Unit = Unit
 

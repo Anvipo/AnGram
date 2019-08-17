@@ -2,14 +2,16 @@ package com.anvipo.angram.layers.core.base.classes
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.anvipo.angram.layers.core.ShowItemsDialogEvent
+import com.anvipo.angram.layers.core.ShowSnackMessageEvent
 import com.anvipo.angram.layers.core.base.interfaces.BaseViewModel
 import com.anvipo.angram.layers.core.base.interfaces.HasMyCoroutineBuilders
 import com.anvipo.angram.layers.core.errorMessage
-import com.anvipo.angram.layers.core.events.ErrorEvent
-import com.anvipo.angram.layers.core.events.ShowProgressEvent
-import com.anvipo.angram.layers.core.events.ShowProgressEvent.HIDE
-import com.anvipo.angram.layers.core.events.ShowProgressEvent.SHOW
 import com.anvipo.angram.layers.core.events.ShowAlertMessageEvent
+import com.anvipo.angram.layers.core.events.ShowErrorEvent
+import com.anvipo.angram.layers.core.events.ShowViewEvent
+import com.anvipo.angram.layers.core.events.ShowViewEvent.HIDE
+import com.anvipo.angram.layers.core.events.ShowViewEvent.SHOW
 import com.anvipo.angram.layers.core.events.SingleLiveEvent
 import com.anvipo.angram.layers.core.logHelpers.HasLogger
 import kotlinx.coroutines.CancellationException
@@ -23,9 +25,13 @@ abstract class BaseViewModelImpl :
     HasMyCoroutineBuilders,
     HasLogger {
 
-    final override val errorEvents: SingleLiveEvent<ErrorEvent> =
+    final override val showErrorEvents: SingleLiveEvent<ShowErrorEvent> =
         SingleLiveEvent()
-    final override val showProgressEvents: SingleLiveEvent<ShowProgressEvent> =
+    final override val showViewEvents: SingleLiveEvent<ShowViewEvent> =
+        SingleLiveEvent()
+    final override val showSnackMessageEvents: SingleLiveEvent<ShowSnackMessageEvent> =
+        SingleLiveEvent()
+    final override val showItemsDialogEvents: SingleLiveEvent<ShowItemsDialogEvent> =
         SingleLiveEvent()
     final override val showAlertMessageEvents: SingleLiveEvent<ShowAlertMessageEvent> =
         SingleLiveEvent()
@@ -35,7 +41,7 @@ abstract class BaseViewModelImpl :
     final override fun myLaunchExceptionHandler(throwable: Throwable) {
         val errorMessage = throwable.errorMessage
         additionalLogging(errorMessage)
-        errorEvents.value = ErrorEvent(text = errorMessage)
+        showErrorEvents.value = ShowErrorEvent(text = errorMessage)
     }
 
     override fun onCleared() {
@@ -59,19 +65,31 @@ abstract class BaseViewModelImpl :
         mutableListOf()
 
     protected fun showProgress() {
-        showProgressEvents.value = SHOW
+        showViewEvents.value = SHOW
     }
 
     protected fun hideProgress() {
-        showProgressEvents.value = HIDE
+        showViewEvents.value = HIDE
     }
 
     protected fun showAlertMessage(showAlertMessageEvent: ShowAlertMessageEvent) {
         showAlertMessageEvents.value = showAlertMessageEvent
     }
 
-    protected fun showErrorAlert(errorEvent: ErrorEvent) {
-        errorEvents.value = errorEvent
+    protected fun showErrorAlert(showErrorEvent: ShowErrorEvent) {
+        showErrorEvents.value = showErrorEvent
+    }
+
+    protected fun showItemsDialog(
+        showItemsDialogEvent: ShowItemsDialogEvent
+    ) {
+        showItemsDialogEvents.value = showItemsDialogEvent
+    }
+
+    protected fun showSnackMessage(text: String) {
+        showSnackMessageEvents.value = ShowSnackMessageEvent(
+            text = text
+        )
     }
 
 }

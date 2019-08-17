@@ -1,62 +1,78 @@
-package com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.presenter
+package com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.viewModel
 
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.businessLogic.useCases.flows.authorization.enterAuthenticationPhoneNumber.EnterAuthenticationPhoneNumberUseCase
 import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
 import com.anvipo.angram.layers.core.ResourceManager
+import com.anvipo.angram.layers.core.ShowItemsDialogEvent
 import com.anvipo.angram.layers.core.base.classes.BaseViewModelImpl
+import com.anvipo.angram.layers.core.events.EnableViewEvents
+import com.anvipo.angram.layers.core.events.EnableViewEvents.DISABLE
+import com.anvipo.angram.layers.core.events.EnableViewEvents.ENABLE
+import com.anvipo.angram.layers.core.events.ShowErrorEvent
+import com.anvipo.angram.layers.core.events.ShowViewEvent
+import com.anvipo.angram.layers.core.events.ShowViewEvent.HIDE
+import com.anvipo.angram.layers.core.events.ShowViewEvent.SHOW
+import com.anvipo.angram.layers.core.events.SingleLiveEvent
 import com.anvipo.angram.layers.data.gateways.tdLib.errors.TdApiError
 import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionState
 import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionStateReceiveChannel
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.interfaces.AuthorizationCoordinatorEnterAuthenticationPhoneNumberRouteEventHandler
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.types.ProxyType
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.view.EnterAuthenticationPhoneNumberView
-import com.arellomobile.mvp.InjectViewState
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
 import org.drinkless.td.libcore.telegram.TdApi
 
-@InjectViewState
 class EnterAuthenticationPhoneNumberViewModelImpl(
     private val useCase: EnterAuthenticationPhoneNumberUseCase,
     private val routeEventHandler: AuthorizationCoordinatorEnterAuthenticationPhoneNumberRouteEventHandler,
     private val resourceManager: ResourceManager,
     private val tdApiUpdateConnectionStateReceiveChannel: TdApiUpdateConnectionStateReceiveChannel
-) : BaseViewModelImpl<EnterAuthenticationPhoneNumberView>(), EnterAuthenticationPhoneNumberViewModel {
+) : BaseViewModelImpl(), EnterAuthenticationPhoneNumberViewModel {
 
     init {
         channelsThatWillBeUnsubscribedInOnDestroy.add(tdApiUpdateConnectionStateReceiveChannel)
     }
 
+    override val showNextButtonEvents: SingleLiveEvent<ShowViewEvent> =
+        SingleLiveEvent()
+    override val enableNextButtonEvents: SingleLiveEvent<EnableViewEvents> =
+        SingleLiveEvent()
+
     override fun coldStart() {
-        viewState.hideNextButton()
+        hideNextButton()
     }
 
     override fun onResumeTriggered() {
-        viewState.hideProgress()
+        hideProgress()
         subscribeOnConnectionStates()
     }
 
 
     override fun onAddProxyButtonPressed() {
-        viewState.showItemsDialog(
-            resourceManager.getString(R.string.choose_proxy_server_type),
-            proxysList
+        showItemsDialog(
+            ShowItemsDialogEvent(
+                title = resourceManager.getString(R.string.choose_proxy_server_type),
+                items = proxysList,
+                tag = null,
+                cancelable = true
+            )
         )
     }
 
     override fun onItemClicked(index: Int) {
         myLaunch {
             when (proxys[index]) {
-                mtprotoPair.second -> routeEventHandler.onAddProxyButtonTapped(ProxyType.MTPROTO)
+                mtprotoPair.second ->
+                    routeEventHandler.onAddProxyButtonTapped(ProxyType.MTPROTO)
             }
         }
     }
 
     override fun onNextButtonPressed(enteredPhoneNumber: String) {
-        viewState.showProgress()
+        showProgress()
 
         myLaunch {
             val setAuthenticationPhoneNumberResult =
@@ -80,8 +96,12 @@ class EnterAuthenticationPhoneNumberViewModelImpl(
                     }
 
                     withContext(Dispatchers.Main) {
-                        viewState.hideProgress()
-                        viewState.showErrorAlert(errorMessage)
+                        hideProgress()
+                        showErrorAlert(
+                            ShowErrorEvent(
+                                text = errorMessage
+                            )
+                        )
                     }
                 }
         }
@@ -89,11 +109,11 @@ class EnterAuthenticationPhoneNumberViewModelImpl(
 
     override fun onPhoneNumberTextChanged(text: String) {
         if (text.length <= 1) {
-            viewState.hideNextButton()
+            hideNextButton()
             return
         }
 
-        viewState.showNextButton()
+        showNextButton()
     }
 
     override fun onBackPressed() {
@@ -107,32 +127,11 @@ class EnterAuthenticationPhoneNumberViewModelImpl(
         val cancellationException = CancellationException("$className::$methodName")
 
         onNextButtonPressedJob?.cancel(cancellationException)
-        viewState.showSnackMessage(resourceManager.getString(R.string.query_canceled))
+        showSnackMessage(resourceManager.getString(R.string.query_canceled))
     }
 
 
     private var onNextButtonPressedJob: Job? = null
-
-    private fun subscribeOnConnectionStates() {
-        myLaunch(Dispatchers.IO) {
-            for (receivedTdApiUpdateConnectionState in tdApiUpdateConnectionStateReceiveChannel) {
-                onReceivedTdApiUpdateConnectionState(receivedTdApiUpdateConnectionState)
-            }
-        }
-    }
-
-    private suspend fun onReceivedTdApiUpdateConnectionState(receivedTdApiUpdateConnectionState: TdApiUpdateConnectionState) {
-        withContext(Dispatchers.Main) {
-            when (val receivedConnectionState = receivedTdApiUpdateConnectionState.state) {
-                is TdApi.ConnectionStateWaitingForNetwork -> viewState.disableNextButton()
-                is TdApi.ConnectionStateConnectingToProxy -> viewState.disableNextButton()
-                is TdApi.ConnectionStateConnecting -> viewState.disableNextButton()
-                is TdApi.ConnectionStateUpdating -> viewState.disableNextButton()
-                is TdApi.ConnectionStateReady -> viewState.enableNextButton()
-                else -> assertionFailure("Undefined received connection state $receivedConnectionState")
-            }
-        }
-    }
 
     private val mtprotoPair = 0 to "MTPROTO"
 
@@ -150,5 +149,42 @@ class EnterAuthenticationPhoneNumberViewModelImpl(
     private val proxys: Map<Int, String> = mapOf(
         mtprotoPair
     )
+
+    private fun subscribeOnConnectionStates() {
+        myLaunch(Dispatchers.IO) {
+            for (receivedTdApiUpdateConnectionState in tdApiUpdateConnectionStateReceiveChannel) {
+                onReceivedTdApiUpdateConnectionState(receivedTdApiUpdateConnectionState)
+            }
+        }
+    }
+
+    private suspend fun onReceivedTdApiUpdateConnectionState(receivedTdApiUpdateConnectionState: TdApiUpdateConnectionState) {
+        withContext(Dispatchers.Main) {
+            when (val receivedConnectionState = receivedTdApiUpdateConnectionState.state) {
+                is TdApi.ConnectionStateWaitingForNetwork -> disableNextButton()
+                is TdApi.ConnectionStateConnectingToProxy -> disableNextButton()
+                is TdApi.ConnectionStateConnecting -> disableNextButton()
+                is TdApi.ConnectionStateUpdating -> disableNextButton()
+                is TdApi.ConnectionStateReady -> enableNextButton()
+                else -> assertionFailure("Undefined received connection state $receivedConnectionState")
+            }
+        }
+    }
+
+    private fun showNextButton() {
+        showNextButtonEvents.value = SHOW
+    }
+
+    private fun hideNextButton() {
+        showNextButtonEvents.value = HIDE
+    }
+
+    private fun enableNextButton() {
+        enableNextButtonEvents.value = ENABLE
+    }
+
+    private fun disableNextButton() {
+        enableNextButtonEvents.value = DISABLE
+    }
 
 }

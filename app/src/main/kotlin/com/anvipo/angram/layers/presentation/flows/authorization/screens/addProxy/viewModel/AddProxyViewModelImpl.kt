@@ -4,14 +4,14 @@ import com.anvipo.angram.R
 import com.anvipo.angram.layers.businessLogic.useCases.flows.authorization.addProxy.AddProxyUseCase
 import com.anvipo.angram.layers.core.ResourceManager
 import com.anvipo.angram.layers.core.base.classes.BaseViewModelImpl
-import com.anvipo.angram.layers.core.events.ErrorEvent
+import com.anvipo.angram.layers.core.events.ShowErrorEvent
 import com.anvipo.angram.layers.core.events.ShowAlertMessageEvent
+import com.anvipo.angram.layers.core.events.ShowViewEvent
+import com.anvipo.angram.layers.core.events.ShowViewEvent.HIDE
+import com.anvipo.angram.layers.core.events.ShowViewEvent.SHOW
 import com.anvipo.angram.layers.core.events.SingleLiveEvent
 import com.anvipo.angram.layers.data.gateways.tdLib.errors.TdApiError
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.interfaces.AuthorizationCoordinatorAddProxyRouteEventHandler
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.types.ShowAddProxyEvent
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.types.ShowAddProxyEvent.HIDE
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.types.ShowAddProxyEvent.SHOW
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.drinkless.td.libcore.telegram.TdApi
@@ -22,12 +22,12 @@ class AddProxyViewModelImpl(
     private val resourceManager: ResourceManager
 ) : BaseViewModelImpl(), AddProxyViewModel {
 
-    override val showAddProxyEvents: SingleLiveEvent<ShowAddProxyEvent> =
+    override val showAddProxyEvents: SingleLiveEvent<ShowViewEvent> =
         SingleLiveEvent()
 
     override fun coldStart() {
         // TODO: uncomment
-//        viewState.hideAddProxyButton()
+//        hideAddProxyButton()
     }
 
     override fun addProxyButtonTapped() {
@@ -69,7 +69,7 @@ class AddProxyViewModelImpl(
 
                     withContext(Dispatchers.Main) {
                         hideProgress()
-                        showErrorAlert(ErrorEvent(text = errorMessage))
+                        showErrorAlert(ShowErrorEvent(text = errorMessage))
                     }
                 }
         }

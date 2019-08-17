@@ -3,49 +3,38 @@ package com.anvipo.angram.layers.presentation.flows.authorization.screens.enterA
 
 import android.view.View
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.observe
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.core.base.classes.BaseFragment
 import com.anvipo.angram.layers.core.dialogFragment.ItemsDialogFragment
 import com.anvipo.angram.layers.core.dialogFragment.MessageDialogFragment
+import com.anvipo.angram.layers.core.events.EnableViewEvents.DISABLE
+import com.anvipo.angram.layers.core.events.EnableViewEvents.ENABLE
+import com.anvipo.angram.layers.core.events.ShowViewEvent.HIDE
+import com.anvipo.angram.layers.core.events.ShowViewEvent.SHOW
 import com.anvipo.angram.layers.core.hideKeyboard
 import com.anvipo.angram.layers.core.hideWithAnimate
 import com.anvipo.angram.layers.core.showWithAnimate
 import com.anvipo.angram.layers.core.textWatchers.PhoneNumberTextWatcher
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.di.EnterAuthenticationPhoneNumberModule.enterAuthenticationPhoneNumberPresenterQualifier
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.presenter.EnterAuthenticationPhoneNumberViewModel
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.presenter.EnterAuthenticationPhoneNumberViewModelImpl
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.viewModel.EnterAuthenticationPhoneNumberViewModel
 import kotlinx.android.synthetic.main.fragment_enter_phone_number.*
 import org.koin.android.ext.android.get
 
 class EnterAuthenticationPhoneNumberFragment :
     BaseFragment(),
-    EnterAuthenticationPhoneNumberView,
     MessageDialogFragment.OnClickListener,
     ItemsDialogFragment.OnClickListener {
 
     companion object {
-        fun createNewInstance(): EnterAuthenticationPhoneNumberView = EnterAuthenticationPhoneNumberFragment()
+        fun createNewInstance(): EnterAuthenticationPhoneNumberFragment =
+            EnterAuthenticationPhoneNumberFragment()
     }
 
-    override fun enableNextButton() {
-        enter_phone_number_next_button.isEnabled = true
-    }
+    override val viewModel: EnterAuthenticationPhoneNumberViewModel
+            by viewModels { get(enterAuthenticationPhoneNumberPresenterQualifier) }
 
-    override fun disableNextButton() {
-        enter_phone_number_next_button.isEnabled = false
-    }
-
-    override fun showNextButton() {
-        enter_phone_number_next_button.showWithAnimate()
-    }
-
-    override fun hideNextButton() {
-        enter_phone_number_next_button.hideWithAnimate()
-    }
-
-    override val viewModel: EnterAuthenticationPhoneNumberViewModel by lazy { mPresenter }
     override val layoutRes: Int by lazy { R.layout.fragment_enter_phone_number }
 
     override val actionBarTitle: String by lazy { getString(R.string.enter_your_phone_number_title) }
@@ -73,17 +62,50 @@ class EnterAuthenticationPhoneNumberFragment :
         viewModel.onItemClicked(index)
     }
 
-    @ProvidePresenter
-    fun providePresenter(): EnterAuthenticationPhoneNumberViewModelImpl =
-        get(enterAuthenticationPhoneNumberPresenterQualifier)
+    override fun setupViewModelsObservers() {
+        super.setupViewModelsObservers()
+        viewModel
+            .showNextButtonEvents
+            .observe(this) {
+                @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
+                when (it) {
+                    SHOW -> showNextButton()
+                    HIDE -> hideNextButton()
+                }
+            }
 
-    @InjectPresenter
-    lateinit var mPresenter: EnterAuthenticationPhoneNumberViewModelImpl
+        viewModel
+            .enableNextButtonEvents
+            .observe(this) {
+                @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
+                when (it) {
+                    ENABLE -> enableNextButton()
+                    DISABLE -> disableNextButton()
+                }
+            }
+    }
+
 
     private val phoneNumberTextWatcher by lazy {
         PhoneNumberTextWatcher(
             onEnteredCleanedPhoneNumber = { viewModel.onPhoneNumberTextChanged(it) }
         )
+    }
+
+    private fun enableNextButton() {
+        enter_phone_number_next_button.isEnabled = true
+    }
+
+    private fun disableNextButton() {
+        enter_phone_number_next_button.isEnabled = false
+    }
+
+    private fun showNextButton() {
+        enter_phone_number_next_button.showWithAnimate()
+    }
+
+    private fun hideNextButton() {
+        enter_phone_number_next_button.hideWithAnimate()
     }
 
     private fun onChangedFocusInPhoneNumberEditText(
