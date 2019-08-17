@@ -10,10 +10,11 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.observe
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.navigatorHolderQualifier
-import com.anvipo.angram.layers.application.launchSystem.appActivity.di.AppActivityModule.appPresenterQualifier
+import com.anvipo.angram.layers.application.launchSystem.appActivity.di.AppActivityModule.appViewModelQualifier
 import com.anvipo.angram.layers.application.launchSystem.appActivity.types.SetNavigatorEventParameters.REMOVE
 import com.anvipo.angram.layers.application.launchSystem.appActivity.types.SetNavigatorEventParameters.SET
 import com.anvipo.angram.layers.application.launchSystem.appActivity.viewModel.AppViewModel
+import com.anvipo.angram.layers.application.launchSystem.appActivity.viewModel.AppViewModelImpl
 import com.anvipo.angram.layers.core.base.classes.BaseActivity
 import kotlinx.android.synthetic.main.layout_container.*
 import org.koin.android.ext.android.get
@@ -25,8 +26,9 @@ import ru.terrakok.cicerone.commands.*
 
 class AppActivity : BaseActivity() {
 
-    override val viewModel: AppViewModel
-            by viewModels { get(appPresenterQualifier) }
+    override val viewModel: AppViewModel by viewModels<AppViewModelImpl> {
+        get(appViewModelQualifier)
+    }
 
     override val layoutRes: Int = R.layout.layout_container
 

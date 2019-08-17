@@ -6,10 +6,10 @@ import com.anvipo.angram.layers.businessLogic.di.UseCasesModule.addProxyUseCaseQ
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorQualifier
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.addProxy.AddProxyScreenFactory
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.addProxy.AddProxyScreenFactoryImpl
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.viewModel.AddProxyViewModel
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.viewModel.AddProxyViewModelImpl
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.types.ProxyType
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.view.AddProxyFragment
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.viewModel.AddProxyViewModel
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.viewModel.AddProxyViewModelImpl
 import org.koin.core.KoinComponent
 import org.koin.core.get
 import org.koin.core.module.Module
@@ -40,7 +40,7 @@ object AddProxyModule {
     val addProxyViewQualifier: StringQualifier = named("addProxyView")
     val addProxyScreenQualifier: StringQualifier = named("addProxyScreen")
 
-    val addProxyViewModelQualifier = named("addProxyViewModel")
+    val addProxyViewModelQualifier: StringQualifier = named("addProxyViewModel")
 
     @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {

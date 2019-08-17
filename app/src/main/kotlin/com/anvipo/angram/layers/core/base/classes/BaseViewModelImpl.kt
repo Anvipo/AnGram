@@ -10,7 +10,7 @@ import com.anvipo.angram.layers.core.errorMessage
 import com.anvipo.angram.layers.core.events.SingleLiveEvent
 import com.anvipo.angram.layers.core.events.parameters.ShowAlertMessageEventParameters
 import com.anvipo.angram.layers.core.events.parameters.ShowErrorEventParameters
-import com.anvipo.angram.layers.core.events.parameters.ShowToastEventParameters
+import com.anvipo.angram.layers.core.events.parameters.ShowToastMessageEventParameters
 import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters
 import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters.HIDE
 import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters.SHOW
@@ -36,7 +36,7 @@ abstract class BaseViewModelImpl :
         SingleLiveEvent()
     final override val showAlertMessageEvents: SingleLiveEvent<ShowAlertMessageEventParameters> =
         SingleLiveEvent()
-    final override val showToastEvents: SingleLiveEvent<ShowToastEventParameters> =
+    final override val showToastMessageEvents: SingleLiveEvent<ShowToastMessageEventParameters> =
         SingleLiveEvent()
 
     final override val className: String = this::class.java.name
@@ -46,7 +46,11 @@ abstract class BaseViewModelImpl :
         val errorMessage = throwable.errorMessage
         additionalLogging(errorMessage)
         showErrorEvents.value =
-            ShowErrorEventParameters(text = errorMessage)
+            ShowErrorEventParameters(
+                text = errorMessage,
+                cancelable = true,
+                messageDialogTag = null
+            )
     }
 
     override fun onCleared() {
@@ -78,9 +82,9 @@ abstract class BaseViewModelImpl :
     }
 
     protected fun showToastMessage(
-        showToastEventParameters: ShowToastEventParameters
+        showToastMessageEventParameters: ShowToastMessageEventParameters
     ) {
-        showToastEvents.value = showToastEventParameters
+        showToastMessageEvents.value = showToastMessageEventParameters
     }
 
     protected fun showAlertMessage(

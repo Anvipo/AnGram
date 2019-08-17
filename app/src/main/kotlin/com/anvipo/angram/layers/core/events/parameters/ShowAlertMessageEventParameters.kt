@@ -1,4 +1,4 @@
-package com.anvipo.angram.layers.core.events
+package com.anvipo.angram.layers.core.events.parameters
 
 class ShowAlertMessageEventParameters(
     val title: String?,

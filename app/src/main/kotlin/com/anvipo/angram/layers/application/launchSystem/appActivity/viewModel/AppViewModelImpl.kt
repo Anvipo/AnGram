@@ -12,7 +12,7 @@ import com.anvipo.angram.layers.core.ShowSnackMessageEventParameters
 import com.anvipo.angram.layers.core.base.classes.BaseViewModelImpl
 import com.anvipo.angram.layers.core.events.SingleLiveEvent
 import com.anvipo.angram.layers.core.events.parameters.ShowAlertMessageEventParameters
-import com.anvipo.angram.layers.core.events.parameters.ShowToastEventParameters
+import com.anvipo.angram.layers.core.events.parameters.ShowToastMessageEventParameters
 import com.anvipo.angram.layers.core.message.SystemMessage
 import com.anvipo.angram.layers.core.message.SystemMessageType
 import com.anvipo.angram.layers.global.types.*
@@ -130,7 +130,7 @@ class AppViewModelImpl(
             withContext(Dispatchers.Main) {
                 when (type) {
                     SystemMessageType.TOAST -> showToastMessage(
-                        ShowToastEventParameters(
+                        ShowToastMessageEventParameters(
                             text = text
                         )
                     )

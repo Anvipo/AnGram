@@ -33,7 +33,7 @@ object AppActivityModule {
     private val systemMessageReceiveChannelQualifier = named("systemMessageReceiveChannel")
     private val systemMessageBroadcastChannelQualifier = named("systemMessageBroadcastChannel")
 
-    val appPresenterQualifier: StringQualifier = named("appPresenter")
+    val appViewModelQualifier: StringQualifier = named("appViewModel")
 
     @ExperimentalCoroutinesApi
     @Suppress("RemoveExplicitTypeArguments")
@@ -80,7 +80,7 @@ object AppActivityModule {
         }
 
 
-        factory<AppViewModel>(appPresenterQualifier) {
+        factory<AppViewModel>(appViewModelQualifier) {
             AppViewModelImpl(
                 useCase = get(appUseCaseQualifier),
                 coordinatorFactoryMethod = { get(applicationCoordinatorQualifier) },

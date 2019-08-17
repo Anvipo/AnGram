@@ -23,7 +23,7 @@ import com.anvipo.angram.layers.core.dialogFragment.ItemsDialogFragment
 import com.anvipo.angram.layers.core.dialogFragment.MessageDialogFragment
 import com.anvipo.angram.layers.core.events.parameters.ShowAlertMessageEventParameters
 import com.anvipo.angram.layers.core.events.parameters.ShowErrorEventParameters
-import com.anvipo.angram.layers.core.events.parameters.ShowToastEventParameters
+import com.anvipo.angram.layers.core.events.parameters.ShowToastMessageEventParameters
 import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters.HIDE
 import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters.SHOW
 import com.anvipo.angram.layers.core.logHelpers.HasLogger
@@ -142,7 +142,7 @@ abstract class BaseFragment :
             }
 
         viewModel
-            .showToastEvents
+            .showToastMessageEvents
             .observe(this) {
                 showToastMessage(it)
             }
@@ -234,14 +234,14 @@ abstract class BaseFragment :
     }
 
     private fun showToastMessage(
-        showToastEventParameters: ShowToastEventParameters
+        showToastMessageEventParameters: ShowToastMessageEventParameters
     ) {
         val context = this.context ?: return
 
         Toast.makeText(
             context,
-            showToastEventParameters.text,
-            showToastEventParameters.length
+            showToastMessageEventParameters.text,
+            showToastMessageEventParameters.length
         ).show()
     }
 

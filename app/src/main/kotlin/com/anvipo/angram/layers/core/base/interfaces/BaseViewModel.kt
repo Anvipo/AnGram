@@ -3,11 +3,11 @@ package com.anvipo.angram.layers.core.base.interfaces
 import android.content.Intent
 import com.anvipo.angram.layers.core.ShowItemsDialogEventParameters
 import com.anvipo.angram.layers.core.ShowSnackMessageEventParameters
+import com.anvipo.angram.layers.core.events.SingleLiveEvent
 import com.anvipo.angram.layers.core.events.parameters.ShowAlertMessageEventParameters
 import com.anvipo.angram.layers.core.events.parameters.ShowErrorEventParameters
+import com.anvipo.angram.layers.core.events.parameters.ShowToastMessageEventParameters
 import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters
-import com.anvipo.angram.layers.core.events.SingleLiveEvent
-import com.anvipo.angram.layers.core.events.parameters.ShowToastEventParameters
 
 interface BaseViewModel {
 
@@ -16,7 +16,7 @@ interface BaseViewModel {
     val showErrorEvents: SingleLiveEvent<ShowErrorEventParameters>
     val showAlertMessageEvents: SingleLiveEvent<ShowAlertMessageEventParameters>
     val showSnackMessageEvents: SingleLiveEvent<ShowSnackMessageEventParameters>
-    val showToastEvents: SingleLiveEvent<ShowToastEventParameters>
+    val showToastMessageEvents: SingleLiveEvent<ShowToastMessageEventParameters>
 
     fun onCreateTriggered(): Unit = Unit
     fun onStartTriggered(): Unit = Unit

@@ -10,9 +10,9 @@ import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionStateSendChann
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorQualifier
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.enterAuthenticationPhoneNumber.EnterAuthenticationPhoneNumberScreenFactory
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.enterAuthenticationPhoneNumber.EnterAuthenticationPhoneNumberScreenFactoryImpl
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.view.EnterAuthenticationPhoneNumberFragment
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.viewModel.EnterAuthenticationPhoneNumberViewModel
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.viewModel.EnterAuthenticationPhoneNumberViewModelImpl
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.view.EnterAuthenticationPhoneNumberFragment
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
@@ -38,8 +38,8 @@ object EnterAuthenticationPhoneNumberModule {
     val enterAuthenticationPhoneNumberScreenQualifier: StringQualifier =
         named("enterAuthenticationPhoneNumberScreen")
 
-    val enterAuthenticationPhoneNumberPresenterQualifier: StringQualifier =
-        named("enterAuthenticationPhoneNumberPresenter")
+    val enterAuthenticationPhoneNumberViewModelQualifier: StringQualifier =
+        named("enterAuthenticationPhoneNumberViewModel")
 
     private val tdApiUpdateConnectionStateEnterAuthenticationPhoneNumberScreenReceiveChannelQualifier =
         named("tdApiUpdateConnectionStateEnterAuthenticationPhoneNumberScreenReceiveChannel")
@@ -60,7 +60,7 @@ object EnterAuthenticationPhoneNumberModule {
             )
         }
 
-        factory<EnterAuthenticationPhoneNumberView>(
+        factory<EnterAuthenticationPhoneNumberFragment>(
             enterAuthenticationPhoneNumberViewQualifier
         ) {
             EnterAuthenticationPhoneNumberFragment.createNewInstance()
@@ -91,7 +91,7 @@ object EnterAuthenticationPhoneNumberModule {
         }
 
         factory<EnterAuthenticationPhoneNumberViewModel>(
-            enterAuthenticationPhoneNumberPresenterQualifier
+            enterAuthenticationPhoneNumberViewModelQualifier
         ) {
             EnterAuthenticationPhoneNumberViewModelImpl(
                 routeEventHandler = get(authorizationCoordinatorQualifier),

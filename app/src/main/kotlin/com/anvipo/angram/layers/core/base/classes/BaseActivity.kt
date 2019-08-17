@@ -11,7 +11,7 @@ import com.anvipo.angram.layers.core.base.interfaces.BaseViewModel
 import com.anvipo.angram.layers.core.dialogFragment.MessageDialogFragment
 import com.anvipo.angram.layers.core.events.parameters.ShowAlertMessageEventParameters
 import com.anvipo.angram.layers.core.events.parameters.ShowErrorEventParameters
-import com.anvipo.angram.layers.core.events.parameters.ShowToastEventParameters
+import com.anvipo.angram.layers.core.events.parameters.ShowToastMessageEventParameters
 import com.anvipo.angram.layers.core.logHelpers.HasLogger
 import com.anvipo.angram.layers.core.showSnackbarMessage
 
@@ -71,7 +71,7 @@ abstract class BaseActivity :
             }
 
         viewModel
-            .showToastEvents
+            .showToastMessageEvents
             .observe(this) {
                 showToastMessage(it)
             }
@@ -107,12 +107,12 @@ abstract class BaseActivity :
     }
 
     private fun showToastMessage(
-        showToastEventParameters: ShowToastEventParameters
+        showToastMessageEventParameters: ShowToastMessageEventParameters
     ) {
         Toast.makeText(
             this,
-            showToastEventParameters.text,
-            showToastEventParameters.length
+            showToastMessageEventParameters.text,
+            showToastMessageEventParameters.length
         ).show()
     }
 

@@ -4,8 +4,9 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.core.base.classes.BaseFragment
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.di.EnterAuthenticationPasswordModule.enterAuthenticationPasswordPresenterQualifier
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.di.EnterAuthenticationPasswordModule.enterAuthenticationPasswordViewModelQualifier
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.viewModel.EnterAuthenticationPasswordViewModel
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.viewModel.EnterAuthenticationPasswordViewModelImpl
 import kotlinx.android.synthetic.main.fragment_enter_authentication_password.*
 import org.koin.android.ext.android.get
 
@@ -17,7 +18,9 @@ class EnterAuthenticationPasswordFragment : BaseFragment() {
     }
 
     override val viewModel: EnterAuthenticationPasswordViewModel
-            by viewModels { get(enterAuthenticationPasswordPresenterQualifier) }
+            by viewModels<EnterAuthenticationPasswordViewModelImpl> {
+                get(enterAuthenticationPasswordViewModelQualifier)
+            }
     override val actionBarTitle: String by lazy { getString(R.string.enter_password) }
     override val actionBar: Toolbar
         get() = enter_phone_number_toolbar as Toolbar

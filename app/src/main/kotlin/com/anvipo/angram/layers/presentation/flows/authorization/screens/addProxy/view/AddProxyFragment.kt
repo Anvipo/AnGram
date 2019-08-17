@@ -22,6 +22,7 @@ import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProx
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.view.recyclerView.section.AddProxySectionListAdapter
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.view.recyclerView.section.mtProto.AddMTProtoProxySection
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.viewModel.AddProxyViewModel
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.viewModel.AddProxyViewModelImpl
 import kotlinx.android.synthetic.main.fragment_add_proxy.*
 import org.drinkless.td.libcore.telegram.TdApi
 import org.koin.android.ext.android.get
@@ -45,8 +46,9 @@ class AddProxyFragment :
         private const val ARG_PROXY_TYPE = "arg_proxy_type"
     }
 
-    override val viewModel: AddProxyViewModel
-            by viewModels { get(addProxyViewModelQualifier) }
+    override val viewModel: AddProxyViewModel by viewModels<AddProxyViewModelImpl> {
+        get(addProxyViewModelQualifier)
+    }
 
     override val actionBarTitle: String
             by lazy { getString(R.string.enter_proxy_server_data) }

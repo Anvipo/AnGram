@@ -41,7 +41,7 @@ class ItemsDialogFragment : DialogFragment() {
         }.create()
     }
 
-    override fun onCancel(dialog: DialogInterface?) {
+    override fun onCancel(dialog: DialogInterface) {
         super.onCancel(dialog)
         clickListener.itemsDialogCanceled(startTag)
     }

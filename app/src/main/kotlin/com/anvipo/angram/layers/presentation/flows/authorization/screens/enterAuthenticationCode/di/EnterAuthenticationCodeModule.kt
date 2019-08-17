@@ -6,9 +6,9 @@ import com.anvipo.angram.layers.businessLogic.di.UseCasesModule.enterAuthenticat
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorQualifier
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.enterAuthenticationCode.EnterAuthenticationCodeScreenFactory
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.enterAuthenticationCode.EnterAuthenticationCodeScreenFactoryImpl
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.view.EnterAuthenticationCodeFragment
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.viewModel.EnterAuthenticationCodeViewModel
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.viewModel.EnterAuthenticationCodeViewModelImpl
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.view.EnterAuthenticationCodeFragment
 import org.koin.core.KoinComponent
 import org.koin.core.get
 import org.koin.core.module.Module
@@ -34,7 +34,8 @@ object EnterAuthenticationCodeModule {
     val enterAuthenticationCodeViewQualifier: StringQualifier = named("enterAuthenticationCodeView")
     val enterAuthenticationCodeScreenQualifier: StringQualifier = named("enterAuthenticationCodeScreen")
 
-    val enterAuthenticationCodePresenterQualifier: StringQualifier = named("enterAuthenticationCodePresenter")
+    val enterAuthenticationCodeViewModelQualifier: StringQualifier =
+        named("enterAuthenticationCodeViewModel")
 
     class EnterAuthenticationCodeScreenParameters(
         val shouldShowBackButton: Boolean,
@@ -55,7 +56,7 @@ object EnterAuthenticationCodeModule {
             )
         }
 
-        factory<EnterAuthenticationCodeView>(
+        factory<EnterAuthenticationCodeFragment>(
             enterAuthenticationCodeViewQualifier
         ) { (parameters: EnterAuthenticationCodeScreenParameters) ->
             EnterAuthenticationCodeFragment.createNewInstance(
@@ -73,7 +74,7 @@ object EnterAuthenticationCodeModule {
             EnterAuthenticationCodeScreen(parameters = parameters)
         }
 
-        factory<EnterAuthenticationCodeViewModel>(enterAuthenticationCodePresenterQualifier) {
+        factory<EnterAuthenticationCodeViewModel>(enterAuthenticationCodeViewModelQualifier) {
             EnterAuthenticationCodeViewModelImpl(
                 routeEventHandler = get(authorizationCoordinatorQualifier),
                 useCase = get(enterAuthenticationCodeUseCaseQualifier),
