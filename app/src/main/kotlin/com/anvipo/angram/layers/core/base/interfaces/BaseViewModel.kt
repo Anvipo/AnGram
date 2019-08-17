@@ -1,6 +1,7 @@
 package com.anvipo.angram.layers.core.base.interfaces
 
 import android.content.Intent
+import android.os.Bundle
 import androidx.lifecycle.LiveData
 import com.anvipo.angram.layers.core.ShowItemsDialogEventParameters
 import com.anvipo.angram.layers.core.ShowSnackMessageEventParameters
@@ -21,7 +22,8 @@ interface BaseViewModel {
 
     val showConnectionSnackMessageEvents: LiveData<ShowSnackMessageEventParameters>
 
-    fun onCreateTriggered(): Unit = Unit
+    fun onColdStart(): Unit = Unit
+    fun onHotStart(savedInstanceState: Bundle): Unit = Unit
     fun onStartTriggered(): Unit = Unit
     fun onResumeTriggered(): Unit = Unit
     fun onPauseTriggered(): Unit = Unit

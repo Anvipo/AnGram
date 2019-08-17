@@ -1,6 +1,7 @@
 package com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.view
 
 
+import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
@@ -31,6 +32,8 @@ class EnterAuthenticationPhoneNumberFragment :
     companion object {
         fun createNewInstance(): EnterAuthenticationPhoneNumberFragment =
             EnterAuthenticationPhoneNumberFragment()
+
+        const val ENTERED_PHONE_NUMBER_KEY: String = "entered_phone_number"
     }
 
     override val viewModel: EnterAuthenticationPhoneNumberViewModel
@@ -43,6 +46,12 @@ class EnterAuthenticationPhoneNumberFragment :
     override val actionBarTitle: String by lazy { getString(R.string.enter_your_phone_number_title) }
     override val actionBar: Toolbar
         get() = enter_phone_number_toolbar as Toolbar
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        outState.putString(ENTERED_PHONE_NUMBER_KEY, enter_phone_number_edit_text?.text?.toString())
+    }
 
     override fun setupClickListeners() {
         enter_phone_number_add_proxy_button.setOnClickListener(::onClickedPhoneNumberAddProxyButton)
@@ -85,6 +94,12 @@ class EnterAuthenticationPhoneNumberFragment :
                     ENABLE -> enableNextButton()
                     DISABLE -> disableNextButton()
                 }
+            }
+
+        viewModel
+            .savedEnterPhoneNumberEvents
+            .observe(this) {
+                enter_phone_number_edit_text.setText(it)
             }
     }
 

@@ -53,7 +53,11 @@ abstract class BaseFragment :
         setupUI()
         setupViewModelsObservers()
 
-        viewModel.onCreateTriggered()
+        if (savedInstanceState == null) {
+            viewModel.onColdStart()
+        } else {
+            viewModel.onHotStart(savedInstanceState)
+        }
     }
 
     override fun onStart() {
@@ -72,7 +76,7 @@ abstract class BaseFragment :
         super.onPause()
     }
 
-    final override fun onSaveInstanceState(outState: Bundle) {
+    override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         instanceStateSaved = true
     }
@@ -153,6 +157,13 @@ abstract class BaseFragment :
             .observe(this) {
                 showSnackMessage(it)
             }
+
+        viewModel
+            .showConnectionSnackMessageEvents
+            .observe(this) {
+                showSnackMessage(it)
+            }
+
     }
 
     protected open fun extractDataFromBundle(): Unit = Unit

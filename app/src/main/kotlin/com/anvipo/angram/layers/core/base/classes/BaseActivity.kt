@@ -31,7 +31,11 @@ abstract class BaseActivity :
         setupClickListeners()
         setupViewModelsObservers()
 
-        viewModel.onCreateTriggered()
+        if (savedInstanceState == null) {
+            viewModel.onColdStart()
+        } else {
+            viewModel.onHotStart(savedInstanceState)
+        }
     }
 
     override fun onStart() {
@@ -80,6 +84,12 @@ abstract class BaseActivity :
 
         viewModel
             .showSnackMessageEvents
+            .observe(this) {
+                showSnackMessage(it)
+            }
+
+        viewModel
+            .showConnectionSnackMessageEvents
             .observe(this) {
                 showSnackMessage(it)
             }

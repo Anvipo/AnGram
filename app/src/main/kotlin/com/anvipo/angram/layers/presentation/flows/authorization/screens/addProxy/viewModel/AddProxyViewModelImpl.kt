@@ -1,5 +1,6 @@
 package com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.viewModel
 
+import android.os.Bundle
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.businessLogic.useCases.flows.authorization.addProxy.AddProxyUseCase
 import com.anvipo.angram.layers.core.ResourceManager
@@ -25,8 +26,8 @@ class AddProxyViewModelImpl(
     override val showAddProxyEvents: SingleLiveEvent<ShowViewEventParameters> =
         SingleLiveEvent()
 
-    override fun onCreateTriggered() {
-        super<BaseViewModelImpl>.onCreateTriggered()
+    override fun onColdStart() {
+        super<BaseViewModelImpl>.onColdStart()
         // TODO: uncomment
 //        hideAddProxyButton()
     }

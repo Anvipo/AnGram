@@ -56,15 +56,15 @@ object EnterAuthenticationPhoneNumberModule {
     val enterAuthenticationPhoneNumberViewModelFactoryQualifier: StringQualifier =
         named("enterAuthenticationPhoneNumberViewModelFactory")
 
-    private object EnterAuthenticationPhoneNumberViewModelFactory : ViewModelProvider.NewInstanceFactory(),
+    private object EnterAuthenticationPhoneNumberViewModelFactory :
+        ViewModelProvider.NewInstanceFactory(),
         KoinComponent {
         @SuppressLint("SyntheticAccessor")
         @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return get<EnterAuthenticationPhoneNumberViewModel>(
+        override fun <T : ViewModel> create(modelClass: Class<T>): T =
+            get<EnterAuthenticationPhoneNumberViewModel>(
                 enterAuthenticationPhoneNumberViewModelQualifier
             ) as T
-        }
     }
 
     @ExperimentalCoroutinesApi

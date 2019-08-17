@@ -1,5 +1,6 @@
 package com.anvipo.angram.layers.application.launchSystem.appActivity.viewModel
 
+import android.os.Bundle
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.application.coordinator.ApplicationCoordinator
 import com.anvipo.angram.layers.application.launchSystem.appActivity.types.SetNavigatorEventParameters
@@ -43,8 +44,8 @@ class AppViewModelImpl(
 
     override val setNavigatorEvents: SingleLiveEvent<SetNavigatorEventParameters> = SingleLiveEvent()
 
-    override fun onCreateTriggered() {
-        super<BaseViewModelImpl>.onCreateTriggered()
+    override fun onColdStart() {
+        super<BaseViewModelImpl>.onColdStart()
         val invokationPlace = object {}.javaClass.enclosingMethod!!.name
 
         myLaunch {
@@ -61,7 +62,7 @@ class AppViewModelImpl(
 
             withContext(Dispatchers.IO) {
                 for (tdLibClientHasBeenRecreatedPing in tdLibClientHasBeenRecreatedReceiveChannel) {
-                    onCreateTriggered()
+                    onColdStart()
                 }
             }
         }
