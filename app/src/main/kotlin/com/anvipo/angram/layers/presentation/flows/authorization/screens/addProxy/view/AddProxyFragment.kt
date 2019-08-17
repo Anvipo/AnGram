@@ -32,6 +32,22 @@ class AddProxyFragment :
     MessageDialogFragment.OnClickListener {
 
     companion object {
+        const val ENTERED_SERVER_ADDRESS: String = "entered_server_address"
+        const val ENTERED_SERVER_PORT: String = "entered_server_port"
+        const val ENTERED_AUTHENTICATION_KEY: String = "entered_authentication_key"
+
+        @ExperimentalUnsignedTypes
+        const val firstSectionIndex: UInt = 0u
+        @ExperimentalUnsignedTypes
+        const val secondSectionIndex: UInt = 1u
+
+        @ExperimentalUnsignedTypes
+        val serverAddress: IndexPath = IndexPath(section = firstSectionIndex, row = 0u)
+        @ExperimentalUnsignedTypes
+        val serverPort: IndexPath = IndexPath(section = firstSectionIndex, row = 1u)
+        @ExperimentalUnsignedTypes
+        val authenticationKey: IndexPath = IndexPath(section = secondSectionIndex, row = 0u)
+
         fun createNewInstance(
             proxyType: ProxyType,
             shouldShowBackButton: Boolean
@@ -57,6 +73,15 @@ class AddProxyFragment :
         get() = add_proxy_toolbar as Toolbar
 
     override val layoutRes: Int by lazy { R.layout.fragment_add_proxy }
+
+    @ExperimentalUnsignedTypes
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        outState.putString(ENTERED_SERVER_ADDRESS, viewModel.enteredServerAddress.value)
+        outState.putString(ENTERED_SERVER_PORT, viewModel.enteredServerPort.value?.toString())
+        outState.putString(ENTERED_AUTHENTICATION_KEY, viewModel.enteredAuthenticationKey.value)
+    }
 
     @ExperimentalUnsignedTypes
     override fun extractDataFromBundle() {
@@ -118,48 +143,43 @@ class AddProxyFragment :
     }
 
     @ExperimentalUnsignedTypes
-    private fun createFirstSection(): AddMTProtoProxySection {
-        val firstSectionIndex = 0u
-
-        return AddMTProtoProxySection(
-            index = firstSectionIndex,
-            headerData = AddMTProtoProxyHeaderData(
-                title = getString(R.string.connect_add_mt_proto_proxy_label)
+    private fun createFirstSection(): AddMTProtoProxySection = AddMTProtoProxySection(
+        index = firstSectionIndex,
+        headerData = AddMTProtoProxyHeaderData(
+            title = getString(R.string.connect_add_mt_proto_proxy_label)
+        ),
+        items = listOf(
+            AddMTProtoProxyRow(
+                textInputHint = getString(R.string.server_add_mt_proto_proxy_label),
+                indexPath = serverAddress,
+                onTextChanged = { viewModel.onServerAddressChanged(it) },
+                addProxyScreenSavedInputDataEvents = viewModel.addProxyScreenSavedInputDataEvents
             ),
-            items = listOf(
-                AddMTProtoProxyRow(
-                    textInputHint = getString(R.string.server_add_mt_proto_proxy_label),
-                    indexPath = IndexPath(section = firstSectionIndex, row = 0u),
-                    onTextChanged = { viewModel.onServerTextChanged(it) }
-                ),
-                AddMTProtoProxyRow(
-                    textInputHint = getString(R.string.port_add_mt_proto_proxy_label),
-                    indexPath = IndexPath(section = firstSectionIndex, row = 1u),
-                    onTextChanged = { viewModel.onPortTextChanged(it) },
-                    textInputType = InputType.TYPE_CLASS_NUMBER
-                )
+            AddMTProtoProxyRow(
+                textInputHint = getString(R.string.port_add_mt_proto_proxy_label),
+                indexPath = serverPort,
+                onTextChanged = { viewModel.onServerPortChanged(it) },
+                textInputType = InputType.TYPE_CLASS_NUMBER,
+                addProxyScreenSavedInputDataEvents = viewModel.addProxyScreenSavedInputDataEvents
             )
         )
-    }
+    )
 
     @ExperimentalUnsignedTypes
-    private fun createSecondSection(): AddMTProtoProxySection {
-        val secondSectionIndex = 1u
-
-        return AddMTProtoProxySection(
-            index = secondSectionIndex,
-            headerData = AddMTProtoProxyHeaderData(
-                title = getString(R.string.credentials_add_mtproto_proxy_label)
-            ),
-            items = listOf(
-                AddMTProtoProxyRow(
-                    textInputHint = getString(R.string.key_add_mtproto_proxy_label),
-                    indexPath = IndexPath(section = secondSectionIndex, row = 0u),
-                    onTextChanged = { viewModel.onSecretTextChanged(it) }
-                )
+    private fun createSecondSection(): AddMTProtoProxySection = AddMTProtoProxySection(
+        index = secondSectionIndex,
+        headerData = AddMTProtoProxyHeaderData(
+            title = getString(R.string.credentials_add_mtproto_proxy_label)
+        ),
+        items = listOf(
+            AddMTProtoProxyRow(
+                textInputHint = getString(R.string.key_add_mtproto_proxy_label),
+                indexPath = authenticationKey,
+                onTextChanged = { viewModel.onAuthenticationKeyChanged(it) },
+                addProxyScreenSavedInputDataEvents = viewModel.addProxyScreenSavedInputDataEvents
             )
         )
-    }
+    )
 
     private fun onAddProxyButtonClicked(
         @Suppress("UNUSED_PARAMETER") view: View

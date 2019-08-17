@@ -1,6 +1,5 @@
 package com.anvipo.angram.layers.application.launchSystem.appActivity.viewModel
 
-import android.os.Bundle
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.application.coordinator.ApplicationCoordinator
 import com.anvipo.angram.layers.application.launchSystem.appActivity.types.SetNavigatorEventParameters

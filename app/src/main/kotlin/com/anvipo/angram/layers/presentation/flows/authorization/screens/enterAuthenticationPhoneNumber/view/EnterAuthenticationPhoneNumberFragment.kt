@@ -33,7 +33,7 @@ class EnterAuthenticationPhoneNumberFragment :
         fun createNewInstance(): EnterAuthenticationPhoneNumberFragment =
             EnterAuthenticationPhoneNumberFragment()
 
-        const val ENTERED_PHONE_NUMBER_KEY: String = "entered_phone_number"
+        const val ENTERED_PHONE_NUMBER: String = "entered_phone_number"
     }
 
     override val viewModel: EnterAuthenticationPhoneNumberViewModel
@@ -50,7 +50,7 @@ class EnterAuthenticationPhoneNumberFragment :
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
-        outState.putString(ENTERED_PHONE_NUMBER_KEY, enter_phone_number_edit_text?.text?.toString())
+        outState.putString(ENTERED_PHONE_NUMBER, enter_phone_number_edit_text?.text?.toString())
     }
 
     override fun setupClickListeners() {
@@ -97,9 +97,9 @@ class EnterAuthenticationPhoneNumberFragment :
             }
 
         viewModel
-            .savedEnterPhoneNumberEvents
+            .enterAuthenticationPhoneNumberScreenSavedInputDataEvents
             .observe(this) {
-                enter_phone_number_edit_text.setText(it)
+                enter_phone_number_edit_text.setText(it.authenticationPhoneNumber)
             }
     }
 

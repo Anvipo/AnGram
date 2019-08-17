@@ -10,7 +10,6 @@ import com.anvipo.angram.layers.core.ResourceManager
 import com.anvipo.angram.layers.core.ShowItemsDialogEventParameters
 import com.anvipo.angram.layers.core.ShowSnackMessageEventParameters
 import com.anvipo.angram.layers.core.base.classes.BaseViewModelImpl
-import com.anvipo.angram.layers.core.events.SingleLiveEvent
 import com.anvipo.angram.layers.core.events.parameters.EnableViewEventsParameters
 import com.anvipo.angram.layers.core.events.parameters.EnableViewEventsParameters.DISABLE
 import com.anvipo.angram.layers.core.events.parameters.EnableViewEventsParameters.ENABLE
@@ -23,7 +22,8 @@ import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionState
 import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionStateReceiveChannel
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.interfaces.AuthorizationCoordinatorEnterAuthenticationPhoneNumberRouteEventHandler
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.types.ProxyType
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.view.EnterAuthenticationPhoneNumberFragment.Companion.ENTERED_PHONE_NUMBER_KEY
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.types.EnterAuthenticationPhoneNumberScreenSavedInputData
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.view.EnterAuthenticationPhoneNumberFragment.Companion.ENTERED_PHONE_NUMBER
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -44,8 +44,8 @@ class EnterAuthenticationPhoneNumberViewModelImpl(
     override val showNextButtonEvents: LiveData<ShowViewEventParameters> by lazy {
         _showNextButtonEvents
     }
-    override val savedEnterPhoneNumberEvents: LiveData<String?> by lazy {
-        _savedEnterPhoneNumberEvents
+    override val enterAuthenticationPhoneNumberScreenSavedInputDataEvents: LiveData<EnterAuthenticationPhoneNumberScreenSavedInputData> by lazy {
+        _enterAuthenticationPhoneNumberScreenSavedInputDataEvents
     }
     override val enableNextButtonEvents: LiveData<EnableViewEventsParameters> by lazy {
         _enableNextButtonEvents
@@ -58,8 +58,11 @@ class EnterAuthenticationPhoneNumberViewModelImpl(
 
     override fun onHotStart(savedInstanceState: Bundle) {
         super<BaseViewModelImpl>.onHotStart(savedInstanceState)
-        val enteredPhoneNumber = savedInstanceState.getString(ENTERED_PHONE_NUMBER_KEY)
-        _savedEnterPhoneNumberEvents.value = enteredPhoneNumber
+        val enteredPhoneNumber = savedInstanceState.getString(ENTERED_PHONE_NUMBER)
+        _enterAuthenticationPhoneNumberScreenSavedInputDataEvents.value =
+            EnterAuthenticationPhoneNumberScreenSavedInputData(
+                authenticationPhoneNumber = enteredPhoneNumber
+            )
     }
 
     override fun onResumeTriggered() {
@@ -163,7 +166,8 @@ class EnterAuthenticationPhoneNumberViewModelImpl(
     private val mtprotoPair = 0 to "MTPROTO"
 
     private val _enableNextButtonEvents = MutableLiveData<EnableViewEventsParameters>()
-    private val _savedEnterPhoneNumberEvents = MutableLiveData<String?>()
+    private val _enterAuthenticationPhoneNumberScreenSavedInputDataEvents =
+        MutableLiveData<EnterAuthenticationPhoneNumberScreenSavedInputData>()
     private val _showNextButtonEvents = MutableLiveData<ShowViewEventParameters>()
 
     private val proxysList: List<String>

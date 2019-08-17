@@ -31,12 +31,25 @@ abstract class RowListAdapter<BR : BaseRow, RVH : RowViewHolder<BR>> :
 
         val itemView = inflater.inflate(viewData.layoutRes, parent, false)
 
-        return viewData.createRowViewHolder(itemView)
+        val rowViewHolder = viewData.createRowViewHolder<BR, RVH>(itemView)
+        rowViewHolder.onCreate()
+        return rowViewHolder
     }
 
     final override fun onBindViewHolder(
         holder: RVH,
         position: Int
     ): Unit = holder.bind(row = getItem(position))
+
+    override fun onViewAttachedToWindow(holder: RVH) {
+        super.onViewAttachedToWindow(holder)
+        holder.onStart()
+        holder.onResume()
+    }
+
+    override fun onViewDetachedFromWindow(holder: RVH) {
+        super.onViewDetachedFromWindow(holder)
+        holder.onDestroy()
+    }
 
 }

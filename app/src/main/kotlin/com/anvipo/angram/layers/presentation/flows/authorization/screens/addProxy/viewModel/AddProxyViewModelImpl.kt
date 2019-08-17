@@ -1,6 +1,8 @@
 package com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.viewModel
 
 import android.os.Bundle
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.businessLogic.useCases.flows.authorization.addProxy.AddProxyUseCase
 import com.anvipo.angram.layers.core.ResourceManager
@@ -13,6 +15,10 @@ import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters.H
 import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters.SHOW
 import com.anvipo.angram.layers.data.gateways.tdLib.errors.TdApiError
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.interfaces.AuthorizationCoordinatorAddProxyRouteEventHandler
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.types.AddProxyScreenSavedInputData
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.view.AddProxyFragment.Companion.ENTERED_AUTHENTICATION_KEY
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.view.AddProxyFragment.Companion.ENTERED_SERVER_ADDRESS
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.view.AddProxyFragment.Companion.ENTERED_SERVER_PORT
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.drinkless.td.libcore.telegram.TdApi
@@ -26,10 +32,40 @@ class AddProxyViewModelImpl(
     override val showAddProxyEvents: SingleLiveEvent<ShowViewEventParameters> =
         SingleLiveEvent()
 
+    override val addProxyScreenSavedInputDataEvents: LiveData<AddProxyScreenSavedInputData> by lazy {
+        _addProxyScreenSavedInputDataEvents
+    }
+
+    override val enteredServerAddress: LiveData<String?> by lazy {
+        _enteredServerAddress
+    }
+
+    @ExperimentalUnsignedTypes
+    override val enteredServerPort: LiveData<UInt?> by lazy {
+        _enteredServerPort
+    }
+
+    override val enteredAuthenticationKey: LiveData<String?> by lazy {
+        _enteredAuthenticationKey
+    }
+
     override fun onColdStart() {
         super<BaseViewModelImpl>.onColdStart()
-        // TODO: uncomment
-//        hideAddProxyButton()
+        hideAddProxyButton()
+    }
+
+    @ExperimentalUnsignedTypes
+    override fun onHotStart(savedInstanceState: Bundle) {
+        super<BaseViewModelImpl>.onHotStart(savedInstanceState)
+        val enteredServerAddress = savedInstanceState.getString(ENTERED_SERVER_ADDRESS)
+        val enteredServerPort = savedInstanceState.getString(ENTERED_SERVER_PORT)?.toUIntOrNull()
+        val enteredAuthenticationKey = savedInstanceState.getString(ENTERED_AUTHENTICATION_KEY)
+        _addProxyScreenSavedInputDataEvents.value =
+            AddProxyScreenSavedInputData(
+                serverAddress = enteredServerAddress,
+                serverPort = enteredServerPort,
+                authenticationKey = enteredAuthenticationKey
+            )
     }
 
     override fun addProxyButtonTapped() {
@@ -94,16 +130,18 @@ class AddProxyViewModelImpl(
     }
 
 
-    override fun onServerTextChanged(serverText: CharSequence?) {
-        this.serverAddress = serverText?.toString() ?: ""
+    @ExperimentalUnsignedTypes
+    override fun onServerAddressChanged(serverText: CharSequence?) {
+        this.serverAddress = serverText?.toString()
     }
 
-    override fun onPortTextChanged(portText: CharSequence?) {
-        this.port = portText?.toString()?.toIntOrNull() ?: 0
+    @ExperimentalUnsignedTypes
+    override fun onServerPortChanged(portText: CharSequence?) {
+        this.serverPort = portText?.toString()?.toUIntOrNull()
     }
 
-    override fun onSecretTextChanged(secretText: CharSequence?) {
-        this.secretText = secretText?.toString() ?: ""
+    override fun onAuthenticationKeyChanged(secretText: CharSequence?) {
+        this.authenticationKey = secretText?.toString()
     }
 
     override fun setProxyType(proxyType: TdApi.ProxyType) {
@@ -111,31 +149,42 @@ class AddProxyViewModelImpl(
     }
 
 
+    private val _addProxyScreenSavedInputDataEvents = MutableLiveData<AddProxyScreenSavedInputData>()
+    private val _enteredServerAddress = MutableLiveData<String?>()
+    @ExperimentalUnsignedTypes
+    private val _enteredServerPort = MutableLiveData<UInt?>()
+    private val _enteredAuthenticationKey = MutableLiveData<String?>()
+
     private val addProxySuccessTag = "addProxySuccessTag"
 
     private var proxyType: TdApi.ProxyType? = null
-    private var serverAddress: String = ""
+    @ExperimentalUnsignedTypes
+    private var serverAddress: String? = null
         set(value) {
             field = value
-            if (field.isNotEmpty() && port != 0) {
+            _enteredServerAddress.value = field
+            if (field?.isNotEmpty() == true && serverPort != null && serverPort != 0u) {
                 showAddProxyButton()
             } else {
                 hideAddProxyButton()
             }
         }
-    private var port: Int = 0
+    @ExperimentalUnsignedTypes
+    private var serverPort: UInt? = null
         set(value) {
             field = value
-            if (serverAddress.isNotEmpty() && field != 0) {
+            _enteredServerPort.value = field
+            if (serverAddress?.isNotEmpty() == true && field != null && field != 0u) {
                 showAddProxyButton()
             } else {
                 hideAddProxyButton()
             }
         }
 
-    private var secretText: String = ""
+    private var authenticationKey: String? = null
         set(value) {
             field = value
+            _enteredAuthenticationKey.value = field
             (this.proxyType as TdApi.ProxyTypeMtproto).secret = field
         }
 
