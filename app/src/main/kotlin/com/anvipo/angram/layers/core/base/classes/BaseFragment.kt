@@ -18,6 +18,7 @@ import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.core.CoreConstants.PROGRESS_TAG
 import com.anvipo.angram.layers.core.ShowItemsDialogEventParameters
+import com.anvipo.angram.layers.core.ShowSnackMessageEventParameters
 import com.anvipo.angram.layers.core.base.interfaces.BaseViewModel
 import com.anvipo.angram.layers.core.dialogFragment.ItemsDialogFragment
 import com.anvipo.angram.layers.core.dialogFragment.MessageDialogFragment
@@ -47,10 +48,10 @@ abstract class BaseFragment :
         super.onActivityCreated(savedInstanceState)
 
         extractDataFromBundle()
-        setupViewModelsObservers()
         setupClickListeners()
         setupToolbar()
         setupUI()
+        setupViewModelsObservers()
 
         viewModel.onCreateTriggered()
     }
@@ -145,6 +146,12 @@ abstract class BaseFragment :
             .showToastMessageEvents
             .observe(this) {
                 showToastMessage(it)
+            }
+
+        viewModel
+            .showSnackMessageEvents
+            .observe(this) {
+                showSnackMessage(it)
             }
     }
 
@@ -246,12 +253,11 @@ abstract class BaseFragment :
     }
 
     private fun showSnackMessage(
-        text: String,
-        duration: Int
+        showSnackMessageEventParameters: ShowSnackMessageEventParameters
     ) {
         this.view?.showSnackbarMessage(
-            text = text,
-            duration = duration
+            text = showSnackMessageEventParameters.text,
+            duration = showSnackMessageEventParameters.duration
         )
     }
 

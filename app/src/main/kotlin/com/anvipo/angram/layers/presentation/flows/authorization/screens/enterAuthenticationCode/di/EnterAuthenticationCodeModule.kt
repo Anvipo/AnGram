@@ -1,6 +1,9 @@
 package com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.di
 
+import android.annotation.SuppressLint
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.resourceManagerQualifier
 import com.anvipo.angram.layers.businessLogic.di.UseCasesModule.enterAuthenticationCodeUseCaseQualifier
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorQualifier
@@ -23,6 +26,7 @@ object EnterAuthenticationCodeModule {
     class EnterAuthenticationCodeScreen(
         private val parameters: EnterAuthenticationCodeScreenParameters
     ) : SupportAppScreen(), KoinComponent {
+        @SuppressLint("SyntheticAccessor")
         override fun getFragment(): Fragment =
             get(enterAuthenticationCodeViewQualifier) {
                 parametersOf(parameters)
@@ -31,10 +35,10 @@ object EnterAuthenticationCodeModule {
 
     val enterAuthenticationCodeScreenFactoryQualifier: StringQualifier = named("enterAuthenticationCodeScreenFactory")
 
-    val enterAuthenticationCodeViewQualifier: StringQualifier = named("enterAuthenticationCodeView")
+    private val enterAuthenticationCodeViewQualifier: StringQualifier = named("enterAuthenticationCodeView")
     val enterAuthenticationCodeScreenQualifier: StringQualifier = named("enterAuthenticationCodeScreen")
 
-    val enterAuthenticationCodeViewModelQualifier: StringQualifier =
+    private val enterAuthenticationCodeViewModelQualifier: StringQualifier =
         named("enterAuthenticationCodeViewModel")
 
     class EnterAuthenticationCodeScreenParameters(
@@ -44,6 +48,17 @@ object EnterAuthenticationCodeModule {
         val registrationRequired: Boolean,
         val termsOfServiceText: String
     )
+
+    val enterAuthenticationCodeViewModelFactoryQualifier: StringQualifier =
+        named("enterAuthenticationCodeViewModelFactory")
+
+    private object EnterAuthenticationCodeViewModelFactory : ViewModelProvider.NewInstanceFactory(), KoinComponent {
+        @SuppressLint("SyntheticAccessor")
+        @Suppress("UNCHECKED_CAST")
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return get<EnterAuthenticationCodeViewModel>(enterAuthenticationCodeViewModelQualifier) as T
+        }
+    }
 
     @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
@@ -72,6 +87,10 @@ object EnterAuthenticationCodeModule {
             enterAuthenticationCodeScreenQualifier
         ) { (parameters: EnterAuthenticationCodeScreenParameters) ->
             EnterAuthenticationCodeScreen(parameters = parameters)
+        }
+
+        single<EnterAuthenticationCodeViewModelFactory>(enterAuthenticationCodeViewModelFactoryQualifier) {
+            EnterAuthenticationCodeViewModelFactory
         }
 
         factory<EnterAuthenticationCodeViewModel>(enterAuthenticationCodeViewModelQualifier) {

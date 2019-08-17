@@ -15,7 +15,7 @@ import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters.H
 import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters.SHOW
 import com.anvipo.angram.layers.core.hideWithAnimate
 import com.anvipo.angram.layers.core.showWithAnimate
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.di.AddProxyModule.addProxyViewModelQualifier
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.di.AddProxyModule.addProxyViewModelFactoryQualifier
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.types.ProxyType
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.view.recyclerView.headersAndFooters.mtProto.AddMTProtoProxyHeaderData
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.view.recyclerView.row.mtProto.AddMTProtoProxyRow
@@ -47,7 +47,7 @@ class AddProxyFragment :
     }
 
     override val viewModel: AddProxyViewModel by viewModels<AddProxyViewModelImpl> {
-        get(addProxyViewModelQualifier)
+        get(addProxyViewModelFactoryQualifier)
     }
 
     override val actionBarTitle: String

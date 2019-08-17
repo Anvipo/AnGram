@@ -15,7 +15,7 @@ import com.anvipo.angram.layers.core.hideKeyboard
 import com.anvipo.angram.layers.core.hideWithAnimate
 import com.anvipo.angram.layers.core.showWithAnimate
 import com.anvipo.angram.layers.core.textWatchers.TextWatcherImpl
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.di.EnterAuthenticationCodeModule.enterAuthenticationCodeViewModelQualifier
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.di.EnterAuthenticationCodeModule.enterAuthenticationCodeViewModelFactoryQualifier
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.types.SetExpectedCodeLengthEventParameters
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.viewModel.EnterAuthenticationCodeViewModel
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.viewModel.EnterAuthenticationCodeViewModelImpl
@@ -57,7 +57,7 @@ class EnterAuthenticationCodeFragment : BaseFragment() {
 
     override val viewModel: EnterAuthenticationCodeViewModel
             by viewModels<EnterAuthenticationCodeViewModelImpl> {
-                get(enterAuthenticationCodeViewModelQualifier)
+                get(enterAuthenticationCodeViewModelFactoryQualifier)
             }
 
     @ExperimentalUnsignedTypes

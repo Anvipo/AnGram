@@ -7,6 +7,7 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.observe
 import com.anvipo.angram.R
+import com.anvipo.angram.layers.core.ShowSnackMessageEventParameters
 import com.anvipo.angram.layers.core.base.interfaces.BaseViewModel
 import com.anvipo.angram.layers.core.dialogFragment.MessageDialogFragment
 import com.anvipo.angram.layers.core.events.parameters.ShowAlertMessageEventParameters
@@ -28,6 +29,7 @@ abstract class BaseActivity :
 
         setupToolbar()
         setupClickListeners()
+        setupViewModelsObservers()
 
         viewModel.onCreateTriggered()
     }
@@ -75,6 +77,12 @@ abstract class BaseActivity :
             .observe(this) {
                 showToastMessage(it)
             }
+
+        viewModel
+            .showSnackMessageEvents
+            .observe(this) {
+                showSnackMessage(it)
+            }
     }
 
 
@@ -117,20 +125,12 @@ abstract class BaseActivity :
     }
 
     private fun showSnackMessage(
-        text: String,
-        duration: Int
+        showSnackMessageEventParameters: ShowSnackMessageEventParameters
     ) {
         rootView.showSnackbarMessage(
-            text = text,
-            duration = duration
+            text = showSnackMessageEventParameters.text,
+            duration = showSnackMessageEventParameters.duration
         )
-    }
-
-    private fun showConnectionStateSnackMessage(
-        text: String,
-        duration: Int
-    ) {
-        showSnackMessage(text, duration)
     }
 
 }

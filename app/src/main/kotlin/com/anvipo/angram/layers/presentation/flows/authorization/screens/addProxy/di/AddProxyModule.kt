@@ -1,6 +1,9 @@
 package com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.di
 
+import android.annotation.SuppressLint
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.resourceManagerQualifier
 import com.anvipo.angram.layers.businessLogic.di.UseCasesModule.addProxyUseCaseQualifier
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorQualifier
@@ -24,6 +27,7 @@ object AddProxyModule {
     class AddProxyScreen(
         private val parameters: AddProxyScreenParameters
     ) : SupportAppScreen(), KoinComponent {
+        @SuppressLint("SyntheticAccessor")
         override fun getFragment(): Fragment =
             get(addProxyViewQualifier) {
                 parametersOf(parameters)
@@ -37,10 +41,19 @@ object AddProxyModule {
 
     val addProxyScreenFactoryQualifier: StringQualifier = named("addProxyScreenFactory")
 
-    val addProxyViewQualifier: StringQualifier = named("addProxyView")
+    private val addProxyViewQualifier: StringQualifier = named("addProxyView")
     val addProxyScreenQualifier: StringQualifier = named("addProxyScreen")
 
-    val addProxyViewModelQualifier: StringQualifier = named("addProxyViewModel")
+    private val addProxyViewModelQualifier: StringQualifier = named("addProxyViewModel")
+    val addProxyViewModelFactoryQualifier: StringQualifier = named("addProxyViewModelFactory")
+
+    private object AddProxyViewModelFactory : ViewModelProvider.NewInstanceFactory(), KoinComponent {
+        @SuppressLint("SyntheticAccessor")
+        @Suppress("UNCHECKED_CAST")
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return get<AddProxyViewModel>(addProxyViewModelQualifier) as T
+        }
+    }
 
     @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
@@ -67,6 +80,11 @@ object AddProxyModule {
         ) { (parameters: AddProxyScreenParameters) ->
             AddProxyScreen(parameters = parameters)
         }
+
+        single<AddProxyViewModelFactory>(addProxyViewModelFactoryQualifier) {
+            AddProxyViewModelFactory
+        }
+
 
         factory<AddProxyViewModel>(addProxyViewModelQualifier) {
             AddProxyViewModelImpl(

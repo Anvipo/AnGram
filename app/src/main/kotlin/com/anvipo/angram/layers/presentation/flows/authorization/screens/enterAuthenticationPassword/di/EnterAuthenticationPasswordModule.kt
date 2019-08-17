@@ -1,6 +1,9 @@
 package com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.di
 
+import android.annotation.SuppressLint
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.resourceManagerQualifier
 import com.anvipo.angram.layers.businessLogic.di.UseCasesModule.enterAuthenticationPasswordUseCaseQualifier
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorQualifier
@@ -20,19 +23,34 @@ import ru.terrakok.cicerone.android.support.SupportAppScreen
 object EnterAuthenticationPasswordModule {
 
     class EnterPasswordScreen : SupportAppScreen(), KoinComponent {
-        override fun getFragment(): Fragment = get(enterAuthenticationPasswordViewQualifier)
+        @SuppressLint("SyntheticAccessor")
+        override fun getFragment(): Fragment =
+            get(enterAuthenticationPasswordViewQualifier)
     }
 
     val enterAuthenticationPasswordScreenFactoryQualifier: StringQualifier =
         named("enterAuthenticationPasswordScreenFactory")
 
-    val enterAuthenticationPasswordViewQualifier: StringQualifier =
+    private val enterAuthenticationPasswordViewQualifier: StringQualifier =
         named("enterAuthenticationPasswordView")
     val enterAuthenticationPasswordScreenQualifier: StringQualifier =
         named("enterAuthenticationPasswordScreen")
 
-    val enterAuthenticationPasswordViewModelQualifier: StringQualifier =
+    private val enterAuthenticationPasswordViewModelQualifier: StringQualifier =
         named("enterAuthenticationPasswordViewModel")
+
+    val enterAuthenticationPasswordViewModelFactoryQualifier: StringQualifier =
+        named("enterAuthenticationPasswordViewModelFactory")
+
+    private object EnterAuthenticationPasswordViewModelFactory : ViewModelProvider.NewInstanceFactory(), KoinComponent {
+        @SuppressLint("SyntheticAccessor")
+        @Suppress("UNCHECKED_CAST")
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return get<EnterAuthenticationPasswordViewModel>(
+                enterAuthenticationPasswordViewModelQualifier
+            ) as T
+        }
+    }
 
     @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
@@ -53,6 +71,12 @@ object EnterAuthenticationPasswordModule {
             enterAuthenticationPasswordScreenQualifier
         ) {
             EnterPasswordScreen()
+        }
+
+        single<EnterAuthenticationPasswordViewModelFactory>(
+            enterAuthenticationPasswordViewModelFactoryQualifier
+        ) {
+            EnterAuthenticationPasswordViewModelFactory
         }
 
         factory<EnterAuthenticationPasswordViewModel>(enterAuthenticationPasswordViewModelQualifier) {

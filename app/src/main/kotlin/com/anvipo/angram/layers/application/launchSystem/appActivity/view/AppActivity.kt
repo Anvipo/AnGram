@@ -10,7 +10,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.observe
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.navigatorHolderQualifier
-import com.anvipo.angram.layers.application.launchSystem.appActivity.di.AppActivityModule.appViewModelQualifier
+import com.anvipo.angram.layers.application.launchSystem.appActivity.di.AppActivityModule.appViewModelFactoryQualifier
 import com.anvipo.angram.layers.application.launchSystem.appActivity.types.SetNavigatorEventParameters.REMOVE
 import com.anvipo.angram.layers.application.launchSystem.appActivity.types.SetNavigatorEventParameters.SET
 import com.anvipo.angram.layers.application.launchSystem.appActivity.viewModel.AppViewModel
@@ -27,7 +27,7 @@ import ru.terrakok.cicerone.commands.*
 class AppActivity : BaseActivity() {
 
     override val viewModel: AppViewModel by viewModels<AppViewModelImpl> {
-        get(appViewModelQualifier)
+        get(appViewModelFactoryQualifier)
     }
 
     override val layoutRes: Int = R.layout.layout_container

@@ -1,6 +1,9 @@
 package com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.di
 
+import android.annotation.SuppressLint
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.resourceManagerQualifier
 import com.anvipo.angram.layers.businessLogic.di.UseCasesModule.enterAuthenticationPhoneNumberUseCaseQualifier
 import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionState
@@ -27,18 +30,20 @@ import ru.terrakok.cicerone.android.support.SupportAppScreen
 object EnterAuthenticationPhoneNumberModule {
 
     class EnterAuthenticationPhoneNumberScreen : SupportAppScreen(), KoinComponent {
-        override fun getFragment(): Fragment = get(enterAuthenticationPhoneNumberViewQualifier)
+        @SuppressLint("SyntheticAccessor")
+        override fun getFragment(): Fragment =
+            get(enterAuthenticationPhoneNumberViewQualifier)
     }
 
     val enterAuthenticationPhoneNumberScreenFactoryQualifier: StringQualifier =
         named("enterAuthenticationPhoneNumberScreenFactory")
-    val enterAuthenticationPhoneNumberViewQualifier: StringQualifier =
-        named("enterAuthenticationPhoneNumberView")
-
     val enterAuthenticationPhoneNumberScreenQualifier: StringQualifier =
         named("enterAuthenticationPhoneNumberScreen")
 
-    val enterAuthenticationPhoneNumberViewModelQualifier: StringQualifier =
+    private val enterAuthenticationPhoneNumberViewQualifier: StringQualifier =
+        named("enterAuthenticationPhoneNumberView")
+
+    private val enterAuthenticationPhoneNumberViewModelQualifier: StringQualifier =
         named("enterAuthenticationPhoneNumberViewModel")
 
     private val tdApiUpdateConnectionStateEnterAuthenticationPhoneNumberScreenReceiveChannelQualifier =
@@ -47,6 +52,20 @@ object EnterAuthenticationPhoneNumberModule {
         named("tdApiUpdateConnectionStateEnterAuthenticationPhoneNumberScreenSendChannel")
     private val tdApiUpdateConnectionStateEnterAuthenticationPhoneNumberScreenBroadcastChannelQualifier =
         named("tdApiUpdateConnectionStateEnterAuthenticationPhoneNumberScreenBroadcastChannel")
+
+    val enterAuthenticationPhoneNumberViewModelFactoryQualifier: StringQualifier =
+        named("enterAuthenticationPhoneNumberViewModelFactory")
+
+    private object EnterAuthenticationPhoneNumberViewModelFactory : ViewModelProvider.NewInstanceFactory(),
+        KoinComponent {
+        @SuppressLint("SyntheticAccessor")
+        @Suppress("UNCHECKED_CAST")
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return get<EnterAuthenticationPhoneNumberViewModel>(
+                enterAuthenticationPhoneNumberViewModelQualifier
+            ) as T
+        }
+    }
 
     @ExperimentalCoroutinesApi
     @Suppress("RemoveExplicitTypeArguments")
@@ -88,6 +107,12 @@ object EnterAuthenticationPhoneNumberModule {
             tdApiUpdateConnectionStateEnterAuthenticationPhoneNumberScreenBroadcastChannelQualifier
         ) {
             BroadcastChannel<TdApiUpdateConnectionState>(Channel.CONFLATED)
+        }
+
+        single<EnterAuthenticationPhoneNumberViewModelFactory>(
+            enterAuthenticationPhoneNumberViewModelFactoryQualifier
+        ) {
+            EnterAuthenticationPhoneNumberViewModelFactory
         }
 
         factory<EnterAuthenticationPhoneNumberViewModel>(
