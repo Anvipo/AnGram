@@ -9,7 +9,8 @@ import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAu
 interface EnterAuthenticationPhoneNumberViewModel : BaseViewModel {
 
     val showNextButtonEvents: LiveData<ShowViewEventParameters>
-    val enterAuthenticationPhoneNumberScreenSavedInputDataEvents: LiveData<EnterAuthenticationPhoneNumberScreenSavedInputData>
+    val enterAuthenticationPhoneNumberScreenSavedInputDataEvents:
+            LiveData<EnterAuthenticationPhoneNumberScreenSavedInputData>
     val enableNextButtonEvents: LiveData<EnableViewEventsParameters>
 
     fun onAddProxyButtonPressed()

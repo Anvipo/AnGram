@@ -1,10 +1,12 @@
 package com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.viewModel
 
+import android.os.Bundle
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.businessLogic.useCases.flows.authorization.enterAuthenticationCode.EnterAuthenticationCodeUseCase
 import com.anvipo.angram.layers.core.ResourceManager
 import com.anvipo.angram.layers.core.base.classes.BaseViewModelImpl
-import com.anvipo.angram.layers.core.events.SingleLiveEvent
 import com.anvipo.angram.layers.core.events.parameters.ShowAlertMessageEventParameters
 import com.anvipo.angram.layers.core.events.parameters.ShowErrorEventParameters
 import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters
@@ -13,7 +15,11 @@ import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters.S
 import com.anvipo.angram.layers.data.gateways.tdLib.errors.TdApiError
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.interfaces.AuthorizationCoordinatorEnterAuthenticationCodeRouteEventHandler
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.types.CorrectAuthenticationCodeType
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.types.EnterAuthenticationCodeScreenSavedInputData
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.types.SetExpectedCodeLengthEventParameters
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.view.EnterAuthenticationCodeFragment.Companion.ENTERED_AUTHENTICATION_CODE
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.view.EnterAuthenticationCodeFragment.Companion.ENTERED_FIRST_NAME
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.view.EnterAuthenticationCodeFragment.Companion.ENTERED_LAST_NAME
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -23,12 +29,15 @@ class EnterAuthenticationCodeViewModelImpl(
     private val resourceManager: ResourceManager
 ) : BaseViewModelImpl(), EnterAuthenticationCodeViewModel {
 
-    override val setExpectedCodeLengthEvents: SingleLiveEvent<SetExpectedCodeLengthEventParameters> =
-        SingleLiveEvent()
-    override val showNextButtonEvents: SingleLiveEvent<ShowViewEventParameters> =
-        SingleLiveEvent()
-    override val showRegistrationViewsEvents: SingleLiveEvent<ShowViewEventParameters> =
-        SingleLiveEvent()
+    override val setExpectedCodeLengthEvents: LiveData<SetExpectedCodeLengthEventParameters>
+            by lazy { _setExpectedCodeLengthEvents }
+    override val showNextButtonEvents: LiveData<ShowViewEventParameters>
+            by lazy { _showNextButtonEvents }
+    override val showRegistrationViewsEvents: LiveData<ShowViewEventParameters>
+            by lazy { _showRegistrationViewsEvents }
+
+    override val enterAuthenticationCodeScreenSavedInputData: LiveData<EnterAuthenticationCodeScreenSavedInputData>
+            by lazy { _enterAuthenticationCodeScreenSavedInputData }
 
     override fun onColdStart() {
         super<BaseViewModelImpl>.onColdStart()
@@ -37,6 +46,19 @@ class EnterAuthenticationCodeViewModelImpl(
         myLaunch {
             hideProgress()
         }
+    }
+
+    override fun onHotStart(savedInstanceState: Bundle) {
+        super<BaseViewModelImpl>.onHotStart(savedInstanceState)
+        val enteredAuthenticationCode = savedInstanceState.getString(ENTERED_AUTHENTICATION_CODE)
+        val enteredFirstName = savedInstanceState.getString(ENTERED_FIRST_NAME)
+        val enteredLastName = savedInstanceState.getString(ENTERED_LAST_NAME)
+        _enterAuthenticationCodeScreenSavedInputData.value =
+            EnterAuthenticationCodeScreenSavedInputData(
+                enteredAuthenticationCode = enteredAuthenticationCode,
+                enteredFirstName = enteredFirstName,
+                enteredLastName = enteredLastName
+            )
     }
 
     override fun onResumeTriggered() {
@@ -186,6 +208,16 @@ class EnterAuthenticationCodeViewModelImpl(
     }
 
 
+    private val _enterAuthenticationCodeScreenSavedInputData =
+        MutableLiveData<EnterAuthenticationCodeScreenSavedInputData>()
+
+    private val _setExpectedCodeLengthEvents =
+        MutableLiveData<SetExpectedCodeLengthEventParameters>()
+    private val _showNextButtonEvents =
+        MutableLiveData<ShowViewEventParameters>()
+    private val _showRegistrationViewsEvents =
+        MutableLiveData<ShowViewEventParameters>()
+
     private var enteredPhoneNumber: String = ""
     @ExperimentalUnsignedTypes
     private var expectedCodeLength: UInt = 10u
@@ -221,23 +253,23 @@ class EnterAuthenticationCodeViewModelImpl(
     }
 
     private fun setMaxLengthOfEditText(expectedCodeLength: Int) {
-        setExpectedCodeLengthEvents.value = SetExpectedCodeLengthEventParameters(expectedCodeLength)
+        _setExpectedCodeLengthEvents.value = SetExpectedCodeLengthEventParameters(expectedCodeLength)
     }
 
     private fun showNextButton() {
-        showNextButtonEvents.value = SHOW
+        _showNextButtonEvents.value = SHOW
     }
 
     private fun hideNextButton() {
-        showNextButtonEvents.value = HIDE
+        _showNextButtonEvents.value = HIDE
     }
 
     private fun showRegistrationViews() {
-        showRegistrationViewsEvents.value = SHOW
+        _showRegistrationViewsEvents.value = SHOW
     }
 
     private fun hideRegistrationViews() {
-        showRegistrationViewsEvents.value = HIDE
+        _showRegistrationViewsEvents.value = HIDE
     }
 
 }

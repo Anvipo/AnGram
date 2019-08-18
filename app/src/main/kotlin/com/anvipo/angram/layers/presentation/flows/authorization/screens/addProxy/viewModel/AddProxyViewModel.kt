@@ -2,14 +2,13 @@ package com.anvipo.angram.layers.presentation.flows.authorization.screens.addPro
 
 import androidx.lifecycle.LiveData
 import com.anvipo.angram.layers.core.base.interfaces.BaseViewModel
-import com.anvipo.angram.layers.core.events.SingleLiveEvent
 import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.types.AddProxyScreenSavedInputData
 import org.drinkless.td.libcore.telegram.TdApi
 
 interface AddProxyViewModel : BaseViewModel {
 
-    val showAddProxyEvents: SingleLiveEvent<ShowViewEventParameters>
+    val showAddProxyEvents: LiveData<ShowViewEventParameters>
     val addProxyScreenSavedInputDataEvents: LiveData<AddProxyScreenSavedInputData>
     val enteredServerAddress: LiveData<String?>
     @ExperimentalUnsignedTypes

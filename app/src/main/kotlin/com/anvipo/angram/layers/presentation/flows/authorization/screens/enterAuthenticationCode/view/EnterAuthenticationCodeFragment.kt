@@ -26,6 +26,10 @@ import org.koin.android.ext.android.get
 class EnterAuthenticationCodeFragment : BaseFragment() {
 
     companion object {
+        const val ENTERED_AUTHENTICATION_CODE: String = "entered_authentication_code"
+        const val ENTERED_FIRST_NAME: String = "entered_first_name"
+        const val ENTERED_LAST_NAME: String = "entered_last_name"
+
         fun createNewInstance(
             shouldShowBackButton: Boolean,
             expectedCodeLength: Int,
@@ -59,6 +63,14 @@ class EnterAuthenticationCodeFragment : BaseFragment() {
             by viewModels<EnterAuthenticationCodeViewModelImpl> {
                 get(enterAuthenticationCodeViewModelFactoryQualifier)
             }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        outState.putString(ENTERED_AUTHENTICATION_CODE, enter_auth_code_edit_text?.text?.toString())
+        outState.putString(ENTERED_FIRST_NAME, first_name_edit_text?.text?.toString())
+        outState.putString(ENTERED_LAST_NAME, last_name_edit_text?.text?.toString())
+    }
 
     @ExperimentalUnsignedTypes
     override fun extractDataFromBundle() {
@@ -113,6 +125,14 @@ class EnterAuthenticationCodeFragment : BaseFragment() {
             .setExpectedCodeLengthEvents
             .observe(this) {
                 setMaxLengthOfEditText(it)
+            }
+
+        viewModel
+            .enterAuthenticationCodeScreenSavedInputData
+            .observe(this) {
+                enter_auth_code_edit_text.setText(it.enteredAuthenticationCode)
+                first_name_edit_text.setText(it.enteredFirstName)
+                last_name_edit_text.setText(it.enteredLastName)
             }
     }
 

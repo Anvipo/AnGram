@@ -1,7 +1,5 @@
 package com.anvipo.angram.layers.core.base.classes
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anvipo.angram.layers.core.ShowItemsDialogEventParameters
@@ -38,10 +36,8 @@ abstract class BaseViewModelImpl :
         SingleLiveEvent()
     final override val showSnackMessageEvents: SingleLiveEvent<ShowSnackMessageEventParameters> =
         SingleLiveEvent()
-    final override val showConnectionSnackMessageEvents: LiveData<ShowSnackMessageEventParameters> by lazy {
-        _showConnectionSnackMessageEvents
-    }
-
+    final override val showConnectionSnackMessageEvents: SingleLiveEvent<ShowSnackMessageEventParameters> =
+        SingleLiveEvent()
     final override val showAlertMessageEvents: SingleLiveEvent<ShowAlertMessageEventParameters> =
         SingleLiveEvent()
     final override val showToastMessageEvents: SingleLiveEvent<ShowToastMessageEventParameters> =
@@ -141,11 +137,8 @@ abstract class BaseViewModelImpl :
         showSnackMessageEventParameters: ShowSnackMessageEventParameters
     ) {
         withContext(Dispatchers.Main) {
-            _showConnectionSnackMessageEvents.value = showSnackMessageEventParameters
+            showConnectionSnackMessageEvents.value = showSnackMessageEventParameters
         }
     }
-
-    private val _showConnectionSnackMessageEvents =
-        MutableLiveData<ShowSnackMessageEventParameters>()
 
 }

@@ -7,7 +7,6 @@ import com.anvipo.angram.R
 import com.anvipo.angram.layers.businessLogic.useCases.flows.authorization.addProxy.AddProxyUseCase
 import com.anvipo.angram.layers.core.ResourceManager
 import com.anvipo.angram.layers.core.base.classes.BaseViewModelImpl
-import com.anvipo.angram.layers.core.events.SingleLiveEvent
 import com.anvipo.angram.layers.core.events.parameters.ShowAlertMessageEventParameters
 import com.anvipo.angram.layers.core.events.parameters.ShowErrorEventParameters
 import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters
@@ -29,8 +28,9 @@ class AddProxyViewModelImpl(
     private val resourceManager: ResourceManager
 ) : BaseViewModelImpl(), AddProxyViewModel {
 
-    override val showAddProxyEvents: SingleLiveEvent<ShowViewEventParameters> =
-        SingleLiveEvent()
+    override val showAddProxyEvents: LiveData<ShowViewEventParameters> by lazy {
+        _showAddProxyEvents
+    }
 
     override val addProxyScreenSavedInputDataEvents: LiveData<AddProxyScreenSavedInputData> by lazy {
         _addProxyScreenSavedInputDataEvents
@@ -68,6 +68,7 @@ class AddProxyViewModelImpl(
             )
     }
 
+    @ExperimentalUnsignedTypes
     override fun addProxyButtonTapped() {
         myLaunch {
             showProgress()
@@ -76,9 +77,9 @@ class AddProxyViewModelImpl(
                 withContext(Dispatchers.IO) {
                     useCase
                         .addProxyCatching(
-                            server = "tg-2.rknsosatb.pw",
-                            port = 443,
-                            type = TdApi.ProxyTypeMtproto("dde99993ad3d7146fcf8f3baa789cc62ac")
+                            server = serverAddress!!,
+                            port = serverPort!!.toInt(),
+                            type = proxyType!!
                         )
                 }
 
@@ -149,6 +150,7 @@ class AddProxyViewModelImpl(
     }
 
 
+    private val _showAddProxyEvents = MutableLiveData<ShowViewEventParameters>()
     private val _addProxyScreenSavedInputDataEvents = MutableLiveData<AddProxyScreenSavedInputData>()
     private val _enteredServerAddress = MutableLiveData<String?>()
     @ExperimentalUnsignedTypes
@@ -189,11 +191,11 @@ class AddProxyViewModelImpl(
         }
 
     private fun showAddProxyButton() {
-        showAddProxyEvents.value = SHOW
+        _showAddProxyEvents.value = SHOW
     }
 
     private fun hideAddProxyButton() {
-        showAddProxyEvents.value = HIDE
+        _showAddProxyEvents.value = HIDE
     }
 
 }
