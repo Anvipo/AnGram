@@ -12,22 +12,28 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.observe
 import com.anvipo.angram.BuildConfig
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.core.CoreConstants.PROGRESS_TAG
-import com.anvipo.angram.layers.core.base.interfaces.BasePresenter
-import com.anvipo.angram.layers.core.base.interfaces.BaseView
+import com.anvipo.angram.layers.core.ShowItemsDialogEventParameters
+import com.anvipo.angram.layers.core.ShowSnackMessageEventParameters
+import com.anvipo.angram.layers.core.base.interfaces.BaseViewModel
 import com.anvipo.angram.layers.core.dialogFragment.ItemsDialogFragment
 import com.anvipo.angram.layers.core.dialogFragment.MessageDialogFragment
+import com.anvipo.angram.layers.core.events.parameters.ShowAlertMessageEventParameters
+import com.anvipo.angram.layers.core.events.parameters.ShowErrorEventParameters
+import com.anvipo.angram.layers.core.events.parameters.ShowToastMessageEventParameters
+import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters.HIDE
+import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters.SHOW
 import com.anvipo.angram.layers.core.logHelpers.HasLogger
-import com.anvipo.angram.layers.core.mvp.MvpAppCompatFragment
 import com.anvipo.angram.layers.core.showSnackbarMessage
 import com.anvipo.angram.layers.core.views.MyProgressDialog
 
 @Suppress("unused")
 abstract class BaseFragment :
-    MvpAppCompatFragment(),
-    BaseView,
+    Fragment(),
     HasLogger {
 
     final override val className: String by lazy { this::class.java.name }
@@ -45,26 +51,32 @@ abstract class BaseFragment :
         setupClickListeners()
         setupToolbar()
         setupUI()
+        setupViewModelsObservers()
 
         if (savedInstanceState == null) {
-            presenter.coldStart()
+            viewModel.onColdStart()
         } else {
-            presenter.hotStart()
+            viewModel.onHotStart(savedInstanceState)
         }
     }
 
-    final override fun onStart() {
+    override fun onStart() {
         super.onStart()
-        presenter.onStartTriggered()
+        viewModel.onStartTriggered()
     }
 
     final override fun onResume() {
         super.onResume()
         instanceStateSaved = false
-        presenter.onResumeTriggered()
+        viewModel.onResumeTriggered()
     }
 
-    final override fun onSaveInstanceState(outState: Bundle) {
+    final override fun onPause() {
+        viewModel.onPauseTriggered()
+        super.onPause()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         instanceStateSaved = true
     }
@@ -75,94 +87,11 @@ abstract class BaseFragment :
         data: Intent?
     ) {
         super.onActivityResult(requestCode, resultCode, data)
-        presenter.onActivityResult(requestCode, resultCode, data)
+        viewModel.onActivityResult(requestCode, resultCode, data)
     }
-
-
-    final override fun showItemsDialog(
-        title: String?,
-        items: List<String>,
-        tag: String?,
-        cancelable: Boolean
-    ) {
-        ItemsDialogFragment
-            .create(
-                title,
-                items,
-                tag,
-                cancelable
-            )
-            .show(childFragmentManager, null)
-    }
-
-    final override fun showAlertMessage(
-        text: String,
-        title: String?,
-        cancelable: Boolean,
-        messageDialogTag: String
-    ) {
-        MessageDialogFragment
-            .create(
-                message = text,
-                title = title,
-                positive = getString(android.R.string.ok),
-                cancelable = cancelable,
-                messageDialogTag = messageDialogTag
-            )
-            .show(childFragmentManager, null)
-    }
-
-    final override fun showErrorAlert(text: String) {
-        showAlertMessage(title = getString(R.string.error_title), text = text)
-    }
-
-    final override fun showToastMessage(text: String) {
-        Toast.makeText(this.context, text, Toast.LENGTH_LONG).show()
-    }
-
-    final override fun showSnackMessage(
-        text: String,
-        duration: Int
-    ) {
-        this.view?.showSnackbarMessage(
-            text = text,
-            duration = duration
-        )
-    }
-
-    final override fun showProgress() {
-        if (!isAdded || instanceStateSaved) return
-
-        val fragment = childFragmentManager.findFragmentByTag(PROGRESS_TAG)
-
-        if (fragment != null) {
-            return
-        }
-
-        val myProgressDialog = MyProgressDialog()
-
-        myProgressDialog.isCancelable = true
-        myProgressDialog.show(childFragmentManager, PROGRESS_TAG)
-        childFragmentManager.executePendingTransactions()
-
-        myProgressDialog.dialog.setOnCancelListener {
-            myProgressDialog.dismissAllowingStateLoss()
-            presenter.onCanceledProgressDialog()
-        }
-    }
-
-    final override fun hideProgress() {
-        if (!isAdded || instanceStateSaved) return
-
-        val myProgressDialog = childFragmentManager.findFragmentByTag(PROGRESS_TAG) ?: return
-
-        (myProgressDialog as MyProgressDialog).dismissAllowingStateLoss()
-        childFragmentManager.executePendingTransactions()
-    }
-
 
     fun onBackPressed() {
-        presenter.onBackPressed()
+        viewModel.onBackPressed()
     }
 
 
@@ -171,7 +100,7 @@ abstract class BaseFragment :
 
     protected open val actionBarSubtitle: String = ""
 
-    protected abstract val presenter: BasePresenter
+    protected abstract val viewModel: BaseViewModel
 
     protected abstract val actionBarTitle: String
     protected abstract val actionBar: Toolbar
@@ -188,6 +117,54 @@ abstract class BaseFragment :
 
     protected open fun setupUI(): Unit = Unit
     protected open fun setupClickListeners(): Unit = Unit
+    protected open fun setupViewModelsObservers() {
+        viewModel
+            .showErrorEvents
+            .observe(this) {
+                showErrorAlert(it)
+            }
+
+        viewModel
+            .showViewEvents
+            .observe(this) {
+                @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
+                when (it) {
+                    SHOW -> showProgress()
+                    HIDE -> hideProgress()
+                }
+            }
+
+        viewModel
+            .showAlertMessageEvents
+            .observe(this) {
+                showAlertMessage(it)
+            }
+
+        viewModel
+            .showItemsDialogEvents
+            .observe(this) {
+                showItemsDialog(it)
+            }
+
+        viewModel
+            .showToastMessageEvents
+            .observe(this) {
+                showToastMessage(it)
+            }
+
+        viewModel
+            .showSnackMessageEvents
+            .observe(this) {
+                showSnackMessage(it)
+            }
+
+        viewModel
+            .showConnectionSnackMessageEvents
+            .observe(this) {
+                showSnackMessage(it)
+            }
+
+    }
 
     protected open fun extractDataFromBundle(): Unit = Unit
 
@@ -203,6 +180,97 @@ abstract class BaseFragment :
     }
 
     private var instanceStateSaved: Boolean = false
+
+    private fun showErrorAlert(
+        showErrorEventParameters: ShowErrorEventParameters
+    ) {
+        showAlertMessage(
+            ShowAlertMessageEventParameters(
+                title = getString(R.string.error_title),
+                text = showErrorEventParameters.text,
+                cancelable = showErrorEventParameters.cancelable,
+                messageDialogTag = showErrorEventParameters.messageDialogTag
+            )
+        )
+    }
+
+    private fun showProgress() {
+        if (!isAdded || instanceStateSaved) return
+
+        val fragment = childFragmentManager.findFragmentByTag(PROGRESS_TAG)
+
+        if (fragment != null) {
+            return
+        }
+
+        val myProgressDialog = MyProgressDialog()
+
+        myProgressDialog.isCancelable = true
+        myProgressDialog.show(childFragmentManager, PROGRESS_TAG)
+        childFragmentManager.executePendingTransactions()
+
+        myProgressDialog.dialog?.setOnCancelListener {
+            myProgressDialog.dismissAllowingStateLoss()
+            viewModel.onCanceledProgressDialog()
+        }
+    }
+
+    private fun hideProgress() {
+        if (!isAdded || instanceStateSaved) return
+
+        val myProgressDialog = childFragmentManager.findFragmentByTag(PROGRESS_TAG) ?: return
+
+        (myProgressDialog as MyProgressDialog).dismissAllowingStateLoss()
+        childFragmentManager.executePendingTransactions()
+    }
+
+    private fun showItemsDialog(
+        showItemsDialogEvent: ShowItemsDialogEventParameters
+    ) {
+        ItemsDialogFragment
+            .create(
+                showItemsDialogEvent.title,
+                showItemsDialogEvent.items,
+                showItemsDialogEvent.tag,
+                showItemsDialogEvent.cancelable
+            )
+            .show(childFragmentManager, null)
+    }
+
+    private fun showAlertMessage(
+        showAlertMessageEvent: ShowAlertMessageEventParameters
+    ) {
+        MessageDialogFragment
+            .create(
+                message = showAlertMessageEvent.text,
+                title = showAlertMessageEvent.title,
+                positive = getString(android.R.string.ok),
+                cancelable = showAlertMessageEvent.cancelable,
+                messageDialogTag = showAlertMessageEvent.messageDialogTag
+            )
+            .show(childFragmentManager, null)
+    }
+
+    private fun showToastMessage(
+        showToastMessageEventParameters: ShowToastMessageEventParameters
+    ) {
+        val context = this.context ?: return
+
+        Toast.makeText(
+            context,
+            showToastMessageEventParameters.text,
+            showToastMessageEventParameters.length
+        ).show()
+    }
+
+    private fun showSnackMessage(
+        showSnackMessageEventParameters: ShowSnackMessageEventParameters
+    ) {
+        this.view?.showSnackbarMessage(
+            text = showSnackMessageEventParameters.text,
+            duration = showSnackMessageEventParameters.duration
+        )
+    }
 
     private fun showBackButtonHelper() {
         val invokationPlace = object {}.javaClass.enclosingMethod!!.name

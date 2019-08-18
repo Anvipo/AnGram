@@ -4,18 +4,21 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.LayoutRes
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.observe
 import com.anvipo.angram.R
-import com.anvipo.angram.layers.core.base.interfaces.BasePresenter
-import com.anvipo.angram.layers.core.base.interfaces.BaseView
+import com.anvipo.angram.layers.core.ShowSnackMessageEventParameters
+import com.anvipo.angram.layers.core.base.interfaces.BaseViewModel
 import com.anvipo.angram.layers.core.dialogFragment.MessageDialogFragment
+import com.anvipo.angram.layers.core.events.parameters.ShowAlertMessageEventParameters
+import com.anvipo.angram.layers.core.events.parameters.ShowErrorEventParameters
+import com.anvipo.angram.layers.core.events.parameters.ShowToastMessageEventParameters
 import com.anvipo.angram.layers.core.logHelpers.HasLogger
-import com.anvipo.angram.layers.core.mvp.MvpAppCompatActivity
 import com.anvipo.angram.layers.core.showSnackbarMessage
 
 @Suppress("unused")
 abstract class BaseActivity :
-    MvpAppCompatActivity(),
-    BaseView,
+    AppCompatActivity(),
     HasLogger {
 
     final override val className: String = this::class.java.name
@@ -26,60 +29,23 @@ abstract class BaseActivity :
 
         setupToolbar()
         setupClickListeners()
+        setupViewModelsObservers()
 
         if (savedInstanceState == null) {
-            presenter.coldStart()
+            viewModel.onColdStart()
         } else {
-            presenter.hotStart()
+            viewModel.onHotStart(savedInstanceState)
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        viewModel.onStartTriggered()
+    }
+
     final override fun onPause() {
-        presenter.onPauseTriggered()
+        viewModel.onPauseTriggered()
         super.onPause()
-    }
-
-    final override fun showAlertMessage(
-        text: String,
-        title: String?,
-        cancelable: Boolean,
-        messageDialogTag: String
-    ) {
-        MessageDialogFragment
-            .create(
-                message = text,
-                title = title,
-                positive = getString(android.R.string.ok),
-                cancelable = cancelable,
-                messageDialogTag = messageDialogTag
-            )
-            .show(supportFragmentManager, null)
-
-    }
-
-    final override fun showErrorAlert(text: String) {
-        showAlertMessage(title = getString(R.string.error_title), text = text)
-    }
-
-    final override fun showToastMessage(text: String) {
-        Toast.makeText(this, text, Toast.LENGTH_LONG).show()
-    }
-
-    final override fun showSnackMessage(
-        text: String,
-        duration: Int
-    ) {
-        rootView.showSnackbarMessage(
-            text = text,
-            duration = duration
-        )
-    }
-
-    final override fun showConnectionStateSnackMessage(
-        text: String,
-        duration: Int
-    ) {
-        showSnackMessage(text, duration)
     }
 
 
@@ -90,11 +56,91 @@ abstract class BaseActivity :
         get() = supportFragmentManager.findFragmentById(R.id.container) as BaseFragment
 
 
-    protected abstract val presenter: BasePresenter
+    protected abstract val viewModel: BaseViewModel
     protected abstract val layoutRes: Int
         @LayoutRes
         get
 
     protected abstract val rootView: View
+
+    protected open fun setupViewModelsObservers() {
+        viewModel
+            .showErrorEvents
+            .observe(this) {
+                showErrorAlert(it)
+            }
+
+        viewModel
+            .showAlertMessageEvents
+            .observe(this) {
+                showAlertMessage(it)
+            }
+
+        viewModel
+            .showToastMessageEvents
+            .observe(this) {
+                showToastMessage(it)
+            }
+
+        viewModel
+            .showSnackMessageEvents
+            .observe(this) {
+                showSnackMessage(it)
+            }
+
+        viewModel
+            .showConnectionSnackMessageEvents
+            .observe(this) {
+                showSnackMessage(it)
+            }
+    }
+
+
+    private fun showAlertMessage(
+        showAlertMessageEvent: ShowAlertMessageEventParameters
+    ) {
+        MessageDialogFragment
+            .create(
+                message = showAlertMessageEvent.text,
+                title = showAlertMessageEvent.title,
+                positive = getString(android.R.string.ok),
+                cancelable = showAlertMessageEvent.cancelable,
+                messageDialogTag = showAlertMessageEvent.messageDialogTag
+            )
+            .show(supportFragmentManager, null)
+
+    }
+
+    private fun showErrorAlert(
+        showErrorEventParameters: ShowErrorEventParameters
+    ) {
+        showAlertMessage(
+            ShowAlertMessageEventParameters(
+                title = getString(R.string.error_title),
+                text = showErrorEventParameters.text,
+                cancelable = showErrorEventParameters.cancelable,
+                messageDialogTag = showErrorEventParameters.messageDialogTag
+            )
+        )
+    }
+
+    private fun showToastMessage(
+        showToastMessageEventParameters: ShowToastMessageEventParameters
+    ) {
+        Toast.makeText(
+            this,
+            showToastMessageEventParameters.text,
+            showToastMessageEventParameters.length
+        ).show()
+    }
+
+    private fun showSnackMessage(
+        showSnackMessageEventParameters: ShowSnackMessageEventParameters
+    ) {
+        rootView.showSnackbarMessage(
+            text = showSnackMessageEventParameters.text,
+            duration = showSnackMessageEventParameters.duration
+        )
+    }
 
 }

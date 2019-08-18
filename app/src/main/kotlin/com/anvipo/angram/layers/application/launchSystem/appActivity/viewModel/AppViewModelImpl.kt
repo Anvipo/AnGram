@@ -1,23 +1,27 @@
-package com.anvipo.angram.layers.application.launchSystem.appActivity.presenter
+package com.anvipo.angram.layers.application.launchSystem.appActivity.viewModel
 
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.application.coordinator.ApplicationCoordinator
-import com.anvipo.angram.layers.application.launchSystem.appActivity.view.AppView
+import com.anvipo.angram.layers.application.launchSystem.appActivity.types.SetNavigatorEventParameters
+import com.anvipo.angram.layers.application.launchSystem.appActivity.types.SetNavigatorEventParameters.REMOVE
+import com.anvipo.angram.layers.application.launchSystem.appActivity.types.SetNavigatorEventParameters.SET
 import com.anvipo.angram.layers.businessLogic.useCases.app.AppUseCase
 import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
 import com.anvipo.angram.layers.core.ResourceManager
-import com.anvipo.angram.layers.core.base.classes.BasePresenterImpl
+import com.anvipo.angram.layers.core.ShowSnackMessageEventParameters
+import com.anvipo.angram.layers.core.base.classes.BaseViewModelImpl
+import com.anvipo.angram.layers.core.events.SingleLiveEvent
+import com.anvipo.angram.layers.core.events.parameters.ShowAlertMessageEventParameters
+import com.anvipo.angram.layers.core.events.parameters.ShowToastMessageEventParameters
 import com.anvipo.angram.layers.core.message.SystemMessage
 import com.anvipo.angram.layers.core.message.SystemMessageType
 import com.anvipo.angram.layers.global.types.*
-import com.arellomobile.mvp.InjectViewState
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.drinkless.td.libcore.telegram.TdApi
 
-@InjectViewState
-class AppPresenterImpl(
+class AppViewModelImpl(
     private val useCase: AppUseCase,
     private val coordinatorFactoryMethod: () -> ApplicationCoordinator,
     private val enabledProxyIdReceiveChannel: EnabledProxyIdReceiveChannel,
@@ -25,7 +29,7 @@ class AppPresenterImpl(
     private val tdApiUpdateConnectionStateReceiveChannel: TdApiUpdateConnectionStateReceiveChannel,
     private val tdLibClientHasBeenRecreatedReceiveChannel: TDLibClientHasBeenRecreatedReceiveChannel,
     private val resourceManager: ResourceManager
-) : BasePresenterImpl<AppView>(), AppPresenter {
+) : BaseViewModelImpl(), AppViewModel {
 
     init {
         channelsThatWillBeUnsubscribedInOnDestroy.addAll(
@@ -37,7 +41,10 @@ class AppPresenterImpl(
         )
     }
 
-    override fun coldStart() {
+    override val setNavigatorEvents: SingleLiveEvent<SetNavigatorEventParameters> = SingleLiveEvent()
+
+    override fun onColdStart() {
+        super<BaseViewModelImpl>.onColdStart()
         val invokationPlace = object {}.javaClass.enclosingMethod!!.name
 
         myLaunch {
@@ -54,7 +61,7 @@ class AppPresenterImpl(
 
             withContext(Dispatchers.IO) {
                 for (tdLibClientHasBeenRecreatedPing in tdLibClientHasBeenRecreatedReceiveChannel) {
-                    coldStart()
+                    onColdStart()
                 }
             }
         }
@@ -62,14 +69,22 @@ class AppPresenterImpl(
 
     override fun onResumeFragments() {
         subscribeToChannels()
-        viewState.setNavigator()
+        setNavigator()
     }
 
     override fun onPauseTriggered() {
-        super<BasePresenterImpl>.onPauseTriggered()
-        viewState.removeNavigator()
+        super<BaseViewModelImpl>.onPauseTriggered()
+        removeNavigator()
     }
 
+
+    private fun setNavigator() {
+        setNavigatorEvents.value = SET
+    }
+
+    private fun removeNavigator() {
+        setNavigatorEvents.value = REMOVE
+    }
 
     private fun subscribeToChannels() {
         subscribeOnSystemMessages()
@@ -112,11 +127,20 @@ class AppPresenterImpl(
         val (text, type, shouldBeShownToUser, shouldBeShownInLogs) = receivedSystemMessage
 
         if (shouldBeShownToUser) {
-            withContext(Dispatchers.Main) {
-                when (type) {
-                    SystemMessageType.TOAST -> viewState.showToastMessage(text)
-                    SystemMessageType.ALERT -> viewState.showAlertMessage(text)
-                }
+            when (type) {
+                SystemMessageType.TOAST -> showToastMessage(
+                    ShowToastMessageEventParameters(
+                        text = text
+                    )
+                )
+                SystemMessageType.ALERT -> showAlertMessage(
+                    ShowAlertMessageEventParameters(
+                        title = null,
+                        text = text,
+                        cancelable = true,
+                        messageDialogTag = null
+                    )
+                )
             }
         }
 
@@ -128,7 +152,7 @@ class AppPresenterImpl(
         }
     }
 
-    private suspend fun onReceivedTdApiUpdateConnectionState(
+    private fun onReceivedTdApiUpdateConnectionState(
         receivedTdApiUpdateConnectionState: TdApiUpdateConnectionState
     ) {
         val connectionState = resourceManager.getString(R.string.connection_state)
@@ -160,10 +184,12 @@ class AppPresenterImpl(
             }
         }
 
-        withContext(Dispatchers.Main) {
-            viewState.showConnectionStateSnackMessage(
-                text = text,
-                duration = duration
+        myLaunch {
+            showConnectionSnackMessage(
+                ShowSnackMessageEventParameters(
+                    text = text,
+                    duration = duration
+                )
             )
         }
     }

@@ -1,15 +1,17 @@
 package com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.di
 
+import android.annotation.SuppressLint
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.resourceManagerQualifier
 import com.anvipo.angram.layers.businessLogic.di.UseCasesModule.enterAuthenticationPasswordUseCaseQualifier
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorQualifier
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.enterAuthenticationPassword.EnterAuthenticationPasswordScreenFactory
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.enterAuthenticationPassword.EnterAuthenticationPasswordScreenFactoryImpl
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.presenter.EnterAuthenticationPasswordPresenter
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.presenter.EnterAuthenticationPasswordPresenterImpl
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.view.EnterAuthenticationPasswordFragment
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.view.EnterAuthenticationPasswordView
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.viewModel.EnterAuthenticationPasswordViewModel
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.viewModel.EnterAuthenticationPasswordViewModelImpl
 import org.koin.core.KoinComponent
 import org.koin.core.get
 import org.koin.core.module.Module
@@ -21,18 +23,34 @@ import ru.terrakok.cicerone.android.support.SupportAppScreen
 object EnterAuthenticationPasswordModule {
 
     class EnterPasswordScreen : SupportAppScreen(), KoinComponent {
-        override fun getFragment(): Fragment = get(enterAuthenticationPasswordViewQualifier)
+        @SuppressLint("SyntheticAccessor")
+        override fun getFragment(): Fragment =
+            get(enterAuthenticationPasswordViewQualifier)
     }
 
     val enterAuthenticationPasswordScreenFactoryQualifier: StringQualifier =
         named("enterAuthenticationPasswordScreenFactory")
 
-    val enterAuthenticationPasswordViewQualifier: StringQualifier =
+    private val enterAuthenticationPasswordViewQualifier: StringQualifier =
         named("enterAuthenticationPasswordView")
     val enterAuthenticationPasswordScreenQualifier: StringQualifier =
         named("enterAuthenticationPasswordScreen")
 
-    val enterAuthenticationPasswordPresenterQualifier: StringQualifier = named("enterAuthenticationPasswordPresenter")
+    private val enterAuthenticationPasswordViewModelQualifier: StringQualifier =
+        named("enterAuthenticationPasswordViewModel")
+
+    val enterAuthenticationPasswordViewModelFactoryQualifier: StringQualifier =
+        named("enterAuthenticationPasswordViewModelFactory")
+
+    private object EnterAuthenticationPasswordViewModelFactory : ViewModelProvider.NewInstanceFactory(), KoinComponent {
+        @SuppressLint("SyntheticAccessor")
+        @Suppress("UNCHECKED_CAST")
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return get<EnterAuthenticationPasswordViewModel>(
+                enterAuthenticationPasswordViewModelQualifier
+            ) as T
+        }
+    }
 
     @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
@@ -43,7 +61,7 @@ object EnterAuthenticationPasswordModule {
             )
         }
 
-        factory<EnterAuthenticationPasswordView>(
+        factory<EnterAuthenticationPasswordFragment>(
             enterAuthenticationPasswordViewQualifier
         ) {
             EnterAuthenticationPasswordFragment.createNewInstance()
@@ -55,8 +73,14 @@ object EnterAuthenticationPasswordModule {
             EnterPasswordScreen()
         }
 
-        factory<EnterAuthenticationPasswordPresenter>(enterAuthenticationPasswordPresenterQualifier) {
-            EnterAuthenticationPasswordPresenterImpl(
+        single<EnterAuthenticationPasswordViewModelFactory>(
+            enterAuthenticationPasswordViewModelFactoryQualifier
+        ) {
+            EnterAuthenticationPasswordViewModelFactory
+        }
+
+        factory<EnterAuthenticationPasswordViewModel>(enterAuthenticationPasswordViewModelQualifier) {
+            EnterAuthenticationPasswordViewModelImpl(
                 routeEventHandler = get(authorizationCoordinatorQualifier),
                 useCase = get(enterAuthenticationPasswordUseCaseQualifier),
                 resourceManager = get(resourceManagerQualifier)

@@ -1,9 +1,12 @@
 package com.anvipo.angram.layers.application.launchSystem.appActivity.di
 
+import android.annotation.SuppressLint
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.anvipo.angram.layers.application.coordinator.di.ApplicationCoordinatorModule.applicationCoordinatorQualifier
 import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.resourceManagerQualifier
-import com.anvipo.angram.layers.application.launchSystem.appActivity.presenter.AppPresenter
-import com.anvipo.angram.layers.application.launchSystem.appActivity.presenter.AppPresenterImpl
+import com.anvipo.angram.layers.application.launchSystem.appActivity.viewModel.AppViewModel
+import com.anvipo.angram.layers.application.launchSystem.appActivity.viewModel.AppViewModelImpl
 import com.anvipo.angram.layers.businessLogic.di.UseCasesModule.appUseCaseQualifier
 import com.anvipo.angram.layers.core.message.SystemMessage
 import com.anvipo.angram.layers.data.di.GatewaysModule.tdLibClientHasBeenRecreatedReceiveChannelQualifier
@@ -11,6 +14,8 @@ import com.anvipo.angram.layers.global.types.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
+import org.koin.core.KoinComponent
+import org.koin.core.get
 import org.koin.core.module.Module
 import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier.named
@@ -33,7 +38,16 @@ object AppActivityModule {
     private val systemMessageReceiveChannelQualifier = named("systemMessageReceiveChannel")
     private val systemMessageBroadcastChannelQualifier = named("systemMessageBroadcastChannel")
 
-    val appPresenterQualifier: StringQualifier = named("appPresenter")
+    private val appViewModelQualifier: StringQualifier = named("appViewModel")
+    val appViewModelFactoryQualifier: StringQualifier = named("appViewModelFactory")
+
+    private object AppViewModelFactory : ViewModelProvider.NewInstanceFactory(), KoinComponent {
+        @SuppressLint("SyntheticAccessor")
+        @Suppress("UNCHECKED_CAST")
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return get<AppViewModel>(appViewModelQualifier) as T
+        }
+    }
 
     @ExperimentalCoroutinesApi
     @Suppress("RemoveExplicitTypeArguments")
@@ -79,9 +93,12 @@ object AppActivityModule {
             BroadcastChannel<SystemMessage>(Channel.CONFLATED)
         }
 
+        single<AppViewModelFactory>(appViewModelFactoryQualifier) {
+            AppViewModelFactory
+        }
 
-        factory<AppPresenter>(appPresenterQualifier) {
-            AppPresenterImpl(
+        factory<AppViewModel>(appViewModelQualifier) {
+            AppViewModelImpl(
                 useCase = get(appUseCaseQualifier),
                 coordinatorFactoryMethod = { get(applicationCoordinatorQualifier) },
                 enabledProxyIdReceiveChannel = get(enabledProxyIdReceiveChannelQualifier),

@@ -9,7 +9,7 @@ import com.anvipo.angram.layers.core.argument
 
 class MessageDialogFragment : DialogFragment() {
 
-    private val messageDialogTag: String by argument(ARG_MESSAGE_DIALOG_TAG)
+    private val messageDialogTag: String? by argument(ARG_MESSAGE_DIALOG_TAG)
     private val title: String? by argument(ARG_TITLE)
     private val message: String? by argument(ARG_MESSAGE)
     private val positiveText: String? by argument(ARG_POSITIVE_TEXT)
@@ -52,7 +52,7 @@ class MessageDialogFragment : DialogFragment() {
         }.create()
     }
 
-    override fun onCancel(dialog: DialogInterface?) {
+    override fun onCancel(dialog: DialogInterface) {
         super.onCancel(dialog)
         clickListener.messageDialogCanceled(messageDialogTag)
     }
@@ -72,7 +72,7 @@ class MessageDialogFragment : DialogFragment() {
             positive: String? = null,
             negative: String? = null,
             neutral: String? = null,
-            messageDialogTag: String = "",
+            messageDialogTag: String? = null,
             cancelable: Boolean = true
         ): MessageDialogFragment =
             MessageDialogFragment().apply {
@@ -90,10 +90,10 @@ class MessageDialogFragment : DialogFragment() {
 
     interface OnClickListener {
 
-        fun messageDialogPositiveClicked(tag: String): Unit = Unit
-        fun messageDialogNegativeClicked(tag: String): Unit = Unit
-        fun messageDialogNeutralClicked(tag: String): Unit = Unit
-        fun messageDialogCanceled(tag: String): Unit = Unit
+        fun messageDialogPositiveClicked(tag: String?): Unit = Unit
+        fun messageDialogNegativeClicked(tag: String?): Unit = Unit
+        fun messageDialogNeutralClicked(tag: String?): Unit = Unit
+        fun messageDialogCanceled(tag: String?): Unit = Unit
 
     }
 

@@ -2,18 +2,20 @@ package com.anvipo.angram.layers.application.launchSystem.appActivity.view
 
 import android.os.Bundle
 import android.view.View
+import androidx.activity.viewModels
 import androidx.annotation.AnimRes
 import androidx.annotation.AnimatorRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.observe
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.navigatorHolderQualifier
-import com.anvipo.angram.layers.application.launchSystem.appActivity.di.AppActivityModule.appPresenterQualifier
-import com.anvipo.angram.layers.application.launchSystem.appActivity.presenter.AppPresenter
-import com.anvipo.angram.layers.application.launchSystem.appActivity.presenter.AppPresenterImpl
+import com.anvipo.angram.layers.application.launchSystem.appActivity.di.AppActivityModule.appViewModelFactoryQualifier
+import com.anvipo.angram.layers.application.launchSystem.appActivity.types.SetNavigatorEventParameters.REMOVE
+import com.anvipo.angram.layers.application.launchSystem.appActivity.types.SetNavigatorEventParameters.SET
+import com.anvipo.angram.layers.application.launchSystem.appActivity.viewModel.AppViewModel
+import com.anvipo.angram.layers.application.launchSystem.appActivity.viewModel.AppViewModelImpl
 import com.anvipo.angram.layers.core.base.classes.BaseActivity
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import kotlinx.android.synthetic.main.layout_container.*
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
@@ -22,9 +24,15 @@ import ru.terrakok.cicerone.NavigatorHolder
 import ru.terrakok.cicerone.android.support.SupportAppNavigator
 import ru.terrakok.cicerone.commands.*
 
-class AppActivity :
-    BaseActivity(),
-    AppView {
+class AppActivity : BaseActivity() {
+
+    override val viewModel: AppViewModel by viewModels<AppViewModelImpl> {
+        get(appViewModelFactoryQualifier)
+    }
+
+    override val layoutRes: Int = R.layout.layout_container
+
+    override val rootView: View by lazy { container }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         changeThemeFromSplashToApp()
@@ -33,40 +41,24 @@ class AppActivity :
 
     override fun onResumeFragments() {
         super.onResumeFragments()
-        presenter.onResumeFragments()
+        viewModel.onResumeFragments()
     }
-
-
-    override fun setNavigator() {
-        navigatorHolder.setNavigator(navigator)
-    }
-
-    override fun removeNavigator() {
-        navigatorHolder.removeNavigator()
-    }
-
 
     override fun onBackPressed() {
         currentFragment.onBackPressed()
     }
 
-
-    override val presenter: AppPresenter by lazy { mPresenter }
-
-    override val layoutRes: Int = R.layout.layout_container
-
-    override val rootView: View by lazy { container }
-
-
-    @ProvidePresenter
-    fun providePresenter(): AppPresenterImpl = get(appPresenterQualifier)
-
-    @InjectPresenter
-    lateinit var mPresenter: AppPresenterImpl
-
-
-    private fun changeThemeFromSplashToApp() {
-        setTheme(R.style.AppTheme)
+    override fun setupViewModelsObservers() {
+        super.setupViewModelsObservers()
+        viewModel
+            .setNavigatorEvents
+            .observe(this) {
+                @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
+                when (it) {
+                    SET -> setNavigator()
+                    REMOVE -> removeNavigator()
+                }
+            }
     }
 
 
@@ -134,6 +126,18 @@ class AppActivity :
             }
 
         }
+    }
+
+    private fun setNavigator() {
+        navigatorHolder.setNavigator(navigator)
+    }
+
+    private fun removeNavigator() {
+        navigatorHolder.removeNavigator()
+    }
+
+    private fun changeThemeFromSplashToApp() {
+        setTheme(R.style.AppTheme)
     }
 
 }

@@ -31,12 +31,25 @@ abstract class SectionListAdapter<BS : BaseSection, SVH : SectionViewHolder<BS>>
 
         val itemView = inflater.inflate(viewData.layoutRes, parent, false)
 
-        return viewData.createSectionViewHolder(itemView)
+        val sectionViewHolder = viewData.createSectionViewHolder<BS, SVH>(itemView)
+        sectionViewHolder.onCreate()
+        return sectionViewHolder
     }
 
     final override fun onBindViewHolder(
         holder: SVH,
         position: Int
     ): Unit = holder.bind(section = getItem(position))
+
+    override fun onViewAttachedToWindow(holder: SVH) {
+        super.onViewAttachedToWindow(holder)
+        holder.onStart()
+        holder.onResume()
+    }
+
+    override fun onViewDetachedFromWindow(holder: SVH) {
+        super.onViewDetachedFromWindow(holder)
+        holder.onDestroy()
+    }
 
 }
