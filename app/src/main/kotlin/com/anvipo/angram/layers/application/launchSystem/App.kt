@@ -185,35 +185,36 @@ class App :
     private fun initDI() {
         val invokationPlace = object {}.javaClass.enclosingMethod!!.name
 
-        val debugModules by lazy {
-            listOf(
-                SystemInfrastructureModule.module,
-                UseCasesModule.module,
-                GatewaysModule.module,
-                AppActivityModule.module,
-                ApplicationCoordinatorModule.module,
-                AuthorizationCoordinatorModule.module,
-                EnterAuthenticationPhoneNumberModule.module,
-                EnterAuthenticationCodeModule.module,
-                EnterAuthenticationPasswordModule.module,
-                AddProxyModule.module
-            )
+        val modules by lazy {
+            if (IS_IN_DEBUG_MODE) {
+                listOf(
+                    SystemInfrastructureModule.module,
+                    UseCasesModule.module,
+                    GatewaysModule.module,
+                    AppActivityModule.module,
+                    ApplicationCoordinatorModule.module,
+                    AuthorizationCoordinatorModule.module,
+                    EnterAuthenticationPhoneNumberModule.module,
+                    EnterAuthenticationCodeModule.module,
+                    EnterAuthenticationPasswordModule.module,
+                    AddProxyModule.module
+                )
+            } else {
+                myLog(
+                    invokationPlace = invokationPlace,
+                    text = "TODO"
+                )
+
+                TODO("release config")
+            }
         }
 
-        if (IS_IN_DEBUG_MODE) {
-            startKoin {
-                androidLogger()
+        startKoin {
+            androidLogger()
 
-                androidContext(this@App)
+            androidContext(this@App)
 
-                modules(debugModules)
-            }
-        } else {
-            // TODO: release config
-            myLog(
-                invokationPlace = invokationPlace,
-                text = "TODO"
-            )
+            modules(modules)
         }
 
         myLog(invokationPlace = invokationPlace)
