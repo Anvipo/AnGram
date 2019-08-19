@@ -16,29 +16,17 @@ import com.anvipo.angram.layers.data.di.GatewaysModule.proxyTDLibGatewayQualifie
 import com.anvipo.angram.layers.data.di.GatewaysModule.sharedPreferencesGatewayQualifier
 import com.anvipo.angram.layers.data.di.GatewaysModule.tdClientScopeQualifier
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorScope
+import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorScopeQualifier
 import org.koin.core.module.Module
-import org.koin.core.qualifier.StringQualifier
-import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-
 object UseCasesModule {
-
-    val appUseCaseQualifier: StringQualifier = named("appUseCase")
-
-    val enterAuthenticationPhoneNumberUseCaseQualifier: StringQualifier =
-        named("enterAuthenticationPhoneNumberUseCase")
-    val enterAuthenticationCodeUseCaseQualifier: StringQualifier = named("enterAuthenticationCodeUseCase")
-    val enterAuthenticationPasswordUseCaseQualifier: StringQualifier =
-        named("enterAuthenticationPasswordUseCase")
-
-    val addProxyUseCaseQualifier: StringQualifier = named("addProxyUseCase")
 
     val module: Module = module {
 
         scope(tdClientScopeQualifier) {
 
-            factory<AppUseCase>(appUseCaseQualifier) {
+            factory<AppUseCase> {
                 AppUseCaseImpl(
                     sharedPreferencesGateway = get(sharedPreferencesGatewayQualifier)
                 )
@@ -47,25 +35,30 @@ object UseCasesModule {
         }
 
 
-        factory<EnterAuthenticationPhoneNumberUseCase>(enterAuthenticationPhoneNumberUseCaseQualifier) {
-            EnterAuthenticationPhoneNumberUseCaseImpl(
-                authorizationTDLibGateway = authorizationCoordinatorScope.get(authorizationTDLibGatewayQualifier)
-            )
+        scope(authorizationCoordinatorScopeQualifier) {
+
+            factory<EnterAuthenticationPhoneNumberUseCase> {
+                EnterAuthenticationPhoneNumberUseCaseImpl(
+                    authorizationTDLibGateway = authorizationCoordinatorScope.get(authorizationTDLibGatewayQualifier)
+                )
+            }
+
+            factory<EnterAuthenticationCodeUseCase> {
+                EnterAuthenticationCodeUseCaseImpl(
+                    tdLibGateway = authorizationCoordinatorScope.get(authorizationTDLibGatewayQualifier)
+                )
+            }
+
+            factory<EnterAuthenticationPasswordUseCase> {
+                EnterAuthenticationPasswordUseCaseImpl(
+                    tdLibGateway = authorizationCoordinatorScope.get(authorizationTDLibGatewayQualifier)
+                )
+            }
+
         }
 
-        factory<EnterAuthenticationCodeUseCase>(enterAuthenticationCodeUseCaseQualifier) {
-            EnterAuthenticationCodeUseCaseImpl(
-                tdLibGateway = authorizationCoordinatorScope.get(authorizationTDLibGatewayQualifier)
-            )
-        }
 
-        factory<EnterAuthenticationPasswordUseCase>(enterAuthenticationPasswordUseCaseQualifier) {
-            EnterAuthenticationPasswordUseCaseImpl(
-                tdLibGateway = authorizationCoordinatorScope.get(authorizationTDLibGatewayQualifier)
-            )
-        }
-
-        factory<AddProxyUseCase>(addProxyUseCaseQualifier) {
+        factory<AddProxyUseCase> {
             AddProxyUseCaseImpl(
                 tdLibGateway = get(proxyTDLibGatewayQualifier),
                 dbGateway = get(proxyLocalGatewayQualifier)

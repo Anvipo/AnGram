@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.anvipo.angram.layers.businessLogic.di.UseCasesModule.addProxyUseCaseQualifier
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorQualifier
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorScope
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.addProxy.AddProxyScreenFactory
@@ -89,7 +88,7 @@ object AddProxyModule {
         factory<AddProxyViewModel>(addProxyViewModelQualifier) {
             AddProxyViewModelImpl(
                 routeEventHandler = authorizationCoordinatorScope.get(authorizationCoordinatorQualifier),
-                useCase = get(addProxyUseCaseQualifier),
+                useCase = authorizationCoordinatorScope.get(),
                 resourceManager = get()
             )
         }

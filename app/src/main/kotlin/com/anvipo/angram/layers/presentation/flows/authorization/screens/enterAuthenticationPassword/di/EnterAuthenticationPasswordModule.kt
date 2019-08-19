@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.anvipo.angram.layers.businessLogic.di.UseCasesModule.enterAuthenticationPasswordUseCaseQualifier
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorQualifier
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorScope
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.enterAuthenticationPassword.EnterAuthenticationPasswordScreenFactory
@@ -82,7 +81,7 @@ object EnterAuthenticationPasswordModule {
         factory<EnterAuthenticationPasswordViewModel>(enterAuthenticationPasswordViewModelQualifier) {
             EnterAuthenticationPasswordViewModelImpl(
                 routeEventHandler = authorizationCoordinatorScope.get(authorizationCoordinatorQualifier),
-                useCase = get(enterAuthenticationPasswordUseCaseQualifier),
+                useCase = authorizationCoordinatorScope.get(),
                 resourceManager = get()
             )
         }

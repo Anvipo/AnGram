@@ -8,7 +8,6 @@ import com.anvipo.angram.layers.application.di.LaunchSystemModule.tdLibClientHas
 import com.anvipo.angram.layers.application.launchSystem.App
 import com.anvipo.angram.layers.application.launchSystem.appActivity.viewModel.AppViewModel
 import com.anvipo.angram.layers.application.launchSystem.appActivity.viewModel.AppViewModelImpl
-import com.anvipo.angram.layers.businessLogic.di.UseCasesModule.appUseCaseQualifier
 import com.anvipo.angram.layers.core.message.SystemMessage
 import com.anvipo.angram.layers.global.types.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -99,7 +98,7 @@ object AppActivityModule {
 
         factory<AppViewModel>(appViewModelQualifier) {
             AppViewModelImpl(
-                useCase = App.tdClientScope.get(appUseCaseQualifier),
+                useCase = App.tdClientScope.get(),
                 coordinatorFactoryMethod = { App.tdClientScope.get(applicationCoordinatorQualifier) },
                 enabledProxyIdReceiveChannel = get(enabledProxyIdReceiveChannelQualifier),
                 systemMessageReceiveChannel = get(systemMessageReceiveChannelQualifier),
