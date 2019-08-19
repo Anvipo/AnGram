@@ -6,6 +6,7 @@ import com.anvipo.angram.layers.application.coordinator.coordinatorsFactory.Appl
 import com.anvipo.angram.layers.application.coordinator.coordinatorsFactory.ApplicationCoordinatorsFactoryImpl
 import com.anvipo.angram.layers.application.launchSystem.appActivity.di.AppActivityModule.systemMessageSendChannelQualifier
 import com.anvipo.angram.layers.data.di.GatewaysModule.applicationTDLibGatewayQualifier
+import com.anvipo.angram.layers.data.di.GatewaysModule.tdClientScopeQualifier
 import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationState
 import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationStateBroadcastChannel
 import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationStateReceiveChannel
@@ -35,6 +36,19 @@ object ApplicationCoordinatorModule {
     @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
 
+        scope(tdClientScopeQualifier) {
+            scoped<ApplicationCoordinator>(applicationCoordinatorQualifier) {
+                ApplicationCoordinatorImpl(
+                    coordinatorsFactory = get(applicationCoordinatorsFactoryQualifier),
+                    tdLibGateway = get(applicationTDLibGatewayQualifier),
+                    tdApiUpdateAuthorizationStateReceiveChannel =
+                    get(tdApiUpdateAuthorizationStateApplicationCoordinatorReceiveChannelQualifier),
+                    systemMessageSendChannel = get(systemMessageSendChannelQualifier)
+                )
+            }
+        }
+
+
         single<TdApiUpdateAuthorizationStateSendChannel>(
             tdApiUpdateAuthorizationStateApplicationCoordinatorSendChannelQualifier
         ) {
@@ -53,17 +67,8 @@ object ApplicationCoordinatorModule {
             BroadcastChannel<TdApiUpdateAuthorizationState>(Channel.CONFLATED)
         }
 
-        factory<ApplicationCoordinator>(applicationCoordinatorQualifier) {
-            ApplicationCoordinatorImpl(
-                coordinatorsFactory = get(applicationCoordinatorsFactoryQualifier),
-                tdLibGateway = get(applicationTDLibGatewayQualifier),
-                tdApiUpdateAuthorizationStateReceiveChannel =
-                get(tdApiUpdateAuthorizationStateApplicationCoordinatorReceiveChannelQualifier),
-                systemMessageSendChannel = get(systemMessageSendChannelQualifier)
-            )
-        }
 
-        factory<ApplicationCoordinatorsFactory>(applicationCoordinatorsFactoryQualifier) {
+        single<ApplicationCoordinatorsFactory>(applicationCoordinatorsFactoryQualifier) {
             ApplicationCoordinatorsFactoryImpl(
                 koinScope = this
             )

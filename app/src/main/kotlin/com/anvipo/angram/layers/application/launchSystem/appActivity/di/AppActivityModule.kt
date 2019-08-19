@@ -4,12 +4,13 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.anvipo.angram.layers.application.coordinator.di.ApplicationCoordinatorModule.applicationCoordinatorQualifier
+import com.anvipo.angram.layers.application.di.LaunchSystemModule.tdLibClientHasBeenRecreatedReceiveChannelQualifier
 import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.resourceManagerQualifier
+import com.anvipo.angram.layers.application.launchSystem.App
 import com.anvipo.angram.layers.application.launchSystem.appActivity.viewModel.AppViewModel
 import com.anvipo.angram.layers.application.launchSystem.appActivity.viewModel.AppViewModelImpl
 import com.anvipo.angram.layers.businessLogic.di.UseCasesModule.appUseCaseQualifier
 import com.anvipo.angram.layers.core.message.SystemMessage
-import com.anvipo.angram.layers.data.di.GatewaysModule.tdLibClientHasBeenRecreatedReceiveChannelQualifier
 import com.anvipo.angram.layers.global.types.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BroadcastChannel
@@ -100,16 +101,15 @@ object AppActivityModule {
         factory<AppViewModel>(appViewModelQualifier) {
             AppViewModelImpl(
                 useCase = get(appUseCaseQualifier),
-                coordinatorFactoryMethod = { get(applicationCoordinatorQualifier) },
+                coordinatorFactoryMethod = { App.tdClientScope.get(applicationCoordinatorQualifier) },
                 enabledProxyIdReceiveChannel = get(enabledProxyIdReceiveChannelQualifier),
                 systemMessageReceiveChannel = get(systemMessageReceiveChannelQualifier),
                 tdApiUpdateConnectionStateReceiveChannel = get(
                     tdApiUpdateConnectionStateAppPresenterReceiveChannelQualifier
                 ),
-                tdLibClientHasBeenRecreatedReceiveChannel = get(
-                    tdLibClientHasBeenRecreatedReceiveChannelQualifier
-                ),
-                resourceManager = get(resourceManagerQualifier)
+                resourceManager = get(resourceManagerQualifier),
+                tdLibClientHasBeenRecreatedReceiveChannel =
+                get(tdLibClientHasBeenRecreatedReceiveChannelQualifier)
             )
         }
 

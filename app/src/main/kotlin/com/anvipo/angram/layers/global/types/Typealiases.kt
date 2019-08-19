@@ -7,18 +7,6 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.SendChannel
 import org.drinkless.td.libcore.telegram.TdApi
 
-typealias TDLibClientHasBeenRecreated = Unit
-typealias TDLibClientHasBeenRecreatedSendChannel = SendChannel<TDLibClientHasBeenRecreated>
-typealias TDLibClientHasBeenRecreatedReceiveChannel = ReceiveChannel<TDLibClientHasBeenRecreated>
-@UseExperimental(ExperimentalCoroutinesApi::class)
-typealias TDLibClientHasBeenRecreatedBroadcastChannel = BroadcastChannel<TDLibClientHasBeenRecreated>
-
-typealias MustRecreateTDLibClient = Unit
-typealias MustRecreateTDLibClientSendChannel = SendChannel<MustRecreateTDLibClient>
-typealias MustRecreateTDLibClientReceiveChannel = ReceiveChannel<MustRecreateTDLibClient>
-@UseExperimental(ExperimentalCoroutinesApi::class)
-typealias MustRecreateTDLibClientBroadcastChannel = BroadcastChannel<MustRecreateTDLibClient>
-
 typealias EnabledProxyIdSendChannel = SendChannel<Int?>
 typealias EnabledProxyIdReceiveChannel = ReceiveChannel<Int?>
 @UseExperimental(ExperimentalCoroutinesApi::class)

@@ -14,6 +14,7 @@ import com.anvipo.angram.layers.data.di.GatewaysModule.authorizationTDLibGateway
 import com.anvipo.angram.layers.data.di.GatewaysModule.proxyLocalGatewayQualifier
 import com.anvipo.angram.layers.data.di.GatewaysModule.proxyTDLibGatewayQualifier
 import com.anvipo.angram.layers.data.di.GatewaysModule.sharedPreferencesGatewayQualifier
+import com.anvipo.angram.layers.data.di.GatewaysModule.tdClientScopeQualifier
 import org.koin.core.module.Module
 import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier.named
@@ -34,11 +35,16 @@ object UseCasesModule {
 
     val module: Module = module {
 
-        factory<AppUseCase>(appUseCaseQualifier) {
-            AppUseCaseImpl(
-                sharedPreferencesGateway = get(sharedPreferencesGatewayQualifier)
-            )
+        scope(tdClientScopeQualifier) {
+
+            factory<AppUseCase>(appUseCaseQualifier) {
+                AppUseCaseImpl(
+                    sharedPreferencesGateway = get(sharedPreferencesGatewayQualifier)
+                )
+            }
+
         }
+
 
         factory<EnterAuthenticationPhoneNumberUseCase>(enterAuthenticationPhoneNumberUseCaseQualifier) {
             EnterAuthenticationPhoneNumberUseCaseImpl(
