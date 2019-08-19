@@ -1,6 +1,5 @@
 package com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di
 
-import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.routerQualifier
 import com.anvipo.angram.layers.application.launchSystem.appActivity.di.AppActivityModule.systemMessageSendChannelQualifier
 import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationState
 import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationStateBroadcastChannel
@@ -64,7 +63,7 @@ object AuthorizationCoordinatorModule {
 
             scoped<AuthorizationCoordinator>(authorizationCoordinatorQualifier) {
                 AuthorizationCoordinatorImpl(
-                    router = get(routerQualifier),
+                    router = get(),
                     screensFactory = get(authorizationScreensFactoryQualifier),
                     tdApiUpdateAuthorizationStateReceiveChannel =
                     get(tdApiUpdateAuthorizationStateAuthorizationCoordinatorReceiveChannelQualifier),

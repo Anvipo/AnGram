@@ -1,7 +1,6 @@
 package com.anvipo.angram.layers.data.di
 
 import androidx.room.Room
-import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.resourceManagerQualifier
 import com.anvipo.angram.layers.application.launchSystem.App
 import com.anvipo.angram.layers.core.IOScope
 import com.anvipo.angram.layers.data.gateways.local.db.room.AppDatabase
@@ -61,7 +60,7 @@ object GatewaysModule : CoroutineScope by IOScope(), KoinComponent {
             scoped<ApplicationTDLibGateway>(applicationTDLibGatewayQualifier) {
                 ApplicationTDLibGatewayImpl(
                     tdLibClient = App.tdClientScope.get(tdClientQualifier),
-                    resourceManager = get(resourceManagerQualifier)
+                    resourceManager = get()
                 )
             }
         }
@@ -109,7 +108,7 @@ object GatewaysModule : CoroutineScope by IOScope(), KoinComponent {
 
         single<SharedPreferencesDAO>(sharedPreferencesGatewayQualifier) {
             SharedPreferencesDAOImpl(
-                resourceManager = get(resourceManagerQualifier)
+                resourceManager = get()
             )
         }
 

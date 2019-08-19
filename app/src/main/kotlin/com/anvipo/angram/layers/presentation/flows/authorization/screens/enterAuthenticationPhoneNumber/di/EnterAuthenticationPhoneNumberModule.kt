@@ -1,6 +1,5 @@
 package com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.di
 
-import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.resourceManagerQualifier
 import com.anvipo.angram.layers.businessLogic.di.UseCasesModule.enterAuthenticationPhoneNumberUseCaseQualifier
 import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionStateBroadcastChannel
 import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionStateSendChannel
@@ -55,7 +54,7 @@ object EnterAuthenticationPhoneNumberModule {
             EnterAuthenticationPhoneNumberViewModelImpl(
                 routeEventHandler = authorizationCoordinatorScope.get(authorizationCoordinatorQualifier),
                 useCase = get(enterAuthenticationPhoneNumberUseCaseQualifier),
-                resourceManager = get(resourceManagerQualifier),
+                resourceManager = get(),
                 tdApiUpdateConnectionStateReceiveChannel = get(
                     tdApiUpdateConnectionStateEnterAuthenticationPhoneNumberScreenReceiveChannelQualifier
                 )

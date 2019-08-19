@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.observe
 import com.anvipo.angram.R
-import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.navigatorHolderQualifier
 import com.anvipo.angram.layers.application.launchSystem.appActivity.di.AppActivityModule.appViewModelFactoryQualifier
 import com.anvipo.angram.layers.application.launchSystem.appActivity.types.SetNavigatorEventParameters.REMOVE
 import com.anvipo.angram.layers.application.launchSystem.appActivity.types.SetNavigatorEventParameters.SET
@@ -62,7 +61,7 @@ class AppActivity : BaseActivity() {
     }
 
 
-    private val navigatorHolder: NavigatorHolder by inject(navigatorHolderQualifier)
+    private val navigatorHolder: NavigatorHolder by inject()
 
     private val navigator: Navigator by lazy {
         object : SupportAppNavigator(this, supportFragmentManager, R.id.container) {

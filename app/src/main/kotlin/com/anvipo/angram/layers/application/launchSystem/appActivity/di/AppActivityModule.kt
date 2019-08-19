@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.anvipo.angram.layers.application.coordinator.di.ApplicationCoordinatorModule.applicationCoordinatorQualifier
 import com.anvipo.angram.layers.application.di.LaunchSystemModule.tdLibClientHasBeenRecreatedReceiveChannelQualifier
-import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.resourceManagerQualifier
 import com.anvipo.angram.layers.application.launchSystem.App
 import com.anvipo.angram.layers.application.launchSystem.appActivity.viewModel.AppViewModel
 import com.anvipo.angram.layers.application.launchSystem.appActivity.viewModel.AppViewModelImpl
@@ -107,7 +106,7 @@ object AppActivityModule {
                 tdApiUpdateConnectionStateReceiveChannel = get(
                     tdApiUpdateConnectionStateAppPresenterReceiveChannelQualifier
                 ),
-                resourceManager = get(resourceManagerQualifier),
+                resourceManager = get(),
                 tdLibClientHasBeenRecreatedReceiveChannel =
                 get(tdLibClientHasBeenRecreatedReceiveChannelQualifier)
             )
