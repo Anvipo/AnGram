@@ -37,8 +37,10 @@ object ApplicationCoordinatorModule {
     val module: Module = module {
 
         scope(tdClientScopeQualifier) {
+
             scoped<ApplicationCoordinator>(applicationCoordinatorQualifier) {
                 ApplicationCoordinatorImpl(
+                    koinScope = this,
                     coordinatorsFactory = get(applicationCoordinatorsFactoryQualifier),
                     tdLibGateway = get(applicationTDLibGatewayQualifier),
                     tdApiUpdateAuthorizationStateReceiveChannel =
@@ -46,6 +48,7 @@ object ApplicationCoordinatorModule {
                     systemMessageSendChannel = get(systemMessageSendChannelQualifier)
                 )
             }
+
         }
 
 
@@ -69,9 +72,7 @@ object ApplicationCoordinatorModule {
 
 
         single<ApplicationCoordinatorsFactory>(applicationCoordinatorsFactoryQualifier) {
-            ApplicationCoordinatorsFactoryImpl(
-                koinScope = this
-            )
+            ApplicationCoordinatorsFactoryImpl
         }
 
     }

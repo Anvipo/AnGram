@@ -6,7 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.resourceManagerQualifier
 import com.anvipo.angram.layers.businessLogic.di.UseCasesModule.enterAuthenticationCodeUseCaseQualifier
+import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorQualifier
+import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorScope
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.enterAuthenticationCode.EnterAuthenticationCodeScreenFactory
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.enterAuthenticationCode.EnterAuthenticationCodeScreenFactoryImpl
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.view.EnterAuthenticationCodeFragment
@@ -95,7 +97,7 @@ object EnterAuthenticationCodeModule {
 
         factory<EnterAuthenticationCodeViewModel>(enterAuthenticationCodeViewModelQualifier) {
             EnterAuthenticationCodeViewModelImpl(
-                routeEventHandler = get(authorizationCoordinatorQualifier),
+                routeEventHandler = authorizationCoordinatorScope.get(authorizationCoordinatorQualifier),
                 useCase = get(enterAuthenticationCodeUseCaseQualifier),
                 resourceManager = get(resourceManagerQualifier)
             )

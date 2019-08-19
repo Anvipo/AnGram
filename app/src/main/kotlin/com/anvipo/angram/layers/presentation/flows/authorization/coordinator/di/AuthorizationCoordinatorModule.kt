@@ -20,6 +20,7 @@ import kotlinx.coroutines.channels.Channel
 import org.koin.core.module.Module
 import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier.named
+import org.koin.core.scope.Scope
 import org.koin.dsl.module
 
 object AuthorizationCoordinatorModule {
@@ -33,6 +34,10 @@ object AuthorizationCoordinatorModule {
 
     val authorizationCoordinatorQualifier: StringQualifier = named("authorizationCoordinator")
     private val authorizationScreensFactoryQualifier: StringQualifier = named("authorizationScreensFactory")
+
+    val authorizationCoordinatorScopeQualifier: StringQualifier = named("authorizationCoordinatorScope")
+
+    lateinit var authorizationCoordinatorScope: Scope
 
     @ExperimentalCoroutinesApi
     @Suppress("RemoveExplicitTypeArguments")
@@ -56,17 +61,21 @@ object AuthorizationCoordinatorModule {
             BroadcastChannel<TdApiUpdateAuthorizationState>(Channel.CONFLATED)
         }
 
-        factory<AuthorizationCoordinator>(authorizationCoordinatorQualifier) {
-            AuthorizationCoordinatorImpl(
-                router = get(routerQualifier),
-                screensFactory = get(authorizationScreensFactoryQualifier),
-                tdApiUpdateAuthorizationStateReceiveChannel =
-                get(tdApiUpdateAuthorizationStateAuthorizationCoordinatorReceiveChannelQualifier),
-                systemMessageSendChannel = get(systemMessageSendChannelQualifier)
-            )
+        scope(authorizationCoordinatorScopeQualifier) {
+
+            scoped<AuthorizationCoordinator>(authorizationCoordinatorQualifier) {
+                AuthorizationCoordinatorImpl(
+                    router = get(routerQualifier),
+                    screensFactory = get(authorizationScreensFactoryQualifier),
+                    tdApiUpdateAuthorizationStateReceiveChannel =
+                    get(tdApiUpdateAuthorizationStateAuthorizationCoordinatorReceiveChannelQualifier),
+                    systemMessageSendChannel = get(systemMessageSendChannelQualifier)
+                )
+            }
+
         }
 
-        factory<AuthorizationScreensFactory>(authorizationScreensFactoryQualifier) {
+        single<AuthorizationScreensFactory>(authorizationScreensFactoryQualifier) {
             AuthorizationScreensFactoryImpl(
                 enterAuthenticationPhoneNumberScreenFactory = get(enterAuthenticationPhoneNumberScreenFactoryQualifier),
                 enterAuthenticationPasswordScreenFactory = get(enterAuthenticationPasswordScreenFactoryQualifier),

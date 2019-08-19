@@ -11,6 +11,7 @@ import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionStateBroadcast
 import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionStateReceiveChannel
 import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionStateSendChannel
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorQualifier
+import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorScope
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.enterAuthenticationPhoneNumber.EnterAuthenticationPhoneNumberScreenFactory
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.enterAuthenticationPhoneNumber.EnterAuthenticationPhoneNumberScreenFactoryImpl
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.view.EnterAuthenticationPhoneNumberFragment
@@ -119,7 +120,7 @@ object EnterAuthenticationPhoneNumberModule {
             enterAuthenticationPhoneNumberViewModelQualifier
         ) {
             EnterAuthenticationPhoneNumberViewModelImpl(
-                routeEventHandler = get(authorizationCoordinatorQualifier),
+                routeEventHandler = authorizationCoordinatorScope.get(authorizationCoordinatorQualifier),
                 useCase = get(enterAuthenticationPhoneNumberUseCaseQualifier),
                 resourceManager = get(resourceManagerQualifier),
                 tdApiUpdateConnectionStateReceiveChannel = get(

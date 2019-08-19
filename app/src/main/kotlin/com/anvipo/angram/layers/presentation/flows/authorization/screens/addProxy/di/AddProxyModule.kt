@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.resourceManagerQualifier
 import com.anvipo.angram.layers.businessLogic.di.UseCasesModule.addProxyUseCaseQualifier
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorQualifier
+import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorScope
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.addProxy.AddProxyScreenFactory
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.addProxy.AddProxyScreenFactoryImpl
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.types.ProxyType
@@ -88,7 +89,7 @@ object AddProxyModule {
 
         factory<AddProxyViewModel>(addProxyViewModelQualifier) {
             AddProxyViewModelImpl(
-                routeEventHandler = get(authorizationCoordinatorQualifier),
+                routeEventHandler = authorizationCoordinatorScope.get(authorizationCoordinatorQualifier),
                 useCase = get(addProxyUseCaseQualifier),
                 resourceManager = get(resourceManagerQualifier)
             )

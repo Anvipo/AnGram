@@ -15,6 +15,7 @@ import com.anvipo.angram.layers.data.di.GatewaysModule.proxyLocalGatewayQualifie
 import com.anvipo.angram.layers.data.di.GatewaysModule.proxyTDLibGatewayQualifier
 import com.anvipo.angram.layers.data.di.GatewaysModule.sharedPreferencesGatewayQualifier
 import com.anvipo.angram.layers.data.di.GatewaysModule.tdClientScopeQualifier
+import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorScope
 import org.koin.core.module.Module
 import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier.named
@@ -48,19 +49,19 @@ object UseCasesModule {
 
         factory<EnterAuthenticationPhoneNumberUseCase>(enterAuthenticationPhoneNumberUseCaseQualifier) {
             EnterAuthenticationPhoneNumberUseCaseImpl(
-                authorizationTDLibGateway = get(authorizationTDLibGatewayQualifier)
+                authorizationTDLibGateway = authorizationCoordinatorScope.get(authorizationTDLibGatewayQualifier)
             )
         }
 
         factory<EnterAuthenticationCodeUseCase>(enterAuthenticationCodeUseCaseQualifier) {
             EnterAuthenticationCodeUseCaseImpl(
-                tdLibGateway = get(authorizationTDLibGatewayQualifier)
+                tdLibGateway = authorizationCoordinatorScope.get(authorizationTDLibGatewayQualifier)
             )
         }
 
         factory<EnterAuthenticationPasswordUseCase>(enterAuthenticationPasswordUseCaseQualifier) {
             EnterAuthenticationPasswordUseCaseImpl(
-                tdLibGateway = get(authorizationTDLibGatewayQualifier)
+                tdLibGateway = authorizationCoordinatorScope.get(authorizationTDLibGatewayQualifier)
             )
         }
 

@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.resourceManagerQualifier
 import com.anvipo.angram.layers.businessLogic.di.UseCasesModule.enterAuthenticationPasswordUseCaseQualifier
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorQualifier
+import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorScope
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.enterAuthenticationPassword.EnterAuthenticationPasswordScreenFactory
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.enterAuthenticationPassword.EnterAuthenticationPasswordScreenFactoryImpl
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.view.EnterAuthenticationPasswordFragment
@@ -81,7 +82,7 @@ object EnterAuthenticationPasswordModule {
 
         factory<EnterAuthenticationPasswordViewModel>(enterAuthenticationPasswordViewModelQualifier) {
             EnterAuthenticationPasswordViewModelImpl(
-                routeEventHandler = get(authorizationCoordinatorQualifier),
+                routeEventHandler = authorizationCoordinatorScope.get(authorizationCoordinatorQualifier),
                 useCase = get(enterAuthenticationPasswordUseCaseQualifier),
                 resourceManager = get(resourceManagerQualifier)
             )

@@ -100,7 +100,7 @@ object AppActivityModule {
 
         factory<AppViewModel>(appViewModelQualifier) {
             AppViewModelImpl(
-                useCase = get(appUseCaseQualifier),
+                useCase = App.tdClientScope.get(appUseCaseQualifier),
                 coordinatorFactoryMethod = { App.tdClientScope.get(applicationCoordinatorQualifier) },
                 enabledProxyIdReceiveChannel = get(enabledProxyIdReceiveChannelQualifier),
                 systemMessageReceiveChannel = get(systemMessageReceiveChannelQualifier),

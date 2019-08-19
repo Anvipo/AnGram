@@ -143,10 +143,7 @@ class App :
         )
     }
 
-
-    private var sessionNumber = 1
-    private val currentTDClientScopeID
-        get() = "TDClient session №$sessionNumber"
+    private val tdClientScopeID = "TD client scope ID"
 
     private val systemMessageSendChannel: SystemMessageSendChannel
             by inject(systemMessageSendChannelQualifier)
@@ -228,7 +225,7 @@ class App :
             modules(modules)
 
             tdClientScope = koin.createScope(
-                scopeId = currentTDClientScopeID,
+                scopeId = tdClientScopeID,
                 qualifier = tdClientScopeQualifier
             )
         }
@@ -318,10 +315,9 @@ class App :
         }
 
         if (tdApiAuthorizationState.authorizationState is TdApi.AuthorizationStateClosed) {
-            sessionNumber++
             tdClientScope.close()
             tdClientScope = this.getKoin().createScope(
-                scopeId = currentTDClientScopeID,
+                scopeId = tdClientScopeID,
                 qualifier = tdClientScopeQualifier
             )
             tdLibClientHasBeenRecreatedSendChannel.offer(Unit)

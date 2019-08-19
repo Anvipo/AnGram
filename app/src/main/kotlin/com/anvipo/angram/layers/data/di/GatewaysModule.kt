@@ -14,6 +14,7 @@ import com.anvipo.angram.layers.data.gateways.tdLib.authorization.AuthorizationT
 import com.anvipo.angram.layers.data.gateways.tdLib.authorization.AuthorizationTDLibGatewayImpl
 import com.anvipo.angram.layers.data.gateways.tdLib.proxy.ProxyTDLibGateway
 import com.anvipo.angram.layers.data.gateways.tdLib.proxy.ProxyTDLibGatewayImpl
+import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorScopeQualifier
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.drinkless.td.libcore.telegram.Client
@@ -66,11 +67,16 @@ object GatewaysModule : CoroutineScope by IOScope(), KoinComponent {
         }
 
 
-        factory<AuthorizationTDLibGateway>(authorizationTDLibGatewayQualifier) {
-            AuthorizationTDLibGatewayImpl(
-                tdLibClient = App.tdClientScope.get(tdClientQualifier)
-            )
+        scope(authorizationCoordinatorScopeQualifier) {
+
+            scoped<AuthorizationTDLibGateway>(authorizationTDLibGatewayQualifier) {
+                AuthorizationTDLibGatewayImpl(
+                    tdLibClient = App.tdClientScope.get(tdClientQualifier)
+                )
+            }
+
         }
+
 
         factory<ProxyTDLibGateway>(proxyTDLibGatewayQualifier) {
             ProxyTDLibGatewayImpl(

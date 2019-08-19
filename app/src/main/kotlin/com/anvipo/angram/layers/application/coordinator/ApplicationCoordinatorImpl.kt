@@ -8,9 +8,12 @@ import com.anvipo.angram.layers.global.HasCheckAuthorizationStateHelper
 import com.anvipo.angram.layers.global.types.SystemMessageSendChannel
 import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationState
 import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationStateReceiveChannel
+import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorScope
+import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorScopeQualifier
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.drinkless.td.libcore.telegram.TdApi
+import org.koin.core.scope.Scope
 import kotlin.coroutines.Continuation
 
 @Suppress("RedundantUnitReturnType")
@@ -18,6 +21,7 @@ class ApplicationCoordinatorImpl(
     private val coordinatorsFactory: ApplicationCoordinatorsFactory,
     private val tdLibGateway: ApplicationTDLibGateway,
     private val tdApiUpdateAuthorizationStateReceiveChannel: TdApiUpdateAuthorizationStateReceiveChannel,
+    private val koinScope: Scope,
     systemMessageSendChannel: SystemMessageSendChannel
 ) : BaseCoordinatorImpl<ApplicationCoordinateResult>(
     systemMessageSendChannel = systemMessageSendChannel
@@ -143,6 +147,11 @@ class ApplicationCoordinatorImpl(
             return
         }
 
+        authorizationCoordinatorScope = koinScope.getKoin().createScope(
+            scopeId = "Authorization flow scope ID",
+            qualifier = authorizationCoordinatorScopeQualifier
+        )
+
         val invokationPlace = object {}.javaClass.enclosingMethod!!.name
 
         val authorizationCoordinator = withContext(Dispatchers.Default) {
@@ -157,6 +166,8 @@ class ApplicationCoordinatorImpl(
             text = "authorizationFlowCoordinateResult = $authorizationFlowCoordinateResult",
             invokationPlace = invokationPlace
         )
+
+        authorizationCoordinatorScope.close()
 
         authorizationFlowHasBeenStarted = false
 
