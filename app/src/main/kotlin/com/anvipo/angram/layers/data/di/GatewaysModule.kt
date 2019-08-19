@@ -2,9 +2,7 @@ package com.anvipo.angram.layers.data.di
 
 import androidx.room.Room
 import com.anvipo.angram.layers.application.launchSystem.App
-import com.anvipo.angram.layers.core.IOScope
 import com.anvipo.angram.layers.data.gateways.local.db.room.AppDatabase
-import com.anvipo.angram.layers.data.gateways.local.db.room.proxy.ProxyRoomDAO
 import com.anvipo.angram.layers.data.gateways.local.sharedPreferences.SharedPreferencesDAO
 import com.anvipo.angram.layers.data.gateways.local.sharedPreferences.SharedPreferencesDAOImpl
 import com.anvipo.angram.layers.data.gateways.tdLib.application.ApplicationTDLibGateway
@@ -14,105 +12,92 @@ import com.anvipo.angram.layers.data.gateways.tdLib.authorization.AuthorizationT
 import com.anvipo.angram.layers.data.gateways.tdLib.proxy.ProxyTDLibGateway
 import com.anvipo.angram.layers.data.gateways.tdLib.proxy.ProxyTDLibGatewayImpl
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorScopeQualifier
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.drinkless.td.libcore.telegram.Client
 import org.koin.android.ext.koin.androidApplication
-import org.koin.core.KoinComponent
 import org.koin.core.module.Module
 import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-object GatewaysModule : CoroutineScope by IOScope(), KoinComponent {
+object GatewaysModule {
 
-    private val appDatabaseQualifier = named("appDatabase")
-
-    val sharedPreferencesGatewayQualifier: StringQualifier = named("sharedPreferencesGateway")
-    val proxyLocalGatewayQualifier: StringQualifier = named("proxyLocalGateway")
-
-    val proxyTDLibGatewayQualifier: StringQualifier = named("proxyTDLibGateway")
-    val applicationTDLibGatewayQualifier: StringQualifier = named("applicationTDLibGateway")
-    val authorizationTDLibGatewayQualifier: StringQualifier = named("authorizationTDLibGateway")
-
-    private val tdClientQualifier = named("tdClient")
     val tdClientScopeQualifier: StringQualifier = named("tdClientScope")
 
     private val tdLibUpdatesExceptionHandlerQualifier = named("updatesExceptionHandler")
 
-    private val tdLibUpdatesHandlerQualifier = named("handleTDLibUpdate")
-
     private val tdLibDefaultExceptionHandlerQualifier = named("defaultExceptionHandler")
 
     @ExperimentalCoroutinesApi
-    @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
 
         scope(tdClientScopeQualifier) {
-            scoped<Client>(tdClientQualifier) {
+
+            scoped {
                 Client.create(
-                    get(tdLibUpdatesHandlerQualifier),
+                    get(),
                     get(tdLibUpdatesExceptionHandlerQualifier),
                     get(tdLibDefaultExceptionHandlerQualifier)
                 )
             }
 
-            scoped<ApplicationTDLibGateway>(applicationTDLibGatewayQualifier) {
+            scoped<ApplicationTDLibGateway> {
                 ApplicationTDLibGatewayImpl(
-                    tdLibClient = App.tdClientScope.get(tdClientQualifier),
+                    tdLibClient = App.tdClientScope.get(),
                     resourceManager = get()
                 )
             }
+
         }
 
 
         scope(authorizationCoordinatorScopeQualifier) {
 
-            scoped<AuthorizationTDLibGateway>(authorizationTDLibGatewayQualifier) {
+            scoped<AuthorizationTDLibGateway> {
                 AuthorizationTDLibGatewayImpl(
-                    tdLibClient = App.tdClientScope.get(tdClientQualifier)
+                    tdLibClient = App.tdClientScope.get()
                 )
             }
 
         }
 
 
-        factory<ProxyTDLibGateway>(proxyTDLibGatewayQualifier) {
+        factory<ProxyTDLibGateway> {
             ProxyTDLibGatewayImpl(
-                tdLibClient = App.tdClientScope.get(tdClientQualifier)
+                tdLibClient = App.tdClientScope.get()
             )
         }
 
 
-        single<Client.ResultHandler>(tdLibUpdatesHandlerQualifier) {
+        single {
             val app = androidApplication() as App
 
             Client.ResultHandler(app::handleTDLibUpdate)
         }
 
-        single<Client.ExceptionHandler>(tdLibUpdatesExceptionHandlerQualifier) {
+        single(tdLibUpdatesExceptionHandlerQualifier) {
             val app = androidApplication() as App
 
             Client.ExceptionHandler(app::handleTDLibUpdatesException)
         }
 
-        single<Client.ExceptionHandler>(tdLibDefaultExceptionHandlerQualifier) {
+        single(tdLibDefaultExceptionHandlerQualifier) {
             val app = androidApplication() as App
 
             Client.ExceptionHandler(app::handleTDLibDefaultException)
         }
 
-        single<ProxyRoomDAO>(proxyLocalGatewayQualifier) {
-            get<AppDatabase>(appDatabaseQualifier).proxyDao
+        single {
+            get<AppDatabase>().proxyDao
         }
 
-        single<SharedPreferencesDAO>(sharedPreferencesGatewayQualifier) {
+        single<SharedPreferencesDAO> {
             SharedPreferencesDAOImpl(
                 resourceManager = get()
             )
         }
 
-        single<AppDatabase>(appDatabaseQualifier) {
+        single {
             Room
                 .databaseBuilder(
                     androidApplication().applicationContext,
