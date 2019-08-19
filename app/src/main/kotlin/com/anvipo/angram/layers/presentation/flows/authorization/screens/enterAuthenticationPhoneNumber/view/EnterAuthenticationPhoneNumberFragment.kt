@@ -18,7 +18,7 @@ import com.anvipo.angram.layers.core.hideKeyboard
 import com.anvipo.angram.layers.core.hideWithAnimate
 import com.anvipo.angram.layers.core.showWithAnimate
 import com.anvipo.angram.layers.core.textWatchers.PhoneNumberTextWatcher
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.di.EnterAuthenticationPhoneNumberModule.enterAuthenticationPhoneNumberViewModelFactoryQualifier
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.view.navigation.EnterAuthenticationPhoneNumberViewModelFactory
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.viewModel.EnterAuthenticationPhoneNumberViewModel
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.viewModel.EnterAuthenticationPhoneNumberViewModelImpl
 import kotlinx.android.synthetic.main.fragment_enter_phone_number.*
@@ -38,7 +38,7 @@ class EnterAuthenticationPhoneNumberFragment :
 
     override val viewModel: EnterAuthenticationPhoneNumberViewModel
             by viewModels<EnterAuthenticationPhoneNumberViewModelImpl> {
-                get(enterAuthenticationPhoneNumberViewModelFactoryQualifier)
+                get<EnterAuthenticationPhoneNumberViewModelFactory>()
             }
 
     override val layoutRes: Int by lazy { R.layout.fragment_enter_phone_number }
