@@ -29,8 +29,7 @@ object LaunchSystemModule {
         ) {
             get(tdLibClientHasBeenRecreatedBroadcastChannelQualifier)
         }
-        @Suppress("RemoveExplicitTypeArguments")
-        factory<TDLibClientHasBeenRecreatedReceiveChannel>(
+        factory(
             tdLibClientHasBeenRecreatedReceiveChannelQualifier
         ) {
             get<TDLibClientHasBeenRecreatedBroadcastChannel>(
