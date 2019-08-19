@@ -3,14 +3,6 @@ package com.anvipo.angram.layers.application.launchSystem
 import android.app.Application
 import com.anvipo.angram.layers.application.coordinator.di.ApplicationCoordinatorModule
 import com.anvipo.angram.layers.application.coordinator.di.ApplicationCoordinatorModule.tdApiUpdateAuthorizationStateApplicationCoordinatorSendChannelQualifier
-import com.anvipo.angram.layers.application.di.LaunchSystemModule
-import com.anvipo.angram.layers.application.di.LaunchSystemModule.tdApiObjectIMutableStackQualifier
-import com.anvipo.angram.layers.application.di.LaunchSystemModule.tdApiUpdateAuthorizationStateIMutableStackQualifier
-import com.anvipo.angram.layers.application.di.LaunchSystemModule.tdApiUpdateConnectionStateIMutableStackQualifier
-import com.anvipo.angram.layers.application.di.LaunchSystemModule.tdApiUpdateOptionIMutableStackQualifier
-import com.anvipo.angram.layers.application.di.LaunchSystemModule.tdApiUpdatesIMutableStackQualifier
-import com.anvipo.angram.layers.application.di.LaunchSystemModule.tdLibDefaultExceptionsIMutableStackQualifier
-import com.anvipo.angram.layers.application.di.LaunchSystemModule.tdLibUpdatesExceptionsIMutableStackQualifier
 import com.anvipo.angram.layers.application.di.SystemInfrastructureModule
 import com.anvipo.angram.layers.application.launchSystem.appActivity.di.AppActivityModule
 import com.anvipo.angram.layers.application.launchSystem.appActivity.di.AppActivityModule.enabledProxyIdSendChannelQualifier
@@ -22,7 +14,6 @@ import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
 import com.anvipo.angram.layers.core.CoreHelpers.logIfShould
 import com.anvipo.angram.layers.core.UiScope
 import com.anvipo.angram.layers.core.base.interfaces.HasMyCoroutineBuilders
-import com.anvipo.angram.layers.core.collections.stack.IMutableStack
 import com.anvipo.angram.layers.core.errorMessage
 import com.anvipo.angram.layers.core.logHelpers.HasLogger
 import com.anvipo.angram.layers.core.message.SystemMessage
@@ -110,8 +101,6 @@ class App :
 
 
     fun handleTDLibUpdate(tdApiObject: TdApiObject) {
-        saveAndBrodcastNewTdApiObject(tdApiObject)
-
         val invokationPlace = object {}.javaClass.enclosingMethod!!.name
         val text = "tdApiObject = $tdApiObject"
         myLog(
@@ -129,8 +118,6 @@ class App :
     }
 
     fun handleTDLibUpdatesException(tdLibUpdatesException: TDLibUpdatesException) {
-        saveAndBrodcastNewTDLibUpdatesException(tdLibUpdatesException)
-
         val text = "tdLibUpdatesException.errorMessage = ${tdLibUpdatesException.errorMessage}"
 
         val systemMessage = createSystemMessageFrom(tdLibUpdatesException, text)
@@ -143,8 +130,6 @@ class App :
     }
 
     fun handleTDLibDefaultException(tdLibDefaultException: TDLibDefaultException) {
-        saveAndBrodcastNewTDLibDefaultExceptions(tdLibDefaultException)
-
         myLog(
             invokationPlace = object {}.javaClass.enclosingMethod!!.name,
             text = "tdLibDefaultException.errorMessage = ${tdLibDefaultException.errorMessage}"
@@ -202,7 +187,6 @@ class App :
 
         val debugModules by lazy {
             listOf(
-                LaunchSystemModule.module,
                 SystemInfrastructureModule.module,
                 UseCasesModule.module,
                 GatewaysModule.module,
@@ -239,8 +223,6 @@ class App :
     private fun onUpdate(
         tdApiUpdate: TdApiUpdate
     ) {
-        saveAndBrodcastNewTdApiUpdate(tdApiUpdate)
-
         when (tdApiUpdate) {
             is TdApiUpdateAuthorizationState -> onUpdateAuthorizationState(tdApiUpdate)
             is TdApiUpdateConnectionState -> onUpdateConnectionState(tdApiUpdate)
@@ -249,20 +231,18 @@ class App :
     }
 
     private fun onUpdateAuthorizationState(updateAuthorizationState: TdApiUpdateAuthorizationState) {
-        saveAndBrodcastNewTdApiAuthorizationState(updateAuthorizationState)
+        brodcastNewTdApiAuthorizationState(updateAuthorizationState)
     }
 
     private fun onUpdateConnectionState(
         tdApiUpdateConnectionState: TdApiUpdateConnectionState
     ) {
-        saveAndBrodcastNewTdApiConnectionState(tdApiUpdateConnectionState)
+        brodcastNewTdApiConnectionState(tdApiUpdateConnectionState)
     }
 
     private fun onUpdateOption(
         updateOption: TdApiUpdateOption
     ) {
-        saveAndBrodcastNewTdApiUpdateOption(updateOption)
-
         val optionValue = updateOption.value
 
         if (updateOption.name == "enabled_proxy_id") {
@@ -293,18 +273,7 @@ class App :
     }
 
 
-    private fun saveAndBrodcastNewTdApiObject(tdApiObject: TdApiObject) {
-        tdLibUpdates.push(tdApiObject)
-    }
-
-
-    private fun saveAndBrodcastNewTdApiUpdate(tdApiUpdate: TdApiUpdate) {
-        tdApiUpdates.push(tdApiUpdate)
-    }
-
-    private fun saveAndBrodcastNewTdApiConnectionState(tdApiConnectionState: TdApiUpdateConnectionState) {
-        tdApiUpdateConnectionStates.push(tdApiConnectionState)
-
+    private fun brodcastNewTdApiConnectionState(tdApiConnectionState: TdApiUpdateConnectionState) {
         tdApiUpdateConnectionStateSendChanels.forEach {
             val couldImmediatelySend = it.offer(tdApiConnectionState)
 
@@ -317,11 +286,9 @@ class App :
         }
     }
 
-    private fun saveAndBrodcastNewTdApiAuthorizationState(
+    private fun brodcastNewTdApiAuthorizationState(
         tdApiAuthorizationState: TdApiUpdateAuthorizationState
     ) {
-        tdApiUpdateAuthorizationStates.push(tdApiAuthorizationState)
-
         tdApiUpdateAuthorizationStateSendChannels.forEach {
             val couldImmediatelySend = it.offer(tdApiAuthorizationState)
 
@@ -343,19 +310,6 @@ class App :
                 )
             }
         }
-    }
-
-    private fun saveAndBrodcastNewTdApiUpdateOption(tdApiUpdateOption: TdApiUpdateOption) {
-        tdApiUpdateOptions.push(tdApiUpdateOption)
-    }
-
-
-    private fun saveAndBrodcastNewTDLibUpdatesException(tdLibUpdatesException: TDLibUpdatesException) {
-        tdLibUpdatesExceptions.push(tdLibUpdatesException)
-    }
-
-    private fun saveAndBrodcastNewTDLibDefaultExceptions(tdLibDefaultException: TDLibDefaultException) {
-        tdLibDefaultExceptions.push(tdLibDefaultException)
     }
 
 
@@ -383,28 +337,5 @@ class App :
         }
         else -> createTGSystemMessage(text)
     }
-
-    ///--- for debug purposes
-    private val tdLibUpdates: IMutableStack<TdApiObject>
-            by inject(tdApiObjectIMutableStackQualifier)
-
-
-    private val tdApiUpdates: IMutableStack<TdApiUpdate>
-            by inject(tdApiUpdatesIMutableStackQualifier)
-
-    private val tdApiUpdateConnectionStates: IMutableStack<TdApiUpdateConnectionState>
-            by inject(tdApiUpdateConnectionStateIMutableStackQualifier)
-
-    private val tdApiUpdateAuthorizationStates: IMutableStack<TdApiUpdateAuthorizationState>
-            by inject(tdApiUpdateAuthorizationStateIMutableStackQualifier)
-
-    private val tdApiUpdateOptions: IMutableStack<TdApiUpdateOption>
-            by inject(tdApiUpdateOptionIMutableStackQualifier)
-
-
-    private val tdLibUpdatesExceptions: IMutableStack<TDLibUpdatesException>
-            by inject(tdLibUpdatesExceptionsIMutableStackQualifier)
-    private val tdLibDefaultExceptions: IMutableStack<TDLibDefaultException>
-            by inject(tdLibDefaultExceptionsIMutableStackQualifier)
 
 }

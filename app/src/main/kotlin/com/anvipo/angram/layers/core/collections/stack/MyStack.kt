@@ -2,6 +2,7 @@ package com.anvipo.angram.layers.core.collections.stack
 
 import java.util.*
 
+@Suppress("unused")
 class MyStack<E> : IStack<E> {
 
     override fun push(item: E): E {
