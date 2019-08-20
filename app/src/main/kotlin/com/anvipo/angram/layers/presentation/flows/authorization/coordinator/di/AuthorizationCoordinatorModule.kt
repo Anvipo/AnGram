@@ -1,6 +1,6 @@
 package com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di
 
-import com.anvipo.angram.layers.application.di.LaunchSystemModule.systemMessageSendChannelQualifier
+import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.systemMessageSendChannelQualifier
 import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationStateBroadcastChannel
 import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationStateSendChannel
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.AuthorizationCoordinatorImpl

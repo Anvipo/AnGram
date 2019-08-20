@@ -18,7 +18,6 @@ import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters
 import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters.HIDE
 import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters.SHOW
 import com.anvipo.angram.layers.data.gateways.tdLib.errors.TdApiError
-import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionState
 import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionStateReceiveChannel
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.interfaces.AuthorizationCoordinatorEnterAuthenticationPhoneNumberRouteEventHandler
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.types.ProxyType
@@ -193,7 +192,9 @@ class EnterAuthenticationPhoneNumberViewModelImpl(
         }
     }
 
-    private suspend fun onReceivedTdApiUpdateConnectionState(receivedTdApiUpdateConnectionState: TdApiUpdateConnectionState) {
+    private suspend fun onReceivedTdApiUpdateConnectionState(
+        receivedTdApiUpdateConnectionState: TdApi.UpdateConnectionState
+    ) {
         withContext(Dispatchers.Main) {
             when (val receivedConnectionState = receivedTdApiUpdateConnectionState.state) {
                 is TdApi.ConnectionStateWaitingForNetwork -> disableNextButton()

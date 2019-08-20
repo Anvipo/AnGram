@@ -1,7 +1,8 @@
 package com.anvipo.angram.layers.data.di
 
 import androidx.room.Room
-import com.anvipo.angram.layers.application.launchSystem.App
+import com.anvipo.angram.layers.application.tdApiHelper.TdApiHelper
+import com.anvipo.angram.layers.application.tdApiHelper.TdApiHelper.tdClientScope
 import com.anvipo.angram.layers.data.gateways.local.db.room.AppDatabase
 import com.anvipo.angram.layers.data.gateways.local.sharedPreferences.SharedPreferencesDAO
 import com.anvipo.angram.layers.data.gateways.local.sharedPreferences.SharedPreferencesDAOImpl
@@ -43,7 +44,7 @@ object GatewaysModule {
 
             scoped<ApplicationTDLibGateway> {
                 ApplicationTDLibGatewayImpl(
-                    tdLibClient = App.tdClientScope.get(),
+                    tdLibClient = tdClientScope.get(),
                     resourceManager = get()
                 )
             }
@@ -55,7 +56,7 @@ object GatewaysModule {
 
             scoped<AuthorizationTDLibGateway> {
                 AuthorizationTDLibGatewayImpl(
-                    tdLibClient = App.tdClientScope.get()
+                    tdLibClient = tdClientScope.get()
                 )
             }
 
@@ -64,27 +65,21 @@ object GatewaysModule {
 
         factory<ProxyTDLibGateway> {
             ProxyTDLibGatewayImpl(
-                tdLibClient = App.tdClientScope.get()
+                tdLibClient = tdClientScope.get()
             )
         }
 
 
         single {
-            val app = androidApplication() as App
-
-            Client.ResultHandler(app::handleTDLibUpdate)
+            Client.ResultHandler(TdApiHelper::handleTDLibUpdate)
         }
 
         single(tdLibUpdatesExceptionHandlerQualifier) {
-            val app = androidApplication() as App
-
-            Client.ExceptionHandler(app::handleTDLibUpdatesException)
+            Client.ExceptionHandler(TdApiHelper::handleTDLibUpdatesException)
         }
 
         single(tdLibDefaultExceptionHandlerQualifier) {
-            val app = androidApplication() as App
-
-            Client.ExceptionHandler(app::handleTDLibDefaultException)
+            Client.ExceptionHandler(TdApiHelper::handleTDLibDefaultException)
         }
 
         single {

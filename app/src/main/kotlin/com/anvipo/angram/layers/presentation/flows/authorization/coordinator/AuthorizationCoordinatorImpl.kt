@@ -4,7 +4,6 @@ import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
 import com.anvipo.angram.layers.core.base.classes.BaseCoordinatorImpl
 import com.anvipo.angram.layers.global.HasCheckAuthorizationStateHelper
 import com.anvipo.angram.layers.global.types.SystemMessageSendChannel
-import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationState
 import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationStateReceiveChannel
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.interfaces.*
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.authorization.AuthorizationScreensFactory
@@ -43,9 +42,9 @@ class AuthorizationCoordinatorImpl(
     }
 
     override suspend fun onReceivedTdApiUpdateAuthorizationState(
-        receivedTdApiUpdateAuthorizationState: TdApiUpdateAuthorizationState
+        receivedUpdateAuthorizationState: TdApi.UpdateAuthorizationState
     ) {
-        when (val authorizationState = receivedTdApiUpdateAuthorizationState.authorizationState) {
+        when (val authorizationState = receivedUpdateAuthorizationState.authorizationState) {
             is TdApi.AuthorizationStateWaitPhoneNumber -> onAuthStateWaitsPhoneNumber()
             is TdApi.AuthorizationStateWaitCode -> onAuthStateWaitsCode(authorizationState)
             is TdApi.AuthorizationStateWaitPassword -> onAuthorizationStateWaitPassword()

@@ -18,7 +18,6 @@ import com.anvipo.angram.layers.core.message.SystemMessage
 import com.anvipo.angram.layers.core.message.SystemMessageType
 import com.anvipo.angram.layers.global.types.EnabledProxyIdReceiveChannel
 import com.anvipo.angram.layers.global.types.SystemMessageReceiveChannel
-import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionState
 import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionStateReceiveChannel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
@@ -158,13 +157,13 @@ class AppViewModelImpl(
     }
 
     private fun onReceivedTdApiUpdateConnectionState(
-        receivedTdApiUpdateConnectionState: TdApiUpdateConnectionState
+        receivedUpdateConnectionState: TdApi.UpdateConnectionState
     ) {
         val connectionState = resourceManager.getString(R.string.connection_state)
         val text: String
         var duration: Int = Snackbar.LENGTH_INDEFINITE
 
-        when (receivedTdApiUpdateConnectionState.state) {
+        when (receivedUpdateConnectionState.state) {
             is TdApi.ConnectionStateWaitingForNetwork -> {
                 text = "$connectionState: waiting for network"
             }
@@ -183,7 +182,7 @@ class AppViewModelImpl(
             }
             else -> {
                 assertionFailure(
-                    "Undefined received td api update connection state = $receivedTdApiUpdateConnectionState"
+                    "Undefined received td api update connection state = $receivedUpdateConnectionState"
                 )
                 text = "$connectionState: ERROR"
             }

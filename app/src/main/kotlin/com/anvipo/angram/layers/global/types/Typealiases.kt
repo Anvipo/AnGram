@@ -17,22 +17,15 @@ typealias SystemMessageReceiveChannel = ReceiveChannel<SystemMessage>
 @UseExperimental(ExperimentalCoroutinesApi::class)
 typealias SystemMessageBroadcastChannel = BroadcastChannel<SystemMessage>
 
-typealias TdApiUpdateAuthorizationStateSendChannel = SendChannel<TdApiUpdateAuthorizationState>
-typealias TdApiUpdateAuthorizationStateReceiveChannel = ReceiveChannel<TdApiUpdateAuthorizationState>
+typealias TdApiUpdateAuthorizationStateSendChannel = SendChannel<TdApi.UpdateAuthorizationState>
+typealias TdApiUpdateAuthorizationStateReceiveChannel = ReceiveChannel<TdApi.UpdateAuthorizationState>
 @UseExperimental(ExperimentalCoroutinesApi::class)
-typealias TdApiUpdateAuthorizationStateBroadcastChannel = BroadcastChannel<TdApiUpdateAuthorizationState>
+typealias TdApiUpdateAuthorizationStateBroadcastChannel = BroadcastChannel<TdApi.UpdateAuthorizationState>
 
-typealias TdApiUpdateConnectionStateSendChannel = SendChannel<TdApiUpdateConnectionState>
-typealias TdApiUpdateConnectionStateReceiveChannel = ReceiveChannel<TdApiUpdateConnectionState>
+typealias TdApiUpdateConnectionStateSendChannel = SendChannel<TdApi.UpdateConnectionState>
+typealias TdApiUpdateConnectionStateReceiveChannel = ReceiveChannel<TdApi.UpdateConnectionState>
 @UseExperimental(ExperimentalCoroutinesApi::class)
-typealias TdApiUpdateConnectionStateBroadcastChannel = BroadcastChannel<TdApiUpdateConnectionState>
-
-typealias TdApiUpdate = TdApi.Update
-typealias TdApiUpdateOption = TdApi.UpdateOption
-typealias TdApiUpdateAuthorizationState = TdApi.UpdateAuthorizationState
-typealias TdApiUpdateConnectionState = TdApi.UpdateConnectionState
-
-typealias TdApiObject = TdApi.Object
+typealias TdApiUpdateConnectionStateBroadcastChannel = BroadcastChannel<TdApi.UpdateConnectionState>
 
 typealias TDLibUpdatesException = Throwable
 typealias TDLibDefaultException = Throwable

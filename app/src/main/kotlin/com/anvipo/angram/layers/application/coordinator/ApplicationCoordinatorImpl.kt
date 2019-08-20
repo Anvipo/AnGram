@@ -6,7 +6,6 @@ import com.anvipo.angram.layers.core.base.classes.BaseCoordinatorImpl
 import com.anvipo.angram.layers.data.gateways.tdLib.application.ApplicationTDLibGateway
 import com.anvipo.angram.layers.global.HasCheckAuthorizationStateHelper
 import com.anvipo.angram.layers.global.types.SystemMessageSendChannel
-import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationState
 import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationStateReceiveChannel
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorScope
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorScopeQualifier
@@ -44,9 +43,9 @@ class ApplicationCoordinatorImpl(
     }
 
     override suspend fun onReceivedTdApiUpdateAuthorizationState(
-        receivedTdApiUpdateAuthorizationState: TdApiUpdateAuthorizationState
+        receivedUpdateAuthorizationState: TdApi.UpdateAuthorizationState
     ) {
-        when (receivedTdApiUpdateAuthorizationState.authorizationState) {
+        when (receivedUpdateAuthorizationState.authorizationState) {
             is TdApi.AuthorizationStateWaitTdlibParameters -> onAuthorizationStateWaitTdlibParameters()
             is TdApi.AuthorizationStateWaitEncryptionKey -> onAuthorizationStateWaitEncryptionKey()
             is TdApi.AuthorizationStateWaitPhoneNumber -> onAuthorizationStateWaitPhoneNumber()
@@ -61,6 +60,7 @@ class ApplicationCoordinatorImpl(
 
 
     private var authorizationFlowHasBeenStarted = false
+    private var mainFlowHasBeenStarted = false
 
     private suspend fun configureApp(): ApplicationCoordinateResult = startApp()
 
@@ -147,9 +147,9 @@ class ApplicationCoordinatorImpl(
             return
         }
 
-        val invokationPlace = object {}.javaClass.enclosingMethod!!.name
-
         authorizationFlowHasBeenStarted = true
+
+        val invokationPlace = object {}.javaClass.enclosingMethod!!.name
 
         authorizationCoordinatorScope = koinScope.getKoin().createScope(
             scopeId = "Authorization flow scope ID",

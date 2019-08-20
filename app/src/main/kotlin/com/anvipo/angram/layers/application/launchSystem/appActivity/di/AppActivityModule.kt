@@ -1,12 +1,12 @@
 package com.anvipo.angram.layers.application.launchSystem.appActivity.di
 
-import com.anvipo.angram.layers.application.di.LaunchSystemModule.enabledProxyIdReceiveChannelQualifier
-import com.anvipo.angram.layers.application.di.LaunchSystemModule.systemMessageReceiveChannelQualifier
-import com.anvipo.angram.layers.application.di.LaunchSystemModule.tdLibClientHasBeenRecreatedReceiveChannelQualifier
-import com.anvipo.angram.layers.application.launchSystem.App
 import com.anvipo.angram.layers.application.launchSystem.appActivity.viewModel.AppViewModel
 import com.anvipo.angram.layers.application.launchSystem.appActivity.viewModel.AppViewModelFactory
 import com.anvipo.angram.layers.application.launchSystem.appActivity.viewModel.AppViewModelImpl
+import com.anvipo.angram.layers.application.tdApiHelper.TdApiHelper.tdClientScope
+import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.enabledProxyIdReceiveChannelQualifier
+import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.systemMessageReceiveChannelQualifier
+import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.tdLibClientHasBeenRecreatedReceiveChannelQualifier
 import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionStateBroadcastChannel
 import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionStateSendChannel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -55,8 +55,8 @@ object AppActivityModule {
 
         factory<AppViewModel> {
             AppViewModelImpl(
-                useCaseFactoryMethod = { App.tdClientScope.get() },
-                coordinatorFactoryMethod = { App.tdClientScope.get() },
+                useCaseFactoryMethod = { tdClientScope.get() },
+                coordinatorFactoryMethod = { tdClientScope.get() },
                 enabledProxyIdReceiveChannel = get(enabledProxyIdReceiveChannelQualifier),
                 systemMessageReceiveChannel = get(systemMessageReceiveChannelQualifier),
                 tdApiUpdateConnectionStateReceiveChannel =

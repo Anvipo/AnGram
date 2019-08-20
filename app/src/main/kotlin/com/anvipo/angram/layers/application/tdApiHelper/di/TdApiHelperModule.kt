@@ -1,4 +1,4 @@
-package com.anvipo.angram.layers.application.di
+package com.anvipo.angram.layers.application.tdApiHelper.di
 
 import com.anvipo.angram.layers.application.launchSystem.appActivity.types.TDLibClientHasBeenRecreatedBroadcastChannel
 import com.anvipo.angram.layers.application.launchSystem.appActivity.types.TDLibClientHasBeenRecreatedSendChannel
@@ -9,12 +9,14 @@ import com.anvipo.angram.layers.global.types.SystemMessageSendChannel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
+import org.drinkless.td.libcore.telegram.TdApi
 import org.koin.core.module.Module
 import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
+import java.util.concurrent.ConcurrentHashMap
 
-object LaunchSystemModule {
+object TdApiHelperModule {
 
     val enabledProxyIdSendChannelQualifier: StringQualifier = named("enabledProxyIdSendChannel")
     val enabledProxyIdReceiveChannelQualifier: StringQualifier = named("enabledProxyIdReceiveChannel")
@@ -31,9 +33,35 @@ object LaunchSystemModule {
     private val tdLibClientHasBeenRecreatedBroadcastChannelQualifier =
         named("tdLibClientHasBeenRecreatedBroadcastChannel")
 
+    val usersMapQualifier: StringQualifier = named("usersMap")
+    val basicGroupsMapQualifier: StringQualifier = named("basicGroupsMap")
+    val superGroupsMapQualifier: StringQualifier = named("superGroupsMap")
+    val secretChatsMapQualifier: StringQualifier = named("secretChatsMap")
+    val chatsMapQualifier: StringQualifier = named("chatsMap")
 
     @ExperimentalCoroutinesApi
     val module: Module = module {
+
+        single(usersMapQualifier) {
+            ConcurrentHashMap<Int, TdApi.User>()
+        }
+
+        single(basicGroupsMapQualifier) {
+            ConcurrentHashMap<Int, TdApi.BasicGroup>()
+        }
+
+        single(superGroupsMapQualifier) {
+            ConcurrentHashMap<Int, TdApi.Supergroup>()
+        }
+
+        single(secretChatsMapQualifier) {
+            ConcurrentHashMap<Int, TdApi.SecretChat>()
+        }
+
+        single(chatsMapQualifier) {
+            ConcurrentHashMap<Long, TdApi.Chat>()
+        }
+
 
         single<EnabledProxyIdSendChannel>(enabledProxyIdSendChannelQualifier) {
             get(enabledProxyIdBroadcastChannelQualifier)
