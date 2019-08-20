@@ -172,6 +172,7 @@ object TdApiHelper : HasLogger, KoinComponent {
             is TdApi.UpdateSupergroup -> onUpdateSupergroup(tdApiUpdate)
             is TdApi.UpdateSecretChat -> onUpdateSecretChat(tdApiUpdate)
             is TdApi.UpdateNewChat -> onUpdateNewChat(tdApiUpdate)
+            is TdApi.UpdateChatTitle -> onUpdateChatTitle(tdApiUpdate)
             else -> {
                 println()
             }
@@ -217,7 +218,8 @@ object TdApiHelper : HasLogger, KoinComponent {
     }
 
     private fun onUpdateUser(updateUser: TdApi.UpdateUser) {
-        users[updateUser.user.id] = updateUser.user
+        val user = updateUser.user
+        users[user.id] = user
     }
 
     private fun onUpdateUserStatus(updateUserStatus: TdApi.UpdateUserStatus) {
@@ -229,15 +231,18 @@ object TdApiHelper : HasLogger, KoinComponent {
     }
 
     private fun onUpdateBasicGroup(updateBasicGroup: TdApi.UpdateBasicGroup) {
-        basicGroups[updateBasicGroup.basicGroup.id] = updateBasicGroup.basicGroup
+        val basicGroup = updateBasicGroup.basicGroup
+        basicGroups[basicGroup.id] = basicGroup
     }
 
     private fun onUpdateSupergroup(updateSupergroup: TdApi.UpdateSupergroup) {
-        superGroups[updateSupergroup.supergroup.id] = updateSupergroup.supergroup
+        val supergroup = updateSupergroup.supergroup
+        superGroups[supergroup.id] = supergroup
     }
 
     private fun onUpdateSecretChat(updateSecretChat: TdApi.UpdateSecretChat) {
-        secretChats[updateSecretChat.secretChat.id] = updateSecretChat.secretChat
+        val secretChat = updateSecretChat.secretChat
+        secretChats[secretChat.id] = secretChat
     }
 
     private fun onUpdateNewChat(updateNewChat: TdApi.UpdateNewChat) {
@@ -256,17 +261,28 @@ object TdApiHelper : HasLogger, KoinComponent {
         order: Long
     ) {
         synchronized(chatList) {
-            if (chat.order != 0L) {
-                val isRemoved = chatList.remove(OrderedChat(chat.order, chat.id))
+            val chatOrder = chat.order
+            val chatId = chat.id
+
+            if (chatOrder != 0L) {
+                val isRemoved = chatList.remove(OrderedChat(chatOrder, chatId))
                 assert(isRemoved)
             }
 
             chat.order = order
 
-            if (chat.order != 0L) {
-                val isAdded = chatList.add(OrderedChat(chat.order, chat.id))
+            if (chatOrder != 0L) {
+                val isAdded = chatList.add(OrderedChat(chatOrder, chatId))
                 assert(isAdded)
             }
+        }
+    }
+
+    private fun onUpdateChatTitle(updateChatTitle: TdApi.UpdateChatTitle) {
+        val chat = chats[updateChatTitle.chatId] ?: return
+
+        synchronized(chat) {
+            chat.title = updateChatTitle.title
         }
     }
 
