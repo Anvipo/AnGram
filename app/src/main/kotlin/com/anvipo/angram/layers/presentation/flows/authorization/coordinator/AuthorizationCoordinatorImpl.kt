@@ -11,11 +11,11 @@ import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.scr
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.types.AuthorizationCoordinateResult
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.types.ProxyType
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.view.navigation.EnterAuthenticationCodeScreenParameters
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.view.navigation.EnterAuthenticationPhoneNumberScreen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.drinkless.td.libcore.telegram.TdApi
 import ru.terrakok.cicerone.Router
-import ru.terrakok.cicerone.android.support.SupportAppScreen
 import kotlin.coroutines.Continuation
 
 class AuthorizationCoordinatorImpl(
@@ -116,7 +116,7 @@ class AuthorizationCoordinatorImpl(
     }
 
 
-    private var enterAuthenticationPhoneNumberScreen: SupportAppScreen? = null
+    private var enterAuthenticationPhoneNumberScreen: EnterAuthenticationPhoneNumberScreen? = null
 
     private var enterAuthenticationCodeScreenHasBeenPresented = false
 

@@ -5,9 +5,7 @@ import org.koin.core.KoinComponent
 import org.koin.core.get
 import ru.terrakok.cicerone.android.support.SupportAppScreen
 
-class EnterPasswordScreen :
-    SupportAppScreen(),
-    KoinComponent {
+class EnterPasswordScreen : SupportAppScreen(), KoinComponent {
 
     override fun getFragment(): Fragment = get<EnterAuthenticationPasswordFragment>()
 
