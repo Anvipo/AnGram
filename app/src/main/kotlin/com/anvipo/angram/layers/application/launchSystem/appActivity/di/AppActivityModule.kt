@@ -1,6 +1,5 @@
 package com.anvipo.angram.layers.application.launchSystem.appActivity.di
 
-import com.anvipo.angram.layers.application.coordinator.di.ApplicationCoordinatorModule.applicationCoordinatorQualifier
 import com.anvipo.angram.layers.application.di.LaunchSystemModule.enabledProxyIdReceiveChannelQualifier
 import com.anvipo.angram.layers.application.di.LaunchSystemModule.systemMessageReceiveChannelQualifier
 import com.anvipo.angram.layers.application.di.LaunchSystemModule.tdLibClientHasBeenRecreatedReceiveChannelQualifier
@@ -57,7 +56,7 @@ object AppActivityModule {
         factory<AppViewModel> {
             AppViewModelImpl(
                 useCaseFactoryMethod = { App.tdClientScope.get() },
-                coordinatorFactoryMethod = { App.tdClientScope.get(applicationCoordinatorQualifier) },
+                coordinatorFactoryMethod = { App.tdClientScope.get() },
                 enabledProxyIdReceiveChannel = get(enabledProxyIdReceiveChannelQualifier),
                 systemMessageReceiveChannel = get(systemMessageReceiveChannelQualifier),
                 tdApiUpdateConnectionStateReceiveChannel =

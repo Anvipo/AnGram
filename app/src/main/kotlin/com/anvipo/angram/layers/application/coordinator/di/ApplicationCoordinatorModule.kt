@@ -7,9 +7,7 @@ import com.anvipo.angram.layers.application.coordinator.coordinatorsFactory.Appl
 import com.anvipo.angram.layers.application.di.LaunchSystemModule.systemMessageSendChannelQualifier
 import com.anvipo.angram.layers.application.launchSystem.App
 import com.anvipo.angram.layers.data.di.GatewaysModule.tdClientScopeQualifier
-import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationState
 import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationStateBroadcastChannel
-import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationStateReceiveChannel
 import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationStateSendChannel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BroadcastChannel
@@ -28,20 +26,20 @@ object ApplicationCoordinatorModule {
     private val tdApiUpdateAuthorizationStateApplicationCoordinatorBroadcastChannelQualifier =
         named("tdApiUpdateAuthorizationStateApplicationCoordinatorBroadcastChannel")
 
-    val applicationCoordinatorQualifier: StringQualifier = named("applicationCoordinator")
-
-    private val applicationCoordinatorsFactoryQualifier = named("applicationCoordinatorsFactory")
 
     @ExperimentalCoroutinesApi
-    @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
+
+        single<ApplicationCoordinatorsFactory> {
+            ApplicationCoordinatorsFactoryImpl
+        }
 
         scope(tdClientScopeQualifier) {
 
-            scoped<ApplicationCoordinator>(applicationCoordinatorQualifier) {
+            scoped<ApplicationCoordinator> {
                 ApplicationCoordinatorImpl(
                     koinScope = this,
-                    coordinatorsFactory = get(applicationCoordinatorsFactoryQualifier),
+                    coordinatorsFactory = get(),
                     tdLibGateway = App.tdClientScope.get(),
                     tdApiUpdateAuthorizationStateReceiveChannel =
                     get(tdApiUpdateAuthorizationStateApplicationCoordinatorReceiveChannelQualifier),
@@ -57,7 +55,7 @@ object ApplicationCoordinatorModule {
         ) {
             get(tdApiUpdateAuthorizationStateApplicationCoordinatorBroadcastChannelQualifier)
         }
-        factory<TdApiUpdateAuthorizationStateReceiveChannel>(
+        factory(
             tdApiUpdateAuthorizationStateApplicationCoordinatorReceiveChannelQualifier
         ) {
             get<TdApiUpdateAuthorizationStateBroadcastChannel>(
@@ -67,12 +65,7 @@ object ApplicationCoordinatorModule {
         single<TdApiUpdateAuthorizationStateBroadcastChannel>(
             tdApiUpdateAuthorizationStateApplicationCoordinatorBroadcastChannelQualifier
         ) {
-            BroadcastChannel<TdApiUpdateAuthorizationState>(Channel.CONFLATED)
-        }
-
-
-        single<ApplicationCoordinatorsFactory>(applicationCoordinatorsFactoryQualifier) {
-            ApplicationCoordinatorsFactoryImpl
+            BroadcastChannel(Channel.CONFLATED)
         }
 
     }
