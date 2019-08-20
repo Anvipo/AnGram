@@ -3,15 +3,18 @@ package com.anvipo.angram.layers.application.tdApiHelper
 import com.anvipo.angram.layers.application.coordinator.di.ApplicationCoordinatorModule.tdApiUpdateAuthorizationStateApplicationCoordinatorSendChannelQualifier
 import com.anvipo.angram.layers.application.launchSystem.appActivity.di.AppActivityModule.tdApiUpdateConnectionStateAppViewModelSendChannelQualifier
 import com.anvipo.angram.layers.application.launchSystem.appActivity.types.TDLibClientHasBeenRecreatedSendChannel
-import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.basicGroupsMapQualifier
+import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.basicGroupsFullInfoQualifier
+import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.basicGroupsQualifier
 import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.chatListQualifier
-import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.chatsMapQualifier
+import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.chatsQualifier
 import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.enabledProxyIdSendChannelQualifier
-import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.secretChatsMapQualifier
-import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.superGroupsMapQualifier
+import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.secretChatsQualifier
+import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.superGroupsQualifier
+import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.supergroupsFullInfoQualifier
 import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.systemMessageSendChannelQualifier
 import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.tdLibClientHasBeenRecreatedSendChannelQualifier
-import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.usersMapQualifier
+import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.usersFullInfoQualifier
+import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.usersQualifier
 import com.anvipo.angram.layers.core.CoreHelpers.IS_IN_DEBUG_MODE
 import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
 import com.anvipo.angram.layers.core.CoreHelpers.logIfShould
@@ -34,6 +37,7 @@ import org.koin.core.scope.Scope
 import java.util.*
 import java.util.concurrent.ConcurrentMap
 import kotlin.collections.set
+
 
 object TdApiHelper : HasLogger, KoinComponent {
 
@@ -154,14 +158,19 @@ object TdApiHelper : HasLogger, KoinComponent {
     private val tdLibClientHasBeenRecreatedSendChannel: TDLibClientHasBeenRecreatedSendChannel
             by inject(tdLibClientHasBeenRecreatedSendChannelQualifier)
 
-    private val users: ConcurrentMap<Int, TdApi.User> by inject(usersMapQualifier)
-    private val basicGroups: ConcurrentMap<Int, TdApi.BasicGroup> by inject(basicGroupsMapQualifier)
-    private val superGroups: ConcurrentMap<Int, TdApi.Supergroup> by inject(superGroupsMapQualifier)
-    private val secretChats: ConcurrentMap<Int, TdApi.SecretChat> by inject(secretChatsMapQualifier)
-    private val chats: ConcurrentMap<Long, TdApi.Chat> by inject(chatsMapQualifier)
+    private val users: ConcurrentMap<Int, TdApi.User> by inject(usersQualifier)
+    private val basicGroups: ConcurrentMap<Int, TdApi.BasicGroup> by inject(basicGroupsQualifier)
+    private val superGroups: ConcurrentMap<Int, TdApi.Supergroup> by inject(superGroupsQualifier)
+    private val secretChats: ConcurrentMap<Int, TdApi.SecretChat> by inject(secretChatsQualifier)
+    private val chats: ConcurrentMap<Long, TdApi.Chat> by inject(chatsQualifier)
     private val chatList: NavigableSet<OrderedChat> by inject(chatListQualifier)
+    private val usersFullInfo: ConcurrentMap<Int, TdApi.UserFullInfo> by inject(usersFullInfoQualifier)
+    private val basicGroupsFullInfo: ConcurrentMap<Int, TdApi.BasicGroupFullInfo> by inject(basicGroupsFullInfoQualifier)
+    private val supergroupsFullInfo: ConcurrentMap<Int, TdApi.SupergroupFullInfo> by inject(supergroupsFullInfoQualifier)
 
     private fun onUpdate(tdApiUpdate: TdApi.Update) {
+        val invokationPlace = object {}.javaClass.enclosingMethod!!.name
+
         when (tdApiUpdate) {
             is TdApi.UpdateAuthorizationState -> onUpdateAuthorizationState(tdApiUpdate)
             is TdApi.UpdateConnectionState -> onUpdateConnectionState(tdApiUpdate)
@@ -173,11 +182,30 @@ object TdApiHelper : HasLogger, KoinComponent {
             is TdApi.UpdateSecretChat -> onUpdateSecretChat(tdApiUpdate)
             is TdApi.UpdateNewChat -> onUpdateNewChat(tdApiUpdate)
             is TdApi.UpdateChatTitle -> onUpdateChatTitle(tdApiUpdate)
-            else -> {
-                println()
-            }
+            is TdApi.UpdateChatPhoto -> onUpdateChatPhoto(tdApiUpdate)
+            is TdApi.UpdateChatLastMessage -> onUpdateChatLastMessage(tdApiUpdate)
+            is TdApi.UpdateChatOrder -> onUpdateChatOrder(tdApiUpdate)
+            is TdApi.UpdateChatIsPinned -> onUpdateChatIsPinned(tdApiUpdate)
+            is TdApi.UpdateChatReadInbox -> onUpdateChatReadInbox(tdApiUpdate)
+            is TdApi.UpdateChatReadOutbox -> onUpdateChatReadOutbox(tdApiUpdate)
+            is TdApi.UpdateChatUnreadMentionCount -> onUpdateChatUnreadMentionCount(tdApiUpdate)
+            is TdApi.UpdateMessageMentionRead -> onUpdateMessageMentionRead(tdApiUpdate)
+            is TdApi.UpdateChatReplyMarkup -> onUpdateChatReplyMarkup(tdApiUpdate)
+            is TdApi.UpdateChatDraftMessage -> onUpdateChatDraftMessage(tdApiUpdate)
+            is TdApi.UpdateChatNotificationSettings -> onUpdateChatNotificationSettings(tdApiUpdate)
+            is TdApi.UpdateChatDefaultDisableNotification -> onUpdateChatDefaultDisableNotification(tdApiUpdate)
+            is TdApi.UpdateChatIsMarkedAsUnread -> onUpdateChatIsMarkedAsUnread(tdApiUpdate)
+            is TdApi.UpdateChatIsSponsored -> onUpdateChatIsSponsored(tdApiUpdate)
+            is TdApi.UpdateUserFullInfo -> onUpdateUserFullInfo(tdApiUpdate)
+            is TdApi.UpdateBasicGroupFullInfo -> onUpdateBasicGroupFullInfo(tdApiUpdate)
+            is TdApi.UpdateSupergroupFullInfo -> onUpdateSupergroupFullInfo(tdApiUpdate)
+            else -> myLog(
+                invokationPlace = invokationPlace,
+                text = "Unhandled tdApiUpdate = $tdApiUpdate"
+            )
         }
     }
+
 
     private fun onUpdateAuthorizationState(updateAuthorizationState: TdApi.UpdateAuthorizationState) {
         brodcastNewTdApiAuthorizationState(updateAuthorizationState)
@@ -284,6 +312,137 @@ object TdApiHelper : HasLogger, KoinComponent {
         synchronized(chat) {
             chat.title = updateChatTitle.title
         }
+    }
+
+    private fun onUpdateChatPhoto(updateChatPhoto: TdApi.UpdateChatPhoto) {
+        val chat = chats[updateChatPhoto.chatId] ?: return
+
+        synchronized(chat) {
+            chat.photo = updateChatPhoto.photo
+        }
+    }
+
+    private fun onUpdateChatLastMessage(updateChatLastMessage: TdApi.UpdateChatLastMessage) {
+        val chat = chats[updateChatLastMessage.chatId] ?: return
+
+        synchronized(chat) {
+            chat.lastMessage = updateChatLastMessage.lastMessage
+            setChatOrder(chat, updateChatLastMessage.order)
+        }
+    }
+
+    private fun onUpdateChatOrder(updateChatOrder: TdApi.UpdateChatOrder) {
+        val chat = chats[updateChatOrder.chatId] ?: return
+
+        synchronized(chat) {
+            setChatOrder(chat, updateChatOrder.order)
+        }
+    }
+
+    private fun onUpdateChatIsPinned(updateChatIsPinned: TdApi.UpdateChatIsPinned) {
+        val chat = chats[updateChatIsPinned.chatId] ?: return
+
+        synchronized(chat) {
+            chat.isPinned = updateChatIsPinned.isPinned
+            setChatOrder(chat, updateChatIsPinned.order)
+        }
+    }
+
+    private fun onUpdateChatReadInbox(updateChatReadInbox: TdApi.UpdateChatReadInbox) {
+        val chat = chats[updateChatReadInbox.chatId] ?: return
+
+        synchronized(chat) {
+            chat.lastReadInboxMessageId = updateChatReadInbox.lastReadInboxMessageId
+            chat.unreadCount = updateChatReadInbox.unreadCount
+        }
+    }
+
+    private fun onUpdateChatReadOutbox(updateChatReadOutbox: TdApi.UpdateChatReadOutbox) {
+        val chat = chats[updateChatReadOutbox.chatId] ?: return
+
+        synchronized(chat) {
+            chat.lastReadOutboxMessageId = updateChatReadOutbox.lastReadOutboxMessageId
+        }
+    }
+
+    private fun onUpdateChatUnreadMentionCount(updateChatUnreadMentionCount: TdApi.UpdateChatUnreadMentionCount) {
+        val chat = chats[updateChatUnreadMentionCount.chatId] ?: return
+
+        synchronized(chat) {
+            chat.unreadMentionCount = updateChatUnreadMentionCount.unreadMentionCount
+        }
+    }
+
+    private fun onUpdateMessageMentionRead(updateMessageMentionRead: TdApi.UpdateMessageMentionRead) {
+        val chat = chats[updateMessageMentionRead.chatId] ?: return
+
+        synchronized(chat) {
+            chat.unreadMentionCount = updateMessageMentionRead.unreadMentionCount
+        }
+    }
+
+    private fun onUpdateChatReplyMarkup(updateChatReplyMarkup: TdApi.UpdateChatReplyMarkup) {
+        val chat = chats[updateChatReplyMarkup.chatId] ?: return
+
+        synchronized(chat) {
+            chat.replyMarkupMessageId = updateChatReplyMarkup.replyMarkupMessageId
+        }
+    }
+
+    private fun onUpdateChatDraftMessage(updateChatDraftMessage: TdApi.UpdateChatDraftMessage) {
+        val chat = chats[updateChatDraftMessage.chatId] ?: return
+
+        synchronized(chat) {
+            chat.draftMessage = updateChatDraftMessage.draftMessage
+            setChatOrder(chat, updateChatDraftMessage.order)
+        }
+    }
+
+    private fun onUpdateChatNotificationSettings(updateChatNotificationSettings: TdApi.UpdateChatNotificationSettings) {
+        val chat = chats[updateChatNotificationSettings.chatId] ?: return
+
+        synchronized(chat) {
+            chat.notificationSettings = updateChatNotificationSettings.notificationSettings
+        }
+    }
+
+    private fun onUpdateChatDefaultDisableNotification(
+        updateChatDefaultDisableNotification: TdApi.UpdateChatDefaultDisableNotification
+    ) {
+        val chat = chats[updateChatDefaultDisableNotification.chatId] ?: return
+
+        synchronized(chat) {
+            chat.defaultDisableNotification = updateChatDefaultDisableNotification.defaultDisableNotification
+        }
+    }
+
+    private fun onUpdateChatIsMarkedAsUnread(updateChatIsMarkedAsUnread: TdApi.UpdateChatIsMarkedAsUnread) {
+        val chat = chats[updateChatIsMarkedAsUnread.chatId] ?: return
+
+        synchronized(chat) {
+            chat.isMarkedAsUnread = updateChatIsMarkedAsUnread.isMarkedAsUnread
+        }
+    }
+
+    private fun onUpdateChatIsSponsored(updateChatIsSponsored: TdApi.UpdateChatIsSponsored) {
+        val chat = chats[updateChatIsSponsored.chatId] ?: return
+
+        synchronized(chat) {
+            chat.isSponsored = updateChatIsSponsored.isSponsored
+            setChatOrder(chat, updateChatIsSponsored.order)
+        }
+    }
+
+    private fun onUpdateUserFullInfo(updateUserFullInfo: TdApi.UpdateUserFullInfo) {
+        usersFullInfo[updateUserFullInfo.userId] = updateUserFullInfo.userFullInfo
+    }
+
+    private fun onUpdateBasicGroupFullInfo(updateBasicGroupFullInfo: TdApi.UpdateBasicGroupFullInfo) {
+        basicGroupsFullInfo[updateBasicGroupFullInfo.basicGroupId] = updateBasicGroupFullInfo.basicGroupFullInfo
+    }
+
+    private fun onUpdateSupergroupFullInfo(updateSupergroupFullInfo: TdApi.UpdateSupergroupFullInfo) {
+        supergroupsFullInfo[updateSupergroupFullInfo.supergroupId] = updateSupergroupFullInfo.supergroupFullInfo
     }
 
 

@@ -35,38 +35,53 @@ object TdApiHelperModule {
     private val tdLibClientHasBeenRecreatedBroadcastChannelQualifier =
         named("tdLibClientHasBeenRecreatedBroadcastChannel")
 
-    val usersMapQualifier: StringQualifier = named("usersMap")
-    val basicGroupsMapQualifier: StringQualifier = named("basicGroupsMap")
-    val superGroupsMapQualifier: StringQualifier = named("superGroupsMap")
-    val secretChatsMapQualifier: StringQualifier = named("secretChatsMap")
-    val chatsMapQualifier: StringQualifier = named("chatsMap")
+    val usersQualifier: StringQualifier = named("users")
+    val basicGroupsQualifier: StringQualifier = named("basicGroups")
+    val superGroupsQualifier: StringQualifier = named("superGroups")
+    val secretChatsQualifier: StringQualifier = named("secretChats")
+    val chatsQualifier: StringQualifier = named("chats")
     val chatListQualifier: StringQualifier = named("chatList")
+    val usersFullInfoQualifier: StringQualifier = named("usersFullInfo")
+    val basicGroupsFullInfoQualifier: StringQualifier = named("basicGroupsFullInfo")
+    val supergroupsFullInfoQualifier: StringQualifier = named("supergroupsFullInfo")
 
     @ExperimentalCoroutinesApi
     val module: Module = module {
 
-        single(usersMapQualifier) {
+        single(usersQualifier) {
             ConcurrentHashMap<Int, TdApi.User>()
         }
 
-        single(basicGroupsMapQualifier) {
+        single(basicGroupsQualifier) {
             ConcurrentHashMap<Int, TdApi.BasicGroup>()
         }
 
-        single(superGroupsMapQualifier) {
+        single(superGroupsQualifier) {
             ConcurrentHashMap<Int, TdApi.Supergroup>()
         }
 
-        single(secretChatsMapQualifier) {
+        single(secretChatsQualifier) {
             ConcurrentHashMap<Int, TdApi.SecretChat>()
         }
 
-        single(chatsMapQualifier) {
+        single(chatsQualifier) {
             ConcurrentHashMap<Long, TdApi.Chat>()
         }
 
         single(chatListQualifier) {
             TreeSet<OrderedChat>()
+        }
+
+        single(usersFullInfoQualifier) {
+            ConcurrentHashMap<Int, TdApi.UserFullInfo>()
+        }
+
+        single(basicGroupsFullInfoQualifier) {
+            ConcurrentHashMap<Int, TdApi.BasicGroupFullInfo>()
+        }
+
+        single(supergroupsFullInfoQualifier) {
+            ConcurrentHashMap<Int, TdApi.SupergroupFullInfo>()
         }
 
 
