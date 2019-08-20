@@ -20,13 +20,19 @@ import java.util.concurrent.ConcurrentHashMap
 
 object TdApiHelperModule {
 
-    val enabledProxyIdSendChannelQualifier: StringQualifier = named("enabledProxyIdSendChannel")
-    val enabledProxyIdReceiveChannelQualifier: StringQualifier = named("enabledProxyIdReceiveChannel")
-    private val enabledProxyIdBroadcastChannelQualifier = named("enabledProxyIdBroadcastChannel")
+    val enabledProxyIdSendChannelQualifier: StringQualifier =
+        named("enabledProxyIdSendChannel")
+    val enabledProxyIdReceiveChannelQualifier: StringQualifier =
+        named("enabledProxyIdReceiveChannel")
+    private val enabledProxyIdBroadcastChannelQualifier =
+        named("enabledProxyIdBroadcastChannel")
 
-    val systemMessageSendChannelQualifier: StringQualifier = named("systemMessageSendChannel")
-    val systemMessageReceiveChannelQualifier: StringQualifier = named("systemMessageReceiveChannel")
-    private val systemMessageBroadcastChannelQualifier = named("systemMessageBroadcastChannel")
+    val systemMessageSendChannelQualifier: StringQualifier =
+        named("systemMessageSendChannel")
+    val systemMessageReceiveChannelQualifier: StringQualifier =
+        named("systemMessageReceiveChannel")
+    private val systemMessageBroadcastChannelQualifier =
+        named("systemMessageBroadcastChannel")
 
     val tdLibClientHasBeenRecreatedReceiveChannelQualifier: StringQualifier =
         named("tdLibClientHasBeenRecreatedReceiveChannel")
@@ -35,53 +41,59 @@ object TdApiHelperModule {
     private val tdLibClientHasBeenRecreatedBroadcastChannelQualifier =
         named("tdLibClientHasBeenRecreatedBroadcastChannel")
 
-    val usersQualifier: StringQualifier = named("users")
-    val basicGroupsQualifier: StringQualifier = named("basicGroups")
-    val superGroupsQualifier: StringQualifier = named("superGroups")
-    val secretChatsQualifier: StringQualifier = named("secretChats")
-    val chatsQualifier: StringQualifier = named("chats")
-    val chatListQualifier: StringQualifier = named("chatList")
-    val usersFullInfoQualifier: StringQualifier = named("usersFullInfo")
-    val basicGroupsFullInfoQualifier: StringQualifier = named("basicGroupsFullInfo")
-    val supergroupsFullInfoQualifier: StringQualifier = named("supergroupsFullInfo")
+    val usersMutableMapQualifier: StringQualifier = named("usersMutableMap")
+    val basicGroupsMutableMapQualifier: StringQualifier = named("basicGroupsMutableMap")
+    val superGroupsMutableMapQualifier: StringQualifier = named("superGroupsMutableMap")
+    val secretChatsMutableMapQualifier: StringQualifier = named("secretChatsMutableMap")
+    val chatsMutableMapQualifier: StringQualifier = named("chatsMutableMap")
+    val chatListQualifier: StringQualifier = named("chatListMutableMap")
+    val usersFullInfoMutableMapQualifier: StringQualifier = named("usersFullInfoMutableMap")
+    val basicGroupsFullInfoMutableMapQualifier: StringQualifier =
+        named("basicGroupsFullInfoMutableMap")
+    val supergroupsFullInfoMutableMapQualifier: StringQualifier =
+        named("supergroupsFullInfoMutableMap")
 
     @ExperimentalCoroutinesApi
     val module: Module = module {
 
-        single(usersQualifier) {
-            ConcurrentHashMap<Int, TdApi.User>()
+        single<MutableMap<Int, TdApi.User>>(usersMutableMapQualifier) {
+            ConcurrentHashMap()
         }
 
-        single(basicGroupsQualifier) {
-            ConcurrentHashMap<Int, TdApi.BasicGroup>()
+        single<MutableMap<Int, TdApi.BasicGroup>>(basicGroupsMutableMapQualifier) {
+            ConcurrentHashMap()
         }
 
-        single(superGroupsQualifier) {
-            ConcurrentHashMap<Int, TdApi.Supergroup>()
+        single<MutableMap<Int, TdApi.Supergroup>>(superGroupsMutableMapQualifier) {
+            ConcurrentHashMap()
         }
 
-        single(secretChatsQualifier) {
-            ConcurrentHashMap<Int, TdApi.SecretChat>()
+        single<MutableMap<Int, TdApi.SecretChat>>(secretChatsMutableMapQualifier) {
+            ConcurrentHashMap()
         }
 
-        single(chatsQualifier) {
-            ConcurrentHashMap<Long, TdApi.Chat>()
+        single<MutableMap<Long, TdApi.Chat>>(chatsMutableMapQualifier) {
+            ConcurrentHashMap()
         }
 
-        single(chatListQualifier) {
-            TreeSet<OrderedChat>()
+        single<MutableSet<OrderedChat>>(chatListQualifier) {
+            TreeSet()
         }
 
-        single(usersFullInfoQualifier) {
-            ConcurrentHashMap<Int, TdApi.UserFullInfo>()
+        single<MutableMap<Int, TdApi.UserFullInfo>>(usersFullInfoMutableMapQualifier) {
+            ConcurrentHashMap()
         }
 
-        single(basicGroupsFullInfoQualifier) {
-            ConcurrentHashMap<Int, TdApi.BasicGroupFullInfo>()
+        single<MutableMap<Int, TdApi.BasicGroupFullInfo>>(
+            basicGroupsFullInfoMutableMapQualifier
+        ) {
+            ConcurrentHashMap()
         }
 
-        single(supergroupsFullInfoQualifier) {
-            ConcurrentHashMap<Int, TdApi.SupergroupFullInfo>()
+        single<MutableMap<Int, TdApi.SupergroupFullInfo>>(
+            supergroupsFullInfoMutableMapQualifier
+        ) {
+            ConcurrentHashMap()
         }
 
 
@@ -89,7 +101,8 @@ object TdApiHelperModule {
             get(enabledProxyIdBroadcastChannelQualifier)
         }
         factory(enabledProxyIdReceiveChannelQualifier) {
-            get<EnabledProxyIdBroadcastChannel>(enabledProxyIdBroadcastChannelQualifier).openSubscription()
+            get<EnabledProxyIdBroadcastChannel>(enabledProxyIdBroadcastChannelQualifier)
+                .openSubscription()
         }
         single<EnabledProxyIdBroadcastChannel>(enabledProxyIdBroadcastChannelQualifier) {
             BroadcastChannel(Channel.CONFLATED)
@@ -100,7 +113,8 @@ object TdApiHelperModule {
             get(systemMessageBroadcastChannelQualifier)
         }
         factory(systemMessageReceiveChannelQualifier) {
-            get<SystemMessageBroadcastChannel>(systemMessageBroadcastChannelQualifier).openSubscription()
+            get<SystemMessageBroadcastChannel>(systemMessageBroadcastChannelQualifier)
+                .openSubscription()
         }
         single<SystemMessageBroadcastChannel>(systemMessageBroadcastChannelQualifier) {
             BroadcastChannel(Channel.CONFLATED)

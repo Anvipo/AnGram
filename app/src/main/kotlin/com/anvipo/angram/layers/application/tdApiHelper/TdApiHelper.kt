@@ -3,18 +3,18 @@ package com.anvipo.angram.layers.application.tdApiHelper
 import com.anvipo.angram.layers.application.coordinator.di.ApplicationCoordinatorModule.tdApiUpdateAuthorizationStateApplicationCoordinatorSendChannelQualifier
 import com.anvipo.angram.layers.application.launchSystem.appActivity.di.AppActivityModule.tdApiUpdateConnectionStateAppViewModelSendChannelQualifier
 import com.anvipo.angram.layers.application.launchSystem.appActivity.types.TDLibClientHasBeenRecreatedSendChannel
-import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.basicGroupsFullInfoQualifier
-import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.basicGroupsQualifier
+import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.basicGroupsFullInfoMutableMapQualifier
+import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.basicGroupsMutableMapQualifier
 import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.chatListQualifier
-import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.chatsQualifier
+import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.chatsMutableMapQualifier
 import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.enabledProxyIdSendChannelQualifier
-import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.secretChatsQualifier
-import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.superGroupsQualifier
-import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.supergroupsFullInfoQualifier
+import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.secretChatsMutableMapQualifier
+import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.superGroupsMutableMapQualifier
+import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.supergroupsFullInfoMutableMapQualifier
 import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.systemMessageSendChannelQualifier
 import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.tdLibClientHasBeenRecreatedSendChannelQualifier
-import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.usersFullInfoQualifier
-import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.usersQualifier
+import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.usersFullInfoMutableMapQualifier
+import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.usersMutableMapQualifier
 import com.anvipo.angram.layers.core.CoreHelpers.IS_IN_DEBUG_MODE
 import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
 import com.anvipo.angram.layers.core.errorMessage
@@ -33,8 +33,6 @@ import org.koin.core.error.*
 import org.koin.core.get
 import org.koin.core.inject
 import org.koin.core.scope.Scope
-import java.util.*
-import java.util.concurrent.ConcurrentMap
 import kotlin.collections.set
 
 
@@ -157,15 +155,15 @@ object TdApiHelper : HasLogger, KoinComponent {
     private val tdLibClientHasBeenRecreatedSendChannel: TDLibClientHasBeenRecreatedSendChannel
             by inject(tdLibClientHasBeenRecreatedSendChannelQualifier)
 
-    private val users: ConcurrentMap<Int, TdApi.User> by inject(usersQualifier)
-    private val basicGroups: ConcurrentMap<Int, TdApi.BasicGroup> by inject(basicGroupsQualifier)
-    private val superGroups: ConcurrentMap<Int, TdApi.Supergroup> by inject(superGroupsQualifier)
-    private val secretChats: ConcurrentMap<Int, TdApi.SecretChat> by inject(secretChatsQualifier)
-    private val chats: ConcurrentMap<Long, TdApi.Chat> by inject(chatsQualifier)
-    private val chatList: NavigableSet<OrderedChat> by inject(chatListQualifier)
-    private val usersFullInfo: ConcurrentMap<Int, TdApi.UserFullInfo> by inject(usersFullInfoQualifier)
-    private val basicGroupsFullInfo: ConcurrentMap<Int, TdApi.BasicGroupFullInfo> by inject(basicGroupsFullInfoQualifier)
-    private val supergroupsFullInfo: ConcurrentMap<Int, TdApi.SupergroupFullInfo> by inject(supergroupsFullInfoQualifier)
+    private val users: MutableMap<Int, TdApi.User> by inject(usersMutableMapQualifier)
+    private val basicGroups: MutableMap<Int, TdApi.BasicGroup> by inject(basicGroupsMutableMapQualifier)
+    private val superGroups: MutableMap<Int, TdApi.Supergroup> by inject(superGroupsMutableMapQualifier)
+    private val secretChats: MutableMap<Int, TdApi.SecretChat> by inject(secretChatsMutableMapQualifier)
+    private val chats: MutableMap<Long, TdApi.Chat> by inject(chatsMutableMapQualifier)
+    private val chatList: MutableSet<OrderedChat> by inject(chatListQualifier)
+    private val usersFullInfo: MutableMap<Int, TdApi.UserFullInfo> by inject(usersFullInfoMutableMapQualifier)
+    private val basicGroupsFullInfo: MutableMap<Int, TdApi.BasicGroupFullInfo> by inject(basicGroupsFullInfoMutableMapQualifier)
+    private val supergroupsFullInfo: MutableMap<Int, TdApi.SupergroupFullInfo> by inject(supergroupsFullInfoMutableMapQualifier)
 
     private fun onUpdate(tdApiUpdate: TdApi.Update) {
         val invokationPlace = object {}.javaClass.enclosingMethod!!.name
