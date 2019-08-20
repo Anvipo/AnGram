@@ -156,14 +156,20 @@ object TdApiHelper : HasLogger, KoinComponent {
             by inject(tdLibClientHasBeenRecreatedSendChannelQualifier)
 
     private val users: MutableMap<Int, TdApi.User> by inject(usersMutableMapQualifier)
-    private val basicGroups: MutableMap<Int, TdApi.BasicGroup> by inject(basicGroupsMutableMapQualifier)
-    private val superGroups: MutableMap<Int, TdApi.Supergroup> by inject(superGroupsMutableMapQualifier)
-    private val secretChats: MutableMap<Int, TdApi.SecretChat> by inject(secretChatsMutableMapQualifier)
+    private val basicGroups: MutableMap<Int, TdApi.BasicGroup>
+            by inject(basicGroupsMutableMapQualifier)
+    private val superGroups: MutableMap<Int, TdApi.Supergroup>
+            by inject(superGroupsMutableMapQualifier)
+    private val secretChats: MutableMap<Int, TdApi.SecretChat>
+            by inject(secretChatsMutableMapQualifier)
     private val chats: MutableMap<Long, TdApi.Chat> by inject(chatsMutableMapQualifier)
     private val chatList: MutableSet<OrderedChat> by inject(chatListQualifier)
-    private val usersFullInfo: MutableMap<Int, TdApi.UserFullInfo> by inject(usersFullInfoMutableMapQualifier)
-    private val basicGroupsFullInfo: MutableMap<Int, TdApi.BasicGroupFullInfo> by inject(basicGroupsFullInfoMutableMapQualifier)
-    private val supergroupsFullInfo: MutableMap<Int, TdApi.SupergroupFullInfo> by inject(supergroupsFullInfoMutableMapQualifier)
+    private val usersFullInfo: MutableMap<Int, TdApi.UserFullInfo>
+            by inject(usersFullInfoMutableMapQualifier)
+    private val basicGroupsFullInfo: MutableMap<Int, TdApi.BasicGroupFullInfo>
+            by inject(basicGroupsFullInfoMutableMapQualifier)
+    private val supergroupsFullInfo: MutableMap<Int, TdApi.SupergroupFullInfo>
+            by inject(supergroupsFullInfoMutableMapQualifier)
 
     private fun onUpdate(tdApiUpdate: TdApi.Update) {
         val invokationPlace = object {}.javaClass.enclosingMethod!!.name
@@ -204,7 +210,9 @@ object TdApiHelper : HasLogger, KoinComponent {
     }
 
 
-    private fun onUpdateAuthorizationState(updateAuthorizationState: TdApi.UpdateAuthorizationState) {
+    private fun onUpdateAuthorizationState(
+        updateAuthorizationState: TdApi.UpdateAuthorizationState
+    ) {
         brodcastNewTdApiAuthorizationState(updateAuthorizationState)
     }
 
@@ -377,7 +385,9 @@ object TdApiHelper : HasLogger, KoinComponent {
         }
     }
 
-    private fun onUpdateMessageMentionRead(updateMessageMentionRead: TdApi.UpdateMessageMentionRead) {
+    private fun onUpdateMessageMentionRead(
+        updateMessageMentionRead: TdApi.UpdateMessageMentionRead
+    ) {
         val chat = chats[updateMessageMentionRead.chatId] ?: return
 
         synchronized(chat) {
@@ -393,7 +403,9 @@ object TdApiHelper : HasLogger, KoinComponent {
         }
     }
 
-    private fun onUpdateChatDraftMessage(updateChatDraftMessage: TdApi.UpdateChatDraftMessage) {
+    private fun onUpdateChatDraftMessage(
+        updateChatDraftMessage: TdApi.UpdateChatDraftMessage
+    ) {
         val chat = chats[updateChatDraftMessage.chatId] ?: return
 
         synchronized(chat) {
@@ -422,7 +434,9 @@ object TdApiHelper : HasLogger, KoinComponent {
         }
     }
 
-    private fun onUpdateChatIsMarkedAsUnread(updateChatIsMarkedAsUnread: TdApi.UpdateChatIsMarkedAsUnread) {
+    private fun onUpdateChatIsMarkedAsUnread(
+        updateChatIsMarkedAsUnread: TdApi.UpdateChatIsMarkedAsUnread
+    ) {
         val chat = chats[updateChatIsMarkedAsUnread.chatId] ?: return
 
         synchronized(chat) {
@@ -443,47 +457,59 @@ object TdApiHelper : HasLogger, KoinComponent {
         usersFullInfo[updateUserFullInfo.userId] = updateUserFullInfo.userFullInfo
     }
 
-    private fun onUpdateBasicGroupFullInfo(updateBasicGroupFullInfo: TdApi.UpdateBasicGroupFullInfo) {
+    private fun onUpdateBasicGroupFullInfo(
+        updateBasicGroupFullInfo: TdApi.UpdateBasicGroupFullInfo
+    ) {
         basicGroupsFullInfo[updateBasicGroupFullInfo.basicGroupId] = updateBasicGroupFullInfo.basicGroupFullInfo
     }
 
-    private fun onUpdateSupergroupFullInfo(updateSupergroupFullInfo: TdApi.UpdateSupergroupFullInfo) {
+    private fun onUpdateSupergroupFullInfo(
+        updateSupergroupFullInfo: TdApi.UpdateSupergroupFullInfo
+    ) {
         supergroupsFullInfo[updateSupergroupFullInfo.supergroupId] = updateSupergroupFullInfo.supergroupFullInfo
     }
 
 
-    private fun brodcastNewTdApiConnectionState(updateConnectionState: TdApi.UpdateConnectionState) {
-        tdApiUpdateConnectionStateSendChanels.forEach {
-            val couldImmediatelySend = it.offer(updateConnectionState)
+    private fun brodcastNewTdApiConnectionState(
+        updateConnectionState: TdApi.UpdateConnectionState
+    ) {
+        synchronized(updateConnectionState) {
+            tdApiUpdateConnectionStateSendChanels.forEach {
+                val couldImmediatelySend = it.offer(updateConnectionState)
 
-            if (!couldImmediatelySend) {
-                myLog(
-                    invokationPlace = object {}.javaClass.enclosingMethod!!.name,
-                    text = "couldImmediatelySend = $couldImmediatelySend"
-                )
+                if (!couldImmediatelySend) {
+                    myLog(
+                        invokationPlace = object {}.javaClass.enclosingMethod!!.name,
+                        text = "couldImmediatelySend = $couldImmediatelySend"
+                    )
+                }
             }
         }
     }
 
-    private fun brodcastNewTdApiAuthorizationState(updateAuthorizationState: TdApi.UpdateAuthorizationState) {
-        tdApiUpdateAuthorizationStateSendChannels.forEach {
-            val couldImmediatelySend = it.offer(updateAuthorizationState)
+    private fun brodcastNewTdApiAuthorizationState(
+        updateAuthorizationState: TdApi.UpdateAuthorizationState
+    ) {
+        synchronized(updateAuthorizationState) {
+            tdApiUpdateAuthorizationStateSendChannels.forEach {
+                val couldImmediatelySend = it.offer(updateAuthorizationState)
 
-            if (!couldImmediatelySend) {
-                myLog(
-                    invokationPlace = object {}.javaClass.enclosingMethod!!.name,
-                    text = "couldImmediatelySend = $couldImmediatelySend"
-                )
+                if (!couldImmediatelySend) {
+                    myLog(
+                        invokationPlace = object {}.javaClass.enclosingMethod!!.name,
+                        text = "couldImmediatelySend = $couldImmediatelySend"
+                    )
+                }
             }
-        }
 
-        if (updateAuthorizationState.authorizationState is TdApi.AuthorizationStateClosed) {
-            tdClientScope.close()
-            tdClientScope = this.getKoin().createScope(
-                scopeId = tdClientScopeID,
-                qualifier = tdClientScopeQualifier
-            )
-            tdLibClientHasBeenRecreatedSendChannel.offer(Unit)
+            if (updateAuthorizationState.authorizationState is TdApi.AuthorizationStateClosed) {
+                tdClientScope.close()
+                tdClientScope = this.getKoin().createScope(
+                    scopeId = tdClientScopeID,
+                    qualifier = tdClientScopeQualifier
+                )
+                tdLibClientHasBeenRecreatedSendChannel.offer(Unit)
+            }
         }
     }
 
