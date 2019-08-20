@@ -2,6 +2,7 @@ package com.anvipo.angram.layers.application.tdApiHelper.di
 
 import com.anvipo.angram.layers.application.launchSystem.appActivity.types.TDLibClientHasBeenRecreatedBroadcastChannel
 import com.anvipo.angram.layers.application.launchSystem.appActivity.types.TDLibClientHasBeenRecreatedSendChannel
+import com.anvipo.angram.layers.global.OrderedChat
 import com.anvipo.angram.layers.global.types.EnabledProxyIdBroadcastChannel
 import com.anvipo.angram.layers.global.types.EnabledProxyIdSendChannel
 import com.anvipo.angram.layers.global.types.SystemMessageBroadcastChannel
@@ -14,6 +15,7 @@ import org.koin.core.module.Module
 import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 object TdApiHelperModule {
@@ -38,6 +40,7 @@ object TdApiHelperModule {
     val superGroupsMapQualifier: StringQualifier = named("superGroupsMap")
     val secretChatsMapQualifier: StringQualifier = named("secretChatsMap")
     val chatsMapQualifier: StringQualifier = named("chatsMap")
+    val chatListQualifier: StringQualifier = named("chatList")
 
     @ExperimentalCoroutinesApi
     val module: Module = module {
@@ -60,6 +63,10 @@ object TdApiHelperModule {
 
         single(chatsMapQualifier) {
             ConcurrentHashMap<Long, TdApi.Chat>()
+        }
+
+        single(chatListQualifier) {
+            TreeSet<OrderedChat>()
         }
 
 

@@ -4,6 +4,7 @@ import com.anvipo.angram.layers.application.coordinator.di.ApplicationCoordinato
 import com.anvipo.angram.layers.application.launchSystem.appActivity.di.AppActivityModule.tdApiUpdateConnectionStateAppViewModelSendChannelQualifier
 import com.anvipo.angram.layers.application.launchSystem.appActivity.types.TDLibClientHasBeenRecreatedSendChannel
 import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.basicGroupsMapQualifier
+import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.chatListQualifier
 import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.chatsMapQualifier
 import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.enabledProxyIdSendChannelQualifier
 import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.secretChatsMapQualifier
@@ -20,6 +21,7 @@ import com.anvipo.angram.layers.core.message.SystemMessage
 import com.anvipo.angram.layers.core.message.SystemMessageType.ALERT
 import com.anvipo.angram.layers.data.di.GatewaysModule.tdClientScopeQualifier
 import com.anvipo.angram.layers.global.GlobalHelpers.createTGSystemMessage
+import com.anvipo.angram.layers.global.OrderedChat
 import com.anvipo.angram.layers.global.types.*
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.tdApiUpdateAuthorizationStateAuthorizationCoordinatorSendChannelQualifier
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.di.EnterAuthenticationPhoneNumberModule.tdApiUpdateConnectionStateEnterAuthenticationPhoneNumberScreenSendChannelQualifier
@@ -29,6 +31,7 @@ import org.koin.core.error.*
 import org.koin.core.get
 import org.koin.core.inject
 import org.koin.core.scope.Scope
+import java.util.*
 import java.util.concurrent.ConcurrentMap
 import kotlin.collections.set
 
@@ -156,6 +159,7 @@ object TdApiHelper : HasLogger, KoinComponent {
     private val superGroups: ConcurrentMap<Int, TdApi.Supergroup> by inject(superGroupsMapQualifier)
     private val secretChats: ConcurrentMap<Int, TdApi.SecretChat> by inject(secretChatsMapQualifier)
     private val chats: ConcurrentMap<Long, TdApi.Chat> by inject(chatsMapQualifier)
+    private val chatList: NavigableSet<OrderedChat> by inject(chatListQualifier)
 
     private fun onUpdate(tdApiUpdate: TdApi.Update) {
         when (tdApiUpdate) {
@@ -243,7 +247,26 @@ object TdApiHelper : HasLogger, KoinComponent {
 
             val order = chat.order
             chat.order = 0
-//            setChatOrder(chat, order)
+            setChatOrder(chat, order)
+        }
+    }
+
+    private fun setChatOrder(
+        chat: TdApi.Chat,
+        order: Long
+    ) {
+        synchronized(chatList) {
+            if (chat.order != 0L) {
+                val isRemoved = chatList.remove(OrderedChat(chat.order, chat.id))
+                assert(isRemoved)
+            }
+
+            chat.order = order
+
+            if (chat.order != 0L) {
+                val isAdded = chatList.add(OrderedChat(chat.order, chat.id))
+                assert(isAdded)
+            }
         }
     }
 
