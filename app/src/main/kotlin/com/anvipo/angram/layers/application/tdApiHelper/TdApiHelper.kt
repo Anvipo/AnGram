@@ -17,7 +17,6 @@ import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.use
 import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.usersQualifier
 import com.anvipo.angram.layers.core.CoreHelpers.IS_IN_DEBUG_MODE
 import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
-import com.anvipo.angram.layers.core.CoreHelpers.logIfShould
 import com.anvipo.angram.layers.core.errorMessage
 import com.anvipo.angram.layers.core.logHelpers.HasLogger
 import com.anvipo.angram.layers.core.message.SystemMessage
@@ -60,7 +59,7 @@ object TdApiHelper : HasLogger, KoinComponent {
         val couldImmediatelySend = systemMessageSendChannel.offer(systemMessage)
 
         if (!couldImmediatelySend) {
-            logIfShould(
+            myLog(
                 invokationPlace = object {}.javaClass.enclosingMethod!!.name,
                 text = "couldImmediatelySend = $couldImmediatelySend"
             )
@@ -224,7 +223,7 @@ object TdApiHelper : HasLogger, KoinComponent {
                     val couldImmediatelySend = enabledProxyIdSendChannel.offer(optionValue.value)
 
                     if (!couldImmediatelySend) {
-                        logIfShould(
+                        myLog(
                             invokationPlace = object {}.javaClass.enclosingMethod!!.name,
                             text = "couldImmediatelySend = $couldImmediatelySend"
                         )
@@ -234,7 +233,7 @@ object TdApiHelper : HasLogger, KoinComponent {
                     val couldImmediatelySend = enabledProxyIdSendChannel.offer(null)
 
                     if (!couldImmediatelySend) {
-                        logIfShould(
+                        myLog(
                             invokationPlace = object {}.javaClass.enclosingMethod!!.name,
                             text = "couldImmediatelySend = $couldImmediatelySend"
                         )
@@ -247,6 +246,7 @@ object TdApiHelper : HasLogger, KoinComponent {
 
     private fun onUpdateUser(updateUser: TdApi.UpdateUser) {
         val user = updateUser.user
+
         users[user.id] = user
     }
 
@@ -260,21 +260,25 @@ object TdApiHelper : HasLogger, KoinComponent {
 
     private fun onUpdateBasicGroup(updateBasicGroup: TdApi.UpdateBasicGroup) {
         val basicGroup = updateBasicGroup.basicGroup
+
         basicGroups[basicGroup.id] = basicGroup
     }
 
     private fun onUpdateSupergroup(updateSupergroup: TdApi.UpdateSupergroup) {
         val supergroup = updateSupergroup.supergroup
+
         superGroups[supergroup.id] = supergroup
     }
 
     private fun onUpdateSecretChat(updateSecretChat: TdApi.UpdateSecretChat) {
         val secretChat = updateSecretChat.secretChat
+
         secretChats[secretChat.id] = secretChat
     }
 
     private fun onUpdateNewChat(updateNewChat: TdApi.UpdateNewChat) {
         val chat = updateNewChat.chat
+
         synchronized(chat) {
             chats[chat.id] = chat
 
@@ -365,7 +369,9 @@ object TdApiHelper : HasLogger, KoinComponent {
         }
     }
 
-    private fun onUpdateChatUnreadMentionCount(updateChatUnreadMentionCount: TdApi.UpdateChatUnreadMentionCount) {
+    private fun onUpdateChatUnreadMentionCount(
+        updateChatUnreadMentionCount: TdApi.UpdateChatUnreadMentionCount
+    ) {
         val chat = chats[updateChatUnreadMentionCount.chatId] ?: return
 
         synchronized(chat) {
@@ -398,7 +404,9 @@ object TdApiHelper : HasLogger, KoinComponent {
         }
     }
 
-    private fun onUpdateChatNotificationSettings(updateChatNotificationSettings: TdApi.UpdateChatNotificationSettings) {
+    private fun onUpdateChatNotificationSettings(
+        updateChatNotificationSettings: TdApi.UpdateChatNotificationSettings
+    ) {
         val chat = chats[updateChatNotificationSettings.chatId] ?: return
 
         synchronized(chat) {
@@ -451,7 +459,7 @@ object TdApiHelper : HasLogger, KoinComponent {
             val couldImmediatelySend = it.offer(updateConnectionState)
 
             if (!couldImmediatelySend) {
-                logIfShould(
+                myLog(
                     invokationPlace = object {}.javaClass.enclosingMethod!!.name,
                     text = "couldImmediatelySend = $couldImmediatelySend"
                 )
@@ -464,7 +472,7 @@ object TdApiHelper : HasLogger, KoinComponent {
             val couldImmediatelySend = it.offer(updateAuthorizationState)
 
             if (!couldImmediatelySend) {
-                logIfShould(
+                myLog(
                     invokationPlace = object {}.javaClass.enclosingMethod!!.name,
                     text = "couldImmediatelySend = $couldImmediatelySend"
                 )
