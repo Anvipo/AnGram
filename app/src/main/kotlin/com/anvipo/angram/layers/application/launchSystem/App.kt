@@ -3,11 +3,14 @@ package com.anvipo.angram.layers.application.launchSystem
 import android.app.Application
 import com.anvipo.angram.layers.application.coordinator.di.ApplicationCoordinatorModule
 import com.anvipo.angram.layers.application.coordinator.di.ApplicationCoordinatorModule.tdApiUpdateAuthorizationStateApplicationCoordinatorSendChannelQualifier
+import com.anvipo.angram.layers.application.di.LaunchSystemModule
+import com.anvipo.angram.layers.application.di.LaunchSystemModule.enabledProxyIdSendChannelQualifier
+import com.anvipo.angram.layers.application.di.LaunchSystemModule.systemMessageSendChannelQualifier
+import com.anvipo.angram.layers.application.di.LaunchSystemModule.tdLibClientHasBeenRecreatedSendChannelQualifier
 import com.anvipo.angram.layers.application.di.SystemInfrastructureModule
 import com.anvipo.angram.layers.application.launchSystem.appActivity.di.AppActivityModule
-import com.anvipo.angram.layers.application.launchSystem.appActivity.di.AppActivityModule.enabledProxyIdSendChannelQualifier
-import com.anvipo.angram.layers.application.launchSystem.appActivity.di.AppActivityModule.systemMessageSendChannelQualifier
-import com.anvipo.angram.layers.application.launchSystem.appActivity.di.AppActivityModule.tdApiUpdateConnectionStateAppPresenterSendChannelQualifier
+import com.anvipo.angram.layers.application.launchSystem.appActivity.di.AppActivityModule.tdApiUpdateConnectionStateAppViewModelSendChannelQualifier
+import com.anvipo.angram.layers.application.launchSystem.appActivity.types.TDLibClientHasBeenRecreatedSendChannel
 import com.anvipo.angram.layers.businessLogic.di.UseCasesModule
 import com.anvipo.angram.layers.core.CoreHelpers.IS_IN_DEBUG_MODE
 import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
@@ -19,7 +22,7 @@ import com.anvipo.angram.layers.core.logHelpers.HasLogger
 import com.anvipo.angram.layers.core.message.SystemMessage
 import com.anvipo.angram.layers.core.message.SystemMessageType
 import com.anvipo.angram.layers.data.di.GatewaysModule
-import com.anvipo.angram.layers.data.di.GatewaysModule.mustRecreateTDLibClientSendChannelQualifier
+import com.anvipo.angram.layers.data.di.GatewaysModule.tdClientScopeQualifier
 import com.anvipo.angram.layers.global.GlobalHelpers.createTGSystemMessage
 import com.anvipo.angram.layers.global.types.*
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule
@@ -35,17 +38,23 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import org.drinkless.td.libcore.telegram.TdApi
 import org.koin.android.ext.android.get
+import org.koin.android.ext.android.getKoin
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 import org.koin.core.error.*
+import org.koin.core.scope.Scope
 
 class App :
     Application(),
     HasLogger,
     HasMyCoroutineBuilders,
     CoroutineScope by UiScope() {
+
+    companion object {
+        lateinit var tdClientScope: Scope
+    }
 
     override val className: String by lazy { this::class.java.name }
 
@@ -68,10 +77,8 @@ class App :
             )
         }
 
-        GatewaysModule.stopCoroutinesWork()
         super.onTerminate()
     }
-
 
     override fun <T : Any> additionalLogging(logObj: T) {
         val systemMessage: SystemMessage = when (logObj) {
@@ -136,6 +143,7 @@ class App :
         )
     }
 
+    private val tdClientScopeID = "TD client scope ID"
 
     private val systemMessageSendChannel: SystemMessageSendChannel
             by inject(systemMessageSendChannelQualifier)
@@ -146,7 +154,7 @@ class App :
     private val tdApiUpdateConnectionStateSendChanels by lazy {
         val tdApiUpdateConnectionStateApplicationPresenterSendChannel =
             get<TdApiUpdateConnectionStateSendChannel>(
-                tdApiUpdateConnectionStateAppPresenterSendChannelQualifier
+                tdApiUpdateConnectionStateAppViewModelSendChannelQualifier
             )
 
         val tdApiUpdateConnectionStateEnterAuthenticationPhoneNumberScreenSendChannel =
@@ -177,9 +185,8 @@ class App :
         )
     }
 
-    private val mustRecreateTDLibClientSendChannel by inject<MustRecreateTDLibClientSendChannel>(
-        mustRecreateTDLibClientSendChannelQualifier
-    )
+    private val tdLibClientHasBeenRecreatedSendChannel: TDLibClientHasBeenRecreatedSendChannel
+            by inject(tdLibClientHasBeenRecreatedSendChannelQualifier)
 
     @ExperimentalCoroutinesApi
     private fun initDI() {
@@ -189,6 +196,7 @@ class App :
             if (IS_IN_DEBUG_MODE) {
                 listOf(
                     SystemInfrastructureModule.module,
+                    LaunchSystemModule.module,
                     UseCasesModule.module,
                     GatewaysModule.module,
                     AppActivityModule.module,
@@ -215,6 +223,11 @@ class App :
             androidContext(this@App)
 
             modules(modules)
+
+            tdClientScope = koin.createScope(
+                scopeId = tdClientScopeID,
+                qualifier = tdClientScopeQualifier
+            )
         }
 
         myLog(invokationPlace = invokationPlace)
@@ -302,14 +315,12 @@ class App :
         }
 
         if (tdApiAuthorizationState.authorizationState is TdApi.AuthorizationStateClosed) {
-            val couldImmediatelySend = mustRecreateTDLibClientSendChannel.offer(MustRecreateTDLibClient)
-
-            if (!couldImmediatelySend) {
-                logIfShould(
-                    invokationPlace = object {}.javaClass.enclosingMethod!!.name,
-                    text = "couldImmediatelySend = $couldImmediatelySend"
-                )
-            }
+            tdClientScope.close()
+            tdClientScope = this.getKoin().createScope(
+                scopeId = tdClientScopeID,
+                qualifier = tdClientScopeQualifier
+            )
+            tdLibClientHasBeenRecreatedSendChannel.offer(Unit)
         }
     }
 

@@ -1,25 +1,19 @@
 package com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di
 
-import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.routerQualifier
-import com.anvipo.angram.layers.application.launchSystem.appActivity.di.AppActivityModule.systemMessageSendChannelQualifier
-import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationState
+import com.anvipo.angram.layers.application.di.LaunchSystemModule.systemMessageSendChannelQualifier
 import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationStateBroadcastChannel
-import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationStateReceiveChannel
 import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationStateSendChannel
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.AuthorizationCoordinatorImpl
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.interfaces.AuthorizationCoordinator
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.authorization.AuthorizationScreensFactory
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.authorization.AuthorizationScreensFactoryImpl
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.di.AddProxyModule.addProxyScreenFactoryQualifier
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.di.EnterAuthenticationCodeModule.enterAuthenticationCodeScreenFactoryQualifier
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.di.EnterAuthenticationPasswordModule.enterAuthenticationPasswordScreenFactoryQualifier
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.di.EnterAuthenticationPhoneNumberModule.enterAuthenticationPhoneNumberScreenFactoryQualifier
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
 import org.koin.core.module.Module
 import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier.named
+import org.koin.core.scope.Scope
 import org.koin.dsl.module
 
 object AuthorizationCoordinatorModule {
@@ -32,10 +26,12 @@ object AuthorizationCoordinatorModule {
         named("tdApiUpdateAuthorizationStateAuthorizationCoordinatorBroadcastChannel")
 
     val authorizationCoordinatorQualifier: StringQualifier = named("authorizationCoordinator")
-    private val authorizationScreensFactoryQualifier: StringQualifier = named("authorizationScreensFactory")
+
+    val authorizationCoordinatorScopeQualifier: StringQualifier = named("authorizationCoordinatorScope")
+
+    lateinit var authorizationCoordinatorScope: Scope
 
     @ExperimentalCoroutinesApi
-    @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
 
         single<TdApiUpdateAuthorizationStateSendChannel>(
@@ -43,7 +39,7 @@ object AuthorizationCoordinatorModule {
         ) {
             get(tdApiUpdateAuthorizationStateAuthorizationCoordinatorBroadcastChannelQualifier)
         }
-        factory<TdApiUpdateAuthorizationStateReceiveChannel>(
+        factory(
             tdApiUpdateAuthorizationStateAuthorizationCoordinatorReceiveChannelQualifier
         ) {
             get<TdApiUpdateAuthorizationStateBroadcastChannel>(
@@ -53,25 +49,29 @@ object AuthorizationCoordinatorModule {
         single<TdApiUpdateAuthorizationStateBroadcastChannel>(
             tdApiUpdateAuthorizationStateAuthorizationCoordinatorBroadcastChannelQualifier
         ) {
-            BroadcastChannel<TdApiUpdateAuthorizationState>(Channel.CONFLATED)
+            BroadcastChannel(Channel.CONFLATED)
         }
 
-        factory<AuthorizationCoordinator>(authorizationCoordinatorQualifier) {
-            AuthorizationCoordinatorImpl(
-                router = get(routerQualifier),
-                screensFactory = get(authorizationScreensFactoryQualifier),
-                tdApiUpdateAuthorizationStateReceiveChannel =
-                get(tdApiUpdateAuthorizationStateAuthorizationCoordinatorReceiveChannelQualifier),
-                systemMessageSendChannel = get(systemMessageSendChannelQualifier)
-            )
+        scope(authorizationCoordinatorScopeQualifier) {
+
+            scoped<AuthorizationCoordinator>(authorizationCoordinatorQualifier) {
+                AuthorizationCoordinatorImpl(
+                    router = get(),
+                    screensFactory = get(),
+                    tdApiUpdateAuthorizationStateReceiveChannel =
+                    get(tdApiUpdateAuthorizationStateAuthorizationCoordinatorReceiveChannelQualifier),
+                    systemMessageSendChannel = get(systemMessageSendChannelQualifier)
+                )
+            }
+
         }
 
-        factory<AuthorizationScreensFactory>(authorizationScreensFactoryQualifier) {
+        single<AuthorizationScreensFactory> {
             AuthorizationScreensFactoryImpl(
-                enterAuthenticationPhoneNumberScreenFactory = get(enterAuthenticationPhoneNumberScreenFactoryQualifier),
-                enterAuthenticationPasswordScreenFactory = get(enterAuthenticationPasswordScreenFactoryQualifier),
-                enterAuthenticationCodeScreenFactory = get(enterAuthenticationCodeScreenFactoryQualifier),
-                addProxyScreenFactory = get(addProxyScreenFactoryQualifier)
+                enterAuthenticationPhoneNumberScreenFactory = get(),
+                enterAuthenticationPasswordScreenFactory = get(),
+                enterAuthenticationCodeScreenFactory = get(),
+                addProxyScreenFactory = get()
             )
         }
 

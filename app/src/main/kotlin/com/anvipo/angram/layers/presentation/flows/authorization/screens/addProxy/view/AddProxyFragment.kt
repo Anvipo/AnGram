@@ -15,13 +15,13 @@ import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters.H
 import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters.SHOW
 import com.anvipo.angram.layers.core.hideWithAnimate
 import com.anvipo.angram.layers.core.showWithAnimate
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.di.AddProxyModule.addProxyViewModelFactoryQualifier
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.types.ProxyType
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.view.recyclerView.headersAndFooters.mtProto.AddMTProtoProxyHeaderData
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.view.recyclerView.row.mtProto.AddMTProtoProxyRow
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.view.recyclerView.section.AddProxySectionListAdapter
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.view.recyclerView.section.mtProto.AddMTProtoProxySection
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.viewModel.AddProxyViewModel
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.viewModel.AddProxyViewModelFactory
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.viewModel.AddProxyViewModelImpl
 import kotlinx.android.synthetic.main.fragment_add_proxy.*
 import org.drinkless.td.libcore.telegram.TdApi
@@ -63,7 +63,7 @@ class AddProxyFragment :
     }
 
     override val viewModel: AddProxyViewModel by viewModels<AddProxyViewModelImpl> {
-        get(addProxyViewModelFactoryQualifier)
+        get<AddProxyViewModelFactory>()
     }
 
     override val actionBarTitle: String

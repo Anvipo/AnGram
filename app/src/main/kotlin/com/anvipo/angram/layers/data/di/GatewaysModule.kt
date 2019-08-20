@@ -1,13 +1,8 @@
 package com.anvipo.angram.layers.data.di
 
 import androidx.room.Room
-import com.anvipo.angram.layers.application.di.SystemInfrastructureModule.resourceManagerQualifier
 import com.anvipo.angram.layers.application.launchSystem.App
-import com.anvipo.angram.layers.core.CoreHelpers.logIfShould
-import com.anvipo.angram.layers.core.IOScope
-import com.anvipo.angram.layers.core.logHelpers.CoroutineExceptionHandlerWithLogger
 import com.anvipo.angram.layers.data.gateways.local.db.room.AppDatabase
-import com.anvipo.angram.layers.data.gateways.local.db.room.proxy.ProxyRoomDAO
 import com.anvipo.angram.layers.data.gateways.local.sharedPreferences.SharedPreferencesDAO
 import com.anvipo.angram.layers.data.gateways.local.sharedPreferences.SharedPreferencesDAOImpl
 import com.anvipo.angram.layers.data.gateways.tdLib.application.ApplicationTDLibGateway
@@ -16,202 +11,93 @@ import com.anvipo.angram.layers.data.gateways.tdLib.authorization.AuthorizationT
 import com.anvipo.angram.layers.data.gateways.tdLib.authorization.AuthorizationTDLibGatewayImpl
 import com.anvipo.angram.layers.data.gateways.tdLib.proxy.ProxyTDLibGateway
 import com.anvipo.angram.layers.data.gateways.tdLib.proxy.ProxyTDLibGatewayImpl
-import com.anvipo.angram.layers.global.types.*
-import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.BroadcastChannel
-import kotlinx.coroutines.channels.Channel
+import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorScopeQualifier
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.drinkless.td.libcore.telegram.Client
 import org.koin.android.ext.koin.androidApplication
-import org.koin.core.KoinComponent
-import org.koin.core.get
 import org.koin.core.module.Module
 import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-object GatewaysModule : CoroutineScope by IOScope(), KoinComponent {
+object GatewaysModule {
 
-    private val appDatabaseQualifier = named("appDatabase")
-
-    val sharedPreferencesGatewayQualifier: StringQualifier = named("sharedPreferencesGateway")
-    val proxyLocalGatewayQualifier: StringQualifier = named("proxyLocalGateway")
-
-    val proxyTDLibGatewayQualifier: StringQualifier = named("proxyTDLibGateway")
-    val applicationTDLibGatewayQualifier: StringQualifier = named("applicationTDLibGateway")
-    val authorizationTDLibGatewayQualifier: StringQualifier = named("authorizationTDLibGateway")
-
-    private val tdClientQualifier = named("tdClient")
+    val tdClientScopeQualifier: StringQualifier = named("tdClientScope")
 
     private val tdLibUpdatesExceptionHandlerQualifier = named("updatesExceptionHandler")
 
-    private val tdLibUpdatesHandlerQualifier = named("handleTDLibUpdate")
-
     private val tdLibDefaultExceptionHandlerQualifier = named("defaultExceptionHandler")
 
-    val mustRecreateTDLibClientSendChannelQualifier: StringQualifier =
-        named("mustRecreateTDLibClientSendChannel")
-    private val mustRecreateTDLibClientReceiveChannelQualifier =
-        named("mustRecreateTDLibClientReceiveChannel")
-    private val mustRecreateTDLibClientBroadcastChannelQualifier =
-        named("mustRecreateTDLibClientBroadcastChannel")
-
-    val tdLibClientHasBeenRecreatedReceiveChannelQualifier: StringQualifier =
-        named("tdLibClientHasBeenRecreatedReceiveChannel")
-    private val tdLibClientHasBeenRecreatedSendChannelQualifier =
-        named("tdLibClientHasBeenRecreatedSendChannel")
-    private val tdLibClientHasBeenRecreatedBroadcastChannelQualifier =
-        named("tdLibClientHasBeenRecreatedBroadcastChannel")
-
-    private val startListenQualifier = named("startListen")
-
-    private var client: Client? = null
-
-    private val mustRecreateTDLibClientReceiveChannel by lazy {
-        get<MustRecreateTDLibClientReceiveChannel>(
-            mustRecreateTDLibClientReceiveChannelQualifier
-        )
-    }
-
-    private val tdLibClientHasBeenRecreatedSendChannel by lazy {
-        get<TDLibClientHasBeenRecreatedSendChannel>(
-            tdLibClientHasBeenRecreatedSendChannelQualifier
-        )
-    }
-
     @ExperimentalCoroutinesApi
-    @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
 
-        single<TDLibClientHasBeenRecreatedSendChannel>(
-            tdLibClientHasBeenRecreatedSendChannelQualifier
-        ) {
-            get(tdLibClientHasBeenRecreatedBroadcastChannelQualifier)
-        }
-        factory<TDLibClientHasBeenRecreatedReceiveChannel>(
-            tdLibClientHasBeenRecreatedReceiveChannelQualifier
-        ) {
-            get<TDLibClientHasBeenRecreatedBroadcastChannel>(
-                tdLibClientHasBeenRecreatedBroadcastChannelQualifier
-            ).openSubscription()
-        }
-        single<TDLibClientHasBeenRecreatedBroadcastChannel>(
-            tdLibClientHasBeenRecreatedBroadcastChannelQualifier
-        ) {
-            BroadcastChannel<TDLibClientHasBeenRecreated>(Channel.CONFLATED)
+        scope(tdClientScopeQualifier) {
+
+            scoped {
+                Client.create(
+                    get(),
+                    get(tdLibUpdatesExceptionHandlerQualifier),
+                    get(tdLibDefaultExceptionHandlerQualifier)
+                )
+            }
+
+            scoped<ApplicationTDLibGateway> {
+                ApplicationTDLibGatewayImpl(
+                    tdLibClient = App.tdClientScope.get(),
+                    resourceManager = get()
+                )
+            }
+
         }
 
-        single<MustRecreateTDLibClientSendChannel>(
-            mustRecreateTDLibClientSendChannelQualifier
-        ) {
-            get(mustRecreateTDLibClientBroadcastChannelQualifier)
-        }
-        factory<MustRecreateTDLibClientReceiveChannel>(
-            mustRecreateTDLibClientReceiveChannelQualifier
-        ) {
-            get<MustRecreateTDLibClientBroadcastChannel>(
-                mustRecreateTDLibClientBroadcastChannelQualifier
-            ).openSubscription()
-        }
-        single<MustRecreateTDLibClientBroadcastChannel>(
-            mustRecreateTDLibClientBroadcastChannelQualifier
-        ) {
-            BroadcastChannel<MustRecreateTDLibClient>(Channel.CONFLATED)
+
+        scope(authorizationCoordinatorScopeQualifier) {
+
+            scoped<AuthorizationTDLibGateway> {
+                AuthorizationTDLibGatewayImpl(
+                    tdLibClient = App.tdClientScope.get()
+                )
+            }
+
         }
 
-        // ----------------------------- TG -------------------------
 
-        single<Client.ResultHandler>(tdLibUpdatesHandlerQualifier) {
+        factory<ProxyTDLibGateway> {
+            ProxyTDLibGatewayImpl(
+                tdLibClient = App.tdClientScope.get()
+            )
+        }
+
+
+        single {
             val app = androidApplication() as App
 
             Client.ResultHandler(app::handleTDLibUpdate)
         }
 
-        single<Client.ExceptionHandler>(tdLibUpdatesExceptionHandlerQualifier) {
+        single(tdLibUpdatesExceptionHandlerQualifier) {
             val app = androidApplication() as App
 
             Client.ExceptionHandler(app::handleTDLibUpdatesException)
         }
 
-        single<Client.ExceptionHandler>(tdLibDefaultExceptionHandlerQualifier) {
+        single(tdLibDefaultExceptionHandlerQualifier) {
             val app = androidApplication() as App
 
             Client.ExceptionHandler(app::handleTDLibDefaultException)
         }
 
-        single<Unit>(startListenQualifier) {
-            val invokationPlace = object {}.javaClass.enclosingMethod!!.name
-
-            val coroutineExceptionHandlerWithLogger =
-                CoroutineExceptionHandlerWithLogger { _, throwable ->
-                    logIfShould(
-                        text = throwable.message,
-                        invokationPlace = invokationPlace
-                    )
-                }
-
-            launch(coroutineExceptionHandlerWithLogger) {
-                for (mustRecreateTDLibClientPing in mustRecreateTDLibClientReceiveChannel) {
-                    client = Client.create(
-                        get(tdLibUpdatesHandlerQualifier),
-                        get(tdLibUpdatesExceptionHandlerQualifier),
-                        get(tdLibDefaultExceptionHandlerQualifier)
-                    )
-
-                    tdLibClientHasBeenRecreatedSendChannel.send(TDLibClientHasBeenRecreated)
-                }
-            }
+        single {
+            get<AppDatabase>().proxyDao
         }
 
-        factory<Client>(tdClientQualifier) {
-            if (client == null) {
-                // for first app's launch
-                client = Client.create(
-                    get(tdLibUpdatesHandlerQualifier),
-                    get(tdLibUpdatesExceptionHandlerQualifier),
-                    get(tdLibDefaultExceptionHandlerQualifier)
-                )
-
-                get<Unit>(startListenQualifier)
-            }
-
-            client!!
-        }
-
-        // ----------------------------- TG -------------------------
-
-
-        // ---------------------------- GATEWAYS ---------------------
-
-        factory<ApplicationTDLibGateway>(applicationTDLibGatewayQualifier) {
-            ApplicationTDLibGatewayImpl(
-                tdLibClient = get(tdClientQualifier),
-                resourceManager = get(resourceManagerQualifier)
-            )
-        }
-
-        factory<AuthorizationTDLibGateway>(authorizationTDLibGatewayQualifier) {
-            AuthorizationTDLibGatewayImpl(
-                tdLibClient = get(tdClientQualifier)
-            )
-        }
-
-        factory<ProxyTDLibGateway>(proxyTDLibGatewayQualifier) {
-            ProxyTDLibGatewayImpl(
-                tdLibClient = get(tdClientQualifier)
-            )
-        }
-
-        single<ProxyRoomDAO>(proxyLocalGatewayQualifier) {
-            get<AppDatabase>(appDatabaseQualifier).proxyDao
-        }
-
-        single<SharedPreferencesDAO>(sharedPreferencesGatewayQualifier) {
+        single<SharedPreferencesDAO> {
             SharedPreferencesDAOImpl(
-                resourceManager = get(resourceManagerQualifier)
+                resourceManager = get()
             )
         }
 
-        single<AppDatabase>(appDatabaseQualifier) {
+        single {
             Room
                 .databaseBuilder(
                     androidApplication().applicationContext,
@@ -221,22 +107,6 @@ object GatewaysModule : CoroutineScope by IOScope(), KoinComponent {
                 .build()
         }
 
-    }
-
-    fun stopCoroutinesWork() {
-        val methodName = object {}.javaClass.enclosingMethod!!.name
-        val cancellationException = CancellationException("${this::class.java.name}::$methodName")
-
-        mustRecreateTDLibClientReceiveChannel.cancel(cancellationException)
-
-        try {
-            cancel(cancellationException)
-        } catch (exception: Exception) {
-            logIfShould(
-                invokationPlace = methodName,
-                text = "exception = $exception"
-            )
-        }
     }
 
 }

@@ -5,6 +5,7 @@ import com.anvipo.angram.layers.application.coordinator.ApplicationCoordinator
 import com.anvipo.angram.layers.application.launchSystem.appActivity.types.SetNavigatorEventParameters
 import com.anvipo.angram.layers.application.launchSystem.appActivity.types.SetNavigatorEventParameters.REMOVE
 import com.anvipo.angram.layers.application.launchSystem.appActivity.types.SetNavigatorEventParameters.SET
+import com.anvipo.angram.layers.application.launchSystem.appActivity.types.TDLibClientHasBeenRecreatedReceiveChannel
 import com.anvipo.angram.layers.businessLogic.useCases.app.AppUseCase
 import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
 import com.anvipo.angram.layers.core.ResourceManager
@@ -15,14 +16,17 @@ import com.anvipo.angram.layers.core.events.parameters.ShowAlertMessageEventPara
 import com.anvipo.angram.layers.core.events.parameters.ShowToastMessageEventParameters
 import com.anvipo.angram.layers.core.message.SystemMessage
 import com.anvipo.angram.layers.core.message.SystemMessageType
-import com.anvipo.angram.layers.global.types.*
+import com.anvipo.angram.layers.global.types.EnabledProxyIdReceiveChannel
+import com.anvipo.angram.layers.global.types.SystemMessageReceiveChannel
+import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionState
+import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionStateReceiveChannel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.drinkless.td.libcore.telegram.TdApi
 
 class AppViewModelImpl(
-    private val useCase: AppUseCase,
+    private val useCaseFactoryMethod: () -> AppUseCase,
     private val coordinatorFactoryMethod: () -> ApplicationCoordinator,
     private val enabledProxyIdReceiveChannel: EnabledProxyIdReceiveChannel,
     private val systemMessageReceiveChannel: SystemMessageReceiveChannel,
@@ -60,7 +64,7 @@ class AppViewModelImpl(
             )
 
             withContext(Dispatchers.IO) {
-                for (tdLibClientHasBeenRecreatedPing in tdLibClientHasBeenRecreatedReceiveChannel) {
+                for (ping in tdLibClientHasBeenRecreatedReceiveChannel) {
                     onColdStart()
                 }
             }
@@ -196,6 +200,8 @@ class AppViewModelImpl(
 
     private suspend fun onReceivedEnabledProxyId(receivedEnabledProxyId: Int?) {
         withContext(Dispatchers.IO) {
+            val useCase = useCaseFactoryMethod()
+
             useCase.saveEnabledProxyId(receivedEnabledProxyId)
         }
     }

@@ -10,58 +10,54 @@ import com.anvipo.angram.layers.businessLogic.useCases.flows.authorization.enter
 import com.anvipo.angram.layers.businessLogic.useCases.flows.authorization.enterAuthenticationPassword.EnterAuthenticationPasswordUseCaseImpl
 import com.anvipo.angram.layers.businessLogic.useCases.flows.authorization.enterAuthenticationPhoneNumber.EnterAuthenticationPhoneNumberUseCase
 import com.anvipo.angram.layers.businessLogic.useCases.flows.authorization.enterAuthenticationPhoneNumber.EnterAuthenticationPhoneNumberUseCaseImpl
-import com.anvipo.angram.layers.data.di.GatewaysModule.authorizationTDLibGatewayQualifier
-import com.anvipo.angram.layers.data.di.GatewaysModule.proxyLocalGatewayQualifier
-import com.anvipo.angram.layers.data.di.GatewaysModule.proxyTDLibGatewayQualifier
-import com.anvipo.angram.layers.data.di.GatewaysModule.sharedPreferencesGatewayQualifier
+import com.anvipo.angram.layers.data.di.GatewaysModule.tdClientScopeQualifier
+import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorScope
+import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorScopeQualifier
 import org.koin.core.module.Module
-import org.koin.core.qualifier.StringQualifier
-import org.koin.core.qualifier.named
 import org.koin.dsl.module
-
 
 object UseCasesModule {
 
-    val appUseCaseQualifier: StringQualifier = named("appUseCase")
-
-    val enterAuthenticationPhoneNumberUseCaseQualifier: StringQualifier =
-        named("enterAuthenticationPhoneNumberUseCase")
-    val enterAuthenticationCodeUseCaseQualifier: StringQualifier = named("enterAuthenticationCodeUseCase")
-    val enterAuthenticationPasswordUseCaseQualifier: StringQualifier =
-        named("enterAuthenticationPasswordUseCase")
-
-    val addProxyUseCaseQualifier: StringQualifier = named("addProxyUseCase")
-
     val module: Module = module {
 
-        factory<AppUseCase>(appUseCaseQualifier) {
-            AppUseCaseImpl(
-                sharedPreferencesGateway = get(sharedPreferencesGatewayQualifier)
-            )
+        scope(tdClientScopeQualifier) {
+
+            scoped<AppUseCase> {
+                AppUseCaseImpl(
+                    sharedPreferencesGateway = get()
+                )
+            }
+
         }
 
-        factory<EnterAuthenticationPhoneNumberUseCase>(enterAuthenticationPhoneNumberUseCaseQualifier) {
-            EnterAuthenticationPhoneNumberUseCaseImpl(
-                authorizationTDLibGateway = get(authorizationTDLibGatewayQualifier)
-            )
+
+        scope(authorizationCoordinatorScopeQualifier) {
+
+            scoped<EnterAuthenticationPhoneNumberUseCase> {
+                EnterAuthenticationPhoneNumberUseCaseImpl(
+                    authorizationTDLibGateway = authorizationCoordinatorScope.get()
+                )
+            }
+
+            scoped<EnterAuthenticationCodeUseCase> {
+                EnterAuthenticationCodeUseCaseImpl(
+                    tdLibGateway = authorizationCoordinatorScope.get()
+                )
+            }
+
+            scoped<EnterAuthenticationPasswordUseCase> {
+                EnterAuthenticationPasswordUseCaseImpl(
+                    tdLibGateway = authorizationCoordinatorScope.get()
+                )
+            }
+
         }
 
-        factory<EnterAuthenticationCodeUseCase>(enterAuthenticationCodeUseCaseQualifier) {
-            EnterAuthenticationCodeUseCaseImpl(
-                tdLibGateway = get(authorizationTDLibGatewayQualifier)
-            )
-        }
 
-        factory<EnterAuthenticationPasswordUseCase>(enterAuthenticationPasswordUseCaseQualifier) {
-            EnterAuthenticationPasswordUseCaseImpl(
-                tdLibGateway = get(authorizationTDLibGatewayQualifier)
-            )
-        }
-
-        factory<AddProxyUseCase>(addProxyUseCaseQualifier) {
+        factory<AddProxyUseCase> {
             AddProxyUseCaseImpl(
-                tdLibGateway = get(proxyTDLibGatewayQualifier),
-                dbGateway = get(proxyLocalGatewayQualifier)
+                tdLibGateway = get(),
+                dbGateway = get()
             )
         }
 
