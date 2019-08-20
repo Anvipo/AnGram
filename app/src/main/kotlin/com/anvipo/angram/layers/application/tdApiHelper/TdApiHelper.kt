@@ -134,7 +134,6 @@ object TdApiHelper : HasLogger, KoinComponent {
     private val tdLibClientHasBeenRecreatedSendChannel: TDLibClientHasBeenRecreatedSendChannel
             by inject(tdLibClientHasBeenRecreatedSendChannelQualifier)
 
-    private val users: MutableMap<Int, TdApi.User> by inject(usersMutableMapQualifier)
     private val basicGroups: MutableMap<Int, TdApi.BasicGroup>
             by inject(basicGroupsMutableMapQualifier)
     private val superGroups: MutableMap<Int, TdApi.Supergroup>
@@ -142,6 +141,8 @@ object TdApiHelper : HasLogger, KoinComponent {
     private val secretChats: MutableMap<Int, TdApi.SecretChat>
             by inject(secretChatsMutableMapQualifier)
     private val chats: MutableMap<Long, TdApi.Chat> by inject(chatsMutableMapQualifier)
+
+    private val users: MutableMap<Int, TdApi.User> by inject(usersMutableMapQualifier)
     private val chatList: MutableSet<OrderedChat> by inject(chatListQualifier)
     private val usersFullInfo: MutableMap<Int, TdApi.UserFullInfo>
             by inject(usersFullInfoMutableMapQualifier)

@@ -16,6 +16,28 @@ class ChatListFragment : BaseFragment() {
         fun createNewInstance(): ChatListFragment = ChatListFragment()
     }
 
+    override fun setupClickListeners() {
+        super.setupClickListeners()
+        chat_list_bottom_navigation_view.setOnNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.action_private_chats -> {
+                    println()
+                }
+                R.id.action_basic_groups -> {
+                    println()
+                }
+                R.id.action_supergroups -> {
+                    println()
+                }
+                R.id.action_secret_chats -> {
+                    println()
+                }
+            }
+
+            return@setOnNavigationItemSelectedListener true
+        }
+    }
+
     override val viewModel: ChatListViewModel by viewModels<ChatListViewModelImpl> {
         get<ChatListViewModelFactory>()
     }
