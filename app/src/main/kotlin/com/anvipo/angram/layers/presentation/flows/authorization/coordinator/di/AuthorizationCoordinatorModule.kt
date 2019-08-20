@@ -1,9 +1,7 @@
 package com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di
 
 import com.anvipo.angram.layers.application.di.LaunchSystemModule.systemMessageSendChannelQualifier
-import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationState
 import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationStateBroadcastChannel
-import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationStateReceiveChannel
 import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationStateSendChannel
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.AuthorizationCoordinatorImpl
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.interfaces.AuthorizationCoordinator
@@ -31,14 +29,12 @@ object AuthorizationCoordinatorModule {
         named("tdApiUpdateAuthorizationStateAuthorizationCoordinatorBroadcastChannel")
 
     val authorizationCoordinatorQualifier: StringQualifier = named("authorizationCoordinator")
-    private val authorizationScreensFactoryQualifier: StringQualifier = named("authorizationScreensFactory")
 
     val authorizationCoordinatorScopeQualifier: StringQualifier = named("authorizationCoordinatorScope")
 
     lateinit var authorizationCoordinatorScope: Scope
 
     @ExperimentalCoroutinesApi
-    @Suppress("RemoveExplicitTypeArguments")
     val module: Module = module {
 
         single<TdApiUpdateAuthorizationStateSendChannel>(
@@ -46,7 +42,7 @@ object AuthorizationCoordinatorModule {
         ) {
             get(tdApiUpdateAuthorizationStateAuthorizationCoordinatorBroadcastChannelQualifier)
         }
-        factory<TdApiUpdateAuthorizationStateReceiveChannel>(
+        factory(
             tdApiUpdateAuthorizationStateAuthorizationCoordinatorReceiveChannelQualifier
         ) {
             get<TdApiUpdateAuthorizationStateBroadcastChannel>(
@@ -56,7 +52,7 @@ object AuthorizationCoordinatorModule {
         single<TdApiUpdateAuthorizationStateBroadcastChannel>(
             tdApiUpdateAuthorizationStateAuthorizationCoordinatorBroadcastChannelQualifier
         ) {
-            BroadcastChannel<TdApiUpdateAuthorizationState>(Channel.CONFLATED)
+            BroadcastChannel(Channel.CONFLATED)
         }
 
         scope(authorizationCoordinatorScopeQualifier) {
@@ -64,7 +60,7 @@ object AuthorizationCoordinatorModule {
             scoped<AuthorizationCoordinator>(authorizationCoordinatorQualifier) {
                 AuthorizationCoordinatorImpl(
                     router = get(),
-                    screensFactory = get(authorizationScreensFactoryQualifier),
+                    screensFactory = get(),
                     tdApiUpdateAuthorizationStateReceiveChannel =
                     get(tdApiUpdateAuthorizationStateAuthorizationCoordinatorReceiveChannelQualifier),
                     systemMessageSendChannel = get(systemMessageSendChannelQualifier)
@@ -73,7 +69,7 @@ object AuthorizationCoordinatorModule {
 
         }
 
-        single<AuthorizationScreensFactory>(authorizationScreensFactoryQualifier) {
+        single<AuthorizationScreensFactory> {
             AuthorizationScreensFactoryImpl(
                 enterAuthenticationPhoneNumberScreenFactory = get(),
                 enterAuthenticationPasswordScreenFactory = get(enterAuthenticationPasswordScreenFactoryQualifier),
