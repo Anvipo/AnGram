@@ -17,7 +17,6 @@ import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters.S
 import com.anvipo.angram.layers.core.logHelpers.HasLogger
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
@@ -27,6 +26,10 @@ abstract class BaseViewModelImpl :
     BaseViewModel,
     HasMyCoroutineBuilders,
     HasLogger {
+
+    final override val className: String = this::class.java.name
+
+    final override val coroutineContext: CoroutineContext = viewModelScope.coroutineContext
 
     final override val showViewEvents: SingleLiveEvent<ShowViewEventParameters> =
         SingleLiveEvent()
@@ -42,9 +45,6 @@ abstract class BaseViewModelImpl :
         SingleLiveEvent()
     final override val showToastMessageEvents: SingleLiveEvent<ShowToastMessageEventParameters> =
         SingleLiveEvent()
-
-    final override val className: String = this::class.java.name
-    final override val coroutineContext: CoroutineContext = viewModelScope.coroutineContext
 
     final override fun myLaunchExceptionHandler(throwable: Throwable) {
         val errorMessage = throwable.errorMessage
@@ -65,13 +65,12 @@ abstract class BaseViewModelImpl :
         val methodName = object {}.javaClass.enclosingMethod!!.name
         val cancellationException = CancellationException("$className::$methodName")
 
-        channelsThatWillBeUnsubscribedInOnDestroy.forEach { it.cancel(cancellationException) }
         try {
-            cancel(cancellationException)
-        } catch (exception: Exception) {
+            channelsThatWillBeUnsubscribedInOnDestroy.forEach { it.cancel(cancellationException) }
+        } catch (e: Exception) {
             myLog(
                 invokationPlace = methodName,
-                text = "exception = $exception"
+                text = "exception = $e"
             )
         }
 

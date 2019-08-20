@@ -57,6 +57,7 @@ class AppViewModelImpl(
             }
 
             val applicationFlowCoordinateResult = applicationCoordinator.start()
+            applicationCoordinator.freeAllResources()
 
             myLog(
                 invokationPlace = invokationPlace,

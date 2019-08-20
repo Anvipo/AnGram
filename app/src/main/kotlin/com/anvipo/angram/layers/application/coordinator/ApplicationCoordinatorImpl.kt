@@ -147,18 +147,16 @@ class ApplicationCoordinatorImpl(
             return
         }
 
+        val invokationPlace = object {}.javaClass.enclosingMethod!!.name
+
+        authorizationFlowHasBeenStarted = true
+
         authorizationCoordinatorScope = koinScope.getKoin().createScope(
             scopeId = "Authorization flow scope ID",
             qualifier = authorizationCoordinatorScopeQualifier
         )
 
-        val invokationPlace = object {}.javaClass.enclosingMethod!!.name
-
-        val authorizationCoordinator = withContext(Dispatchers.Default) {
-            coordinatorsFactory.createAuthorizationCoordinator()
-        }
-
-        authorizationFlowHasBeenStarted = true
+        val authorizationCoordinator = coordinatorsFactory.createAuthorizationCoordinator()
 
         val authorizationFlowCoordinateResult = coordinateTo(authorizationCoordinator)
 

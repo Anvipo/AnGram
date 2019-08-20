@@ -49,22 +49,25 @@ abstract class BaseCoordinatorImpl<CoordinateResultType>(
         additionalLogging(throwable.errorMessage)
     }
 
+    override fun freeAllResources() {
+        cancelAllJobs()
+    }
+
     suspend fun <T> coordinateTo(
         coordinator: BaseCoordinator<T>
-    ): T {
+    ): T = withContext(Dispatchers.Main) {
         withContext(Dispatchers.Default) {
             store(coordinator)
         }
 
-        val coordinateResult = withContext(Dispatchers.Main) { coordinator.start() }
+        val coordinateResult = coordinator.start()
 
         withContext(Dispatchers.Default) {
+            coordinator.freeAllResources()
             free(coordinator)
         }
 
-        cancelAllJobs()
-
-        return coordinateResult
+        coordinateResult
     }
 
 

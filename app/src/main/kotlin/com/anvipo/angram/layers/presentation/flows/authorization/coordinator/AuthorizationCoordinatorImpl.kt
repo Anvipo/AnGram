@@ -128,20 +128,9 @@ class AuthorizationCoordinatorImpl(
     private suspend fun onAuthStateWaitsCode(
         currentAuthorizationState: TdApi.AuthorizationStateWaitCode
     ) {
-        val (
-            expectedCodeLength,
-            enteredPhoneNumber,
-            registrationRequired,
-            termsOfServiceText
-        ) = withContext(Dispatchers.Default) {
-            prepareParametersForEnterAuthCodeScreen(currentAuthorizationState)
-        }
-
         showEnterAuthenticationCodeScreen(
-            expectedCodeLength = expectedCodeLength,
-            enteredPhoneNumber = enteredPhoneNumber,
-            registrationRequired = registrationRequired,
-            termsOfServiceText = termsOfServiceText
+            enterAuthenticationCodeScreenParameters =
+            prepareParametersForEnterAuthCodeScreen(currentAuthorizationState)
         )
     }
 
@@ -175,10 +164,7 @@ class AuthorizationCoordinatorImpl(
     }
 
     private suspend fun showEnterAuthenticationCodeScreen(
-        expectedCodeLength: Int = 5,
-        enteredPhoneNumber: String = "",
-        registrationRequired: Boolean,
-        termsOfServiceText: String
+        enterAuthenticationCodeScreenParameters: EnterAuthenticationCodeScreenParameters
     ) {
         myLog(
             invokationPlace = object {}.javaClass.enclosingMethod!!.name
@@ -188,17 +174,6 @@ class AuthorizationCoordinatorImpl(
             // TODO: set new parameters in enter authentication code screen
             return
         }
-
-        val enterAuthenticationCodeScreenParameters =
-            withContext(Dispatchers.Default) {
-                EnterAuthenticationCodeScreenParameters(
-                    expectedCodeLength = expectedCodeLength,
-                    enteredPhoneNumber = enteredPhoneNumber,
-                    registrationRequired = registrationRequired,
-                    termsOfServiceText = termsOfServiceText,
-                    shouldShowBackButton = true
-                )
-            }
 
         val enterAuthenticationCodeScreen = withContext(Dispatchers.Default) {
             screensFactory
@@ -268,16 +243,9 @@ class AuthorizationCoordinatorImpl(
     }
 
 
-    private data class EnterAuthCodeScreenParameters(
-        val expectedCodeLength: Int,
-        val enteredPhoneNumber: String,
-        val registrationRequired: Boolean,
-        val termsOfServiceText: String
-    )
-
     private fun prepareParametersForEnterAuthCodeScreen(
         currentAuthorizationState: TdApi.AuthorizationStateWaitCode
-    ): EnterAuthCodeScreenParameters {
+    ): EnterAuthenticationCodeScreenParameters {
         val codeInfo = currentAuthorizationState.codeInfo
 
         val expectedCodeLength: Int = when (val codeInfoType = codeInfo.type) {
@@ -304,7 +272,7 @@ class AuthorizationCoordinatorImpl(
             ""
         }
 
-        return EnterAuthCodeScreenParameters(
+        return EnterAuthenticationCodeScreenParameters(
             expectedCodeLength = expectedCodeLength,
             enteredPhoneNumber = codeInfo.phoneNumber,
             registrationRequired = registrationRequired,

@@ -4,4 +4,6 @@ interface BaseCoordinator<out CoordinateResultType> : Coordinatorable {
 
     suspend fun start(): CoordinateResultType
 
+    fun freeAllResources()
+
 }
