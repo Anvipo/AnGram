@@ -10,7 +10,7 @@ import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.int
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.authorization.AuthorizationScreensFactory
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.types.AuthorizationCoordinateResult
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.types.ProxyType
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.di.EnterAuthenticationCodeModule
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.view.navigation.EnterAuthenticationCodeScreenParameters
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.drinkless.td.libcore.telegram.TdApi
@@ -191,7 +191,7 @@ class AuthorizationCoordinatorImpl(
 
         val enterAuthenticationCodeScreenParameters =
             withContext(Dispatchers.Default) {
-                EnterAuthenticationCodeModule.EnterAuthenticationCodeScreenParameters(
+                EnterAuthenticationCodeScreenParameters(
                     expectedCodeLength = expectedCodeLength,
                     enteredPhoneNumber = enteredPhoneNumber,
                     registrationRequired = registrationRequired,
