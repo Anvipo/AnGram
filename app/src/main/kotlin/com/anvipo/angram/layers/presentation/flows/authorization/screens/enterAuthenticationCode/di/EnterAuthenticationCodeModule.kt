@@ -51,7 +51,8 @@ object EnterAuthenticationCodeModule {
     val enterAuthenticationCodeViewModelFactoryQualifier: StringQualifier =
         named("enterAuthenticationCodeViewModelFactory")
 
-    private object EnterAuthenticationCodeViewModelFactory : ViewModelProvider.NewInstanceFactory(), KoinComponent {
+    private object EnterAuthenticationCodeViewModelFactory :
+        ViewModelProvider.Factory, KoinComponent {
         @SuppressLint("SyntheticAccessor")
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {

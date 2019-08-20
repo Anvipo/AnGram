@@ -4,12 +4,12 @@ import android.app.Application
 import com.anvipo.angram.layers.application.coordinator.di.ApplicationCoordinatorModule
 import com.anvipo.angram.layers.application.coordinator.di.ApplicationCoordinatorModule.tdApiUpdateAuthorizationStateApplicationCoordinatorSendChannelQualifier
 import com.anvipo.angram.layers.application.di.LaunchSystemModule
+import com.anvipo.angram.layers.application.di.LaunchSystemModule.enabledProxyIdSendChannelQualifier
+import com.anvipo.angram.layers.application.di.LaunchSystemModule.systemMessageSendChannelQualifier
 import com.anvipo.angram.layers.application.di.LaunchSystemModule.tdLibClientHasBeenRecreatedSendChannelQualifier
 import com.anvipo.angram.layers.application.di.SystemInfrastructureModule
 import com.anvipo.angram.layers.application.launchSystem.appActivity.di.AppActivityModule
-import com.anvipo.angram.layers.application.launchSystem.appActivity.di.AppActivityModule.enabledProxyIdSendChannelQualifier
-import com.anvipo.angram.layers.application.launchSystem.appActivity.di.AppActivityModule.systemMessageSendChannelQualifier
-import com.anvipo.angram.layers.application.launchSystem.appActivity.di.AppActivityModule.tdApiUpdateConnectionStateAppPresenterSendChannelQualifier
+import com.anvipo.angram.layers.application.launchSystem.appActivity.di.AppActivityModule.tdApiUpdateConnectionStateAppViewModelSendChannelQualifier
 import com.anvipo.angram.layers.application.launchSystem.appActivity.types.TDLibClientHasBeenRecreatedSendChannel
 import com.anvipo.angram.layers.businessLogic.di.UseCasesModule
 import com.anvipo.angram.layers.core.CoreHelpers.IS_IN_DEBUG_MODE
@@ -154,7 +154,7 @@ class App :
     private val tdApiUpdateConnectionStateSendChanels by lazy {
         val tdApiUpdateConnectionStateApplicationPresenterSendChannel =
             get<TdApiUpdateConnectionStateSendChannel>(
-                tdApiUpdateConnectionStateAppPresenterSendChannelQualifier
+                tdApiUpdateConnectionStateAppViewModelSendChannelQualifier
             )
 
         val tdApiUpdateConnectionStateEnterAuthenticationPhoneNumberScreenSendChannel =

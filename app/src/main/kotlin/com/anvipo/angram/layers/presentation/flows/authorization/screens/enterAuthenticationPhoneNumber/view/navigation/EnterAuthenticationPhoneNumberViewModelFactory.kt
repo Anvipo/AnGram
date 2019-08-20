@@ -7,7 +7,7 @@ import org.koin.core.KoinComponent
 import org.koin.core.get
 
 object EnterAuthenticationPhoneNumberViewModelFactory :
-    ViewModelProvider.NewInstanceFactory(),
+    ViewModelProvider.Factory,
     KoinComponent {
 
     @Suppress("UNCHECKED_CAST")

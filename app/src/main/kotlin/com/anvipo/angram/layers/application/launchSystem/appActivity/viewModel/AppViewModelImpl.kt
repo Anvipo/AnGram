@@ -26,7 +26,7 @@ import kotlinx.coroutines.withContext
 import org.drinkless.td.libcore.telegram.TdApi
 
 class AppViewModelImpl(
-    private val useCase: AppUseCase,
+    private val useCaseFactoryMethod: () -> AppUseCase,
     private val coordinatorFactoryMethod: () -> ApplicationCoordinator,
     private val enabledProxyIdReceiveChannel: EnabledProxyIdReceiveChannel,
     private val systemMessageReceiveChannel: SystemMessageReceiveChannel,
@@ -200,6 +200,8 @@ class AppViewModelImpl(
 
     private suspend fun onReceivedEnabledProxyId(receivedEnabledProxyId: Int?) {
         withContext(Dispatchers.IO) {
+            val useCase = useCaseFactoryMethod()
+
             useCase.saveEnabledProxyId(receivedEnabledProxyId)
         }
     }

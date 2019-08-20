@@ -46,7 +46,8 @@ object AddProxyModule {
     private val addProxyViewModelQualifier: StringQualifier = named("addProxyViewModel")
     val addProxyViewModelFactoryQualifier: StringQualifier = named("addProxyViewModelFactory")
 
-    private object AddProxyViewModelFactory : ViewModelProvider.NewInstanceFactory(), KoinComponent {
+    private object AddProxyViewModelFactory :
+        ViewModelProvider.Factory, KoinComponent {
         @SuppressLint("SyntheticAccessor")
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
