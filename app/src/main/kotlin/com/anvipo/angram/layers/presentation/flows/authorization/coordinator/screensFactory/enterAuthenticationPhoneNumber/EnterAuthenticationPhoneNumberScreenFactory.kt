@@ -1,9 +1,9 @@
 package com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.enterAuthenticationPhoneNumber
 
-import ru.terrakok.cicerone.android.support.SupportAppScreen
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.view.navigation.EnterAuthenticationPhoneNumberScreen
 
 interface EnterAuthenticationPhoneNumberScreenFactory {
 
-    fun createEnterAuthenticationPhoneNumberScreen(): SupportAppScreen
+    fun createEnterAuthenticationPhoneNumberScreen(): EnterAuthenticationPhoneNumberScreen
 
 }

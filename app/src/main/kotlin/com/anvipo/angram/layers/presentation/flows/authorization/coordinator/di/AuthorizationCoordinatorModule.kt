@@ -8,7 +8,6 @@ import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.int
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.authorization.AuthorizationScreensFactory
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.authorization.AuthorizationScreensFactoryImpl
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.di.AddProxyModule.addProxyScreenFactoryQualifier
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.di.EnterAuthenticationPasswordModule.enterAuthenticationPasswordScreenFactoryQualifier
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
@@ -71,7 +70,7 @@ object AuthorizationCoordinatorModule {
         single<AuthorizationScreensFactory> {
             AuthorizationScreensFactoryImpl(
                 enterAuthenticationPhoneNumberScreenFactory = get(),
-                enterAuthenticationPasswordScreenFactory = get(enterAuthenticationPasswordScreenFactoryQualifier),
+                enterAuthenticationPasswordScreenFactory = get(),
                 enterAuthenticationCodeScreenFactory = get(),
                 addProxyScreenFactory = get(addProxyScreenFactoryQualifier)
             )
