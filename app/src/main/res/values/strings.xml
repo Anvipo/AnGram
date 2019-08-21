@@ -44,6 +44,11 @@
 
     <!--Chat list-->
     <string name="chat_list_action_bar_title">Chat list</string>
+    <string name="private_chats_title">Private chats</string>
+    <string name="basic_groups_title">Groups</string>
+    <string name="supergroups_title">Supergroups</string>
+    <string name="secret_chats">Secret chats</string>
+    <string name="other_chats_title">Other chats</string>
     <!--\\Chat list-->
 
 </resources>

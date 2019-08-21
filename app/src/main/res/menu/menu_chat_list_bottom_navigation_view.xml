@@ -2,18 +2,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/action_private_chats"
-        android:enabled="true"
-        android:title="Личные" />
+        android:icon="@drawable/ic_private_chats_white"
+        android:title="@string/private_chats_title" />
     <item
         android:id="@+id/action_basic_groups"
-        android:enabled="true"
-        android:title="Базовые группы" />
+        android:icon="@drawable/ic_basic_groups_white"
+        android:title="@string/basic_groups_title" />
     <item
         android:id="@+id/action_supergroups"
-        android:enabled="true"
-        android:title="Супергруппы" />
+        android:icon="@drawable/ic_supergroups_white"
+        android:title="@string/supergroups_title" />
     <item
         android:id="@+id/action_secret_chats"
-        android:enabled="true"
-        android:title="Секретные чаты" />
+        android:icon="@drawable/ic_secret_chats_black"
+        android:title="@string/secret_chats" />
+    <item
+        android:id="@+id/action_other_chats"
+        android:icon="@drawable/ic_more_horiz_white"
+        android:title="@string/other_chats_title" />
 </menu>

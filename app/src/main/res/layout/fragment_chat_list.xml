@@ -9,6 +9,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/chat_list_bottom_navigation_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:itemBackground="@color/icons"
+            app:itemIconTint="@drawable/chat_list_bottom_navigation_colors"
+            app:itemTextColor="@drawable/chat_list_bottom_navigation_colors"
+            app:labelVisibilityMode="unlabeled"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:menu="@menu/menu_chat_list_bottom_navigation_view" />
+
         <include
             android:id="@+id/chat_list_toolbar"
             layout="@layout/toolbar"
@@ -18,19 +31,6 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/chat_list_bottom_navigation_view"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:itemBackground="@color/primary"
-            app:itemIconTint="@drawable/chat_list_bottom_navigation_colors"
-            app:itemTextColor="@drawable/chat_list_bottom_navigation_colors"
-            app:labelVisibilityMode="labeled"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:menu="@menu/menu_chat_list_bottom_navigation_view" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

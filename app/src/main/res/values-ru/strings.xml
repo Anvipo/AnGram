@@ -41,6 +41,11 @@
 
     <!--Chat list-->
     <string name="chat_list_action_bar_title">Список чатов</string>
+    <string name="private_chats_title">Личные чаты</string>
+    <string name="basic_groups_title">Группы</string>
+    <string name="supergroups_title">Супергруппы</string>
+    <string name="secret_chats">Секретные чаты</string>
+    <string name="other_chats_title">Другие чаты</string>
     <!--\\Chat list-->
 
 </resources>
