@@ -44,7 +44,7 @@
     <string name="private_chats_title">Личные чаты</string>
     <string name="basic_groups_title">Группы</string>
     <string name="supergroups_title">Супергруппы</string>
-    <string name="secret_chats">Секретные чаты</string>
+    <string name="secret_chats_title">Секретные чаты</string>
     <string name="other_chats_title">Другие чаты</string>
     <!--\\Chat list-->
 

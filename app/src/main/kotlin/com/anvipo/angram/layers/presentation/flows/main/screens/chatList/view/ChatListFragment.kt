@@ -21,16 +21,19 @@ class ChatListFragment : BaseFragment() {
         chat_list_bottom_navigation_view.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.action_private_chats -> {
-                    println()
+                    setActionBarTitle(resources.getString(R.string.private_chats_title))
                 }
                 R.id.action_basic_groups -> {
-                    println()
+                    setActionBarTitle(resources.getString(R.string.basic_groups_title))
                 }
                 R.id.action_supergroups -> {
-                    println()
+                    setActionBarTitle(resources.getString(R.string.supergroups_title))
                 }
                 R.id.action_secret_chats -> {
-                    println()
+                    setActionBarTitle(resources.getString(R.string.secret_chats_title))
+                }
+                R.id.action_other_chats -> {
+                    setActionBarTitle(resources.getString(R.string.other_chats_title))
                 }
             }
 

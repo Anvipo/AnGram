@@ -48,9 +48,9 @@ abstract class BaseFragment :
         super.onActivityCreated(savedInstanceState)
 
         extractDataFromBundle()
-        setupClickListeners()
         setupToolbar()
         setupUI()
+        setupClickListeners()
         setupViewModelsObservers()
 
         if (savedInstanceState == null) {
@@ -178,6 +178,11 @@ abstract class BaseFragment :
 
         startActivityForResult(showApplicationDetailsSettings, fromApplicationSettingsRequestCode)
     }
+
+    protected fun setActionBarTitle(title: String) {
+        supportActionBar?.title = title
+    }
+
 
     private var instanceStateSaved: Boolean = false
 

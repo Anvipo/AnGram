@@ -15,7 +15,7 @@
     <item
         android:id="@+id/action_secret_chats"
         android:icon="@drawable/ic_secret_chats_black"
-        android:title="@string/secret_chats" />
+        android:title="@string/secret_chats_title" />
     <item
         android:id="@+id/action_other_chats"
         android:icon="@drawable/ic_more_horiz_white"
