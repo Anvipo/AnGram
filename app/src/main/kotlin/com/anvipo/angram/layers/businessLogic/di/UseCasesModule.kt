@@ -1,5 +1,6 @@
 package com.anvipo.angram.layers.businessLogic.di
 
+import com.anvipo.angram.layers.application.tdApiHelper.TdApiHelper.tdClientScope
 import com.anvipo.angram.layers.businessLogic.useCases.app.AppUseCase
 import com.anvipo.angram.layers.businessLogic.useCases.app.AppUseCaseImpl
 import com.anvipo.angram.layers.businessLogic.useCases.flows.authorization.addProxy.AddProxyUseCase
@@ -24,7 +25,8 @@ object UseCasesModule {
 
             scoped<AppUseCase> {
                 AppUseCaseImpl(
-                    sharedPreferencesGateway = get()
+                    sharedPreferencesGateway = get(),
+                    gateway = tdClientScope.get()
                 )
             }
 

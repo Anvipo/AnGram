@@ -1,7 +1,10 @@
 package com.anvipo.angram.layers.data.gateways.tdLib.application
 
+import android.net.NetworkCapabilities.TRANSPORT_CELLULAR
+import android.net.NetworkCapabilities.TRANSPORT_WIFI
 import android.os.Build
 import com.anvipo.angram.BuildConfig
+import com.anvipo.angram.layers.core.NetworkConnectionState
 import com.anvipo.angram.layers.core.ResourceManager
 import com.anvipo.angram.layers.data.gateways.tdLib.base.BaseTdLibGateway
 import com.anvipo.angram.layers.global.GlobalHelpers.USE_TEST_ENVIRONMENT
@@ -15,6 +18,24 @@ class ApplicationTDLibGatewayImpl(
 ) :
     BaseTdLibGateway(tdLibClient),
     ApplicationTDLibGateway {
+
+    override suspend fun onChangeNetworkConnectionState(
+        newState: NetworkConnectionState
+    ): Result<TdApi.Ok> {
+        val networkType: TdApi.NetworkType =
+            if (newState.isAvailable) {
+                when (newState.connectionState) {
+                    null -> TdApi.NetworkTypeOther()
+                    TRANSPORT_CELLULAR -> TdApi.NetworkTypeMobile()
+                    TRANSPORT_WIFI -> TdApi.NetworkTypeWiFi()
+                    else -> TdApi.NetworkTypeOther()
+                }
+            } else {
+                TdApi.NetworkTypeNone()
+            }
+
+        return doRequestCatching(TdApi.SetNetworkType(networkType))
+    }
 
     override suspend fun setTdLibParametersCatching(): Result<TdApi.Ok> =
         doRequestCatching(TdApi.SetTdlibParameters(createTDLibParameters()))

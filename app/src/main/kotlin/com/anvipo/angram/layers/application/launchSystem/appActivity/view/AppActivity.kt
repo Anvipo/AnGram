@@ -14,6 +14,7 @@ import com.anvipo.angram.layers.application.launchSystem.appActivity.types.SetNa
 import com.anvipo.angram.layers.application.launchSystem.appActivity.viewModel.AppViewModel
 import com.anvipo.angram.layers.application.launchSystem.appActivity.viewModel.AppViewModelFactory
 import com.anvipo.angram.layers.application.launchSystem.appActivity.viewModel.AppViewModelImpl
+import com.anvipo.angram.layers.core.ConnectivityLiveData
 import com.anvipo.angram.layers.core.base.classes.BaseActivity
 import kotlinx.android.synthetic.main.layout_container.*
 import org.koin.android.ext.android.get
@@ -58,8 +59,11 @@ class AppActivity : BaseActivity() {
                     REMOVE -> removeNavigator()
                 }
             }
+
+        connectivityLiveData.observe(this, viewModel::onChangeNetworkConnectionState)
     }
 
+    private val connectivityLiveData: ConnectivityLiveData by inject()
 
     private val navigatorHolder: NavigatorHolder by inject()
 

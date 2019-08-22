@@ -7,11 +7,13 @@ import com.anvipo.angram.layers.application.tdApiHelper.TdApiHelper.tdClientScop
 import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.enabledProxyIdReceiveChannelQualifier
 import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.systemMessageReceiveChannelQualifier
 import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.tdLibClientHasBeenRecreatedReceiveChannelQualifier
+import com.anvipo.angram.layers.core.ConnectivityLiveData
 import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionStateBroadcastChannel
 import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionStateSendChannel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
+import org.koin.android.ext.koin.androidApplication
 import org.koin.core.module.Module
 import org.koin.core.qualifier.StringQualifier
 import org.koin.core.qualifier.named
@@ -25,6 +27,8 @@ object AppActivityModule {
         named("connectionStateAppViewModelReceiveChannel")
     private val tdApiUpdateConnectionStateAppViewModelBroadcastChannelQualifier =
         named("connectionStateAppViewModelBroadcastChannel")
+
+//    val connectivityLiveDataQualifier: StringQualifier = named("connectivityLiveData")
 
 
     @ExperimentalCoroutinesApi
@@ -51,6 +55,10 @@ object AppActivityModule {
 
         single {
             AppViewModelFactory
+        }
+
+        single {
+            ConnectivityLiveData(application = androidApplication())
         }
 
         factory<AppViewModel> {

@@ -8,6 +8,7 @@ import com.anvipo.angram.layers.application.launchSystem.appActivity.types.SetNa
 import com.anvipo.angram.layers.application.launchSystem.appActivity.types.TDLibClientHasBeenRecreatedReceiveChannel
 import com.anvipo.angram.layers.businessLogic.useCases.app.AppUseCase
 import com.anvipo.angram.layers.core.CoreHelpers.assertionFailure
+import com.anvipo.angram.layers.core.NetworkConnectionState
 import com.anvipo.angram.layers.core.ResourceManager
 import com.anvipo.angram.layers.core.ShowSnackMessageEventParameters
 import com.anvipo.angram.layers.core.base.classes.BaseViewModelImpl
@@ -80,6 +81,13 @@ class AppViewModelImpl(
     override fun onPauseTriggered() {
         super<BaseViewModelImpl>.onPauseTriggered()
         removeNavigator()
+    }
+
+    override fun onChangeNetworkConnectionState(newState: NetworkConnectionState) {
+        myLaunch(Dispatchers.IO) {
+            val useCase = useCaseFactoryMethod()
+            useCase.onChangeNetworkConnectionState(newState)
+        }
     }
 
 
