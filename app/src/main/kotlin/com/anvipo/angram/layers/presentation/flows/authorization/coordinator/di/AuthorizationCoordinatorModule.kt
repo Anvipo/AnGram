@@ -27,52 +27,61 @@ object AuthorizationCoordinatorModule {
 
     val authorizationCoordinatorQualifier: StringQualifier = named("authorizationCoordinator")
 
-    val authorizationCoordinatorScopeQualifier: StringQualifier = named("authorizationCoordinatorScope")
+    val authorizationCoordinatorScopeQualifier: StringQualifier =
+        named("authorizationCoordinatorScope")
 
-    lateinit var authorizationCoordinatorScope: Scope
+    var authorizationCoordinatorScope: Scope? = null
 
     @ExperimentalCoroutinesApi
     val module: Module = module {
 
-        single<TdApiUpdateAuthorizationStateSendChannel>(
-            tdApiUpdateAuthorizationStateAuthorizationCoordinatorSendChannelQualifier
-        ) {
-            get(tdApiUpdateAuthorizationStateAuthorizationCoordinatorBroadcastChannelQualifier)
-        }
-        factory(
-            tdApiUpdateAuthorizationStateAuthorizationCoordinatorReceiveChannelQualifier
-        ) {
-            get<TdApiUpdateAuthorizationStateBroadcastChannel>(
-                tdApiUpdateAuthorizationStateAuthorizationCoordinatorBroadcastChannelQualifier
-            ).openSubscription()
-        }
-        single<TdApiUpdateAuthorizationStateBroadcastChannel>(
-            tdApiUpdateAuthorizationStateAuthorizationCoordinatorBroadcastChannelQualifier
-        ) {
-            BroadcastChannel(Channel.CONFLATED)
-        }
-
         scope(authorizationCoordinatorScopeQualifier) {
+
+            scoped<TdApiUpdateAuthorizationStateSendChannel>(
+                tdApiUpdateAuthorizationStateAuthorizationCoordinatorSendChannelQualifier
+            ) {
+                authorizationCoordinatorScope!!.get(
+                    tdApiUpdateAuthorizationStateAuthorizationCoordinatorBroadcastChannelQualifier
+                )
+            }
+            factory(
+                tdApiUpdateAuthorizationStateAuthorizationCoordinatorReceiveChannelQualifier
+            ) {
+                authorizationCoordinatorScope!!.get<TdApiUpdateAuthorizationStateBroadcastChannel>(
+                    tdApiUpdateAuthorizationStateAuthorizationCoordinatorBroadcastChannelQualifier
+                ).openSubscription()
+            }
+            scoped<TdApiUpdateAuthorizationStateBroadcastChannel>(
+                tdApiUpdateAuthorizationStateAuthorizationCoordinatorBroadcastChannelQualifier
+            ) {
+                BroadcastChannel(Channel.CONFLATED)
+            }
 
             scoped<AuthorizationCoordinator>(authorizationCoordinatorQualifier) {
                 AuthorizationCoordinatorImpl(
                     router = get(),
-                    screensFactory = get(),
+                    screensFactory = authorizationCoordinatorScope!!.get(),
                     tdApiUpdateAuthorizationStateReceiveChannel =
-                    get(tdApiUpdateAuthorizationStateAuthorizationCoordinatorReceiveChannelQualifier),
-                    systemMessageSendChannel = get(systemMessageSendChannelQualifier)
+                    authorizationCoordinatorScope!!.get(
+                        tdApiUpdateAuthorizationStateAuthorizationCoordinatorReceiveChannelQualifier
+                    ),
+                    systemMessageSendChannel = authorizationCoordinatorScope!!.get(
+                        systemMessageSendChannelQualifier
+                    )
                 )
             }
 
-        }
+            scoped<AuthorizationScreensFactory> {
+                AuthorizationScreensFactoryImpl(
+                    enterAuthenticationPhoneNumberScreenFactory =
+                    authorizationCoordinatorScope!!.get(),
+                    enterAuthenticationPasswordScreenFactory =
+                    authorizationCoordinatorScope!!.get(),
+                    enterAuthenticationCodeScreenFactory = authorizationCoordinatorScope!!.get(),
+                    addProxyScreenFactory = authorizationCoordinatorScope!!.get()
+                )
+            }
 
-        single<AuthorizationScreensFactory> {
-            AuthorizationScreensFactoryImpl(
-                enterAuthenticationPhoneNumberScreenFactory = get(),
-                enterAuthenticationPasswordScreenFactory = get(),
-                enterAuthenticationCodeScreenFactory = get(),
-                addProxyScreenFactory = get()
-            )
         }
 
     }

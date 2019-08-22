@@ -6,6 +6,6 @@ import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAu
 object EnterAuthenticationPhoneNumberScreenFactoryImpl : EnterAuthenticationPhoneNumberScreenFactory {
 
     override fun createEnterAuthenticationPhoneNumberScreen(): EnterAuthenticationPhoneNumberScreen =
-        authorizationCoordinatorScope.get()
+        authorizationCoordinatorScope!!.get()
 
 }

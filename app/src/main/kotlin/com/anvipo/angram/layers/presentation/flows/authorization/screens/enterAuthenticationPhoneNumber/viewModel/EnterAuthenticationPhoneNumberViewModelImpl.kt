@@ -52,6 +52,7 @@ class EnterAuthenticationPhoneNumberViewModelImpl(
 
     override fun onColdStart() {
         super<BaseViewModelImpl>.onColdStart()
+        disableNextButton()
         hideNextButton()
     }
 

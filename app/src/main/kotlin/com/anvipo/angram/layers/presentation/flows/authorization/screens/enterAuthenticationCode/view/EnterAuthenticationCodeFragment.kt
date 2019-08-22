@@ -15,6 +15,7 @@ import com.anvipo.angram.layers.core.hideKeyboard
 import com.anvipo.angram.layers.core.hideWithAnimate
 import com.anvipo.angram.layers.core.showWithAnimate
 import com.anvipo.angram.layers.core.textWatchers.TextWatcherImpl
+import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorScope
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.types.SetExpectedCodeLengthEventParameters
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.viewModel.EnterAuthenticationCodeViewModel
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.viewModel.EnterAuthenticationCodeViewModelFactory
@@ -61,7 +62,7 @@ class EnterAuthenticationCodeFragment : BaseFragment() {
 
     override val viewModel: EnterAuthenticationCodeViewModel
             by viewModels<EnterAuthenticationCodeViewModelImpl> {
-                get<EnterAuthenticationCodeViewModelFactory>()
+                authorizationCoordinatorScope!!.get<EnterAuthenticationCodeViewModelFactory>()
             }
 
     override fun onSaveInstanceState(outState: Bundle) {

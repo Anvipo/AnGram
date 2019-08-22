@@ -30,7 +30,7 @@ class App : Application() {
 
     @ExperimentalCoroutinesApi
     private fun initDI() {
-        val modules by lazy {
+        val appModules by lazy {
             if (IS_IN_DEBUG_MODE) {
                 listOf(
                     SystemInfrastructureModule.module,
@@ -39,10 +39,6 @@ class App : Application() {
                     GatewaysModule.module,
                     AppActivityModule.module,
                     ApplicationCoordinatorModule.module,
-                    AuthorizationCoordinatorModule.module,
-                    EnterAuthenticationPhoneNumberModule.module,
-                    EnterAuthenticationCodeModule.module,
-                    EnterAuthenticationPasswordModule.module,
                     AddProxyModule.module
                 )
             } else {
@@ -55,7 +51,7 @@ class App : Application() {
 
             androidContext(this@App)
 
-            modules(modules)
+            modules(appModules)
         }
 
         TdApiHelper.onCompletedDISetup()

@@ -2,6 +2,7 @@ package com.anvipo.angram.layers.presentation.flows.authorization.screens.enterA
 
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorQualifier
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorScope
+import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorScopeQualifier
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.enterAuthenticationCode.EnterAuthenticationCodeScreenFactory
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.enterAuthenticationCode.EnterAuthenticationCodeScreenFactoryImpl
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.view.EnterAuthenticationCodeFragment
@@ -17,36 +18,42 @@ object EnterAuthenticationCodeModule {
 
     val module: Module = module {
 
-        single<EnterAuthenticationCodeScreenFactory> {
-            EnterAuthenticationCodeScreenFactoryImpl(
-                koinScope = this
-            )
-        }
+        scope(authorizationCoordinatorScopeQualifier) {
 
-        factory { (parameters: EnterAuthenticationCodeScreenParameters) ->
-            EnterAuthenticationCodeFragment.createNewInstance(
-                shouldShowBackButton = parameters.shouldShowBackButton,
-                expectedCodeLength = parameters.expectedCodeLength,
-                enteredPhoneNumber = parameters.enteredPhoneNumber,
-                registrationRequired = parameters.registrationRequired,
-                termsOfServiceText = parameters.termsOfServiceText
-            )
-        }
+            scoped<EnterAuthenticationCodeScreenFactory> {
+                EnterAuthenticationCodeScreenFactoryImpl(
+                    koinScope = this
+                )
+            }
 
-        factory { (parameters: EnterAuthenticationCodeScreenParameters) ->
-            EnterAuthenticationCodeScreen(parameters = parameters)
-        }
+            factory { (parameters: EnterAuthenticationCodeScreenParameters) ->
+                EnterAuthenticationCodeFragment.createNewInstance(
+                    shouldShowBackButton = parameters.shouldShowBackButton,
+                    expectedCodeLength = parameters.expectedCodeLength,
+                    enteredPhoneNumber = parameters.enteredPhoneNumber,
+                    registrationRequired = parameters.registrationRequired,
+                    termsOfServiceText = parameters.termsOfServiceText
+                )
+            }
 
-        single {
-            EnterAuthenticationCodeViewModelFactory
-        }
+            factory { (parameters: EnterAuthenticationCodeScreenParameters) ->
+                EnterAuthenticationCodeScreen(parameters = parameters)
+            }
 
-        factory<EnterAuthenticationCodeViewModel> {
-            EnterAuthenticationCodeViewModelImpl(
-                routeEventHandler = authorizationCoordinatorScope.get(authorizationCoordinatorQualifier),
-                useCase = authorizationCoordinatorScope.get(),
-                resourceManager = get()
-            )
+            scoped {
+                EnterAuthenticationCodeViewModelFactory
+            }
+
+            factory<EnterAuthenticationCodeViewModel> {
+                EnterAuthenticationCodeViewModelImpl(
+                    routeEventHandler = authorizationCoordinatorScope!!.get(
+                        authorizationCoordinatorQualifier
+                    ),
+                    useCase = authorizationCoordinatorScope!!.get(),
+                    resourceManager = get()
+                )
+            }
+
         }
 
     }

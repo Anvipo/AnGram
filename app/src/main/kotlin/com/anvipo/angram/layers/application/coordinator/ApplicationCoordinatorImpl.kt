@@ -2,16 +2,21 @@ package com.anvipo.angram.layers.application.coordinator
 
 import com.anvipo.angram.layers.application.coordinator.coordinatorsFactory.ApplicationCoordinatorsFactory
 import com.anvipo.angram.layers.application.coordinator.types.ApplicationCoordinateResult
+import com.anvipo.angram.layers.core.CoreHelpers.IS_IN_DEBUG_MODE
 import com.anvipo.angram.layers.core.base.classes.BaseCoordinatorImpl
 import com.anvipo.angram.layers.data.gateways.tdLib.application.ApplicationTDLibGateway
 import com.anvipo.angram.layers.global.HasCheckAuthorizationStateHelper
 import com.anvipo.angram.layers.global.types.SystemMessageSendChannel
 import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationStateReceiveChannel
+import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorScope
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorScopeQualifier
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.withContext
 import org.drinkless.td.libcore.telegram.TdApi
+import org.koin.core.context.loadKoinModules
+import org.koin.core.context.unloadKoinModules
 import org.koin.core.scope.Scope
 import kotlin.coroutines.Continuation
 
@@ -28,6 +33,8 @@ class ApplicationCoordinatorImpl(
     ApplicationCoordinator,
     HasCheckAuthorizationStateHelper<ApplicationCoordinateResult> {
 
+    override var startAuthorizationState: TdApi.UpdateAuthorizationState? = null
+
     override suspend fun start(): ApplicationCoordinateResult {
         withContext(Dispatchers.Default) {
             clearChildCoordinators()
@@ -42,15 +49,20 @@ class ApplicationCoordinatorImpl(
         finishFlowContinuation = checkAuthorizationStateContinuation
     }
 
+    @ExperimentalCoroutinesApi
     override suspend fun onReceivedTdApiUpdateAuthorizationState(
         receivedUpdateAuthorizationState: TdApi.UpdateAuthorizationState
     ) {
         when (receivedUpdateAuthorizationState.authorizationState) {
-            is TdApi.AuthorizationStateWaitTdlibParameters -> onAuthorizationStateWaitTdlibParameters()
+            is TdApi.AuthorizationStateWaitTdlibParameters ->
+                onAuthorizationStateWaitTdlibParameters()
             is TdApi.AuthorizationStateWaitEncryptionKey -> onAuthorizationStateWaitEncryptionKey()
-            is TdApi.AuthorizationStateWaitPhoneNumber -> onAuthorizationStateWaitPhoneNumber()
-            is TdApi.AuthorizationStateWaitCode -> onAuthorizationStateWaitCode()
-            is TdApi.AuthorizationStateWaitPassword -> onAuthorizationStateWaitPassword()
+            is TdApi.AuthorizationStateWaitPhoneNumber ->
+                onAuthorizationStateWaitPhoneNumber(receivedUpdateAuthorizationState)
+            is TdApi.AuthorizationStateWaitCode ->
+                onAuthorizationStateWaitCode(receivedUpdateAuthorizationState)
+            is TdApi.AuthorizationStateWaitPassword ->
+                onAuthorizationStateWaitPassword(receivedUpdateAuthorizationState)
             is TdApi.AuthorizationStateReady -> onAuthorizationStateReady()
             is TdApi.AuthorizationStateLoggingOut -> onAuthorizationStateLoggingOut()
             is TdApi.AuthorizationStateClosing -> onAuthorizationStateClosing()
@@ -60,7 +72,6 @@ class ApplicationCoordinatorImpl(
 
 
     private var authorizationFlowHasBeenStarted = false
-    private var mainFlowHasBeenStarted = false
 
     private suspend fun configureApp(): ApplicationCoordinateResult = startApp()
 
@@ -95,22 +106,31 @@ class ApplicationCoordinatorImpl(
         }
     }
 
-    private suspend fun onAuthorizationStateWaitPhoneNumber() {
+    @ExperimentalCoroutinesApi
+    private suspend fun onAuthorizationStateWaitPhoneNumber(
+        startAuthorizationState: TdApi.UpdateAuthorizationState
+    ) {
         myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
 
-        startAuthorizationFlow()
+        startAuthorizationFlow(startAuthorizationState)
     }
 
-    private suspend fun onAuthorizationStateWaitCode() {
+    @ExperimentalCoroutinesApi
+    private suspend fun onAuthorizationStateWaitCode(
+        startAuthorizationState: TdApi.UpdateAuthorizationState
+    ) {
         myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
 
-        startAuthorizationFlow()
+        startAuthorizationFlow(startAuthorizationState)
     }
 
-    private suspend fun onAuthorizationStateWaitPassword() {
+    @ExperimentalCoroutinesApi
+    private suspend fun onAuthorizationStateWaitPassword(
+        startAuthorizationState: TdApi.UpdateAuthorizationState
+    ) {
         myLog(invokationPlace = object {}.javaClass.enclosingMethod!!.name)
 
-        startAuthorizationFlow()
+        startAuthorizationFlow(startAuthorizationState)
     }
 
     private fun onAuthorizationStateReady() {
@@ -142,12 +162,28 @@ class ApplicationCoordinatorImpl(
         )
     }
 
-    private suspend fun startAuthorizationFlow() {
+    @ExperimentalCoroutinesApi
+    private suspend fun startAuthorizationFlow(startAuthorizationState: TdApi.UpdateAuthorizationState) {
         if (authorizationFlowHasBeenStarted) {
             return
         }
 
         authorizationFlowHasBeenStarted = true
+
+        val authorizationFlowModules by lazy {
+            if (IS_IN_DEBUG_MODE) {
+                listOf(
+                    AuthorizationCoordinatorModule.module,
+                    EnterAuthenticationPhoneNumberModule.module,
+                    EnterAuthenticationCodeModule.module,
+                    EnterAuthenticationPasswordModule.module
+                )
+            } else {
+                TODO("release config")
+            }
+        }
+
+        loadKoinModules(authorizationFlowModules)
 
         val invokationPlace = object {}.javaClass.enclosingMethod!!.name
 
@@ -158,6 +194,8 @@ class ApplicationCoordinatorImpl(
 
         val authorizationCoordinator = coordinatorsFactory.createAuthorizationCoordinator()
 
+        authorizationCoordinator.set(startAuthorizationState)
+
         val authorizationFlowCoordinateResult = coordinateTo(authorizationCoordinator)
 
         myLog(
@@ -165,7 +203,9 @@ class ApplicationCoordinatorImpl(
             invokationPlace = invokationPlace
         )
 
-        authorizationCoordinatorScope.close()
+        authorizationCoordinatorScope!!.close()
+
+        unloadKoinModules(authorizationFlowModules)
 
         authorizationFlowHasBeenStarted = false
 

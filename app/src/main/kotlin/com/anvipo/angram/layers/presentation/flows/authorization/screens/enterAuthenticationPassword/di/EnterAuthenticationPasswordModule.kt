@@ -2,6 +2,7 @@ package com.anvipo.angram.layers.presentation.flows.authorization.screens.enterA
 
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorQualifier
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorScope
+import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorScopeQualifier
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.enterAuthenticationPassword.EnterAuthenticationPasswordScreenFactory
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.enterAuthenticationPassword.EnterAuthenticationPasswordScreenFactoryImpl
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.view.EnterAuthenticationPasswordFragment
@@ -16,30 +17,36 @@ object EnterAuthenticationPasswordModule {
 
     val module: Module = module {
 
-        single<EnterAuthenticationPasswordScreenFactory> {
-            EnterAuthenticationPasswordScreenFactoryImpl(
-                koinScope = this
-            )
-        }
+        scope(authorizationCoordinatorScopeQualifier) {
 
-        factory {
-            EnterAuthenticationPasswordFragment.createNewInstance()
-        }
+            scoped<EnterAuthenticationPasswordScreenFactory> {
+                EnterAuthenticationPasswordScreenFactoryImpl(
+                    koinScope = this
+                )
+            }
 
-        factory {
-            EnterPasswordScreen()
-        }
+            factory {
+                EnterAuthenticationPasswordFragment.createNewInstance()
+            }
 
-        single {
-            EnterAuthenticationPasswordViewModelFactory
-        }
+            factory {
+                EnterPasswordScreen()
+            }
 
-        factory<EnterAuthenticationPasswordViewModel> {
-            EnterAuthenticationPasswordViewModelImpl(
-                routeEventHandler = authorizationCoordinatorScope.get(authorizationCoordinatorQualifier),
-                useCase = authorizationCoordinatorScope.get(),
-                resourceManager = get()
-            )
+            scoped {
+                EnterAuthenticationPasswordViewModelFactory
+            }
+
+            factory<EnterAuthenticationPasswordViewModel> {
+                EnterAuthenticationPasswordViewModelImpl(
+                    routeEventHandler = authorizationCoordinatorScope!!.get(
+                        authorizationCoordinatorQualifier
+                    ),
+                    useCase = authorizationCoordinatorScope!!.get(),
+                    resourceManager = get()
+                )
+            }
+
         }
 
     }

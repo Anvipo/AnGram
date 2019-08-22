@@ -2,8 +2,8 @@ package com.anvipo.angram.layers.presentation.flows.authorization.screens.enterA
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorScope
 import org.koin.core.KoinComponent
-import org.koin.core.get
 
 object EnterAuthenticationPhoneNumberViewModelFactory :
     ViewModelProvider.Factory,
@@ -11,6 +11,6 @@ object EnterAuthenticationPhoneNumberViewModelFactory :
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T =
-        get<EnterAuthenticationPhoneNumberViewModel>() as T
+        authorizationCoordinatorScope!!.get<EnterAuthenticationPhoneNumberViewModel>() as T
 
 }

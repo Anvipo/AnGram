@@ -17,11 +17,23 @@ interface HasCheckAuthorizationStateHelper<T> : HasMyCoroutineBuilders {
         onCreatedCheckAuthorizationStateContinuation(it)
 
         myLaunch(Dispatchers.IO) {
+            val currentChannelValue = tdApiUpdateAuthorizationStateReceiveChannel.poll()
+
+            val startAuthorizationStateVal = startAuthorizationState
+
+            if (currentChannelValue != null) {
+                onReceivedTdApiUpdateAuthorizationState(currentChannelValue)
+            } else if (startAuthorizationStateVal != null) {
+                onReceivedTdApiUpdateAuthorizationState(startAuthorizationStateVal)
+            }
+
             for (receivedTdApiUpdateAuthorizationState in tdApiUpdateAuthorizationStateReceiveChannel) {
                 onReceivedTdApiUpdateAuthorizationState(receivedTdApiUpdateAuthorizationState)
             }
         }
     }
+
+    var startAuthorizationState: TdApi.UpdateAuthorizationState?
 
     fun onCreatedCheckAuthorizationStateContinuation(
         checkAuthorizationStateContinuation: Continuation<T>

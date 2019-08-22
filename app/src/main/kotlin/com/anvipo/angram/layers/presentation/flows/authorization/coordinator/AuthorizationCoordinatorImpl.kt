@@ -35,6 +35,10 @@ class AuthorizationCoordinatorImpl(
     override suspend fun start(): AuthorizationCoordinateResult =
         checkAuthorizationState(tdApiUpdateAuthorizationStateReceiveChannel)
 
+    override fun set(startAuthorizationState: TdApi.UpdateAuthorizationState) {
+        this.startAuthorizationState = startAuthorizationState
+    }
+
     override fun onCreatedCheckAuthorizationStateContinuation(
         checkAuthorizationStateContinuation: Continuation<AuthorizationCoordinateResult>
     ) {
@@ -118,6 +122,8 @@ class AuthorizationCoordinatorImpl(
     private var enterAuthenticationPhoneNumberScreen: EnterAuthenticationPhoneNumberScreen? = null
 
     private var enterAuthenticationCodeScreenHasBeenPresented = false
+
+    override var startAuthorizationState: TdApi.UpdateAuthorizationState? = null
 
 
     private suspend fun onAuthStateWaitsPhoneNumber() {
@@ -232,7 +238,10 @@ class AuthorizationCoordinatorImpl(
             }
 
             withContext(Dispatchers.Main) {
-                router.newRootChain(enterAuthenticationPhoneNumberScreen!!, enterAuthenticationPasswordScreen)
+                router.newRootChain(
+                    enterAuthenticationPhoneNumberScreen!!,
+                    enterAuthenticationPasswordScreen
+                )
             }
         } else {
             withContext(Dispatchers.Main) {

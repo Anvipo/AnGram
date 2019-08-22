@@ -25,6 +25,8 @@ import com.anvipo.angram.layers.data.di.GatewaysModule.tdClientScopeQualifier
 import com.anvipo.angram.layers.global.GlobalHelpers.createTGSystemMessage
 import com.anvipo.angram.layers.global.OrderedChat
 import com.anvipo.angram.layers.global.types.*
+import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule
+import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorScope
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.tdApiUpdateAuthorizationStateAuthorizationCoordinatorSendChannelQualifier
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.di.EnterAuthenticationPhoneNumberModule.tdApiUpdateConnectionStateEnterAuthenticationPhoneNumberScreenSendChannelQualifier
 import org.drinkless.td.libcore.telegram.TdApi
@@ -118,39 +120,15 @@ object TdApiHelper : HasLogger, KoinComponent {
     private val enabledProxyIdSendChannel: EnabledProxyIdSendChannel
             by inject(enabledProxyIdSendChannelQualifier)
 
-    private val tdApiUpdateConnectionStateSendChanels by lazy {
-        val tdApiUpdateConnectionStateApplicationPresenterSendChannel =
-            get<TdApiUpdateConnectionStateSendChannel>(
+    private val tdApiUpdateConnectionStateApplicationPresenterSendChannel
+            by inject<TdApiUpdateConnectionStateSendChannel>(
                 tdApiUpdateConnectionStateAppViewModelSendChannelQualifier
             )
 
-        val tdApiUpdateConnectionStateEnterAuthenticationPhoneNumberScreenSendChannel =
-            get<TdApiUpdateConnectionStateSendChannel>(
-                tdApiUpdateConnectionStateEnterAuthenticationPhoneNumberScreenSendChannelQualifier
-            )
-
-        listOf(
-            tdApiUpdateConnectionStateApplicationPresenterSendChannel,
-            tdApiUpdateConnectionStateEnterAuthenticationPhoneNumberScreenSendChannel
-        )
-    }
-
-    private val tdApiUpdateAuthorizationStateSendChannels by lazy {
-        val tdApiUpdateAuthorizationStateApplicationCoordinatorSendChannel =
-            get<TdApiUpdateAuthorizationStateSendChannel>(
+    private val tdApiUpdateAuthorizationStateApplicationCoordinatorSendChannel
+            by inject<TdApiUpdateAuthorizationStateSendChannel>(
                 tdApiUpdateAuthorizationStateApplicationCoordinatorSendChannelQualifier
             )
-
-        val tdApiUpdateAuthorizationStateAuthorizationCoordinatorSendChannel =
-            get<TdApiUpdateAuthorizationStateSendChannel>(
-                tdApiUpdateAuthorizationStateAuthorizationCoordinatorSendChannelQualifier
-            )
-
-        listOf(
-            tdApiUpdateAuthorizationStateApplicationCoordinatorSendChannel,
-            tdApiUpdateAuthorizationStateAuthorizationCoordinatorSendChannel
-        )
-    }
 
     private val tdLibClientHasBeenRecreatedSendChannel: TDLibClientHasBeenRecreatedSendChannel
             by inject(tdLibClientHasBeenRecreatedSendChannelQualifier)
@@ -196,7 +174,9 @@ object TdApiHelper : HasLogger, KoinComponent {
             is TdApi.UpdateChatReplyMarkup -> onUpdateChatReplyMarkup(tdApiUpdate)
             is TdApi.UpdateChatDraftMessage -> onUpdateChatDraftMessage(tdApiUpdate)
             is TdApi.UpdateChatNotificationSettings -> onUpdateChatNotificationSettings(tdApiUpdate)
-            is TdApi.UpdateChatDefaultDisableNotification -> onUpdateChatDefaultDisableNotification(tdApiUpdate)
+            is TdApi.UpdateChatDefaultDisableNotification -> onUpdateChatDefaultDisableNotification(
+                tdApiUpdate
+            )
             is TdApi.UpdateChatIsMarkedAsUnread -> onUpdateChatIsMarkedAsUnread(tdApiUpdate)
             is TdApi.UpdateChatIsSponsored -> onUpdateChatIsSponsored(tdApiUpdate)
             is TdApi.UpdateUserFullInfo -> onUpdateUserFullInfo(tdApiUpdate)
@@ -430,7 +410,8 @@ object TdApiHelper : HasLogger, KoinComponent {
         val chat = chats[updateChatDefaultDisableNotification.chatId] ?: return
 
         synchronized(chat) {
-            chat.defaultDisableNotification = updateChatDefaultDisableNotification.defaultDisableNotification
+            chat.defaultDisableNotification =
+                updateChatDefaultDisableNotification.defaultDisableNotification
         }
     }
 
@@ -460,13 +441,15 @@ object TdApiHelper : HasLogger, KoinComponent {
     private fun onUpdateBasicGroupFullInfo(
         updateBasicGroupFullInfo: TdApi.UpdateBasicGroupFullInfo
     ) {
-        basicGroupsFullInfo[updateBasicGroupFullInfo.basicGroupId] = updateBasicGroupFullInfo.basicGroupFullInfo
+        basicGroupsFullInfo[updateBasicGroupFullInfo.basicGroupId] =
+            updateBasicGroupFullInfo.basicGroupFullInfo
     }
 
     private fun onUpdateSupergroupFullInfo(
         updateSupergroupFullInfo: TdApi.UpdateSupergroupFullInfo
     ) {
-        supergroupsFullInfo[updateSupergroupFullInfo.supergroupId] = updateSupergroupFullInfo.supergroupFullInfo
+        supergroupsFullInfo[updateSupergroupFullInfo.supergroupId] =
+            updateSupergroupFullInfo.supergroupFullInfo
     }
 
 
@@ -474,7 +457,7 @@ object TdApiHelper : HasLogger, KoinComponent {
         updateConnectionState: TdApi.UpdateConnectionState
     ) {
         synchronized(updateConnectionState) {
-            tdApiUpdateConnectionStateSendChanels.forEach {
+            tdApiUpdateConnectionStateApplicationPresenterSendChannel.also {
                 val couldImmediatelySend = it.offer(updateConnectionState)
 
                 if (!couldImmediatelySend) {
@@ -484,6 +467,21 @@ object TdApiHelper : HasLogger, KoinComponent {
                     )
                 }
             }
+
+            authorizationCoordinatorScope?.apply {
+                get<TdApiUpdateConnectionStateSendChannel>(
+                    tdApiUpdateConnectionStateEnterAuthenticationPhoneNumberScreenSendChannelQualifier
+                ).also {
+                    val couldImmediatelySend = it.offer(updateConnectionState)
+
+                    if (!couldImmediatelySend) {
+                        myLog(
+                            invokationPlace = object {}.javaClass.enclosingMethod!!.name,
+                            text = "couldImmediatelySend = $couldImmediatelySend"
+                        )
+                    }
+                }
+            }
         }
     }
 
@@ -491,14 +489,32 @@ object TdApiHelper : HasLogger, KoinComponent {
         updateAuthorizationState: TdApi.UpdateAuthorizationState
     ) {
         synchronized(updateAuthorizationState) {
-            tdApiUpdateAuthorizationStateSendChannels.forEach {
-                val couldImmediatelySend = it.offer(updateAuthorizationState)
+            tdApiUpdateAuthorizationStateApplicationCoordinatorSendChannel.also {
+                val couldImmediatelySend =
+                    it.offer(
+                        updateAuthorizationState
+                    )
 
                 if (!couldImmediatelySend) {
                     myLog(
                         invokationPlace = object {}.javaClass.enclosingMethod!!.name,
                         text = "couldImmediatelySend = $couldImmediatelySend"
                     )
+                }
+            }
+
+            authorizationCoordinatorScope?.apply {
+                get<TdApiUpdateAuthorizationStateSendChannel>(
+                    tdApiUpdateAuthorizationStateAuthorizationCoordinatorSendChannelQualifier
+                ).also {
+                    val couldImmediatelySend = it.offer(updateAuthorizationState)
+
+                    if (!couldImmediatelySend) {
+                        myLog(
+                            invokationPlace = object {}.javaClass.enclosingMethod!!.name,
+                            text = "couldImmediatelySend = $couldImmediatelySend"
+                        )
+                    }
                 }
             }
 

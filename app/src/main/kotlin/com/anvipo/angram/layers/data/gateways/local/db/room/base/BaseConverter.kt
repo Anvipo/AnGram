@@ -10,7 +10,7 @@ abstract class BaseConverter {
             it.isAccessible = true
             val result = it.name + fieldAndValueDelimiter + it.get(instanse)
             it.isAccessible = false
-            return@map result
+            result
         }
 
         val fieldsAndTheirValuesString = fieldsAndTheirValues.joinToString(

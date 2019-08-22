@@ -35,19 +35,19 @@ object UseCasesModule {
 
             scoped<EnterAuthenticationPhoneNumberUseCase> {
                 EnterAuthenticationPhoneNumberUseCaseImpl(
-                    authorizationTDLibGateway = authorizationCoordinatorScope.get()
+                    authorizationTDLibGateway = authorizationCoordinatorScope!!.get()
                 )
             }
 
             scoped<EnterAuthenticationCodeUseCase> {
                 EnterAuthenticationCodeUseCaseImpl(
-                    tdLibGateway = authorizationCoordinatorScope.get()
+                    tdLibGateway = authorizationCoordinatorScope!!.get()
                 )
             }
 
             scoped<EnterAuthenticationPasswordUseCase> {
                 EnterAuthenticationPasswordUseCaseImpl(
-                    tdLibGateway = authorizationCoordinatorScope.get()
+                    tdLibGateway = authorizationCoordinatorScope!!.get()
                 )
             }
 

@@ -6,8 +6,7 @@ import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.int
 
 object ApplicationCoordinatorsFactoryImpl : ApplicationCoordinatorsFactory {
 
-    override fun createAuthorizationCoordinator(
-    ): AuthorizationCoordinator =
-        authorizationCoordinatorScope.get(authorizationCoordinatorQualifier)
+    override fun createAuthorizationCoordinator(): AuthorizationCoordinator =
+        authorizationCoordinatorScope!!.get(authorizationCoordinatorQualifier)
 
 }
