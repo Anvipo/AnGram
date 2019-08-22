@@ -1,19 +1,34 @@
 package com.anvipo.angram.layers.presentation.flows.main.screens.chatList.view
 
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.commit
+import androidx.fragment.app.commitNow
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.core.base.classes.BaseFragment
+import com.anvipo.angram.layers.presentation.flows.main.screens.chatList.view.navigation.PrivateChatsScreen
 import com.anvipo.angram.layers.presentation.flows.main.screens.chatList.viewModel.ChatListViewModel
 import com.anvipo.angram.layers.presentation.flows.main.screens.chatList.viewModel.ChatListViewModelFactory
 import com.anvipo.angram.layers.presentation.flows.main.screens.chatList.viewModel.ChatListViewModelImpl
 import kotlinx.android.synthetic.main.fragment_chat_list.*
 import org.koin.android.ext.android.get
+import ru.terrakok.cicerone.android.support.SupportAppScreen
 
 class ChatListFragment : BaseFragment() {
 
     companion object {
         fun createNewInstance(): ChatListFragment = ChatListFragment()
+    }
+
+    override fun setupUI() {
+        super.setupUI()
+        val tab = when (currentTabFragment?.tag) {
+            PrivateChatsScreen.screenKey -> PrivateChatsScreen
+            else -> PrivateChatsScreen
+        }
+
+        selectTab(tab)
     }
 
     override fun setupClickListeners() {
@@ -50,5 +65,37 @@ class ChatListFragment : BaseFragment() {
     override val actionBar: Toolbar
         get() = chat_list_toolbar as Toolbar
     override val layoutRes: Int by lazy { R.layout.fragment_chat_list }
+
+    private val currentTabFragment: BaseFragment?
+        get() = childFragmentManager.fragments.firstOrNull { !it.isHidden } as? BaseFragment
+
+    private fun selectTab(tab: SupportAppScreen) {
+        val currentFragment = currentTabFragment
+
+        val newFragment = childFragmentManager.findFragmentByTag(tab.screenKey)
+
+        if (currentFragment != null && newFragment != null && currentFragment == newFragment) {
+            return
+        }
+
+        childFragmentManager.commitNow {
+            if (newFragment == null) {
+                add(
+                    R.id.chat_list_screen_container,
+                    tab.fragment,
+                    tab.screenKey
+                )
+            }
+
+            currentFragment?.also {
+                hide(it)
+                setMaxLifecycle(it, Lifecycle.State.STARTED)
+            }
+            newFragment?.also {
+                show(it)
+                setMaxLifecycle(it, Lifecycle.State.RESUMED)
+            }
+        }
+    }
 
 }
