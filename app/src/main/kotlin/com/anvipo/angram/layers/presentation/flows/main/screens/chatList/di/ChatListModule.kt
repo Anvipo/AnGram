@@ -4,11 +4,11 @@ import com.anvipo.angram.layers.presentation.flows.main.coordinator.di.MainCoord
 import com.anvipo.angram.layers.presentation.flows.main.coordinator.di.MainCoordinatorModule.mainCoordinatorScope
 import com.anvipo.angram.layers.presentation.flows.main.coordinator.screensFactory.chatList.ChatListScreenFactory
 import com.anvipo.angram.layers.presentation.flows.main.coordinator.screensFactory.chatList.ChatListScreenFactoryImpl
-import com.anvipo.angram.layers.presentation.flows.main.screens.chatList.view.ChatListFragment
-import com.anvipo.angram.layers.presentation.flows.main.screens.chatList.view.navigation.ChatListScreen
-import com.anvipo.angram.layers.presentation.flows.main.screens.chatList.viewModel.ChatListViewModel
-import com.anvipo.angram.layers.presentation.flows.main.screens.chatList.viewModel.ChatListViewModelFactory
-import com.anvipo.angram.layers.presentation.flows.main.screens.chatList.viewModel.ChatListViewModelImpl
+import com.anvipo.angram.layers.presentation.flows.main.screens.chatList.view.chatList.ChatListFragment
+import com.anvipo.angram.layers.presentation.flows.main.screens.chatList.view.chatList.navigation.ChatListScreen
+import com.anvipo.angram.layers.presentation.flows.main.screens.chatList.viewModel.chatList.ChatListViewModel
+import com.anvipo.angram.layers.presentation.flows.main.screens.chatList.viewModel.chatList.ChatListViewModelFactory
+import com.anvipo.angram.layers.presentation.flows.main.screens.chatList.viewModel.chatList.ChatListViewModelImpl
 import org.koin.core.module.Module
 import org.koin.dsl.module
 

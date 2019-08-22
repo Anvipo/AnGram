@@ -1,16 +1,15 @@
-package com.anvipo.angram.layers.presentation.flows.main.screens.chatList.view
+package com.anvipo.angram.layers.presentation.flows.main.screens.chatList.view.chatList
 
 import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.commit
 import androidx.fragment.app.commitNow
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.core.base.classes.BaseFragment
-import com.anvipo.angram.layers.presentation.flows.main.screens.chatList.view.navigation.PrivateChatsScreen
-import com.anvipo.angram.layers.presentation.flows.main.screens.chatList.viewModel.ChatListViewModel
-import com.anvipo.angram.layers.presentation.flows.main.screens.chatList.viewModel.ChatListViewModelFactory
-import com.anvipo.angram.layers.presentation.flows.main.screens.chatList.viewModel.ChatListViewModelImpl
+import com.anvipo.angram.layers.presentation.flows.main.screens.chatList.view.chatList.navigation.PrivateChatsScreen
+import com.anvipo.angram.layers.presentation.flows.main.screens.chatList.viewModel.chatList.ChatListViewModel
+import com.anvipo.angram.layers.presentation.flows.main.screens.chatList.viewModel.chatList.ChatListViewModelFactory
+import com.anvipo.angram.layers.presentation.flows.main.screens.chatList.viewModel.chatList.ChatListViewModelImpl
 import kotlinx.android.synthetic.main.fragment_chat_list.*
 import org.koin.android.ext.android.get
 import ru.terrakok.cicerone.android.support.SupportAppScreen
@@ -18,7 +17,8 @@ import ru.terrakok.cicerone.android.support.SupportAppScreen
 class ChatListFragment : BaseFragment() {
 
     companion object {
-        fun createNewInstance(): ChatListFragment = ChatListFragment()
+        fun createNewInstance(): ChatListFragment =
+            ChatListFragment()
     }
 
     override fun setupUI() {
@@ -36,19 +36,18 @@ class ChatListFragment : BaseFragment() {
         chat_list_bottom_navigation_view.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.action_private_chats -> {
-                    setActionBarTitle(resources.getString(R.string.private_chats_title))
                 }
                 R.id.action_basic_groups -> {
-                    setActionBarTitle(resources.getString(R.string.basic_groups_title))
+//                    setActionBarTitle(resources.getString(R.string.basic_groups_title))
                 }
                 R.id.action_supergroups -> {
-                    setActionBarTitle(resources.getString(R.string.supergroups_title))
+//                    setActionBarTitle(resources.getString(R.string.supergroups_title))
                 }
                 R.id.action_secret_chats -> {
-                    setActionBarTitle(resources.getString(R.string.secret_chats_title))
+//                    setActionBarTitle(resources.getString(R.string.secret_chats_title))
                 }
                 R.id.action_other_chats -> {
-                    setActionBarTitle(resources.getString(R.string.other_chats_title))
+//                    setActionBarTitle(resources.getString(R.string.other_chats_title))
                 }
             }
 

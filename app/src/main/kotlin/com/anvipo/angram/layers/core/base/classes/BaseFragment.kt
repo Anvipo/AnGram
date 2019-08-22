@@ -38,6 +38,8 @@ abstract class BaseFragment :
 
     final override val className: String by lazy { this::class.java.name }
 
+    abstract val actionBar: Toolbar
+
     final override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -94,19 +96,20 @@ abstract class BaseFragment :
         viewModel.onBackPressed()
     }
 
+    protected abstract val viewModel: BaseViewModel
+
+    protected abstract val actionBarTitle: String
+
+    protected abstract val layoutRes: Int
+        @LayoutRes
+        get
 
     protected open val shouldShowBackButton: Boolean
         get() = arguments?.getBoolean(ARG_SHOULD_SHOW_BACK_BUTTON) ?: false
 
+
     protected open val actionBarSubtitle: String = ""
 
-    protected abstract val viewModel: BaseViewModel
-
-    protected abstract val actionBarTitle: String
-    protected abstract val actionBar: Toolbar
-    protected abstract val layoutRes: Int
-        @LayoutRes
-        get
     @Suppress("MemberVisibilityCanBePrivate")
     protected val appCompatActivity: AppCompatActivity?
         get() = (activity as? AppCompatActivity)

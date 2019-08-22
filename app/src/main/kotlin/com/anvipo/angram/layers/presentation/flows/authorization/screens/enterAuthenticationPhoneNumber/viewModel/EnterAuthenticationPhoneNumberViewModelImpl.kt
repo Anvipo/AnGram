@@ -37,18 +37,6 @@ class EnterAuthenticationPhoneNumberViewModelImpl(
     override val enterAuthenticationPhoneNumberScreenSavedInputDataEvents: LiveData<EnterAuthenticationPhoneNumberScreenSavedInputData> by lazy {
         _enterAuthenticationPhoneNumberScreenSavedInputDataEvents
     }
-<<<<<<< develop
-=======
-    override val enableNextButtonEvents: LiveData<EnableViewEventsParameters> by lazy {
-        _enableNextButtonEvents
-    }
-
-    override fun onColdStart() {
-        super<BaseViewModelImpl>.onColdStart()
-        disableNextButton()
-        hideNextButton()
-    }
->>>>>>> Change DI order loading modules
 
     override fun onHotStart(savedInstanceState: Bundle) {
         super<BaseAuthorizationViewModelImpl>.onHotStart(savedInstanceState)

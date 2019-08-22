@@ -26,8 +26,6 @@ import com.anvipo.angram.layers.global.GlobalHelpers.createTGSystemMessage
 import com.anvipo.angram.layers.global.OrderedChat
 import com.anvipo.angram.layers.global.types.*
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorScope
-import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule
-import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorScope
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.tdApiUpdateAuthorizationStateAuthorizationCoordinatorSendChannelQualifier
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.tdApiUpdateConnectionStateAuthorizationFlowSendChannelQualifier
 import org.drinkless.td.libcore.telegram.TdApi
@@ -36,7 +34,6 @@ import org.koin.core.error.*
 import org.koin.core.inject
 import org.koin.core.scope.Scope
 import kotlin.collections.set
-
 
 object TdApiHelper : HasLogger, KoinComponent {
 
