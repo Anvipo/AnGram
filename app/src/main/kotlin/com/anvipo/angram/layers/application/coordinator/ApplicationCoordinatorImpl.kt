@@ -14,8 +14,11 @@ import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.di.EnterAuthenticationCodeModule
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.di.EnterAuthenticationPasswordModule
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.di.EnterAuthenticationPhoneNumberModule
+import com.anvipo.angram.layers.presentation.flows.main.coordinator.di.MainCoordinatorModule
 import com.anvipo.angram.layers.presentation.flows.main.coordinator.di.MainCoordinatorModule.mainCoordinatorScope
 import com.anvipo.angram.layers.presentation.flows.main.coordinator.di.MainCoordinatorModule.mainCoordinatorScopeQualifier
+import com.anvipo.angram.layers.presentation.flows.main.screens.chatList.di.ChatListModule
+import com.anvipo.angram.layers.presentation.flows.main.screens.chatList.di.PrivateChatsModule
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.withContext
@@ -214,6 +217,20 @@ class ApplicationCoordinatorImpl(
     }
 
     private suspend fun startMainFlow() {
+        val mainFlowModules by lazy {
+            if (IS_IN_DEBUG_MODE) {
+                listOf(
+                    MainCoordinatorModule.module,
+                    ChatListModule.module,
+                    PrivateChatsModule.module
+                )
+            } else {
+                TODO("release config")
+            }
+        }
+
+        loadKoinModules(mainFlowModules)
+
         val invokationPlace = object {}.javaClass.enclosingMethod!!.name
 
         mainCoordinatorScope = koinScope.getKoin().createScope(
@@ -233,6 +250,8 @@ class ApplicationCoordinatorImpl(
         )
 
         mainCoordinatorScope.close()
+
+        unloadKoinModules(mainFlowModules)
     }
 
     @Suppress("unused")
