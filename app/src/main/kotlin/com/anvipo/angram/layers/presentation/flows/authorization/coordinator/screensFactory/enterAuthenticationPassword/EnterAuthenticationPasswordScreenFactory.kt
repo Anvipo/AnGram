@@ -1,6 +1,6 @@
 package com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.enterAuthenticationPassword
 
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.view.EnterPasswordScreen
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.view.navigation.EnterPasswordScreen
 
 interface EnterAuthenticationPasswordScreenFactory {
 

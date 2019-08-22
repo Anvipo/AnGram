@@ -3,6 +3,8 @@ package com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di
 import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule.systemMessageSendChannelQualifier
 import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationStateBroadcastChannel
 import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationStateSendChannel
+import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionStateBroadcastChannel
+import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionStateSendChannel
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.AuthorizationCoordinatorImpl
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.interfaces.AuthorizationCoordinator
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.authorization.AuthorizationScreensFactory
@@ -32,10 +34,37 @@ object AuthorizationCoordinatorModule {
 
     var authorizationCoordinatorScope: Scope? = null
 
+    val tdApiUpdateConnectionStateAuthorizationFlowSendChannelQualifier: StringQualifier =
+        named("tdApiUpdateConnectionStateAuthorizationFlowSendChannel")
+    val tdApiUpdateConnectionStateAuthorizationFlowReceiveChannelQualifier: StringQualifier =
+        named("tdApiUpdateConnectionStateAuthorizationFlowReceiveChannel")
+    private val tdApiUpdateConnectionStateAuthorizationFlowBroadcastChannelQualifier =
+        named("tdApiUpdateConnectionStateAuthorizationFlowBroadcastChannel")
+
     @ExperimentalCoroutinesApi
     val module: Module = module {
 
         scope(authorizationCoordinatorScopeQualifier) {
+
+            scoped<TdApiUpdateConnectionStateSendChannel>(
+                tdApiUpdateConnectionStateAuthorizationFlowSendChannelQualifier
+            ) {
+                authorizationCoordinatorScope!!.get(
+                    tdApiUpdateConnectionStateAuthorizationFlowBroadcastChannelQualifier
+                )
+            }
+            factory(
+                tdApiUpdateConnectionStateAuthorizationFlowReceiveChannelQualifier
+            ) {
+                authorizationCoordinatorScope!!.get<TdApiUpdateConnectionStateBroadcastChannel>(
+                    tdApiUpdateConnectionStateAuthorizationFlowBroadcastChannelQualifier
+                ).openSubscription()
+            }
+            scoped<TdApiUpdateConnectionStateBroadcastChannel>(
+                tdApiUpdateConnectionStateAuthorizationFlowBroadcastChannelQualifier
+            ) {
+                BroadcastChannel(Channel.CONFLATED)
+            }
 
             scoped<TdApiUpdateAuthorizationStateSendChannel>(
                 tdApiUpdateAuthorizationStateAuthorizationCoordinatorSendChannelQualifier

@@ -25,14 +25,12 @@ import com.anvipo.angram.layers.data.di.GatewaysModule.tdClientScopeQualifier
 import com.anvipo.angram.layers.global.GlobalHelpers.createTGSystemMessage
 import com.anvipo.angram.layers.global.OrderedChat
 import com.anvipo.angram.layers.global.types.*
-import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorScope
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.tdApiUpdateAuthorizationStateAuthorizationCoordinatorSendChannelQualifier
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.di.EnterAuthenticationPhoneNumberModule.tdApiUpdateConnectionStateEnterAuthenticationPhoneNumberScreenSendChannelQualifier
+import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.tdApiUpdateConnectionStateAuthorizationFlowSendChannelQualifier
 import org.drinkless.td.libcore.telegram.TdApi
 import org.koin.core.KoinComponent
 import org.koin.core.error.*
-import org.koin.core.get
 import org.koin.core.inject
 import org.koin.core.scope.Scope
 import kotlin.collections.set
@@ -43,6 +41,9 @@ object TdApiHelper : HasLogger, KoinComponent {
     override val className: String = this::class.java.name
 
     lateinit var tdClientScope: Scope
+
+    var lastConnectionState: TdApi.ConnectionState? = null
+        private set
 
     override fun <T : Any> additionalLogging(logObj: T) {
         val systemMessage: SystemMessage = when (logObj) {
@@ -457,6 +458,8 @@ object TdApiHelper : HasLogger, KoinComponent {
         updateConnectionState: TdApi.UpdateConnectionState
     ) {
         synchronized(updateConnectionState) {
+            lastConnectionState = updateConnectionState.state
+
             tdApiUpdateConnectionStateApplicationPresenterSendChannel.also {
                 val couldImmediatelySend = it.offer(updateConnectionState)
 
@@ -470,7 +473,7 @@ object TdApiHelper : HasLogger, KoinComponent {
 
             authorizationCoordinatorScope?.apply {
                 get<TdApiUpdateConnectionStateSendChannel>(
-                    tdApiUpdateConnectionStateEnterAuthenticationPhoneNumberScreenSendChannelQualifier
+                    tdApiUpdateConnectionStateAuthorizationFlowSendChannelQualifier
                 ).also {
                     val couldImmediatelySend = it.offer(updateConnectionState)
 

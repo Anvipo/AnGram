@@ -3,10 +3,11 @@ package com.anvipo.angram.layers.presentation.flows.authorization.screens.enterA
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorQualifier
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorScope
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorScopeQualifier
+import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.tdApiUpdateConnectionStateAuthorizationFlowReceiveChannelQualifier
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.enterAuthenticationPassword.EnterAuthenticationPasswordScreenFactory
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.enterAuthenticationPassword.EnterAuthenticationPasswordScreenFactoryImpl
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.view.EnterAuthenticationPasswordFragment
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.view.EnterPasswordScreen
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.view.navigation.EnterPasswordScreen
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.viewModel.EnterAuthenticationPasswordViewModel
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.viewModel.EnterAuthenticationPasswordViewModelFactory
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.viewModel.EnterAuthenticationPasswordViewModelImpl
@@ -43,7 +44,10 @@ object EnterAuthenticationPasswordModule {
                         authorizationCoordinatorQualifier
                     ),
                     useCase = authorizationCoordinatorScope!!.get(),
-                    resourceManager = get()
+                    resourceManager = get(),
+                    tdApiUpdateConnectionStateReceiveChannel = authorizationCoordinatorScope!!.get(
+                        tdApiUpdateConnectionStateAuthorizationFlowReceiveChannelQualifier
+                    )
                 )
             }
 

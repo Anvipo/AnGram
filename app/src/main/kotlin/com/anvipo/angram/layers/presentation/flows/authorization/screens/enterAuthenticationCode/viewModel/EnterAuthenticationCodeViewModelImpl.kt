@@ -6,14 +6,15 @@ import androidx.lifecycle.MutableLiveData
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.businessLogic.useCases.flows.authorization.enterAuthenticationCode.EnterAuthenticationCodeUseCase
 import com.anvipo.angram.layers.core.ResourceManager
-import com.anvipo.angram.layers.core.base.classes.BaseViewModelImpl
 import com.anvipo.angram.layers.core.events.parameters.ShowAlertMessageEventParameters
 import com.anvipo.angram.layers.core.events.parameters.ShowErrorEventParameters
 import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters
 import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters.HIDE
 import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters.SHOW
 import com.anvipo.angram.layers.data.gateways.tdLib.errors.TdApiError
+import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionStateReceiveChannel
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.interfaces.AuthorizationCoordinatorEnterAuthenticationCodeRouteEventHandler
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.base.viewModel.BaseAuthorizationViewModelImpl
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.types.CorrectAuthenticationCodeType
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.types.EnterAuthenticationCodeScreenSavedInputData
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.types.SetExpectedCodeLengthEventParameters
@@ -26,13 +27,14 @@ import kotlinx.coroutines.withContext
 class EnterAuthenticationCodeViewModelImpl(
     private val routeEventHandler: AuthorizationCoordinatorEnterAuthenticationCodeRouteEventHandler,
     private val useCase: EnterAuthenticationCodeUseCase,
-    private val resourceManager: ResourceManager
-) : BaseViewModelImpl(), EnterAuthenticationCodeViewModel {
+    private val resourceManager: ResourceManager,
+    tdApiUpdateConnectionStateReceiveChannel: TdApiUpdateConnectionStateReceiveChannel
+) : BaseAuthorizationViewModelImpl(
+    tdApiUpdateConnectionStateReceiveChannel
+), EnterAuthenticationCodeViewModel {
 
     override val setExpectedCodeLengthEvents: LiveData<SetExpectedCodeLengthEventParameters>
             by lazy { _setExpectedCodeLengthEvents }
-    override val showNextButtonEvents: LiveData<ShowViewEventParameters>
-            by lazy { _showNextButtonEvents }
     override val showRegistrationViewsEvents: LiveData<ShowViewEventParameters>
             by lazy { _showRegistrationViewsEvents }
 
@@ -40,16 +42,12 @@ class EnterAuthenticationCodeViewModelImpl(
             by lazy { _enterAuthenticationCodeScreenSavedInputData }
 
     override fun onColdStart() {
-        super<BaseViewModelImpl>.onColdStart()
-        hideNextButton()
+        super<BaseAuthorizationViewModelImpl>.onColdStart()
         hideRegistrationViews()
-        myLaunch {
-            hideProgress()
-        }
     }
 
     override fun onHotStart(savedInstanceState: Bundle) {
-        super<BaseViewModelImpl>.onHotStart(savedInstanceState)
+        super<BaseAuthorizationViewModelImpl>.onHotStart(savedInstanceState)
         val enteredAuthenticationCode = savedInstanceState.getString(ENTERED_AUTHENTICATION_CODE)
         val enteredFirstName = savedInstanceState.getString(ENTERED_FIRST_NAME)
         val enteredLastName = savedInstanceState.getString(ENTERED_LAST_NAME)
@@ -62,12 +60,9 @@ class EnterAuthenticationCodeViewModelImpl(
     }
 
     override fun onResumeTriggered() {
+        super<BaseAuthorizationViewModelImpl>.onResumeTriggered()
         if (registrationRequired) {
             showRegistrationViews()
-        }
-
-        myLaunch {
-            hideProgress()
         }
     }
 
@@ -213,8 +208,6 @@ class EnterAuthenticationCodeViewModelImpl(
 
     private val _setExpectedCodeLengthEvents =
         MutableLiveData<SetExpectedCodeLengthEventParameters>()
-    private val _showNextButtonEvents =
-        MutableLiveData<ShowViewEventParameters>()
     private val _showRegistrationViewsEvents =
         MutableLiveData<ShowViewEventParameters>()
 
@@ -253,15 +246,8 @@ class EnterAuthenticationCodeViewModelImpl(
     }
 
     private fun setMaxLengthOfEditText(expectedCodeLength: Int) {
-        _setExpectedCodeLengthEvents.value = SetExpectedCodeLengthEventParameters(expectedCodeLength)
-    }
-
-    private fun showNextButton() {
-        _showNextButtonEvents.value = SHOW
-    }
-
-    private fun hideNextButton() {
-        _showNextButtonEvents.value = HIDE
+        _setExpectedCodeLengthEvents.value =
+            SetExpectedCodeLengthEventParameters(expectedCodeLength)
     }
 
     private fun showRegistrationViews() {

@@ -3,9 +3,10 @@ package com.anvipo.angram.layers.presentation.flows.authorization.screens.enterA
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.businessLogic.useCases.flows.authorization.enterAuthenticationPassword.EnterAuthenticationPasswordUseCase
 import com.anvipo.angram.layers.core.ResourceManager
-import com.anvipo.angram.layers.core.base.classes.BaseViewModelImpl
 import com.anvipo.angram.layers.core.events.parameters.ShowErrorEventParameters
+import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionStateReceiveChannel
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.interfaces.AuthorizationCoordinatorEnterAuthenticationPasswordRouteEventHandler
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.base.viewModel.BaseAuthorizationViewModelImpl
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.types.CorrectAuthenticationPasswordType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -13,14 +14,11 @@ import kotlinx.coroutines.withContext
 class EnterAuthenticationPasswordViewModelImpl(
     private val routeEventHandler: AuthorizationCoordinatorEnterAuthenticationPasswordRouteEventHandler,
     private val useCase: EnterAuthenticationPasswordUseCase,
-    private val resourceManager: ResourceManager
-) : BaseViewModelImpl(), EnterAuthenticationPasswordViewModel {
-
-    override fun onResumeTriggered() {
-        myLaunch {
-            hideProgress()
-        }
-    }
+    private val resourceManager: ResourceManager,
+    tdApiUpdateConnectionStateReceiveChannel: TdApiUpdateConnectionStateReceiveChannel
+) : BaseAuthorizationViewModelImpl(
+    tdApiUpdateConnectionStateReceiveChannel
+), EnterAuthenticationPasswordViewModel {
 
     override fun onNextButtonPressed(enteredAuthenticationPassword: CorrectAuthenticationPasswordType) {
         myLaunch {

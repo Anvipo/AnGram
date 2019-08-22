@@ -16,6 +16,7 @@ import com.anvipo.angram.layers.core.hideWithAnimate
 import com.anvipo.angram.layers.core.showWithAnimate
 import com.anvipo.angram.layers.core.textWatchers.TextWatcherImpl
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorScope
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.base.view.BaseAuthorizationFlowFragment
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.types.SetExpectedCodeLengthEventParameters
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.viewModel.EnterAuthenticationCodeViewModel
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.viewModel.EnterAuthenticationCodeViewModelFactory
@@ -24,7 +25,7 @@ import kotlinx.android.synthetic.main.fragment_enter_authentication_code.*
 import org.koin.android.ext.android.get
 
 
-class EnterAuthenticationCodeFragment : BaseFragment() {
+class EnterAuthenticationCodeFragment : BaseAuthorizationFlowFragment() {
 
     companion object {
         const val ENTERED_AUTHENTICATION_CODE: String = "entered_authentication_code"
@@ -103,16 +104,6 @@ class EnterAuthenticationCodeFragment : BaseFragment() {
     override fun setupViewModelsObservers() {
         super.setupViewModelsObservers()
         viewModel
-            .showNextButtonEvents
-            .observe(this) {
-                @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
-                when (it) {
-                    SHOW -> showNextButton()
-                    HIDE -> hideNextButton()
-                }
-            }
-
-        viewModel
             .showRegistrationViewsEvents
             .observe(this) {
                 @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
@@ -137,6 +128,22 @@ class EnterAuthenticationCodeFragment : BaseFragment() {
             }
     }
 
+    override fun showNextButton() {
+        enter_auth_code_next_button.showWithAnimate()
+    }
+
+    override fun hideNextButton() {
+        enter_auth_code_next_button.hideWithAnimate()
+    }
+
+    override fun enableNextButton() {
+        enter_auth_code_next_button.isEnabled = true
+    }
+
+    override fun disableNextButton() {
+        enter_auth_code_next_button.isEnabled = false
+    }
+
 
     private val authCodeTextWatcher by lazy {
         TextWatcherImpl(
@@ -154,14 +161,6 @@ class EnterAuthenticationCodeFragment : BaseFragment() {
         TextWatcherImpl(
             onEnteredText = { viewModel.onLastNameTextChanged(it) }
         )
-    }
-
-    private fun showNextButton() {
-        enter_auth_code_next_button.showWithAnimate()
-    }
-
-    private fun hideNextButton() {
-        enter_auth_code_next_button.hideWithAnimate()
     }
 
     private fun showRegistrationViews() {

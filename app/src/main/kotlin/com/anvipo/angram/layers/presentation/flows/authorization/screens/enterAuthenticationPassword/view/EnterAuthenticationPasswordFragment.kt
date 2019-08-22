@@ -4,14 +4,17 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.core.base.classes.BaseFragment
+import com.anvipo.angram.layers.core.hideWithAnimate
+import com.anvipo.angram.layers.core.showWithAnimate
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorScope
+import com.anvipo.angram.layers.presentation.flows.authorization.screens.base.view.BaseAuthorizationFlowFragment
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.viewModel.EnterAuthenticationPasswordViewModel
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.viewModel.EnterAuthenticationPasswordViewModelFactory
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.viewModel.EnterAuthenticationPasswordViewModelImpl
 import kotlinx.android.synthetic.main.fragment_enter_authentication_password.*
 import org.koin.android.ext.android.get
 
-class EnterAuthenticationPasswordFragment : BaseFragment() {
+class EnterAuthenticationPasswordFragment : BaseAuthorizationFlowFragment() {
 
     companion object {
         fun createNewInstance(): EnterAuthenticationPasswordFragment =
@@ -31,6 +34,22 @@ class EnterAuthenticationPasswordFragment : BaseFragment() {
         enter_password_next_button.setOnClickListener {
             viewModel.onNextButtonPressed(enter_password_edit_text.text.toString())
         }
+    }
+
+    override fun showNextButton() {
+        enter_password_next_button.showWithAnimate()
+    }
+
+    override fun hideNextButton() {
+        enter_password_next_button.hideWithAnimate()
+    }
+
+    override fun enableNextButton() {
+        enter_password_next_button.isEnabled = true
+    }
+
+    override fun disableNextButton() {
+        enter_password_next_button.isEnabled = false
     }
 
 }

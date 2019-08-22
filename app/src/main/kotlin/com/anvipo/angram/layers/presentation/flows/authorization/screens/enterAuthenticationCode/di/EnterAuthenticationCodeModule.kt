@@ -3,6 +3,7 @@ package com.anvipo.angram.layers.presentation.flows.authorization.screens.enterA
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorQualifier
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorScope
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorScopeQualifier
+import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.tdApiUpdateConnectionStateAuthorizationFlowReceiveChannelQualifier
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.enterAuthenticationCode.EnterAuthenticationCodeScreenFactory
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.enterAuthenticationCode.EnterAuthenticationCodeScreenFactoryImpl
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.view.EnterAuthenticationCodeFragment
@@ -50,7 +51,10 @@ object EnterAuthenticationCodeModule {
                         authorizationCoordinatorQualifier
                     ),
                     useCase = authorizationCoordinatorScope!!.get(),
-                    resourceManager = get()
+                    resourceManager = get(),
+                    tdApiUpdateConnectionStateReceiveChannel = authorizationCoordinatorScope!!.get(
+                        tdApiUpdateConnectionStateAuthorizationFlowReceiveChannelQualifier
+                    )
                 )
             }
 
