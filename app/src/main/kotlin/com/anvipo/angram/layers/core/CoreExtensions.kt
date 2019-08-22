@@ -52,7 +52,10 @@ fun Context.getTintDrawable(
 ): Drawable {
     val source = ContextCompat.getDrawable(this, drawableRes)!!.mutate()
     val wrapped = DrawableCompat.wrap(source)
-    DrawableCompat.setTintList(wrapped, ColorStateList(states, colorResources.map { color(it) }.toIntArray()))
+    DrawableCompat.setTintList(
+        wrapped,
+        ColorStateList(states, colorResources.map { color(it) }.toIntArray())
+    )
     return wrapped
 }
 
@@ -139,7 +142,8 @@ fun View.showSnackbarMessage(
     duration: Int = Snackbar.LENGTH_LONG
 ) {
     val snackbar = Snackbar.make(this, text, duration)
-    val messageTextView = snackbar.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
+    val messageTextView =
+        snackbar.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
     messageTextView.setTextColor(Color.WHITE)
     snackbar.show()
 }

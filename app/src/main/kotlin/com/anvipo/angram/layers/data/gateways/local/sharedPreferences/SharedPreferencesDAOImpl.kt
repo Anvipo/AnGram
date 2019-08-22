@@ -19,7 +19,10 @@ class SharedPreferencesDAOImpl(
 
     override fun saveEnabledProxyId(enabledProxyId: Int?) {
         resourceManager.getSharedPreferences().edit(commit = true) {
-            putString(resourceManager.getString(R.string.enabled_proxy_id), enabledProxyId?.toString())
+            putString(
+                resourceManager.getString(R.string.enabled_proxy_id),
+                enabledProxyId?.toString()
+            )
         }
     }
 

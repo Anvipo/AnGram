@@ -3,7 +3,6 @@ package com.anvipo.angram.layers.presentation.flows.authorization.screens.enterA
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import com.anvipo.angram.R
-import com.anvipo.angram.layers.core.base.classes.BaseFragment
 import com.anvipo.angram.layers.core.hideWithAnimate
 import com.anvipo.angram.layers.core.showWithAnimate
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorScope
@@ -12,7 +11,6 @@ import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAu
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.viewModel.EnterAuthenticationPasswordViewModelFactory
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPassword.viewModel.EnterAuthenticationPasswordViewModelImpl
 import kotlinx.android.synthetic.main.fragment_enter_authentication_password.*
-import org.koin.android.ext.android.get
 
 class EnterAuthenticationPasswordFragment : BaseAuthorizationFlowFragment() {
 

@@ -56,13 +56,17 @@ class TdApiProxyInfoRoomEntity(
                 else -> TODO()
             }
 
-            return transformClassAndHisFieldsWithTheirValuesToString(clazz, tdApiProxyTypeRoomEntity)
+            return transformClassAndHisFieldsWithTheirValuesToString(
+                clazz,
+                tdApiProxyTypeRoomEntity
+            )
         }
 
 
         @TypeConverter
         fun fromString(string: String): TdApiProxyTypeRoomEntity {
-            val (className, fieldsAndTheirValues) = getClassNameAndFieldsAndTheirValuesPairFrom(string)
+            val (className, fieldsAndTheirValues) =
+                getClassNameAndFieldsAndTheirValuesPairFrom(string)
 
             val mtProtoProxyTypeClazz = TdApiMTProtoProxyTypeRoomEntity::class.java
             when (className) {

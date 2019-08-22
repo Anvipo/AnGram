@@ -151,7 +151,8 @@ class AddProxyViewModelImpl(
 
 
     private val _showAddProxyEvents = MutableLiveData<ShowViewEventParameters>()
-    private val _addProxyScreenSavedInputDataEvents = MutableLiveData<AddProxyScreenSavedInputData>()
+    private val _addProxyScreenSavedInputDataEvents =
+        MutableLiveData<AddProxyScreenSavedInputData>()
     private val _enteredServerAddress = MutableLiveData<String?>()
     @ExperimentalUnsignedTypes
     private val _enteredServerPort = MutableLiveData<UInt?>()

@@ -1,8 +1,5 @@
 package com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.di
 
-import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionStateBroadcastChannel
-import com.anvipo.angram.layers.global.types.TdApiUpdateConnectionStateSendChannel
-import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorQualifier
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorScope
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorScopeQualifier
@@ -15,11 +12,7 @@ import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAu
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.viewModel.EnterAuthenticationPhoneNumberViewModelFactory
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.viewModel.EnterAuthenticationPhoneNumberViewModelImpl
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.channels.BroadcastChannel
-import kotlinx.coroutines.channels.Channel
 import org.koin.core.module.Module
-import org.koin.core.qualifier.StringQualifier
-import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 object EnterAuthenticationPhoneNumberModule {

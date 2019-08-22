@@ -8,7 +8,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import com.anvipo.angram.R
-import com.anvipo.angram.layers.core.base.classes.BaseFragment
 import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters.HIDE
 import com.anvipo.angram.layers.core.events.parameters.ShowViewEventParameters.SHOW
 import com.anvipo.angram.layers.core.hideKeyboard
@@ -22,7 +21,6 @@ import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAu
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.viewModel.EnterAuthenticationCodeViewModelFactory
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.viewModel.EnterAuthenticationCodeViewModelImpl
 import kotlinx.android.synthetic.main.fragment_enter_authentication_code.*
-import org.koin.android.ext.android.get
 
 
 class EnterAuthenticationCodeFragment : BaseAuthorizationFlowFragment() {

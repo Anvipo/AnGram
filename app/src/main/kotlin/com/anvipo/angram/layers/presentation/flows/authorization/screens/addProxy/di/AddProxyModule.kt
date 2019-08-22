@@ -41,7 +41,9 @@ object AddProxyModule {
 
         factory<AddProxyViewModel> {
             AddProxyViewModelImpl(
-                routeEventHandler = authorizationCoordinatorScope!!.get(authorizationCoordinatorQualifier),
+                routeEventHandler = authorizationCoordinatorScope!!.get(
+                    authorizationCoordinatorQualifier
+                ),
                 useCase = authorizationCoordinatorScope!!.get(),
                 resourceManager = get()
             )

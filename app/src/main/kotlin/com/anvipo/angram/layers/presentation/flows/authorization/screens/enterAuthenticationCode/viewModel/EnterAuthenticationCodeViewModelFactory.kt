@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.di.AuthorizationCoordinatorModule.authorizationCoordinatorScope
 import org.koin.core.KoinComponent
-import org.koin.core.get
 
 object EnterAuthenticationCodeViewModelFactory :
     ViewModelProvider.Factory,

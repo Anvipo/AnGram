@@ -44,7 +44,8 @@ class AppViewModelImpl(
         )
     }
 
-    override val setNavigatorEvents: SingleLiveEvent<SetNavigatorEventParameters> = SingleLiveEvent()
+    override val setNavigatorEvents: SingleLiveEvent<SetNavigatorEventParameters> =
+        SingleLiveEvent()
 
     override fun onColdStart() {
         super<BaseViewModelImpl>.onColdStart()
