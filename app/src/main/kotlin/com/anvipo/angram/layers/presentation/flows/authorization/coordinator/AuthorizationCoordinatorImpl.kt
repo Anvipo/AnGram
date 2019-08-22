@@ -8,9 +8,9 @@ import com.anvipo.angram.layers.global.types.TdApiUpdateAuthorizationStateReceiv
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.interfaces.*
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.authorization.AuthorizationScreensFactory
 import com.anvipo.angram.layers.presentation.flows.authorization.coordinator.types.AuthorizationCoordinateResult
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.types.ProxyType
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationCode.view.navigation.EnterAuthenticationCodeScreenParameters
 import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAuthenticationPhoneNumber.view.navigation.EnterAuthenticationPhoneNumberScreen
+import com.anvipo.angram.layers.presentation.screens.addProxy.types.ProxyType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.drinkless.td.libcore.telegram.TdApi

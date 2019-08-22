@@ -9,7 +9,7 @@ import com.anvipo.angram.layers.application.tdApiHelper.di.TdApiHelperModule
 import com.anvipo.angram.layers.businessLogic.di.UseCasesModule
 import com.anvipo.angram.layers.core.CoreHelpers.IS_IN_DEBUG_MODE
 import com.anvipo.angram.layers.data.di.GatewaysModule
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.di.AddProxyModule
+import com.anvipo.angram.layers.presentation.screens.addProxy.di.AddProxyModule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger

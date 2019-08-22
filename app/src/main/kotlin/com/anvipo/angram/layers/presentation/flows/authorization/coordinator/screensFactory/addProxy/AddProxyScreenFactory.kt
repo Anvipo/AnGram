@@ -1,7 +1,7 @@
 package com.anvipo.angram.layers.presentation.flows.authorization.coordinator.screensFactory.addProxy
 
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.types.ProxyType
-import com.anvipo.angram.layers.presentation.flows.authorization.screens.addProxy.view.navigation.AddProxyScreen
+import com.anvipo.angram.layers.presentation.screens.addProxy.types.ProxyType
+import com.anvipo.angram.layers.presentation.screens.addProxy.view.navigation.AddProxyScreen
 
 interface AddProxyScreenFactory {
 
