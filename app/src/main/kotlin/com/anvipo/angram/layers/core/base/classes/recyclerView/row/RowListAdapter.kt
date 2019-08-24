@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.anvipo.angram.layers.core.base.interfaces.recyclerView.row.BaseRow
+import com.anvipo.angram.layers.core.base.interfaces.recyclerView.row.RowViewData
 
 @Suppress("unused")
 abstract class RowListAdapter<BR : BaseRow, RVH : RowViewHolder<BR>> :
@@ -27,7 +28,7 @@ abstract class RowListAdapter<BR : BaseRow, RVH : RowViewHolder<BR>> :
     ): RVH {
         val inflater = LayoutInflater.from(parent.context)
 
-        val viewData = getItem(0).viewsData.find { it.viewType == viewType }!!
+        val viewData = allViewsData.find { it.viewType == viewType }!!
 
         val itemView = inflater.inflate(viewData.layoutRes, parent, false)
 
@@ -51,5 +52,8 @@ abstract class RowListAdapter<BR : BaseRow, RVH : RowViewHolder<BR>> :
         super.onViewDetachedFromWindow(holder)
         holder.onDestroy()
     }
+
+    private val allViewsData: List<RowViewData>
+        get() = getItem(0).viewsData
 
 }

@@ -7,9 +7,9 @@ import com.anvipo.angram.layers.core.base.interfaces.recyclerView.section.Sectio
 
 object PrivateChatsScreenSectionViewData : SectionViewData {
 
-    override fun <BS : BaseSection, SVH : SectionViewHolder<BS>> createSectionViewHolder(itemView: View): SVH {
-        TODO("not implemented")
-    }
+    @Suppress("UNCHECKED_CAST")
+    override fun <BS : BaseSection, SVH : SectionViewHolder<BS>> createSectionViewHolder(itemView: View): SVH =
+        PrivateChatsScreenViewHolder(itemView) as SVH
 
     override val viewType: Int = TODO("not implemented")
     override val layoutRes: Int = TODO("not implemented")

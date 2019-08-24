@@ -11,4 +11,6 @@ class PrivateChatsScreenRowViewHolder(
         TODO("not implemented")
     }
 
+    private val adapter by lazy { PrivateChatsScreenRowListAdapter() }
+
 }

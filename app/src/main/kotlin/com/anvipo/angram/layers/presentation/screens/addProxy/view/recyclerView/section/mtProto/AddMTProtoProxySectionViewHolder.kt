@@ -10,7 +10,6 @@ import kotlinx.android.synthetic.main.base_footer_view.view.*
 import kotlinx.android.synthetic.main.base_header_view.view.*
 import kotlinx.android.synthetic.main.section_add_proxy.view.*
 
-
 class AddMTProtoProxySectionViewHolder(
     itemView: View
 ) : AddProxySectionViewHolder<AddMTProtoProxySection>(itemView) {
