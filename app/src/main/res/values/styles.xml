@@ -160,7 +160,7 @@
     </style>
 
     <style name="MySectionedRecyclerView">
-        <item name="android:background">@color/divider</item>
+        <item name="android:background">@color/sectionedRecyclerViewBackground</item>
     </style>
 
 </resources>

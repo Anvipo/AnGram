@@ -6,10 +6,9 @@ import com.anvipo.angram.layers.core.base.classes.recyclerView.row.RowViewHolder
 import com.anvipo.angram.layers.core.base.interfaces.recyclerView.row.BaseRow
 import com.anvipo.angram.layers.core.base.interfaces.recyclerView.row.RowViewData
 
-
 object AddMTProtoProxyRowViewData : RowViewData {
 
-    override val viewType: Int = 1
+    override val viewType: Int = 0
     override val layoutRes: Int = R.layout.item_add_proxy
 
     @Suppress("UNCHECKED_CAST")
