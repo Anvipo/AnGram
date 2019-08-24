@@ -6,8 +6,7 @@ import com.anvipo.angram.layers.core.base.classes.recyclerView.section.SectionVi
 import com.anvipo.angram.layers.core.base.interfaces.recyclerView.section.BaseSection
 import com.anvipo.angram.layers.core.base.interfaces.recyclerView.section.SectionViewData
 
-object AddMTProtoProxySectionViewData :
-    SectionViewData {
+object AddMTProtoProxySectionViewData : SectionViewData {
 
     override val viewType: Int = 0
     override val layoutRes: Int = R.layout.section_add_proxy

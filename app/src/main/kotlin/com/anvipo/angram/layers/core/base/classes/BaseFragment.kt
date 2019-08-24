@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.CallSuper
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
@@ -62,6 +63,7 @@ abstract class BaseFragment :
         }
     }
 
+    @CallSuper
     override fun onStart() {
         super.onStart()
         viewModel.onStartTriggered()
@@ -78,6 +80,7 @@ abstract class BaseFragment :
         super.onPause()
     }
 
+    @CallSuper
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         instanceStateSaved = true
@@ -120,6 +123,7 @@ abstract class BaseFragment :
 
     protected open fun setupUI(): Unit = Unit
     protected open fun setupClickListeners(): Unit = Unit
+    @CallSuper
     protected open fun setupViewModelsObservers() {
         viewModel
             .showErrorEvents

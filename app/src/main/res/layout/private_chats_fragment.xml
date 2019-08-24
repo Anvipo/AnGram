@@ -5,9 +5,10 @@
     android:layout_height="match_parent"
     tools:context=".layers.presentation.flows.main.screens.chatList.view.privateChats.PrivateChatsFragment">
 
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
+        style="@style/MySectionedRecyclerView"
+        android:id="@+id/recycler_view_private_chats_fragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Private chats" />
+        android:layout_height="match_parent" />
 
 </FrameLayout>

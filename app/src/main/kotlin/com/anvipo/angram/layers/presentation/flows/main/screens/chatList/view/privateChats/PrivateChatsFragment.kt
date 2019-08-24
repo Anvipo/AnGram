@@ -2,11 +2,14 @@ package com.anvipo.angram.layers.presentation.flows.main.screens.chatList.view.p
 
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.anvipo.angram.R
 import com.anvipo.angram.layers.core.base.classes.BaseFragment
+import com.anvipo.angram.layers.presentation.flows.main.screens.chatList.view.chatList.recyclerView.section.ChatListScreenSectionListAdapter
 import com.anvipo.angram.layers.presentation.flows.main.screens.chatList.viewModel.privateChats.PrivateChatsViewModel
 import com.anvipo.angram.layers.presentation.flows.main.screens.chatList.viewModel.privateChats.PrivateChatsViewModelFactory
 import com.anvipo.angram.layers.presentation.flows.main.screens.chatList.viewModel.privateChats.PrivateChatsViewModelImpl
+import kotlinx.android.synthetic.main.private_chats_fragment.*
 import org.koin.android.ext.android.get
 
 class PrivateChatsFragment : BaseFragment() {
@@ -26,5 +29,13 @@ class PrivateChatsFragment : BaseFragment() {
     override val viewModel: PrivateChatsViewModel by viewModels<PrivateChatsViewModelImpl> {
         get<PrivateChatsViewModelFactory>()
     }
+
+    override fun setupUI() {
+        recycler_view_private_chats_fragment.layoutManager = LinearLayoutManager(context!!)
+        recycler_view_private_chats_fragment.adapter = adapter
+        recycler_view_private_chats_fragment.setHasFixedSize(true)
+    }
+
+    private val adapter by lazy { ChatListScreenSectionListAdapter() }
 
 }
