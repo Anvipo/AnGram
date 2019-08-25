@@ -111,7 +111,7 @@ class AddProxyFragment :
             }
     }
 
-    override fun setupClickListeners() {
+    override fun setupListeners() {
         add_proxy_button.setOnClickListener(::onAddProxyButtonClicked)
     }
 

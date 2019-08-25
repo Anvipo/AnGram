@@ -48,7 +48,7 @@ class EnterAuthenticationPhoneNumberFragment :
         outState.putString(ENTERED_PHONE_NUMBER, enter_phone_number_edit_text?.text?.toString())
     }
 
-    override fun setupClickListeners() {
+    override fun setupListeners() {
         enter_phone_number_add_proxy_button.setOnClickListener(::onClickedPhoneNumberAddProxyButton)
 
         enter_phone_number_next_button.setOnClickListener(::onClickedPhoneNumberNextButton)
