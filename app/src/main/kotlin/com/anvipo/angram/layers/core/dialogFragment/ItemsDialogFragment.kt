@@ -31,13 +31,10 @@ class ItemsDialogFragment : DialogFragment() {
         return AlertDialog.Builder(context!!).apply {
             setTitle(title)
             setCancelable(cancelable)
-            setItems(
-                items?.toTypedArray(),
-                DialogInterface.OnClickListener { dialog, which ->
-                    dialog.dismiss()
-                    clickListener.itemClicked(startTag, which)
-                }
-            )
+            setItems(items?.toTypedArray()) { dialog, which ->
+                dialog.dismiss()
+                clickListener.itemClicked(startTag, which)
+            }
         }.create()
     }
 

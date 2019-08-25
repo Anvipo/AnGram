@@ -1,6 +1,6 @@
 package com.anvipo.angram.layers.global
 
-class OrderedChat(
+data class OrderedChat(
     val order: Long,
     val chatId: Long
 ) : Comparable<OrderedChat> {
@@ -15,12 +15,6 @@ class OrderedChat(
         } else {
             0
         }
-    }
-
-    override fun equals(other: Any?): Boolean {
-        val o = other as? OrderedChat
-
-        return this.order == o?.order && this.chatId == o.chatId
     }
 
 }
