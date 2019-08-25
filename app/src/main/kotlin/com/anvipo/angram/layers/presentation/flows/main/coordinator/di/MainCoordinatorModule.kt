@@ -31,12 +31,12 @@ object MainCoordinatorModule {
                 )
             }
 
-        }
+            scoped<MainScreensFactory> {
+                MainScreensFactoryImpl(
+                    chatListScreenFactory = get()
+                )
+            }
 
-        single<MainScreensFactory> {
-            MainScreensFactoryImpl(
-                chatListScreenFactory = get()
-            )
         }
 
     }

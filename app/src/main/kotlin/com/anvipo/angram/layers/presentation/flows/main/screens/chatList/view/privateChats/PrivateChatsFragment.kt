@@ -4,6 +4,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.anvipo.angram.R
+import com.anvipo.angram.layers.application.tdApiHelper.TdApiHelper
 import com.anvipo.angram.layers.core.base.classes.BaseFragment
 import com.anvipo.angram.layers.presentation.flows.main.screens.chatList.view.chatList.recyclerView.section.ChatListScreenSectionListAdapter
 import com.anvipo.angram.layers.presentation.flows.main.screens.chatList.viewModel.privateChats.PrivateChatsViewModel
@@ -34,6 +35,10 @@ class PrivateChatsFragment : BaseFragment() {
         recycler_view_private_chats_fragment.layoutManager = LinearLayoutManager(context!!)
         recycler_view_private_chats_fragment.adapter = adapter
         recycler_view_private_chats_fragment.setHasFixedSize(true)
+
+//        TdApiHelper.chats
+//        adapter.submitList()
+//        println()
     }
 
     private val adapter by lazy { ChatListScreenSectionListAdapter() }

@@ -141,6 +141,9 @@ object TdApiHelper : HasLogger, KoinComponent {
             by inject(secretChatsMutableMapQualifier)
     private val chats: MutableMap<Long, TdApi.Chat> by inject(chatsMutableMapQualifier)
 
+    private val privateChats: Map<Long, TdApi.Chat>
+        get() = chats.filter { it.value.type is TdApi.ChatTypePrivate }
+
     private val users: MutableMap<Int, TdApi.User> by inject(usersMutableMapQualifier)
     private val chatList: MutableSet<OrderedChat> by inject(chatListQualifier)
     private val usersFullInfo: MutableMap<Int, TdApi.UserFullInfo>
@@ -272,7 +275,17 @@ object TdApiHelper : HasLogger, KoinComponent {
             val order = chat.order
             chat.order = 0
             setChatOrder(chat, order)
+
+            if (chat.type is TdApi.ChatTypePrivate) {
+                broadcastNewPrivateChats()
+            }
         }
+    }
+
+    private fun broadcastNewPrivateChats() {
+        val b = privateChats
+
+        println()
     }
 
     private fun setChatOrder(
