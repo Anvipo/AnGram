@@ -53,7 +53,7 @@ abstract class BaseFragment :
         extractDataFromBundle()
         setupToolbar()
         setupUI()
-        setupClickListeners()
+        setupListeners()
         setupViewModelsObservers()
 
         if (savedInstanceState == null) {
@@ -122,7 +122,7 @@ abstract class BaseFragment :
         get() = appCompatActivity?.supportActionBar
 
     protected open fun setupUI(): Unit = Unit
-    protected open fun setupClickListeners(): Unit = Unit
+    protected open fun setupListeners(): Unit = Unit
     @CallSuper
     protected open fun setupViewModelsObservers() {
         viewModel

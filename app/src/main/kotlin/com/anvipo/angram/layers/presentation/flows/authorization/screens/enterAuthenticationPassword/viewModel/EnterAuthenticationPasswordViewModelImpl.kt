@@ -52,4 +52,11 @@ class EnterAuthenticationPasswordViewModelImpl(
         }
     }
 
+    override fun onAuthenticationPasswordTextChanged(newText: String) {
+        if (newText.isNotBlank() && newText.isNotEmpty()) {
+            showNextButton()
+        } else {
+            hideNextButton()
+        }
+    }
 }

@@ -87,7 +87,7 @@ class EnterAuthenticationCodeFragment : BaseAuthorizationFlowFragment() {
         viewModel.onGetTermsOfServiceText(termsOfServiceText)
     }
 
-    override fun setupClickListeners() {
+    override fun setupListeners() {
         enter_auth_code_next_button.setOnClickListener(::onClickedPhoneNumberNextButton)
 
         resend_authentication_code_button.setOnClickListener(::onClickedResendAuthenticationCodeButton)

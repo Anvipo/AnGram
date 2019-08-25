@@ -6,5 +6,6 @@ import com.anvipo.angram.layers.presentation.flows.authorization.screens.enterAu
 interface EnterAuthenticationPasswordViewModel : BaseAuthorizationFlowViewModel {
 
     fun onNextButtonPressed(enteredAuthenticationPassword: CorrectAuthenticationPasswordType)
+    fun onAuthenticationPasswordTextChanged(newText: String)
 
 }
