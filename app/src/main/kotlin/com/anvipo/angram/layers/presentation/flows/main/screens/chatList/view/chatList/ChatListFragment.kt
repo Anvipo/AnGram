@@ -22,7 +22,6 @@ class ChatListFragment : BaseFragment() {
     }
 
     override fun setupUI() {
-        super.setupUI()
         val tab = when (currentTabFragment?.tag) {
             PrivateChatsScreen.screenKey -> PrivateChatsScreen
             else -> PrivateChatsScreen
@@ -31,8 +30,7 @@ class ChatListFragment : BaseFragment() {
         selectTab(tab)
     }
 
-    override fun setupClickListeners() {
-        super.setupClickListeners()
+    override fun setupListeners() {
         chat_list_bottom_navigation_view.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.action_private_chats -> {
